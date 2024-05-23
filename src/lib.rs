@@ -1,3 +1,4 @@
+#![feature(extern_types)]
 mod c2f;
 mod cint1e;
 mod cint2e;
