@@ -25,7 +25,7 @@ fn main() -> io::Result<()> {
         -1.5117809, 0., 0., 0., 1.5117809, 0., 3.42525091, 0.62391373, 0.1688554, 0.98170675, 0.94946401, 0.29590645];
 
     let mut shls_arr: [i32; 4] = [0, 0, 0, 0];
-    let mut opt: *mut CINTOpt = todo!();
+    let mut opt: CINTOpt = todo!();
 
 	println!("buf");
     for i in 0..nbas {
@@ -38,9 +38,7 @@ fn main() -> io::Result<()> {
 
             let mut buf = vec![0.0; (di * dj) as usize];
 
-            unsafe {
-                cint1e_ovlp_cart(buf.as_mut_ptr(), shls_arr.as_mut_ptr(), atm_arr.as_mut_ptr(), natm as i32, bas_arr.as_mut_ptr(), nbas as i32, env_arr.as_mut_ptr(), opt);
-            }
+            cint1e_ovlp_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr, &mut opt);
 
             for i in 0..(34) {
                 println!("{} ", buf[i]);
