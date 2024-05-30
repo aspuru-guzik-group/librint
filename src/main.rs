@@ -25,7 +25,6 @@ fn main() -> io::Result<()> {
         -1.5117809, 0., 0., 0., 1.5117809, 0., 3.42525091, 0.62391373, 0.1688554, 0.98170675, 0.94946401, 0.29590645];
 
     let mut shls_arr: [i32; 4] = [0, 0, 0, 0];
-    let mut opt: CINTOpt = todo!();
 
 	println!("buf");
     for i in 0..nbas {
@@ -38,7 +37,7 @@ fn main() -> io::Result<()> {
 
             let mut buf = vec![0.0; (di * dj) as usize];
 
-            cint1e_ovlp_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr, &mut opt);
+            cint1e_ovlp_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
 
             for i in 0..(34) {
                 println!("{} ", buf[i]);

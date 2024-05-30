@@ -1023,9 +1023,6 @@ pub unsafe fn int1e_ovlp_cart(
     bas: &mut [i32],
     nbas: i32,
     env: &mut [f64],
-    // TODO: verify if opt isn't a slice too
-    //mut opt: *mut CINTOpt,
-    opt: &mut CINTOpt,
     cache: &mut [f64],
 ) -> libc::c_int {
     let mut ng = [0, 0, 0, 0, 0, 1, 1, 1];
@@ -1259,7 +1256,6 @@ pub fn cint1e_ovlp_cart(
     bas: &mut [i32],
     nbas: i32,
     env: &mut [f64],
-    opt: &mut CINTOpt,
 ) -> i32 {
     let mut dims = [0;0];
     let mut cache = [0.0;0];
@@ -1273,7 +1269,6 @@ pub fn cint1e_ovlp_cart(
         bas,
         nbas,
         env,
-        opt,
         &mut cache,
     );}
 }
