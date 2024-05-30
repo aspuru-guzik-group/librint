@@ -1,21 +1,39 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+
+use crate::cint_bas::CINTcgto_spinor;
+use crate::optimizer::CINTOpt_log_max_pgto_coeff;
+use crate::optimizer::CINTOpt_non0coeff_byshell;
+// use crate::optimizer::CINTset_pairdata;
+// use crate::g1e::CINTinit_int1e_EnvVars;
+// use crate::g1e::CINTg1e_index_xyz;
+// use crate::g1e::CINTg1e_ovlp;
+// use crate::g1e::CINTg1e_nuc;
+// use crate::g1e::CINTcommon_fac_sp;
+// use crate::g1e::CINTprim_to_ctr_0;
+// use crate::g1e::CINTprim_to_ctr_1;
+use crate::fblas::CINTdmat_transpose;
+// use crate::cart2sph::c2s_sph_1e;
+// use crate::cart2sph::c2s_cart_1e;
+use crate::cart2sph::c2s_dset0;
+
+
 extern "C" {
     fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
     fn free(__ptr: *mut libc::c_void);
-    fn CINTcgto_spinor(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
-    fn CINTOpt_log_max_pgto_coeff(
-        log_maxc: *mut libc::c_double,
-        coeff: *mut libc::c_double,
-        nprim: libc::c_int,
-        nctr: libc::c_int,
-    );
-    fn CINTOpt_non0coeff_byshell(
-        sortedidx: *mut libc::c_int,
-        non0ctr: *mut libc::c_int,
-        ci: *mut libc::c_double,
-        iprim: libc::c_int,
-        ictr: libc::c_int,
-    );
+    // fn CINTcgto_spinor(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
+    // fn CINTOpt_log_max_pgto_coeff(
+    //     log_maxc: *mut libc::c_double,
+    //     coeff: *mut libc::c_double,
+    //     nprim: libc::c_int,
+    //     nctr: libc::c_int,
+    // );
+    // fn CINTOpt_non0coeff_byshell(
+    //     sortedidx: *mut libc::c_int,
+    //     non0ctr: *mut libc::c_int,
+    //     ci: *mut libc::c_double,
+    //     iprim: libc::c_int,
+    //     ictr: libc::c_int,
+    // );
     fn CINTset_pairdata(
         pairdata: *mut PairData,
         ai: *mut libc::c_double,
@@ -70,12 +88,12 @@ extern "C" {
         non0ctr: libc::c_int,
         sortedidx: *mut libc::c_int,
     );
-    fn CINTdmat_transpose(
-        a_t: *mut libc::c_double,
-        a: *mut libc::c_double,
-        m: libc::c_int,
-        n: libc::c_int,
-    );
+    // fn CINTdmat_transpose(
+    //     a_t: *mut libc::c_double,
+    //     a: *mut libc::c_double,
+    //     m: libc::c_int,
+    //     n: libc::c_int,
+    // );
     fn c2s_sph_1e(
         opij: *mut libc::c_double,
         gctr: *mut libc::c_double,
@@ -90,11 +108,11 @@ extern "C" {
         envs: *mut CINTEnvVars,
         cache: *mut libc::c_double,
     );
-    fn c2s_dset0(
-        out: *mut libc::c_double,
-        dims: *mut libc::c_int,
-        counts: *mut libc::c_int,
-    );
+    // fn c2s_dset0(
+    //     out: *mut libc::c_double,
+    //     dims: *mut libc::c_int,
+    //     counts: *mut libc::c_int,
+    // );
 }
 pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
