@@ -1014,7 +1014,7 @@ pub unsafe extern "C" fn int1e_ovlp_sph(
     );
 }
 #[no_mangle]
-pub unsafe extern "C" fn int1e_ovlp_cart(
+pub unsafe fn int1e_ovlp_cart(
     out: &mut [f64],
     dims: &mut [i32],
     shls: &mut [i32],
