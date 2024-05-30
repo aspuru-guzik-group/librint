@@ -65,53 +65,43 @@ fn main() -> io::Result<()> {
 
     // read_arrays(&mut file, &mut atm, &mut bas, &mut env)?;
 
-    let atm_arr: [i32; natm * ATM_SLOTS] = [1, 20, 1, 23, 0, 0, 1, 24, 1, 27, 0, 0];
-    let bas_arr: [i32; nbas * BAS_SLOTS] = [0, 0, 3, 1, 0, 28, 31, 0, 1, 0, 3, 1, 0, 28, 31, 0];
-    let env_arr: [f64; 34] = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
+    let mut atm_arr: [i32; natm * ATM_SLOTS] = [1, 20, 1, 23, 0, 0, 1, 24, 1, 27, 0, 0];
+    let mut bas_arr: [i32; nbas * BAS_SLOTS] = [0, 0, 3, 1, 0, 28, 31, 0, 1, 0, 3, 1, 0, 28, 31, 0];
+    let mut env_arr: [f64; 34] = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
         -1.5117809, 0., 0., 0., 1.5117809, 0., 3.42525091, 0.62391373, 0.1688554, 0.98170675, 0.94946401, 0.29590645];
-
-    let atm: *mut i32 = atm_arr.as_mut_ptr();
-    let bas: *mut i32 = bas_arr.as_mut_ptr();
-    let env: *mut f64 = env_arr.as_mut_ptr();
     
-    unsafe {
-        for i in 0..(natm * ATM_SLOTS) {
-            println!("{}", *atm.add(i));
-        }
-
-        for i in 0..(34) {
-            println!("{}", *env.add(i));
-        }
+    for i in 0..(natm * ATM_SLOTS) {
+        println!("{}", atm_arr[i]);
     }
 
-    let mut di: usize = 0;
-    let mut dj: usize = 0;
-    let shls_arr: [i32; 4] = [0, 0, 0, 0];
-	let shls: *mut i32 = shls_arr.as_mut_ptr();
+    for i in 0..(34) {
+        println!("{}", env_arr[i]);
+    }
 
-    let mut buf: *mut f64;
+    let mut shls_arr: [i32; 4] = [0, 0, 0, 0];
+    let mut opt: *mut CINTOpt = todo!();
 
-    let mut opt: *mut CINTOpt;
-	
 	println!("buf");
     for i in 0..nbas {
         for j in 0..nbas {
-            let i32_i = i as i32;
-            let i32_j = j as i32;
+            shls_arr[0] = i as i32;
+            shls_arr[1] = j as i32;
+            
+            unsafe {
+            let di = CINTcgto_cart(i, &bas_arr);
+            let dj = CINTcgto_cart(j, &bas_arr);
+            }
+
+            let mut buf = vec![0.0; (di * dj) as usize];
 
             unsafe {
-                *shls.add(0) = i32_i;
-                *shls.add(1) = i32_j;
-                        
-                di = CINTcgto_cart(i32_i, bas) as usize;
-                dj = CINTcgto_cart(i32_j, bas) as usize;
+                cint1e_ovlp_cart(buf.as_mut_ptr(), shls_arr.as_mut_ptr(), atm_arr.as_mut_ptr(), natm as i32, bas_arr.as_mut_ptr(), nbas as i32, env_arr.as_mut_ptr(), opt);
+            }
 
-                // buf = vec![0.0; di * dj].into_boxed_slice();
-
-                cint1e_ovlp_cart(buf, shls, atm, natm as i32, bas, nbas as i32, env, opt);
+            for i in 0..(34) {
+                println!("{} ", buf[i]);
             }
         }
     }
-
     Ok(())
 }
