@@ -1,5 +1,26 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 #![feature(extern_types)]
+
+use crate::cint_bas::CINTcgto_spinor;
+// use crate::g1e::CINTprim_to_ctr_0;
+// use crate::g1e::CINTprim_to_ctr_1;
+// use crate::g1e::CINTg1e_index_xyz;
+// use crate::g2e::CINTinit_int2e_EnvVars;
+use crate::optimizer::CINTOpt_log_max_pgto_coeff;
+use crate::optimizer::CINTOpt_non0coeff_byshell;
+use crate::optimizer::CINTset_pairdata;
+use crate::optimizer::CINTall_2e_optimizer;
+use crate::fblas::CINTdplus_transpose;
+use crate::fblas::CINTdmat_transpose;
+// use crate::cart2sph::c2s_sph_2e1;
+// use crate::cart2sph::c2s_cart_2e1;
+use crate::cart2sph::c2s_sf_2e1;
+use crate::cart2sph::c2s_dset0;
+
+use crate::optimizer::PairData;
+use crate::optimizer::CINTOpt;
+
+
 extern "C" {
     pub type _IO_wide_data;
     pub type _IO_codecvt;
@@ -11,7 +32,7 @@ extern "C" {
     fn exp(_: libc::c_double) -> libc::c_double;
     fn log(_: libc::c_double) -> libc::c_double;
     fn sqrt(_: libc::c_double) -> libc::c_double;
-    fn CINTcgto_spinor(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
+    // fn CINTcgto_spinor(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
     fn CINTprim_to_ctr_0(
         gc: *mut libc::c_double,
         gp: *mut libc::c_double,
@@ -43,56 +64,56 @@ extern "C" {
         nbas: libc::c_int,
         env: *mut libc::c_double,
     );
-    fn CINTOpt_log_max_pgto_coeff(
-        log_maxc: *mut libc::c_double,
-        coeff: *mut libc::c_double,
-        nprim: libc::c_int,
-        nctr: libc::c_int,
-    );
-    fn CINTOpt_non0coeff_byshell(
-        sortedidx: *mut libc::c_int,
-        non0ctr: *mut libc::c_int,
-        ci: *mut libc::c_double,
-        iprim: libc::c_int,
-        ictr: libc::c_int,
-    );
-    fn CINTset_pairdata(
-        pairdata: *mut PairData,
-        ai: *mut libc::c_double,
-        aj: *mut libc::c_double,
-        ri: *mut libc::c_double,
-        rj: *mut libc::c_double,
-        log_maxci: *mut libc::c_double,
-        log_maxcj: *mut libc::c_double,
-        li_ceil: libc::c_int,
-        lj_ceil: libc::c_int,
-        iprim: libc::c_int,
-        jprim: libc::c_int,
-        rr_ij: libc::c_double,
-        expcutoff: libc::c_double,
-        env: *mut libc::c_double,
-    ) -> libc::c_int;
-    fn CINTall_2e_optimizer(
-        opt: *mut *mut CINTOpt,
-        ng: *mut libc::c_int,
-        atm: *mut libc::c_int,
-        natm: libc::c_int,
-        bas: *mut libc::c_int,
-        nbas: libc::c_int,
-        env: *mut libc::c_double,
-    );
-    fn CINTdplus_transpose(
-        a_t: *mut libc::c_double,
-        a: *mut libc::c_double,
-        m: libc::c_int,
-        n: libc::c_int,
-    );
-    fn CINTdmat_transpose(
-        a_t: *mut libc::c_double,
-        a: *mut libc::c_double,
-        m: libc::c_int,
-        n: libc::c_int,
-    );
+    // fn CINTOpt_log_max_pgto_coeff(
+    //     log_maxc: *mut libc::c_double,
+    //     coeff: *mut libc::c_double,
+    //     nprim: libc::c_int,
+    //     nctr: libc::c_int,
+    // );
+    // fn CINTOpt_non0coeff_byshell(
+    //     sortedidx: *mut libc::c_int,
+    //     non0ctr: *mut libc::c_int,
+    //     ci: *mut libc::c_double,
+    //     iprim: libc::c_int,
+    //     ictr: libc::c_int,
+    // );
+    // fn CINTset_pairdata(
+    //     pairdata: *mut PairData,
+    //     ai: *mut libc::c_double,
+    //     aj: *mut libc::c_double,
+    //     ri: *mut libc::c_double,
+    //     rj: *mut libc::c_double,
+    //     log_maxci: *mut libc::c_double,
+    //     log_maxcj: *mut libc::c_double,
+    //     li_ceil: libc::c_int,
+    //     lj_ceil: libc::c_int,
+    //     iprim: libc::c_int,
+    //     jprim: libc::c_int,
+    //     rr_ij: libc::c_double,
+    //     expcutoff: libc::c_double,
+    //     env: *mut libc::c_double,
+    // ) -> libc::c_int;
+    // fn CINTall_2e_optimizer(
+    //     opt: *mut *mut CINTOpt,
+    //     ng: *mut libc::c_int,
+    //     atm: *mut libc::c_int,
+    //     natm: libc::c_int,
+    //     bas: *mut libc::c_int,
+    //     nbas: libc::c_int,
+    //     env: *mut libc::c_double,
+    // );
+    // fn CINTdplus_transpose(
+    //     a_t: *mut libc::c_double,
+    //     a: *mut libc::c_double,
+    //     m: libc::c_int,
+    //     n: libc::c_int,
+    // );
+    // fn CINTdmat_transpose(
+    //     a_t: *mut libc::c_double,
+    //     a: *mut libc::c_double,
+    //     m: libc::c_int,
+    //     n: libc::c_int,
+    // );
     fn c2s_sph_2e1(
         fijkl: *mut libc::c_double,
         gctr: *mut libc::c_double,
@@ -107,18 +128,18 @@ extern "C" {
         envs: *mut CINTEnvVars,
         cache: *mut libc::c_double,
     );
-    fn c2s_sf_2e1(
-        opij: *mut libc::c_double,
-        gctr: *mut libc::c_double,
-        dims: *mut libc::c_int,
-        envs: *mut CINTEnvVars,
-        cache: *mut libc::c_double,
-    );
-    fn c2s_dset0(
-        out: *mut libc::c_double,
-        dims: *mut libc::c_int,
-        counts: *mut libc::c_int,
-    );
+    // fn c2s_sf_2e1(
+    //     opij: *mut libc::c_double,
+    //     gctr: *mut libc::c_double,
+    //     dims: *mut libc::c_int,
+    //     envs: *mut CINTEnvVars,
+    //     cache: *mut libc::c_double,
+    // );
+    // fn c2s_dset0(
+    //     out: *mut libc::c_double,
+    //     dims: *mut libc::c_int,
+    //     counts: *mut libc::c_int,
+    // );
 }
 pub type size_t = libc::c_ulong;
 pub type __off_t = libc::c_long;
@@ -159,23 +180,23 @@ pub struct _IO_FILE {
 pub type _IO_lock_t = ();
 pub type FILE = _IO_FILE;
 pub type uintptr_t = libc::c_ulong;
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct PairData {
-    pub rij: [libc::c_double; 3],
-    pub eij: libc::c_double,
-    pub cceij: libc::c_double,
-}
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct CINTOpt {
-    pub index_xyz_array: *mut *mut libc::c_int,
-    pub non0ctr: *mut *mut libc::c_int,
-    pub sortedidx: *mut *mut libc::c_int,
-    pub nbas: libc::c_int,
-    pub log_max_coeff: *mut *mut libc::c_double,
-    pub pairdata: *mut *mut PairData,
-}
+// #[derive(Copy, Clone)]
+// #[repr(C)]
+// pub struct PairData {
+//     pub rij: [libc::c_double; 3],
+//     pub eij: libc::c_double,
+//     pub cceij: libc::c_double,
+// }
+// #[derive(Copy, Clone)]
+// #[repr(C)]
+// pub struct CINTOpt {
+//     pub index_xyz_array: *mut *mut libc::c_int,
+//     pub non0ctr: *mut *mut libc::c_int,
+//     pub sortedidx: *mut *mut libc::c_int,
+//     pub nbas: libc::c_int,
+//     pub log_max_coeff: *mut *mut libc::c_double,
+//     pub pairdata: *mut *mut PairData,
+// }
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct CINTEnvVars {
