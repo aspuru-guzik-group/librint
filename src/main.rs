@@ -1,8 +1,4 @@
 use std::io;
-// use std::fs::File;
-// use std::str::FromStr;
-// use std::io::BufReader;
-// use std::io::BufRead;
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
@@ -10,48 +6,6 @@ use librint::cint1e::CINTOpt;
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
-
-// fn read_arrays(file: &mut File, atm: &mut Box<[i32]>, bas: &mut Box<[i32]>, env: &mut Box<[f32]>) -> io::Result<()> {
-//     let mut reader = BufReader::new(file);
-
-//     println!("{}", atm.len());
-
-//     for i in 0..(atm.len()) {
-//         println!("{}", i);
-//         let mut line = String::new();
-//         reader.read_line(&mut line)?;
-//         println!("{}", line);
-//         let value = match i32::from_str(&line) {
-//             Ok(int) => int,
-//             Err(_) => {println!("could not read"); continue;}
-//         };
-//         atm[i] = value;
-//     }
-
-//     for i in 0..(bas.len()) {
-//         let mut line = String::new();
-//         reader.read_line(&mut line)?;
-//         let value = match i32::from_str(&line.trim()) {
-//             Ok(int) => int,
-//             Err(_) => {continue;}
-//         };
-//         bas[i] = value;
-//     }
-
-//     // Similar loop for env, commented out for now
-//     let mut index = 0;
-//     for line in reader.lines() {
-//         let line = line?;
-//         let value = match f32::from_str(&line.trim()) {
-//             Ok(float) => float,
-//             Err(_) => {continue;}
-//         };
-//         env[index] = value;
-//         index += 1;
-//     }
-
-//     Ok(())
-// }
 
 fn main() -> io::Result<()> {
     const natm: usize = 2;
