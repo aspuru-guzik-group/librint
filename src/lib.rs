@@ -1,11 +1,10 @@
 #![feature(extern_types)]
-mod c2f;
-mod cint1e;
-mod cint2e;
-mod cint_bas;
-mod cart2sph;
-mod optimizer;
-mod fblas;
-mod stv;
+pub mod c2f;
+pub mod cint1e;
+pub mod cint2e;
+pub mod cint_bas;
+pub mod cart2sph;
+pub mod optimizer;
+pub mod fblas;
 // mod g1e;
 // mod g2e;
