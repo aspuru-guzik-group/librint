@@ -6,5 +6,6 @@ mod cint_bas;
 mod cart2sph;
 mod optimizer;
 mod fblas;
+mod stv;
 // mod g1e;
 // mod g2e;
