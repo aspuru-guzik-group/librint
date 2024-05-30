@@ -4,9 +4,9 @@ use std::io;
 // use std::io::BufReader;
 // use std::io::BufRead;
 
-use crate::cint_bas::CINTcgto_cart;
-use crate::cint1e::cint1e_ovlp_cart;
-use crate::cint1e::CINTOpt;
+use librint::cint_bas::CINTcgto_cart;
+use librint::cint1e::cint1e_ovlp_cart;
+use librint::cint1e::CINTOpt;
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
