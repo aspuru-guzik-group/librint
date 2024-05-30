@@ -36,14 +36,12 @@ pub unsafe extern "C" fn CINTcgtos_cart(
         * *bas.offset((8 as libc::c_int * bas_id + 3 as libc::c_int) as isize);
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTcgto_cart(
-    bas_id: libc::c_int,
-    mut bas: *const libc::c_int,
-) -> libc::c_int {
-    let mut l: libc::c_int = *bas
-        .offset((8 as libc::c_int * bas_id + 1 as libc::c_int) as isize);
-    return (l + 1 as libc::c_int) * (l + 2 as libc::c_int) / 2 as libc::c_int
-        * *bas.offset((8 as libc::c_int * bas_id + 3 as libc::c_int) as isize);
+pub fn CINTcgto_cart(
+    bas_id: usize,
+    bas: &[i32],
+) -> i32 {
+    let l = bas[8 * bas_id + 1];
+    return (l + 1) * (l + 2) / 2 * bas[8 * bas_id + 3];
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTcgtos_spheric(
@@ -189,24 +187,25 @@ pub unsafe extern "C" fn CINTtot_cgto_cart(
     mut bas: *const libc::c_int,
     nbas: libc::c_int,
 ) -> libc::c_int {
-    return tot_cgto_accum(
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(libc::c_int, *const libc::c_int) -> libc::c_int,
-            >,
-            Option::<unsafe extern "C" fn() -> libc::c_int>,
-        >(
-            Some(
-                CINTcgto_cart
-                    as unsafe extern "C" fn(
-                        libc::c_int,
-                        *const libc::c_int,
-                    ) -> libc::c_int,
-            ),
-        ),
-        bas,
-        nbas,
-    );
+    todo!();
+    //return tot_cgto_accum(
+    //    ::core::mem::transmute::<
+    //        Option::<
+    //            unsafe extern "C" fn(libc::c_int, *const libc::c_int) -> libc::c_int,
+    //        >,
+    //        Option::<unsafe extern "C" fn() -> libc::c_int>,
+    //    >(
+    //        Some(
+    //            CINTcgto_cart
+    //                as unsafe extern "C" fn(
+    //                    libc::c_int,
+    //                    *const libc::c_int,
+    //                ) -> libc::c_int,
+    //        ),
+    //    ),
+    //    bas,
+    //    nbas,
+    //);
 }
 unsafe extern "C" fn shells_cgto_offset(
     mut f: Option::<unsafe extern "C" fn() -> libc::c_int>,
@@ -239,25 +238,26 @@ pub unsafe extern "C" fn CINTshells_cart_offset(
     mut bas: *const libc::c_int,
     nbas: libc::c_int,
 ) {
-    shells_cgto_offset(
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(libc::c_int, *const libc::c_int) -> libc::c_int,
-            >,
-            Option::<unsafe extern "C" fn() -> libc::c_int>,
-        >(
-            Some(
-                CINTcgto_cart
-                    as unsafe extern "C" fn(
-                        libc::c_int,
-                        *const libc::c_int,
-                    ) -> libc::c_int,
-            ),
-        ),
-        ao_loc,
-        bas,
-        nbas,
-    );
+    todo!();
+    //shells_cgto_offset(
+    //    ::core::mem::transmute::<
+    //        Option::<
+    //            unsafe extern "C" fn(libc::c_int, *const libc::c_int) -> libc::c_int,
+    //        >,
+    //        Option::<unsafe extern "C" fn() -> libc::c_int>,
+    //    >(
+    //        Some(
+    //            CINTcgto_cart
+    //                as unsafe extern "C" fn(
+    //                    libc::c_int,
+    //                    *const libc::c_int,
+    //                ) -> libc::c_int,
+    //        ),
+    //    ),
+    //    ao_loc,
+    //    bas,
+    //    nbas,
+    //);
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTshells_spheric_offset(

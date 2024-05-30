@@ -78,27 +78,22 @@ fn main() -> io::Result<()> {
         println!("{}", env_arr[i]);
     }
 
-    let mut di: usize = 0;
-    let mut dj: usize = 0;
     let mut shls_arr: [i32; 4] = [0, 0, 0, 0];
-
     let mut opt: *mut CINTOpt = todo!();
 	
 	println!("buf");
     for i in 0..nbas {
         for j in 0..nbas {
-            let i32_i = i as i32;
-            let i32_j = j as i32;
-            shls_arr[0] = i32_i;
-            shls_arr[1] = i32_j;
+            shls_arr[0] = i as i32;
+            shls_arr[1] = j as i32;
+
+            let di = CINTcgto_cart(i, &bas_arr);
+            let dj = CINTcgto_cart(j, &bas_arr);
+
+            let mut buf = vec![0.0; (di * dj) as usize];
 
             unsafe {
-            di = CINTcgto_cart(i32_i, bas_arr.as_mut_ptr()) as usize;
-            dj = CINTcgto_cart(i32_j, bas_arr.as_mut_ptr()) as usize;
-
-            let mut buf = vec![0.0; di * dj];
-
-            cint1e_ovlp_cart(buf.as_mut_ptr(), shls_arr.as_mut_ptr(), atm_arr.as_mut_ptr(), natm as i32, bas_arr.as_mut_ptr(), nbas as i32, env_arr.as_mut_ptr(), opt);
+                cint1e_ovlp_cart(buf.as_mut_ptr(), shls_arr.as_mut_ptr(), atm_arr.as_mut_ptr(), natm as i32, bas_arr.as_mut_ptr(), nbas as i32, env_arr.as_mut_ptr(), opt);
             }
         }
     }
