@@ -1,12 +1,15 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+
+use crate::cart2sph::c2s_sph_2e1;
+
 extern "C" {
-    fn c2s_sph_2e1(
-        fijkl: *mut libc::c_double,
-        gctr: *mut libc::c_double,
-        dims: *mut libc::c_int,
-        envs: *mut CINTEnvVars,
-        cache: *mut libc::c_double,
-    );
+    // fn c2s_sph_2e1(
+    //     fijkl: *mut libc::c_double,
+    //     gctr: *mut libc::c_double,
+    //     dims: *mut libc::c_int,
+    //     envs: *mut CINTEnvVars,
+    //     cache: *mut libc::c_double,
+    // );
     fn c2s_cart_2e1(
         fijkl: *mut libc::c_double,
         gctr: *mut libc::c_double,

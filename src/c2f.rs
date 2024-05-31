@@ -1,9 +1,18 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+
+use crate::cint_bas::CINTlen_spinor;
+// use crate::cint_bas::CINTcgto_cart;
+use crate::cint_bas::CINTcgto_spheric;
+use crate::cint_bas::CINTcgto_spinor;
+
+use crate::cint::PairData;
+use crate::cint::CINTOpt;
+
 extern "C" {
-    fn CINTlen_spinor(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
+    // fn CINTlen_spinor(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
     fn CINTcgto_cart(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
-    fn CINTcgto_spheric(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
-    fn CINTcgto_spinor(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
+    // fn CINTcgto_spheric(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
+    // fn CINTcgto_spinor(bas_id: libc::c_int, bas: *const libc::c_int) -> libc::c_int;
     fn CINTtot_pgto_spheric(bas: *const libc::c_int, nbas: libc::c_int) -> libc::c_int;
     fn CINTtot_pgto_spinor(bas: *const libc::c_int, nbas: libc::c_int) -> libc::c_int;
     fn CINTtot_cgto_cart(bas: *const libc::c_int, nbas: libc::c_int) -> libc::c_int;
@@ -35,23 +44,23 @@ extern "C" {
     );
     fn CINTdel_2e_optimizer(opt: *mut *mut CINTOpt);
 }
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct PairData {
-    pub rij: [libc::c_double; 3],
-    pub eij: libc::c_double,
-    pub cceij: libc::c_double,
-}
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct CINTOpt {
-    pub index_xyz_array: *mut *mut libc::c_int,
-    pub non0ctr: *mut *mut libc::c_int,
-    pub sortedidx: *mut *mut libc::c_int,
-    pub nbas: libc::c_int,
-    pub log_max_coeff: *mut *mut libc::c_double,
-    pub pairdata: *mut *mut PairData,
-}
+// #[derive(Copy, Clone)]
+// #[repr(C)]
+// pub struct PairData {
+//     pub rij: [libc::c_double; 3],
+//     pub eij: libc::c_double,
+//     pub cceij: libc::c_double,
+// }
+// #[derive(Copy, Clone)]
+// #[repr(C)]
+// pub struct CINTOpt {
+//     pub index_xyz_array: *mut *mut libc::c_int,
+//     pub non0ctr: *mut *mut libc::c_int,
+//     pub sortedidx: *mut *mut libc::c_int,
+//     pub nbas: libc::c_int,
+//     pub log_max_coeff: *mut *mut libc::c_double,
+//     pub pairdata: *mut *mut PairData,
+// }
 #[no_mangle]
 pub unsafe extern "C" fn cintlen_spinor_(
     mut bas_id: *const libc::c_int,
