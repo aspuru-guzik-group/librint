@@ -6,5 +6,6 @@ pub mod cint_bas;
 pub mod cart2sph;
 pub mod optimizer;
 pub mod fblas;
-// mod g1e;
+pub mod g1e;
+pub mod rys_roots;
 // mod g2e;

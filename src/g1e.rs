@@ -1,4 +1,7 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+
+use crate::rys_roots::CINTrys_roots;
+
 extern "C" {
     fn sqrt(_: libc::c_double) -> libc::c_double;
     fn CINTcart_comp(
@@ -9,6 +12,23 @@ extern "C" {
     );
     fn abs(_: libc::c_int) -> libc::c_int;
 }
+
+
+fn MAX<T: PartialOrd>(x: T, y: T) -> T {
+    if x > y {
+        x
+    } else {
+        y
+    }
+}
+
+fn SQUARE(r: *mut f64) -> f64 {
+    unsafe {
+        (*r.add(0) * *r.add(0)) + (*r.add(1) * *r.add(1)) + (*r.add(2) * *r.add(2))
+    }
+}
+
+
 pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -143,7 +163,7 @@ pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
         (*envs).expcutoff = 60 as libc::c_int as libc::c_double;
     } else {
         (*envs)
-            .expcutoff = MAX(40 as libc::c_int, *env.offset(0 as libc::c_int as isize))
+            .expcutoff = MAX(40 as f64, *env.offset(0 as libc::c_int as isize))
             as libc::c_double;
     }
     (*envs).li_ceil = (*envs).i_l + *ng.offset(0 as libc::c_int as isize);
