@@ -3,7 +3,7 @@
 use crate::cint_bas::CINTcgto_spinor;
 use crate::optimizer::CINTOpt_log_max_pgto_coeff;
 use crate::optimizer::CINTOpt_non0coeff_byshell;
-// use crate::optimizer::CINTset_pairdata;
+use crate::optimizer::CINTset_pairdata;
 use crate::g1e::CINTinit_int1e_EnvVars;
 use crate::g1e::CINTg1e_index_xyz;
 use crate::g1e::CINTg1e_ovlp;
@@ -17,11 +17,12 @@ use crate::fblas::CINTdmat_transpose;
 use crate::cart2sph::c2s_dset0;
 
 // Union, Structs
-use crate::g1e::CINTOpt;
-use crate::g1e::CINTEnvVars;
-use crate::g1e::C2RustUnnamed;
-use crate::g1e::C2RustUnnamed_0;
-use crate::g1e::C2RustUnnamed_1;
+use crate::optimizer::PairData;
+use crate::cint::CINTOpt;
+use crate::cint::CINTEnvVars;
+use crate::cint::C2RustUnnamed;
+use crate::cint::C2RustUnnamed_0;
+use crate::cint::C2RustUnnamed_1;
 
 
 extern "C" {
@@ -41,22 +42,22 @@ extern "C" {
     //     iprim: libc::c_int,
     //     ictr: libc::c_int,
     // );
-    fn CINTset_pairdata(
-        pairdata: *mut PairData,
-        ai: *mut libc::c_double,
-        aj: *mut libc::c_double,
-        ri: *mut libc::c_double,
-        rj: *mut libc::c_double,
-        log_maxci: *mut libc::c_double,
-        log_maxcj: *mut libc::c_double,
-        li_ceil: libc::c_int,
-        lj_ceil: libc::c_int,
-        iprim: libc::c_int,
-        jprim: libc::c_int,
-        rr_ij: libc::c_double,
-        expcutoff: libc::c_double,
-        env: *mut libc::c_double,
-    ) -> libc::c_int;
+    // fn CINTset_pairdata(
+    //     pairdata: *mut PairData,
+    //     ai: *mut libc::c_double,
+    //     aj: *mut libc::c_double,
+    //     ri: *mut libc::c_double,
+    //     rj: *mut libc::c_double,
+    //     log_maxci: *mut libc::c_double,
+    //     log_maxcj: *mut libc::c_double,
+    //     li_ceil: libc::c_int,
+    //     lj_ceil: libc::c_int,
+    //     iprim: libc::c_int,
+    //     jprim: libc::c_int,
+    //     rr_ij: libc::c_double,
+    //     expcutoff: libc::c_double,
+    //     env: *mut libc::c_double,
+    // ) -> libc::c_int;
     // fn CINTinit_int1e_EnvVars(
     //     envs: *mut CINTEnvVars,
     //     ng: *mut libc::c_int,
@@ -122,14 +123,14 @@ extern "C" {
     // );
 }
 pub type size_t = libc::c_ulong;
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct PairData {
-    pub rij: [libc::c_double; 3],
-    pub eij: libc::c_double,
-    pub cceij: libc::c_double,
-}
 // #[derive(Copy, Clone)]
+// #[repr(C)]
+// pub struct PairData {
+//     pub rij: [libc::c_double; 3],
+//     pub eij: libc::c_double,
+//     pub cceij: libc::c_double,
+// }
+// // #[derive(Copy, Clone)]
 // #[repr(C)]
 // pub struct CINTOpt {
 //     pub index_xyz_array: *mut *mut libc::c_int,

@@ -17,6 +17,7 @@ use crate::fblas::CINTdmat_transpose;
 use crate::cart2sph::c2s_sf_2e1;
 use crate::cart2sph::c2s_dset0;
 
+// Structs
 use crate::optimizer::PairData;
 use crate::optimizer::CINTOpt;
 
