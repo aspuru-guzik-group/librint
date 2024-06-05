@@ -32,18 +32,18 @@ pub type size_t = libc::c_ulong;
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_2e_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
     let mut opt0: *mut CINTOpt = malloc(
         ::core::mem::size_of::<CINTOpt>() as libc::c_ulong,
     ) as *mut CINTOpt;
-    (*opt0).index_xyz_array = 0 as *mut *mut libc::c_int;
-    (*opt0).non0ctr = 0 as *mut *mut libc::c_int;
-    (*opt0).sortedidx = 0 as *mut *mut libc::c_int;
+    (*opt0).index_xyz_array = 0 as *mut *mut i32;
+    (*opt0).non0ctr = 0 as *mut *mut i32;
+    (*opt0).sortedidx = 0 as *mut *mut i32;
     (*opt0).nbas = nbas;
     (*opt0).log_max_coeff = 0 as *mut *mut f64;
     (*opt0).pairdata = 0 as *mut *mut PairData;
@@ -52,10 +52,10 @@ pub unsafe extern "C" fn CINTinit_2e_optimizer(
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
@@ -68,22 +68,22 @@ pub unsafe extern "C" fn CINTdel_2e_optimizer(mut opt: *mut *mut CINTOpt) {
     }
     if !((*opt0).index_xyz_array).is_null() {
         free(
-            *((*opt0).index_xyz_array).offset(0 as libc::c_int as isize)
+            *((*opt0).index_xyz_array).offset(0 as i32 as isize)
                 as *mut libc::c_void,
         );
         free((*opt0).index_xyz_array as *mut libc::c_void);
     }
     if !((*opt0).non0ctr).is_null() {
         free(
-            *((*opt0).sortedidx).offset(0 as libc::c_int as isize) as *mut libc::c_void,
+            *((*opt0).sortedidx).offset(0 as i32 as isize) as *mut libc::c_void,
         );
         free((*opt0).sortedidx as *mut libc::c_void);
-        free(*((*opt0).non0ctr).offset(0 as libc::c_int as isize) as *mut libc::c_void);
+        free(*((*opt0).non0ctr).offset(0 as i32 as isize) as *mut libc::c_void);
         free((*opt0).non0ctr as *mut libc::c_void);
     }
     if !((*opt0).log_max_coeff).is_null() {
         free(
-            *((*opt0).log_max_coeff).offset(0 as libc::c_int as isize)
+            *((*opt0).log_max_coeff).offset(0 as i32 as isize)
                 as *mut libc::c_void,
         );
         free((*opt0).log_max_coeff as *mut libc::c_void);
@@ -99,44 +99,44 @@ pub unsafe extern "C" fn CINTdel_optimizer(mut opt: *mut *mut CINTOpt) {
 #[no_mangle]
 pub unsafe extern "C" fn CINTno_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
     *opt = 0 as *mut CINTOpt;
 }
 unsafe extern "C" fn _make_fakebas(
-    mut fakebas: *mut libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut fakebas: *mut i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut max_l: libc::c_int = 0 as libc::c_int;
-    i = 0 as libc::c_int;
+) -> i32 {
+    let mut i: i32 = 0;
+    let mut max_l: i32 = 0 as i32;
+    i = 0 as i32;
     while i < nbas {
         max_l = if max_l
-            > *bas.offset((8 as libc::c_int * i + 1 as libc::c_int) as isize)
+            > *bas.offset((8 as i32 * i + 1 as i32) as isize)
         {
             max_l
         } else {
-            *bas.offset((8 as libc::c_int * i + 1 as libc::c_int) as isize)
+            *bas.offset((8 as i32 * i + 1 as i32) as isize)
         };
         i += 1;
         i;
     }
-    let mut fakenbas: libc::c_int = max_l + 1 as libc::c_int;
-    i = 0 as libc::c_int;
-    while i < 8 as libc::c_int * fakenbas {
-        *fakebas.offset(i as isize) = 0 as libc::c_int;
+    let mut fakenbas: i32 = max_l + 1 as i32;
+    i = 0 as i32;
+    while i < 8 as i32 * fakenbas {
+        *fakebas.offset(i as isize) = 0 as i32;
         i += 1;
         i;
     }
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i <= max_l {
-        *fakebas.offset((8 as libc::c_int * i + 1 as libc::c_int) as isize) = i;
+        *fakebas.offset((8 as i32 * i + 1 as i32) as isize) = i;
         i += 1;
         i;
     }
@@ -144,38 +144,38 @@ unsafe extern "C" fn _make_fakebas(
 }
 unsafe extern "C" fn _allocate_index_xyz(
     mut opt: *mut CINTOpt,
-    mut max_l: libc::c_int,
-    mut l_allow: libc::c_int,
-    mut order: libc::c_int,
-) -> *mut libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut cumcart: libc::c_int = (l_allow + 1 as libc::c_int)
-        * (l_allow + 2 as libc::c_int) * (l_allow + 3 as libc::c_int) / 6 as libc::c_int;
-    let mut ll: size_t = (max_l + 1 as libc::c_int) as size_t;
+    mut max_l: i32,
+    mut l_allow: i32,
+    mut order: i32,
+) -> *mut i32 {
+    let mut i: i32 = 0;
+    let mut cumcart: i32 = (l_allow + 1 as i32)
+        * (l_allow + 2 as i32) * (l_allow + 3 as i32) / 6 as i32;
+    let mut ll: size_t = (max_l + 1 as i32) as size_t;
     let mut cc: size_t = cumcart as size_t;
-    i = 1 as libc::c_int;
+    i = 1 as i32;
     while i < order {
-        ll = (ll as libc::c_ulong).wrapping_mul(16 as libc::c_int as libc::c_ulong)
+        ll = (ll as libc::c_ulong).wrapping_mul(16 as i32 as libc::c_ulong)
             as size_t as size_t;
         cc = (cc as libc::c_ulong).wrapping_mul(cumcart as libc::c_ulong) as size_t
             as size_t;
         i += 1;
         i;
     }
-    let mut buf: *mut libc::c_int = malloc(
-        (::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
+    let mut buf: *mut i32 = malloc(
+        (::core::mem::size_of::<i32>() as libc::c_ulong)
             .wrapping_mul(cc)
-            .wrapping_mul(3 as libc::c_int as libc::c_ulong),
-    ) as *mut libc::c_int;
-    let mut ppbuf: *mut *mut libc::c_int = malloc(
-        (::core::mem::size_of::<*mut libc::c_int>() as libc::c_ulong).wrapping_mul(ll),
-    ) as *mut *mut libc::c_int;
-    let ref mut fresh0 = *ppbuf.offset(0 as libc::c_int as isize);
+            .wrapping_mul(3 as i32 as libc::c_ulong),
+    ) as *mut i32;
+    let mut ppbuf: *mut *mut i32 = malloc(
+        (::core::mem::size_of::<*mut i32>() as libc::c_ulong).wrapping_mul(ll),
+    ) as *mut *mut i32;
+    let ref mut fresh0 = *ppbuf.offset(0 as i32 as isize);
     *fresh0 = buf;
-    i = 1 as libc::c_int;
+    i = 1 as i32;
     while (i as libc::c_ulong) < ll {
         let ref mut fresh1 = *ppbuf.offset(i as isize);
-        *fresh1 = 0 as *mut libc::c_int;
+        *fresh1 = 0 as *mut i32;
         i += 1;
         i;
     }
@@ -186,34 +186,34 @@ unsafe extern "C" fn gen_idx(
     mut opt: *mut CINTOpt,
     mut finit: Option::<unsafe extern "C" fn() -> ()>,
     mut findex_xyz: Option::<unsafe extern "C" fn() -> ()>,
-    mut order: libc::c_int,
-    mut l_allow: libc::c_int,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut order: i32,
+    mut l_allow: i32,
+    mut ng: *mut i32,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let mut fakebas: [libc::c_int; 128] = [0; 128];
-    let mut max_l: libc::c_int = _make_fakebas(fakebas.as_mut_ptr(), bas, nbas, env);
-    let mut fakenbas: libc::c_int = max_l + 1 as libc::c_int;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut ptr: i32 = 0;
+    let mut fakebas: [i32; 128] = [0; 128];
+    let mut max_l: i32 = _make_fakebas(fakebas.as_mut_ptr(), bas, nbas, env);
+    let mut fakenbas: i32 = max_l + 1 as i32;
     l_allow = if max_l < l_allow { max_l } else { l_allow };
-    let mut buf: *mut libc::c_int = _allocate_index_xyz(opt, max_l, l_allow, order);
+    let mut buf: *mut i32 = _allocate_index_xyz(opt, max_l, l_allow, order);
     let mut envs: CINTEnvVars = CINTEnvVars::new();
-    let mut shls: [libc::c_int; 4] = [0 as libc::c_int, 0, 0, 0];
-    if order == 2 as libc::c_int {
-        i = 0 as libc::c_int;
+    let mut shls: [i32; 4] = [0 as i32, 0, 0, 0];
+    if order == 2 as i32 {
+        i = 0 as i32;
         while i <= l_allow {
-            j = 0 as libc::c_int;
+            j = 0 as i32;
             while j <= l_allow {
-                shls[0 as libc::c_int as usize] = i;
-                shls[1 as libc::c_int as usize] = j;
+                shls[0 as i32 as usize] = i;
+                shls[1 as i32 as usize] = j;
                 ::core::mem::transmute::<
                     _,
                     fn(_, _, _, _, _, _, _, _),
@@ -230,7 +230,7 @@ unsafe extern "C" fn gen_idx(
                     fakenbas,
                     env,
                 );
-                ptr = i * 16 as libc::c_int + j;
+                ptr = i * 16 as i32 + j;
                 let ref mut fresh2 = *((*opt).index_xyz_array).offset(ptr as isize);
                 *fresh2 = buf;
                 ::core::mem::transmute::<
@@ -240,23 +240,23 @@ unsafe extern "C" fn gen_idx(
                     (Some(findex_xyz.expect("non-null function pointer")))
                         .expect("non-null function pointer"),
                 )(buf, &mut envs);
-                buf = buf.offset((envs.nf * 3 as libc::c_int) as isize);
+                buf = buf.offset((envs.nf * 3 as i32) as isize);
                 j += 1;
                 j;
             }
             i += 1;
             i;
         }
-    } else if order == 3 as libc::c_int {
-        i = 0 as libc::c_int;
+    } else if order == 3 as i32 {
+        i = 0 as i32;
         while i <= l_allow {
-            j = 0 as libc::c_int;
+            j = 0 as i32;
             while j <= l_allow {
-                k = 0 as libc::c_int;
+                k = 0 as i32;
                 while k <= l_allow {
-                    shls[0 as libc::c_int as usize] = i;
-                    shls[1 as libc::c_int as usize] = j;
-                    shls[2 as libc::c_int as usize] = k;
+                    shls[0 as i32 as usize] = i;
+                    shls[1 as i32 as usize] = j;
+                    shls[2 as i32 as usize] = k;
                     ::core::mem::transmute::<
                         _,
                         fn(_, _, _, _, _, _, _, _),
@@ -273,8 +273,8 @@ unsafe extern "C" fn gen_idx(
                         fakenbas,
                         env,
                     );
-                    ptr = i * 16 as libc::c_int * 16 as libc::c_int
-                        + j * 16 as libc::c_int + k;
+                    ptr = i * 16 as i32 * 16 as i32
+                        + j * 16 as i32 + k;
                     let ref mut fresh3 = *((*opt).index_xyz_array).offset(ptr as isize);
                     *fresh3 = buf;
                     ::core::mem::transmute::<
@@ -284,7 +284,7 @@ unsafe extern "C" fn gen_idx(
                         (Some(findex_xyz.expect("non-null function pointer")))
                             .expect("non-null function pointer"),
                     )(buf, &mut envs);
-                    buf = buf.offset((envs.nf * 3 as libc::c_int) as isize);
+                    buf = buf.offset((envs.nf * 3 as i32) as isize);
                     k += 1;
                     k;
                 }
@@ -295,18 +295,18 @@ unsafe extern "C" fn gen_idx(
             i;
         }
     } else {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i <= l_allow {
-            j = 0 as libc::c_int;
+            j = 0 as i32;
             while j <= l_allow {
-                k = 0 as libc::c_int;
+                k = 0 as i32;
                 while k <= l_allow {
-                    l = 0 as libc::c_int;
+                    l = 0 as i32;
                     while l <= l_allow {
-                        shls[0 as libc::c_int as usize] = i;
-                        shls[1 as libc::c_int as usize] = j;
-                        shls[2 as libc::c_int as usize] = k;
-                        shls[3 as libc::c_int as usize] = l;
+                        shls[0 as i32 as usize] = i;
+                        shls[1 as i32 as usize] = j;
+                        shls[2 as i32 as usize] = k;
+                        shls[3 as i32 as usize] = l;
                         ::core::mem::transmute::<
                             _,
                             fn(_, _, _, _, _, _, _, _),
@@ -323,10 +323,10 @@ unsafe extern "C" fn gen_idx(
                             fakenbas,
                             env,
                         );
-                        ptr = i * 16 as libc::c_int * 16 as libc::c_int
-                            * 16 as libc::c_int
-                            + j * 16 as libc::c_int * 16 as libc::c_int
-                            + k * 16 as libc::c_int + l;
+                        ptr = i * 16 as i32 * 16 as i32
+                            * 16 as i32
+                            + j * 16 as i32 * 16 as i32
+                            + k * 16 as i32 + l;
                         let ref mut fresh4 = *((*opt).index_xyz_array)
                             .offset(ptr as isize);
                         *fresh4 = buf;
@@ -337,7 +337,7 @@ unsafe extern "C" fn gen_idx(
                             (Some(findex_xyz.expect("non-null function pointer")))
                                 .expect("non-null function pointer"),
                         )(buf, &mut envs);
-                        buf = buf.offset((envs.nf * 3 as libc::c_int) as isize);
+                        buf = buf.offset((envs.nf * 3 as i32) as isize);
                         l += 1;
                         l;
                     }
@@ -355,11 +355,11 @@ unsafe extern "C" fn gen_idx(
 #[no_mangle]
 pub unsafe extern "C" fn CINTall_1e_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut ng: *mut i32,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
@@ -371,12 +371,12 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
             Option::<
                 unsafe extern "C" fn(
                     *mut CINTEnvVars,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
+                    *mut i32,
+                    *mut i32,
+                    *mut i32,
+                    i32,
+                    *mut i32,
+                    i32,
                     *mut f64,
                 ) -> (),
             >,
@@ -386,27 +386,27 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
                 CINTinit_int1e_EnvVars
                     as unsafe extern "C" fn(
                         *mut CINTEnvVars,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
+                        *mut i32,
+                        *mut i32,
+                        *mut i32,
+                        i32,
+                        *mut i32,
+                        i32,
                         *mut f64,
                     ) -> (),
             ),
         ),
         ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> ()>,
+            Option::<unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> ()>,
             Option::<unsafe extern "C" fn() -> ()>,
         >(
             Some(
                 CINTg1e_index_xyz
-                    as unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> (),
+                    as unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> (),
             ),
         ),
-        2 as libc::c_int,
-        15 as libc::c_int,
+        2 as i32,
+        15 as i32,
         ng,
         atm,
         natm,
@@ -418,11 +418,11 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
 #[no_mangle]
 pub unsafe extern "C" fn CINTall_2e_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut ng: *mut i32,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
@@ -434,12 +434,12 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
             Option::<
                 unsafe extern "C" fn(
                     *mut CINTEnvVars,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
+                    *mut i32,
+                    *mut i32,
+                    *mut i32,
+                    i32,
+                    *mut i32,
+                    i32,
                     *mut f64,
                 ) -> (),
             >,
@@ -449,27 +449,27 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
                 CINTinit_int2e_EnvVars
                     as unsafe extern "C" fn(
                         *mut CINTEnvVars,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
+                        *mut i32,
+                        *mut i32,
+                        *mut i32,
+                        i32,
+                        *mut i32,
+                        i32,
                         *mut f64,
                     ) -> (),
             ),
         ),
         ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> ()>,
+            Option::<unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> ()>,
             Option::<unsafe extern "C" fn() -> ()>,
         >(
             Some(
                 CINTg2e_index_xyz
-                    as unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> (),
+                    as unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> (),
             ),
         ),
-        4 as libc::c_int,
-        6 as libc::c_int,
+        4 as i32,
+        6 as i32,
         ng,
         atm,
         natm,
@@ -481,11 +481,11 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 #[no_mangle]
 pub unsafe extern "C" fn CINTall_3c2e_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut ng: *mut i32,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
@@ -497,12 +497,12 @@ pub unsafe extern "C" fn CINTall_3c2e_optimizer(
             Option::<
                 unsafe extern "C" fn(
                     *mut CINTEnvVars,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
+                    *mut i32,
+                    *mut i32,
+                    *mut i32,
+                    i32,
+                    *mut i32,
+                    i32,
                     *mut f64,
                 ) -> (),
             >,
@@ -512,27 +512,27 @@ pub unsafe extern "C" fn CINTall_3c2e_optimizer(
                 CINTinit_int3c2e_EnvVars
                     as unsafe extern "C" fn(
                         *mut CINTEnvVars,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
+                        *mut i32,
+                        *mut i32,
+                        *mut i32,
+                        i32,
+                        *mut i32,
+                        i32,
                         *mut f64,
                     ) -> (),
             ),
         ),
         ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> ()>,
+            Option::<unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> ()>,
             Option::<unsafe extern "C" fn() -> ()>,
         >(
             Some(
                 CINTg2e_index_xyz
-                    as unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> (),
+                    as unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> (),
             ),
         ),
-        3 as libc::c_int,
-        12 as libc::c_int,
+        3 as i32,
+        12 as i32,
         ng,
         atm,
         natm,
@@ -544,11 +544,11 @@ pub unsafe extern "C" fn CINTall_3c2e_optimizer(
 #[no_mangle]
 pub unsafe extern "C" fn CINTall_2c2e_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut ng: *mut i32,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
@@ -560,12 +560,12 @@ pub unsafe extern "C" fn CINTall_2c2e_optimizer(
             Option::<
                 unsafe extern "C" fn(
                     *mut CINTEnvVars,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
+                    *mut i32,
+                    *mut i32,
+                    *mut i32,
+                    i32,
+                    *mut i32,
+                    i32,
                     *mut f64,
                 ) -> (),
             >,
@@ -575,27 +575,27 @@ pub unsafe extern "C" fn CINTall_2c2e_optimizer(
                 CINTinit_int2c2e_EnvVars
                     as unsafe extern "C" fn(
                         *mut CINTEnvVars,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
+                        *mut i32,
+                        *mut i32,
+                        *mut i32,
+                        i32,
+                        *mut i32,
+                        i32,
                         *mut f64,
                     ) -> (),
             ),
         ),
         ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> ()>,
+            Option::<unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> ()>,
             Option::<unsafe extern "C" fn() -> ()>,
         >(
             Some(
                 CINTg1e_index_xyz
-                    as unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> (),
+                    as unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> (),
             ),
         ),
-        2 as libc::c_int,
-        15 as libc::c_int,
+        2 as i32,
+        15 as i32,
         ng,
         atm,
         natm,
@@ -607,11 +607,11 @@ pub unsafe extern "C" fn CINTall_2c2e_optimizer(
 #[no_mangle]
 pub unsafe extern "C" fn CINTall_3c1e_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut ng: *mut i32,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
@@ -623,12 +623,12 @@ pub unsafe extern "C" fn CINTall_3c1e_optimizer(
             Option::<
                 unsafe extern "C" fn(
                     *mut CINTEnvVars,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
+                    *mut i32,
+                    *mut i32,
+                    *mut i32,
+                    i32,
+                    *mut i32,
+                    i32,
                     *mut f64,
                 ) -> (),
             >,
@@ -638,27 +638,27 @@ pub unsafe extern "C" fn CINTall_3c1e_optimizer(
                 CINTinit_int3c1e_EnvVars
                     as unsafe extern "C" fn(
                         *mut CINTEnvVars,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
+                        *mut i32,
+                        *mut i32,
+                        *mut i32,
+                        i32,
+                        *mut i32,
+                        i32,
                         *mut f64,
                     ) -> (),
             ),
         ),
         ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> ()>,
+            Option::<unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> ()>,
             Option::<unsafe extern "C" fn() -> ()>,
         >(
             Some(
                 CINTg3c1e_index_xyz
-                    as unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> (),
+                    as unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> (),
             ),
         ),
-        3 as libc::c_int,
-        12 as libc::c_int,
+        3 as i32,
+        12 as i32,
         ng,
         atm,
         natm,
@@ -670,11 +670,11 @@ pub unsafe extern "C" fn CINTall_3c1e_optimizer(
 #[no_mangle]
 pub unsafe extern "C" fn CINTall_1e_grids_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut ng: *mut i32,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
@@ -686,12 +686,12 @@ pub unsafe extern "C" fn CINTall_1e_grids_optimizer(
             Option::<
                 unsafe extern "C" fn(
                     *mut CINTEnvVars,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
+                    *mut i32,
+                    *mut i32,
+                    *mut i32,
+                    i32,
+                    *mut i32,
+                    i32,
                     *mut f64,
                 ) -> (),
             >,
@@ -701,27 +701,27 @@ pub unsafe extern "C" fn CINTall_1e_grids_optimizer(
                 CINTinit_int1e_grids_EnvVars
                     as unsafe extern "C" fn(
                         *mut CINTEnvVars,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
+                        *mut i32,
+                        *mut i32,
+                        *mut i32,
+                        i32,
+                        *mut i32,
+                        i32,
                         *mut f64,
                     ) -> (),
             ),
         ),
         ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> ()>,
+            Option::<unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> ()>,
             Option::<unsafe extern "C" fn() -> ()>,
         >(
             Some(
                 CINTg1e_index_xyz
-                    as unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> (),
+                    as unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> (),
             ),
         ),
-        2 as libc::c_int,
-        15 as libc::c_int,
+        2 as i32,
+        15 as i32,
         ng,
         atm,
         natm,
@@ -734,16 +734,16 @@ pub unsafe extern "C" fn CINTall_1e_grids_optimizer(
 pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
     mut log_maxc: *mut f64,
     mut coeff: *mut f64,
-    mut nprim: libc::c_int,
-    mut nctr: libc::c_int,
+    mut nprim: i32,
+    mut nctr: i32,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut ip: libc::c_int = 0;
+    let mut i: i32 = 0;
+    let mut ip: i32 = 0;
     let mut maxc: f64 = 0.;
-    ip = 0 as libc::c_int;
+    ip = 0 as i32;
     while ip < nprim {
-        maxc = 0 as libc::c_int as f64;
-        i = 0 as libc::c_int;
+        maxc = 0 as i32 as f64;
+        i = 0 as i32;
         while i < nctr {
             maxc = if maxc > fabs(*coeff.offset((i * nprim + ip) as isize)) {
                 maxc
@@ -761,35 +761,35 @@ pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_set_log_maxc(
     mut opt: *mut CINTOpt,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut iprim: libc::c_int = 0;
-    let mut ictr: libc::c_int = 0;
+    let mut i: i32 = 0;
+    let mut iprim: i32 = 0;
+    let mut ictr: i32 = 0;
     let mut ci: *mut f64 = 0 as *mut f64;
-    let mut tot_prim: size_t = 0 as libc::c_int as size_t;
-    i = 0 as libc::c_int;
+    let mut tot_prim: size_t = 0 as i32 as size_t;
+    i = 0 as i32;
     while i < nbas {
         tot_prim = (tot_prim as libc::c_ulong)
             .wrapping_add(
-                *bas.offset((8 as libc::c_int * i + 2 as libc::c_int) as isize)
+                *bas.offset((8 as i32 * i + 2 as i32) as isize)
                     as libc::c_ulong,
             ) as size_t as size_t;
         i += 1;
         i;
     }
-    if tot_prim == 0 as libc::c_int as libc::c_ulong {
+    if tot_prim == 0 as i32 as libc::c_ulong {
         return;
     }
     (*opt)
         .log_max_coeff = malloc(
         (::core::mem::size_of::<*mut f64>() as libc::c_ulong)
             .wrapping_mul(
-                (if nbas > 1 as libc::c_int { nbas } else { 1 as libc::c_int })
+                (if nbas > 1 as i32 { nbas } else { 1 as i32 })
                     as libc::c_ulong,
             ),
     ) as *mut *mut f64;
@@ -797,15 +797,15 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
         (::core::mem::size_of::<f64>() as libc::c_ulong)
             .wrapping_mul(tot_prim),
     ) as *mut f64;
-    let ref mut fresh5 = *((*opt).log_max_coeff).offset(0 as libc::c_int as isize);
+    let ref mut fresh5 = *((*opt).log_max_coeff).offset(0 as i32 as isize);
     *fresh5 = plog_maxc;
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < nbas {
-        iprim = *bas.offset((8 as libc::c_int * i + 2 as libc::c_int) as isize);
-        ictr = *bas.offset((8 as libc::c_int * i + 3 as libc::c_int) as isize);
+        iprim = *bas.offset((8 as i32 * i + 2 as i32) as isize);
+        ictr = *bas.offset((8 as i32 * i + 3 as i32) as isize);
         ci = env
             .offset(
-                *bas.offset((8 as libc::c_int * i + 6 as libc::c_int) as isize) as isize,
+                *bas.offset((8 as i32 * i + 6 as i32) as isize) as isize,
             );
         let ref mut fresh6 = *((*opt).log_max_coeff).offset(i as isize);
         *fresh6 = plog_maxc;
@@ -824,29 +824,29 @@ pub unsafe extern "C" fn CINTset_pairdata(
     mut rj: *mut f64,
     mut log_maxci: *mut f64,
     mut log_maxcj: *mut f64,
-    mut li_ceil: libc::c_int,
-    mut lj_ceil: libc::c_int,
-    mut iprim: libc::c_int,
-    mut jprim: libc::c_int,
+    mut li_ceil: i32,
+    mut lj_ceil: i32,
+    mut iprim: i32,
+    mut jprim: i32,
     mut rr_ij: f64,
     mut expcutoff: f64,
     mut env: *mut f64,
-) -> libc::c_int {
-    let mut ip: libc::c_int = 0;
-    let mut jp: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
+) -> i32 {
+    let mut ip: i32 = 0;
+    let mut jp: i32 = 0;
+    let mut n: i32 = 0;
     let mut aij: f64 = 0.;
     let mut eij: f64 = 0.;
     let mut cceij: f64 = 0.;
     let mut wj: f64 = 0.;
-    aij = *ai.offset((iprim - 1 as libc::c_int) as isize)
-        + *aj.offset((jprim - 1 as libc::c_int) as isize);
+    aij = *ai.offset((iprim - 1 as i32) as isize)
+        + *aj.offset((jprim - 1 as i32) as isize);
     let mut log_rr_ij: f64 = 1.7f64 - 1.5f64 * log(aij);
-    let mut lij: libc::c_int = li_ceil + lj_ceil;
-    if lij > 0 as libc::c_int {
+    let mut lij: i32 = li_ceil + lj_ceil;
+    if lij > 0 as i32 {
         let mut dist_ij: f64 = sqrt(rr_ij);
-        let mut omega: f64 = *env.offset(8 as libc::c_int as isize);
-        if omega < 0 as libc::c_int as f64 {
+        let mut omega: f64 = *env.offset(8 as i32 as isize);
+        if omega < 0 as i32 as f64 {
             let mut r_guess: f64 = 8.0f64;
             let mut omega2: f64 = omega * omega;
             let mut theta: f64 = omega2 / (omega2 + aij);
@@ -856,13 +856,13 @@ pub unsafe extern "C" fn CINTset_pairdata(
         }
     }
     let mut pdata: *mut PairData = 0 as *mut PairData;
-    let mut empty: libc::c_int = 1 as libc::c_int;
-    n = 0 as libc::c_int;
-    jp = 0 as libc::c_int;
+    let mut empty: i32 = 1 as i32;
+    n = 0 as i32;
+    jp = 0 as i32;
     while jp < jprim {
-        ip = 0 as libc::c_int;
+        ip = 0 as i32;
         while ip < iprim {
-            aij = 1 as libc::c_int as f64
+            aij = 1 as i32 as f64
                 / (*ai.offset(ip as isize) + *aj.offset(jp as isize));
             eij = rr_ij * *ai.offset(ip as isize) * *aj.offset(jp as isize) * aij;
             cceij = eij - log_rr_ij - *log_maxci.offset(ip as isize)
@@ -870,32 +870,32 @@ pub unsafe extern "C" fn CINTset_pairdata(
             pdata = pairdata.offset(n as isize);
             (*pdata).cceij = cceij;
             if cceij < expcutoff {
-                empty = 0 as libc::c_int;
+                empty = 0 as i32;
                 wj = *aj.offset(jp as isize) * aij;
                 (*pdata)
-                    .rij[0 as libc::c_int
-                    as usize] = *ri.offset(0 as libc::c_int as isize)
+                    .rij[0 as i32
+                    as usize] = *ri.offset(0 as i32 as isize)
                     + wj
-                        * (*rj.offset(0 as libc::c_int as isize)
-                            - *ri.offset(0 as libc::c_int as isize));
+                        * (*rj.offset(0 as i32 as isize)
+                            - *ri.offset(0 as i32 as isize));
                 (*pdata)
-                    .rij[1 as libc::c_int
-                    as usize] = *ri.offset(1 as libc::c_int as isize)
+                    .rij[1 as i32
+                    as usize] = *ri.offset(1 as i32 as isize)
                     + wj
-                        * (*rj.offset(1 as libc::c_int as isize)
-                            - *ri.offset(1 as libc::c_int as isize));
+                        * (*rj.offset(1 as i32 as isize)
+                            - *ri.offset(1 as i32 as isize));
                 (*pdata)
-                    .rij[2 as libc::c_int
-                    as usize] = *ri.offset(2 as libc::c_int as isize)
+                    .rij[2 as i32
+                    as usize] = *ri.offset(2 as i32 as isize)
                     + wj
-                        * (*rj.offset(2 as libc::c_int as isize)
-                            - *ri.offset(2 as libc::c_int as isize));
+                        * (*rj.offset(2 as i32 as isize)
+                            - *ri.offset(2 as i32 as isize));
                 (*pdata).eij = exp(-eij);
             } else {
-                (*pdata).rij[0 as libc::c_int as usize] = 1e18f64;
-                (*pdata).rij[1 as libc::c_int as usize] = 1e18f64;
-                (*pdata).rij[2 as libc::c_int as usize] = 1e18f64;
-                (*pdata).eij = 0 as libc::c_int as f64;
+                (*pdata).rij[0 as i32 as usize] = 1e18f64;
+                (*pdata).rij[1 as i32 as usize] = 1e18f64;
+                (*pdata).rij[2 as i32 as usize] = 1e18f64;
+                (*pdata).eij = 0 as i32 as f64;
             }
             ip += 1;
             ip;
@@ -910,35 +910,35 @@ pub unsafe extern "C" fn CINTset_pairdata(
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_setij(
     mut opt: *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut ng: *mut i32,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut ip: libc::c_int = 0;
-    let mut jp: libc::c_int = 0;
-    let mut iprim: libc::c_int = 0;
-    let mut jprim: libc::c_int = 0;
-    let mut li: libc::c_int = 0;
-    let mut lj: libc::c_int = 0;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut ip: i32 = 0;
+    let mut jp: i32 = 0;
+    let mut iprim: i32 = 0;
+    let mut jprim: i32 = 0;
+    let mut li: i32 = 0;
+    let mut lj: i32 = 0;
     let mut ai: *mut f64 = 0 as *mut f64;
     let mut aj: *mut f64 = 0 as *mut f64;
     let mut ri: *mut f64 = 0 as *mut f64;
     let mut rj: *mut f64 = 0 as *mut f64;
     let mut expcutoff: f64 = 0.;
-    if *env.offset(0 as libc::c_int as isize) == 0 as libc::c_int as f64 {
-        expcutoff = 60 as libc::c_int as f64;
+    if *env.offset(0 as i32 as isize) == 0 as i32 as f64 {
+        expcutoff = 60 as i32 as f64;
     } else {
-        expcutoff = if 40 as libc::c_int as f64
-            > *env.offset(0 as libc::c_int as isize)
+        expcutoff = if 40 as i32 as f64
+            > *env.offset(0 as i32 as isize)
         {
-            40 as libc::c_int as f64
+            40 as i32 as f64
         } else {
-            *env.offset(0 as libc::c_int as isize)
+            *env.offset(0 as i32 as isize)
         };
     }
     if ((*opt).log_max_coeff).is_null() {
@@ -947,19 +947,19 @@ pub unsafe extern "C" fn CINTOpt_setij(
     let mut log_max_coeff: *mut *mut f64 = (*opt).log_max_coeff;
     let mut log_maxci: *mut f64 = 0 as *mut f64;
     let mut log_maxcj: *mut f64 = 0 as *mut f64;
-    let mut tot_prim: size_t = 0 as libc::c_int as size_t;
-    i = 0 as libc::c_int;
+    let mut tot_prim: size_t = 0 as i32 as size_t;
+    i = 0 as i32;
     while i < nbas {
         tot_prim = (tot_prim as libc::c_ulong)
             .wrapping_add(
-                *bas.offset((8 as libc::c_int * i + 2 as libc::c_int) as isize)
+                *bas.offset((8 as i32 * i + 2 as i32) as isize)
                     as libc::c_ulong,
             ) as size_t as size_t;
         i += 1;
         i;
     }
-    if tot_prim == 0 as libc::c_int as libc::c_ulong
-        || tot_prim > 2048 as libc::c_int as libc::c_ulong
+    if tot_prim == 0 as i32 as libc::c_ulong
+        || tot_prim > 2048 as i32 as libc::c_ulong
     {
         return;
     }
@@ -967,10 +967,10 @@ pub unsafe extern "C" fn CINTOpt_setij(
         .pairdata = malloc(
         (::core::mem::size_of::<*mut PairData>() as libc::c_ulong)
             .wrapping_mul(
-                (if nbas * nbas > 1 as libc::c_int {
+                (if nbas * nbas > 1 as i32 {
                     nbas * nbas
                 } else {
-                    1 as libc::c_int
+                    1 as i32
                 }) as libc::c_ulong,
             ),
     ) as *mut *mut PairData;
@@ -979,72 +979,72 @@ pub unsafe extern "C" fn CINTOpt_setij(
             .wrapping_mul(tot_prim)
             .wrapping_mul(tot_prim),
     ) as *mut PairData;
-    let ref mut fresh7 = *((*opt).pairdata).offset(0 as libc::c_int as isize);
+    let ref mut fresh7 = *((*opt).pairdata).offset(0 as i32 as isize);
     *fresh7 = pdata;
-    let mut ijkl_inc: libc::c_int = 0;
-    if *ng.offset(0 as libc::c_int as isize) + *ng.offset(1 as libc::c_int as isize)
-        > *ng.offset(2 as libc::c_int as isize) + *ng.offset(3 as libc::c_int as isize)
+    let mut ijkl_inc: i32 = 0;
+    if *ng.offset(0 as i32 as isize) + *ng.offset(1 as i32 as isize)
+        > *ng.offset(2 as i32 as isize) + *ng.offset(3 as i32 as isize)
     {
-        ijkl_inc = *ng.offset(0 as libc::c_int as isize)
-            + *ng.offset(1 as libc::c_int as isize);
+        ijkl_inc = *ng.offset(0 as i32 as isize)
+            + *ng.offset(1 as i32 as isize);
     } else {
-        ijkl_inc = *ng.offset(2 as libc::c_int as isize)
-            + *ng.offset(3 as libc::c_int as isize);
+        ijkl_inc = *ng.offset(2 as i32 as isize)
+            + *ng.offset(3 as i32 as isize);
     }
-    let mut empty: libc::c_int = 0;
+    let mut empty: i32 = 0;
     let mut rr: f64 = 0.;
     let mut pdata0: *mut PairData = 0 as *mut PairData;
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < nbas {
         ri = env
             .offset(
                 *atm
                     .offset(
-                        (6 as libc::c_int
+                        (6 as i32
                             * *bas
-                                .offset((8 as libc::c_int * i + 0 as libc::c_int) as isize)
-                            + 1 as libc::c_int) as isize,
+                                .offset((8 as i32 * i + 0 as i32) as isize)
+                            + 1 as i32) as isize,
                     ) as isize,
             );
         ai = env
             .offset(
-                *bas.offset((8 as libc::c_int * i + 5 as libc::c_int) as isize) as isize,
+                *bas.offset((8 as i32 * i + 5 as i32) as isize) as isize,
             );
-        iprim = *bas.offset((8 as libc::c_int * i + 2 as libc::c_int) as isize);
-        li = *bas.offset((8 as libc::c_int * i + 1 as libc::c_int) as isize);
+        iprim = *bas.offset((8 as i32 * i + 2 as i32) as isize);
+        li = *bas.offset((8 as i32 * i + 1 as i32) as isize);
         log_maxci = *log_max_coeff.offset(i as isize);
-        j = 0 as libc::c_int;
+        j = 0 as i32;
         while j <= i {
             rj = env
                 .offset(
                     *atm
                         .offset(
-                            (6 as libc::c_int
+                            (6 as i32
                                 * *bas
-                                    .offset((8 as libc::c_int * j + 0 as libc::c_int) as isize)
-                                + 1 as libc::c_int) as isize,
+                                    .offset((8 as i32 * j + 0 as i32) as isize)
+                                + 1 as i32) as isize,
                         ) as isize,
                 );
             aj = env
                 .offset(
-                    *bas.offset((8 as libc::c_int * j + 5 as libc::c_int) as isize)
+                    *bas.offset((8 as i32 * j + 5 as i32) as isize)
                         as isize,
                 );
-            jprim = *bas.offset((8 as libc::c_int * j + 2 as libc::c_int) as isize);
-            lj = *bas.offset((8 as libc::c_int * j + 1 as libc::c_int) as isize);
+            jprim = *bas.offset((8 as i32 * j + 2 as i32) as isize);
+            lj = *bas.offset((8 as i32 * j + 1 as i32) as isize);
             log_maxcj = *log_max_coeff.offset(j as isize);
-            rr = (*ri.offset(0 as libc::c_int as isize)
-                - *rj.offset(0 as libc::c_int as isize))
-                * (*ri.offset(0 as libc::c_int as isize)
-                    - *rj.offset(0 as libc::c_int as isize))
-                + (*ri.offset(1 as libc::c_int as isize)
-                    - *rj.offset(1 as libc::c_int as isize))
-                    * (*ri.offset(1 as libc::c_int as isize)
-                        - *rj.offset(1 as libc::c_int as isize))
-                + (*ri.offset(2 as libc::c_int as isize)
-                    - *rj.offset(2 as libc::c_int as isize))
-                    * (*ri.offset(2 as libc::c_int as isize)
-                        - *rj.offset(2 as libc::c_int as isize));
+            rr = (*ri.offset(0 as i32 as isize)
+                - *rj.offset(0 as i32 as isize))
+                * (*ri.offset(0 as i32 as isize)
+                    - *rj.offset(0 as i32 as isize))
+                + (*ri.offset(1 as i32 as isize)
+                    - *rj.offset(1 as i32 as isize))
+                    * (*ri.offset(1 as i32 as isize)
+                        - *rj.offset(1 as i32 as isize))
+                + (*ri.offset(2 as i32 as isize)
+                    - *rj.offset(2 as i32 as isize))
+                    * (*ri.offset(2 as i32 as isize)
+                        - *rj.offset(2 as i32 as isize));
             empty = CINTset_pairdata(
                 pdata,
                 ai,
@@ -1061,9 +1061,9 @@ pub unsafe extern "C" fn CINTOpt_setij(
                 expcutoff,
                 env,
             );
-            if i == 0 as libc::c_int && j == 0 as libc::c_int {
+            if i == 0 as i32 && j == 0 as i32 {
                 let ref mut fresh8 = *((*opt).pairdata)
-                    .offset(0 as libc::c_int as isize);
+                    .offset(0 as i32 as isize);
                 *fresh8 = pdata;
                 pdata = pdata.offset((iprim * jprim) as isize);
             } else if empty == 0 {
@@ -1075,9 +1075,9 @@ pub unsafe extern "C" fn CINTOpt_setij(
                         .offset((j * nbas + i) as isize);
                     *fresh10 = pdata;
                     pdata0 = *((*opt).pairdata).offset((i * nbas + j) as isize);
-                    ip = 0 as libc::c_int;
+                    ip = 0 as i32;
                     while ip < iprim {
-                        jp = 0 as libc::c_int;
+                        jp = 0 as i32;
                         while jp < jprim {
                             memcpy(
                                 pdata as *mut libc::c_void,
@@ -1113,7 +1113,7 @@ pub unsafe extern "C" fn CINTOpt_setij(
 pub unsafe extern "C" fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
     if !cintopt.is_null() && !((*cintopt).pairdata).is_null() {
         free(
-            *((*cintopt).pairdata).offset(0 as libc::c_int as isize) as *mut libc::c_void,
+            *((*cintopt).pairdata).offset(0 as i32 as isize) as *mut libc::c_void,
         );
         free((*cintopt).pairdata as *mut libc::c_void);
         (*cintopt).pairdata = 0 as *mut *mut PairData;
@@ -1121,26 +1121,26 @@ pub unsafe extern "C" fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
-    mut sortedidx: *mut libc::c_int,
-    mut non0ctr: *mut libc::c_int,
+    mut sortedidx: *mut i32,
+    mut non0ctr: *mut i32,
     mut ci: *mut f64,
-    mut iprim: libc::c_int,
-    mut ictr: libc::c_int,
+    mut iprim: i32,
+    mut ictr: i32,
 ) {
-    let mut ip: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut kp: libc::c_int = 0;
+    let mut ip: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut kp: i32 = 0;
     let vla = ictr as usize;
-    let mut zeroidx: Vec::<libc::c_int> = ::std::vec::from_elem(0, vla);
-    ip = 0 as libc::c_int;
+    let mut zeroidx: Vec::<i32> = ::std::vec::from_elem(0, vla);
+    ip = 0 as i32;
     while ip < iprim {
-        j = 0 as libc::c_int;
-        k = 0 as libc::c_int;
-        kp = 0 as libc::c_int;
+        j = 0 as i32;
+        k = 0 as i32;
+        kp = 0 as i32;
         while j < ictr {
             if *ci.offset((iprim * j + ip) as isize)
-                != 0 as libc::c_int as f64
+                != 0 as i32 as f64
             {
                 *sortedidx.offset(k as isize) = j;
                 k += 1;
@@ -1153,7 +1153,7 @@ pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
             j += 1;
             j;
         }
-        j = 0 as libc::c_int;
+        j = 0 as i32;
         while j < kp {
             *sortedidx
                 .offset((k + j) as isize) = *zeroidx.as_mut_ptr().offset(j as isize);
@@ -1169,71 +1169,71 @@ pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_set_non0coeff(
     mut opt: *mut CINTOpt,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut iprim: libc::c_int = 0;
-    let mut ictr: libc::c_int = 0;
+    let mut i: i32 = 0;
+    let mut iprim: i32 = 0;
+    let mut ictr: i32 = 0;
     let mut ci: *mut f64 = 0 as *mut f64;
-    let mut tot_prim: size_t = 0 as libc::c_int as size_t;
-    let mut tot_prim_ctr: size_t = 0 as libc::c_int as size_t;
-    i = 0 as libc::c_int;
+    let mut tot_prim: size_t = 0 as i32 as size_t;
+    let mut tot_prim_ctr: size_t = 0 as i32 as size_t;
+    i = 0 as i32;
     while i < nbas {
         tot_prim = (tot_prim as libc::c_ulong)
             .wrapping_add(
-                *bas.offset((8 as libc::c_int * i + 2 as libc::c_int) as isize)
+                *bas.offset((8 as i32 * i + 2 as i32) as isize)
                     as libc::c_ulong,
             ) as size_t as size_t;
         tot_prim_ctr = (tot_prim_ctr as libc::c_ulong)
             .wrapping_add(
-                (*bas.offset((8 as libc::c_int * i + 2 as libc::c_int) as isize)
-                    * *bas.offset((8 as libc::c_int * i + 3 as libc::c_int) as isize))
+                (*bas.offset((8 as i32 * i + 2 as i32) as isize)
+                    * *bas.offset((8 as i32 * i + 3 as i32) as isize))
                     as libc::c_ulong,
             ) as size_t as size_t;
         i += 1;
         i;
     }
-    if tot_prim == 0 as libc::c_int as libc::c_ulong {
+    if tot_prim == 0 as i32 as libc::c_ulong {
         return;
     }
     (*opt)
         .non0ctr = malloc(
-        (::core::mem::size_of::<*mut libc::c_int>() as libc::c_ulong)
+        (::core::mem::size_of::<*mut i32>() as libc::c_ulong)
             .wrapping_mul(
-                (if nbas > 1 as libc::c_int { nbas } else { 1 as libc::c_int })
+                (if nbas > 1 as i32 { nbas } else { 1 as i32 })
                     as libc::c_ulong,
             ),
-    ) as *mut *mut libc::c_int;
+    ) as *mut *mut i32;
     (*opt)
         .sortedidx = malloc(
-        (::core::mem::size_of::<*mut libc::c_int>() as libc::c_ulong)
+        (::core::mem::size_of::<*mut i32>() as libc::c_ulong)
             .wrapping_mul(
-                (if nbas > 1 as libc::c_int { nbas } else { 1 as libc::c_int })
+                (if nbas > 1 as i32 { nbas } else { 1 as i32 })
                     as libc::c_ulong,
             ),
-    ) as *mut *mut libc::c_int;
-    let mut pnon0ctr: *mut libc::c_int = malloc(
-        (::core::mem::size_of::<libc::c_int>() as libc::c_ulong).wrapping_mul(tot_prim),
-    ) as *mut libc::c_int;
-    let mut psortedidx: *mut libc::c_int = malloc(
-        (::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
+    ) as *mut *mut i32;
+    let mut pnon0ctr: *mut i32 = malloc(
+        (::core::mem::size_of::<i32>() as libc::c_ulong).wrapping_mul(tot_prim),
+    ) as *mut i32;
+    let mut psortedidx: *mut i32 = malloc(
+        (::core::mem::size_of::<i32>() as libc::c_ulong)
             .wrapping_mul(tot_prim_ctr),
-    ) as *mut libc::c_int;
-    let ref mut fresh13 = *((*opt).non0ctr).offset(0 as libc::c_int as isize);
+    ) as *mut i32;
+    let ref mut fresh13 = *((*opt).non0ctr).offset(0 as i32 as isize);
     *fresh13 = pnon0ctr;
-    let ref mut fresh14 = *((*opt).sortedidx).offset(0 as libc::c_int as isize);
+    let ref mut fresh14 = *((*opt).sortedidx).offset(0 as i32 as isize);
     *fresh14 = psortedidx;
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < nbas {
-        iprim = *bas.offset((8 as libc::c_int * i + 2 as libc::c_int) as isize);
-        ictr = *bas.offset((8 as libc::c_int * i + 3 as libc::c_int) as isize);
+        iprim = *bas.offset((8 as i32 * i + 2 as i32) as isize);
+        ictr = *bas.offset((8 as i32 * i + 3 as i32) as isize);
         ci = env
             .offset(
-                *bas.offset((8 as libc::c_int * i + 6 as libc::c_int) as isize) as isize,
+                *bas.offset((8 as i32 * i + 6 as i32) as isize) as isize,
             );
         let ref mut fresh15 = *((*opt).non0ctr).offset(i as isize);
         *fresh15 = pnon0ctr;

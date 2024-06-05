@@ -12,7 +12,7 @@ extern "C" {
     pub type _IO_codecvt;
     pub type _IO_marker;
     static mut stderr: *mut FILE;
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
+    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
     fn sqrt(_: f64) -> f64;
 }
 pub type size_t = libc::c_ulong;
@@ -22,7 +22,7 @@ pub type __off64_t = libc::c_long;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _IO_FILE {
-    pub _flags: libc::c_int,
+    pub _flags: i32,
     pub _IO_read_ptr: *mut libc::c_char,
     pub _IO_read_end: *mut libc::c_char,
     pub _IO_read_base: *mut libc::c_char,
@@ -36,8 +36,8 @@ pub struct _IO_FILE {
     pub _IO_save_end: *mut libc::c_char,
     pub _markers: *mut _IO_marker,
     pub _chain: *mut _IO_FILE,
-    pub _fileno: libc::c_int,
-    pub _flags2: libc::c_int,
+    pub _fileno: i32,
+    pub _flags2: i32,
     pub _old_offset: __off_t,
     pub _cur_column: libc::c_ushort,
     pub _vtable_offset: libc::c_schar,
@@ -49,7 +49,7 @@ pub struct _IO_FILE {
     pub _freeres_list: *mut _IO_FILE,
     pub _freeres_buf: *mut libc::c_void,
     pub __pad5: size_t,
-    pub _mode: libc::c_int,
+    pub _mode: i32,
     pub _unused2: [libc::c_char; 20],
 }
 pub type _IO_lock_t = ();
@@ -72,12 +72,12 @@ pub struct Rys2eT {
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
     mut envs: *mut CINTEnvVars,
-    mut ng: *mut libc::c_int,
-    mut shls: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
+    mut ng: *mut i32,
+    mut shls: *mut i32,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
     mut env: *mut f64,
 ) {
     (*envs).natm = natm;
@@ -86,40 +86,40 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
     (*envs).bas = bas;
     (*envs).env = env;
     (*envs).shls = shls;
-    let i_sh: libc::c_int = *shls.offset(0 as libc::c_int as isize);
-    let j_sh: libc::c_int = *shls.offset(1 as libc::c_int as isize);
-    let k_sh: libc::c_int = *shls.offset(2 as libc::c_int as isize);
-    let l_sh: libc::c_int = *shls.offset(3 as libc::c_int as isize);
-    (*envs).i_l = *bas.offset((8 as libc::c_int * i_sh + 1 as libc::c_int) as isize);
-    (*envs).j_l = *bas.offset((8 as libc::c_int * j_sh + 1 as libc::c_int) as isize);
-    (*envs).k_l = *bas.offset((8 as libc::c_int * k_sh + 1 as libc::c_int) as isize);
-    (*envs).l_l = *bas.offset((8 as libc::c_int * l_sh + 1 as libc::c_int) as isize);
+    let i_sh: i32 = *shls.offset(0 as i32 as isize);
+    let j_sh: i32 = *shls.offset(1 as i32 as isize);
+    let k_sh: i32 = *shls.offset(2 as i32 as isize);
+    let l_sh: i32 = *shls.offset(3 as i32 as isize);
+    (*envs).i_l = *bas.offset((8 as i32 * i_sh + 1 as i32) as isize);
+    (*envs).j_l = *bas.offset((8 as i32 * j_sh + 1 as i32) as isize);
+    (*envs).k_l = *bas.offset((8 as i32 * k_sh + 1 as i32) as isize);
+    (*envs).l_l = *bas.offset((8 as i32 * l_sh + 1 as i32) as isize);
     (*envs)
-        .x_ctr[0 as libc::c_int
-        as usize] = *bas.offset((8 as libc::c_int * i_sh + 3 as libc::c_int) as isize);
+        .x_ctr[0 as i32
+        as usize] = *bas.offset((8 as i32 * i_sh + 3 as i32) as isize);
     (*envs)
-        .x_ctr[1 as libc::c_int
-        as usize] = *bas.offset((8 as libc::c_int * j_sh + 3 as libc::c_int) as isize);
+        .x_ctr[1 as i32
+        as usize] = *bas.offset((8 as i32 * j_sh + 3 as i32) as isize);
     (*envs)
-        .x_ctr[2 as libc::c_int
-        as usize] = *bas.offset((8 as libc::c_int * k_sh + 3 as libc::c_int) as isize);
+        .x_ctr[2 as i32
+        as usize] = *bas.offset((8 as i32 * k_sh + 3 as i32) as isize);
     (*envs)
-        .x_ctr[3 as libc::c_int
-        as usize] = *bas.offset((8 as libc::c_int * l_sh + 3 as libc::c_int) as isize);
+        .x_ctr[3 as i32
+        as usize] = *bas.offset((8 as i32 * l_sh + 3 as i32) as isize);
     (*envs)
-        .nfi = ((*envs).i_l + 1 as libc::c_int) * ((*envs).i_l + 2 as libc::c_int)
-        / 2 as libc::c_int;
+        .nfi = ((*envs).i_l + 1 as i32) * ((*envs).i_l + 2 as i32)
+        / 2 as i32;
     (*envs)
-        .nfj = ((*envs).j_l + 1 as libc::c_int) * ((*envs).j_l + 2 as libc::c_int)
-        / 2 as libc::c_int;
+        .nfj = ((*envs).j_l + 1 as i32) * ((*envs).j_l + 2 as i32)
+        / 2 as i32;
     (*envs)
         .c2rust_unnamed
-        .nfk = ((*envs).k_l + 1 as libc::c_int) * ((*envs).k_l + 2 as libc::c_int)
-        / 2 as libc::c_int;
+        .nfk = ((*envs).k_l + 1 as i32) * ((*envs).k_l + 2 as i32)
+        / 2 as i32;
     (*envs)
         .c2rust_unnamed_0
-        .nfl = ((*envs).l_l + 1 as libc::c_int) * ((*envs).l_l + 2 as libc::c_int)
-        / 2 as libc::c_int;
+        .nfl = ((*envs).l_l + 1 as i32) * ((*envs).l_l + 2 as i32)
+        / 2 as i32;
     (*envs)
         .nf = (*envs).nfi * (*envs).c2rust_unnamed.nfk * (*envs).c2rust_unnamed_0.nfl
         * (*envs).nfj;
@@ -128,11 +128,11 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
         .offset(
             *atm
                 .offset(
-                    (6 as libc::c_int
+                    (6 as i32
                         * *bas
                             .offset(
-                                (8 as libc::c_int * i_sh + 0 as libc::c_int) as isize,
-                            ) + 1 as libc::c_int) as isize,
+                                (8 as i32 * i_sh + 0 as i32) as isize,
+                            ) + 1 as i32) as isize,
                 ) as isize,
         );
     (*envs)
@@ -140,11 +140,11 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
         .offset(
             *atm
                 .offset(
-                    (6 as libc::c_int
+                    (6 as i32
                         * *bas
                             .offset(
-                                (8 as libc::c_int * j_sh + 0 as libc::c_int) as isize,
-                            ) + 1 as libc::c_int) as isize,
+                                (8 as i32 * j_sh + 0 as i32) as isize,
+                            ) + 1 as i32) as isize,
                 ) as isize,
         );
     (*envs)
@@ -152,11 +152,11 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
         .offset(
             *atm
                 .offset(
-                    (6 as libc::c_int
+                    (6 as i32
                         * *bas
                             .offset(
-                                (8 as libc::c_int * k_sh + 0 as libc::c_int) as isize,
-                            ) + 1 as libc::c_int) as isize,
+                                (8 as i32 * k_sh + 0 as i32) as isize,
+                            ) + 1 as i32) as isize,
                 ) as isize,
         );
     (*envs)
@@ -165,67 +165,67 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
         .offset(
             *atm
                 .offset(
-                    (6 as libc::c_int
+                    (6 as i32
                         * *bas
                             .offset(
-                                (8 as libc::c_int * l_sh + 0 as libc::c_int) as isize,
-                            ) + 1 as libc::c_int) as isize,
+                                (8 as i32 * l_sh + 0 as i32) as isize,
+                            ) + 1 as i32) as isize,
                 ) as isize,
         );
     (*envs)
         .common_factor = 3.14159265358979323846f64 * 3.14159265358979323846f64
-        * 3.14159265358979323846f64 * 2 as libc::c_int as f64
+        * 3.14159265358979323846f64 * 2 as i32 as f64
         / 1.7724538509055160272981674833411451f64 * CINTcommon_fac_sp((*envs).i_l)
         * CINTcommon_fac_sp((*envs).j_l) * CINTcommon_fac_sp((*envs).k_l)
         * CINTcommon_fac_sp((*envs).l_l);
-    if *env.offset(0 as libc::c_int as isize) == 0 as libc::c_int as f64 {
-        (*envs).expcutoff = 60 as libc::c_int as f64;
+    if *env.offset(0 as i32 as isize) == 0 as i32 as f64 {
+        (*envs).expcutoff = 60 as i32 as f64;
     } else {
         (*envs)
-            .expcutoff = (if 40 as libc::c_int as f64
-            > *env.offset(0 as libc::c_int as isize)
+            .expcutoff = (if 40 as i32 as f64
+            > *env.offset(0 as i32 as isize)
         {
-            40 as libc::c_int as f64
+            40 as i32 as f64
         } else {
-            *env.offset(0 as libc::c_int as isize)
-        }) + 1 as libc::c_int as f64;
+            *env.offset(0 as i32 as isize)
+        }) + 1 as i32 as f64;
     }
-    (*envs).gbits = *ng.offset(4 as libc::c_int as isize);
-    (*envs).ncomp_e1 = *ng.offset(5 as libc::c_int as isize);
-    (*envs).ncomp_e2 = *ng.offset(6 as libc::c_int as isize);
-    (*envs).ncomp_tensor = *ng.offset(7 as libc::c_int as isize);
-    (*envs).li_ceil = (*envs).i_l + *ng.offset(0 as libc::c_int as isize);
-    (*envs).lj_ceil = (*envs).j_l + *ng.offset(1 as libc::c_int as isize);
-    (*envs).lk_ceil = (*envs).k_l + *ng.offset(2 as libc::c_int as isize);
-    (*envs).ll_ceil = (*envs).l_l + *ng.offset(3 as libc::c_int as isize);
-    let mut rys_order: libc::c_int = ((*envs).li_ceil + (*envs).lj_ceil + (*envs).lk_ceil
-        + (*envs).ll_ceil) / 2 as libc::c_int + 1 as libc::c_int;
-    let mut nrys_roots: libc::c_int = rys_order;
-    let mut omega: f64 = *env.offset(8 as libc::c_int as isize);
-    if omega < 0 as libc::c_int as f64 && rys_order <= 3 as libc::c_int {
-        nrys_roots *= 2 as libc::c_int;
+    (*envs).gbits = *ng.offset(4 as i32 as isize);
+    (*envs).ncomp_e1 = *ng.offset(5 as i32 as isize);
+    (*envs).ncomp_e2 = *ng.offset(6 as i32 as isize);
+    (*envs).ncomp_tensor = *ng.offset(7 as i32 as isize);
+    (*envs).li_ceil = (*envs).i_l + *ng.offset(0 as i32 as isize);
+    (*envs).lj_ceil = (*envs).j_l + *ng.offset(1 as i32 as isize);
+    (*envs).lk_ceil = (*envs).k_l + *ng.offset(2 as i32 as isize);
+    (*envs).ll_ceil = (*envs).l_l + *ng.offset(3 as i32 as isize);
+    let mut rys_order: i32 = ((*envs).li_ceil + (*envs).lj_ceil + (*envs).lk_ceil
+        + (*envs).ll_ceil) / 2 as i32 + 1 as i32;
+    let mut nrys_roots: i32 = rys_order;
+    let mut omega: f64 = *env.offset(8 as i32 as isize);
+    if omega < 0 as i32 as f64 && rys_order <= 3 as i32 {
+        nrys_roots *= 2 as i32;
     }
     (*envs).rys_order = rys_order;
     (*envs).nrys_roots = nrys_roots;
-    let mut dli: libc::c_int = 0;
-    let mut dlj: libc::c_int = 0;
-    let mut dlk: libc::c_int = 0;
-    let mut dll: libc::c_int = 0;
-    let mut ibase: libc::c_int = ((*envs).li_ceil > (*envs).lj_ceil) as libc::c_int;
-    let mut kbase: libc::c_int = ((*envs).lk_ceil > (*envs).ll_ceil) as libc::c_int;
+    let mut dli: i32 = 0;
+    let mut dlj: i32 = 0;
+    let mut dlk: i32 = 0;
+    let mut dll: i32 = 0;
+    let mut ibase: i32 = ((*envs).li_ceil > (*envs).lj_ceil) as i32;
+    let mut kbase: i32 = ((*envs).lk_ceil > (*envs).ll_ceil) as i32;
     if kbase != 0 {
-        dlk = (*envs).lk_ceil + (*envs).ll_ceil + 1 as libc::c_int;
-        dll = (*envs).ll_ceil + 1 as libc::c_int;
+        dlk = (*envs).lk_ceil + (*envs).ll_ceil + 1 as i32;
+        dll = (*envs).ll_ceil + 1 as i32;
     } else {
-        dlk = (*envs).lk_ceil + 1 as libc::c_int;
-        dll = (*envs).lk_ceil + (*envs).ll_ceil + 1 as libc::c_int;
+        dlk = (*envs).lk_ceil + 1 as i32;
+        dll = (*envs).lk_ceil + (*envs).ll_ceil + 1 as i32;
     }
     if ibase != 0 {
-        dli = (*envs).li_ceil + (*envs).lj_ceil + 1 as libc::c_int;
-        dlj = (*envs).lj_ceil + 1 as libc::c_int;
+        dli = (*envs).li_ceil + (*envs).lj_ceil + 1 as i32;
+        dlj = (*envs).lj_ceil + 1 as i32;
     } else {
-        dli = (*envs).li_ceil + 1 as libc::c_int;
-        dlj = (*envs).li_ceil + (*envs).lj_ceil + 1 as libc::c_int;
+        dli = (*envs).li_ceil + 1 as i32;
+        dlj = (*envs).li_ceil + (*envs).lj_ceil + 1 as i32;
     }
     (*envs).g_stride_i = nrys_roots;
     (*envs).g_stride_k = nrys_roots * dli;
@@ -236,65 +236,65 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
         (*envs).g2d_klmax = (*envs).g_stride_k;
         (*envs).rx_in_rklrx = (*envs).rk;
         (*envs)
-            .rkrl[0 as libc::c_int
-            as usize] = *((*envs).rk).offset(0 as libc::c_int as isize)
-            - *((*envs).c2rust_unnamed_1.rl).offset(0 as libc::c_int as isize);
+            .rkrl[0 as i32
+            as usize] = *((*envs).rk).offset(0 as i32 as isize)
+            - *((*envs).c2rust_unnamed_1.rl).offset(0 as i32 as isize);
         (*envs)
-            .rkrl[1 as libc::c_int
-            as usize] = *((*envs).rk).offset(1 as libc::c_int as isize)
-            - *((*envs).c2rust_unnamed_1.rl).offset(1 as libc::c_int as isize);
+            .rkrl[1 as i32
+            as usize] = *((*envs).rk).offset(1 as i32 as isize)
+            - *((*envs).c2rust_unnamed_1.rl).offset(1 as i32 as isize);
         (*envs)
-            .rkrl[2 as libc::c_int
-            as usize] = *((*envs).rk).offset(2 as libc::c_int as isize)
-            - *((*envs).c2rust_unnamed_1.rl).offset(2 as libc::c_int as isize);
+            .rkrl[2 as i32
+            as usize] = *((*envs).rk).offset(2 as i32 as isize)
+            - *((*envs).c2rust_unnamed_1.rl).offset(2 as i32 as isize);
     } else {
         (*envs).g2d_klmax = (*envs).g_stride_l;
         (*envs).rx_in_rklrx = (*envs).c2rust_unnamed_1.rl;
         (*envs)
-            .rkrl[0 as libc::c_int
-            as usize] = *((*envs).c2rust_unnamed_1.rl).offset(0 as libc::c_int as isize)
-            - *((*envs).rk).offset(0 as libc::c_int as isize);
+            .rkrl[0 as i32
+            as usize] = *((*envs).c2rust_unnamed_1.rl).offset(0 as i32 as isize)
+            - *((*envs).rk).offset(0 as i32 as isize);
         (*envs)
-            .rkrl[1 as libc::c_int
-            as usize] = *((*envs).c2rust_unnamed_1.rl).offset(1 as libc::c_int as isize)
-            - *((*envs).rk).offset(1 as libc::c_int as isize);
+            .rkrl[1 as i32
+            as usize] = *((*envs).c2rust_unnamed_1.rl).offset(1 as i32 as isize)
+            - *((*envs).rk).offset(1 as i32 as isize);
         (*envs)
-            .rkrl[2 as libc::c_int
-            as usize] = *((*envs).c2rust_unnamed_1.rl).offset(2 as libc::c_int as isize)
-            - *((*envs).rk).offset(2 as libc::c_int as isize);
+            .rkrl[2 as i32
+            as usize] = *((*envs).c2rust_unnamed_1.rl).offset(2 as i32 as isize)
+            - *((*envs).rk).offset(2 as i32 as isize);
     }
     if ibase != 0 {
         (*envs).g2d_ijmax = (*envs).g_stride_i;
         (*envs).rx_in_rijrx = (*envs).ri;
         (*envs)
-            .rirj[0 as libc::c_int
-            as usize] = *((*envs).ri).offset(0 as libc::c_int as isize)
-            - *((*envs).rj).offset(0 as libc::c_int as isize);
+            .rirj[0 as i32
+            as usize] = *((*envs).ri).offset(0 as i32 as isize)
+            - *((*envs).rj).offset(0 as i32 as isize);
         (*envs)
-            .rirj[1 as libc::c_int
-            as usize] = *((*envs).ri).offset(1 as libc::c_int as isize)
-            - *((*envs).rj).offset(1 as libc::c_int as isize);
+            .rirj[1 as i32
+            as usize] = *((*envs).ri).offset(1 as i32 as isize)
+            - *((*envs).rj).offset(1 as i32 as isize);
         (*envs)
-            .rirj[2 as libc::c_int
-            as usize] = *((*envs).ri).offset(2 as libc::c_int as isize)
-            - *((*envs).rj).offset(2 as libc::c_int as isize);
+            .rirj[2 as i32
+            as usize] = *((*envs).ri).offset(2 as i32 as isize)
+            - *((*envs).rj).offset(2 as i32 as isize);
     } else {
         (*envs).g2d_ijmax = (*envs).g_stride_j;
         (*envs).rx_in_rijrx = (*envs).rj;
         (*envs)
-            .rirj[0 as libc::c_int
-            as usize] = *((*envs).rj).offset(0 as libc::c_int as isize)
-            - *((*envs).ri).offset(0 as libc::c_int as isize);
+            .rirj[0 as i32
+            as usize] = *((*envs).rj).offset(0 as i32 as isize)
+            - *((*envs).ri).offset(0 as i32 as isize);
         (*envs)
-            .rirj[1 as libc::c_int
-            as usize] = *((*envs).rj).offset(1 as libc::c_int as isize)
-            - *((*envs).ri).offset(1 as libc::c_int as isize);
+            .rirj[1 as i32
+            as usize] = *((*envs).rj).offset(1 as i32 as isize)
+            - *((*envs).ri).offset(1 as i32 as isize);
         (*envs)
-            .rirj[2 as libc::c_int
-            as usize] = *((*envs).rj).offset(2 as libc::c_int as isize)
-            - *((*envs).ri).offset(2 as libc::c_int as isize);
+            .rirj[2 as i32
+            as usize] = *((*envs).rj).offset(2 as i32 as isize)
+            - *((*envs).ri).offset(2 as i32 as isize);
     }
-    if rys_order <= 2 as libc::c_int {
+    if rys_order <= 2 as i32 {
         (*envs)
             .f_g0_2d4d = ::core::mem::transmute::<
             Option::<
@@ -433,9 +433,9 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
                 *mut f64,
                 f64,
                 *mut CINTEnvVars,
-            ) -> libc::c_int,
+            ) -> i32,
         >,
-        Option::<unsafe extern "C" fn() -> libc::c_int>,
+        Option::<unsafe extern "C" fn() -> i32>,
     >(
         Some(
             CINTg0_2e
@@ -445,138 +445,138 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
                     *mut f64,
                     f64,
                     *mut CINTEnvVars,
-                ) -> libc::c_int,
+                ) -> i32,
         ),
     );
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTg2e_index_xyz(
-    mut idx: *mut libc::c_int,
+    mut idx: *mut i32,
     mut envs: *const CINTEnvVars,
 ) {
-    let i_l: libc::c_int = (*envs).i_l;
-    let j_l: libc::c_int = (*envs).j_l;
-    let k_l: libc::c_int = (*envs).k_l;
-    let l_l: libc::c_int = (*envs).l_l;
-    let nfi: libc::c_int = (*envs).nfi;
-    let nfj: libc::c_int = (*envs).nfj;
-    let nfk: libc::c_int = (*envs).c2rust_unnamed.nfk;
-    let nfl: libc::c_int = (*envs).c2rust_unnamed_0.nfl;
-    let di: libc::c_int = (*envs).g_stride_i;
-    let dk: libc::c_int = (*envs).g_stride_k;
-    let dl: libc::c_int = (*envs).g_stride_l;
-    let dj: libc::c_int = (*envs).g_stride_j;
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut ofx: libc::c_int = 0;
-    let mut ofkx: libc::c_int = 0;
-    let mut oflx: libc::c_int = 0;
-    let mut ofy: libc::c_int = 0;
-    let mut ofky: libc::c_int = 0;
-    let mut ofly: libc::c_int = 0;
-    let mut ofz: libc::c_int = 0;
-    let mut ofkz: libc::c_int = 0;
-    let mut oflz: libc::c_int = 0;
-    let mut i_nx: [libc::c_int; 136] = [0; 136];
-    let mut i_ny: [libc::c_int; 136] = [0; 136];
-    let mut i_nz: [libc::c_int; 136] = [0; 136];
-    let mut j_nx: [libc::c_int; 136] = [0; 136];
-    let mut j_ny: [libc::c_int; 136] = [0; 136];
-    let mut j_nz: [libc::c_int; 136] = [0; 136];
-    let mut k_nx: [libc::c_int; 136] = [0; 136];
-    let mut k_ny: [libc::c_int; 136] = [0; 136];
-    let mut k_nz: [libc::c_int; 136] = [0; 136];
-    let mut l_nx: [libc::c_int; 136] = [0; 136];
-    let mut l_ny: [libc::c_int; 136] = [0; 136];
-    let mut l_nz: [libc::c_int; 136] = [0; 136];
+    let i_l: i32 = (*envs).i_l;
+    let j_l: i32 = (*envs).j_l;
+    let k_l: i32 = (*envs).k_l;
+    let l_l: i32 = (*envs).l_l;
+    let nfi: i32 = (*envs).nfi;
+    let nfj: i32 = (*envs).nfj;
+    let nfk: i32 = (*envs).c2rust_unnamed.nfk;
+    let nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut n: i32 = 0;
+    let mut ofx: i32 = 0;
+    let mut ofkx: i32 = 0;
+    let mut oflx: i32 = 0;
+    let mut ofy: i32 = 0;
+    let mut ofky: i32 = 0;
+    let mut ofly: i32 = 0;
+    let mut ofz: i32 = 0;
+    let mut ofkz: i32 = 0;
+    let mut oflz: i32 = 0;
+    let mut i_nx: [i32; 136] = [0; 136];
+    let mut i_ny: [i32; 136] = [0; 136];
+    let mut i_nz: [i32; 136] = [0; 136];
+    let mut j_nx: [i32; 136] = [0; 136];
+    let mut j_ny: [i32; 136] = [0; 136];
+    let mut j_nz: [i32; 136] = [0; 136];
+    let mut k_nx: [i32; 136] = [0; 136];
+    let mut k_ny: [i32; 136] = [0; 136];
+    let mut k_nz: [i32; 136] = [0; 136];
+    let mut l_nx: [i32; 136] = [0; 136];
+    let mut l_ny: [i32; 136] = [0; 136];
+    let mut l_nz: [i32; 136] = [0; 136];
     CINTcart_comp(i_nx.as_mut_ptr(), i_ny.as_mut_ptr(), i_nz.as_mut_ptr(), i_l);
     CINTcart_comp(j_nx.as_mut_ptr(), j_ny.as_mut_ptr(), j_nz.as_mut_ptr(), j_l);
     CINTcart_comp(k_nx.as_mut_ptr(), k_ny.as_mut_ptr(), k_nz.as_mut_ptr(), k_l);
     CINTcart_comp(l_nx.as_mut_ptr(), l_ny.as_mut_ptr(), l_nz.as_mut_ptr(), l_l);
-    ofx = 0 as libc::c_int;
+    ofx = 0 as i32;
     ofy = (*envs).g_size;
-    ofz = (*envs).g_size * 2 as libc::c_int;
-    n = 0 as libc::c_int;
-    j = 0 as libc::c_int;
+    ofz = (*envs).g_size * 2 as i32;
+    n = 0 as i32;
+    j = 0 as i32;
     while j < nfj {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l < nfl {
             oflx = ofx + dj * j_nx[j as usize] + dl * l_nx[l as usize];
             ofly = ofy + dj * j_ny[j as usize] + dl * l_ny[l as usize];
             oflz = ofz + dj * j_nz[j as usize] + dl * l_nz[l as usize];
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k < nfk {
                 ofkx = oflx + dk * k_nx[k as usize];
                 ofky = ofly + dk * k_ny[k as usize];
                 ofkz = oflz + dk * k_nz[k as usize];
                 match i_l {
                     0 => {
-                        *idx.offset((n + 0 as libc::c_int) as isize) = ofkx;
-                        *idx.offset((n + 1 as libc::c_int) as isize) = ofky;
-                        *idx.offset((n + 2 as libc::c_int) as isize) = ofkz;
-                        n += 3 as libc::c_int;
+                        *idx.offset((n + 0 as i32) as isize) = ofkx;
+                        *idx.offset((n + 1 as i32) as isize) = ofky;
+                        *idx.offset((n + 2 as i32) as isize) = ofkz;
+                        n += 3 as i32;
                     }
                     1 => {
-                        *idx.offset((n + 0 as libc::c_int) as isize) = ofkx + di;
-                        *idx.offset((n + 1 as libc::c_int) as isize) = ofky;
-                        *idx.offset((n + 2 as libc::c_int) as isize) = ofkz;
-                        *idx.offset((n + 3 as libc::c_int) as isize) = ofkx;
-                        *idx.offset((n + 4 as libc::c_int) as isize) = ofky + di;
-                        *idx.offset((n + 5 as libc::c_int) as isize) = ofkz;
-                        *idx.offset((n + 6 as libc::c_int) as isize) = ofkx;
-                        *idx.offset((n + 7 as libc::c_int) as isize) = ofky;
-                        *idx.offset((n + 8 as libc::c_int) as isize) = ofkz + di;
-                        n += 9 as libc::c_int;
+                        *idx.offset((n + 0 as i32) as isize) = ofkx + di;
+                        *idx.offset((n + 1 as i32) as isize) = ofky;
+                        *idx.offset((n + 2 as i32) as isize) = ofkz;
+                        *idx.offset((n + 3 as i32) as isize) = ofkx;
+                        *idx.offset((n + 4 as i32) as isize) = ofky + di;
+                        *idx.offset((n + 5 as i32) as isize) = ofkz;
+                        *idx.offset((n + 6 as i32) as isize) = ofkx;
+                        *idx.offset((n + 7 as i32) as isize) = ofky;
+                        *idx.offset((n + 8 as i32) as isize) = ofkz + di;
+                        n += 9 as i32;
                     }
                     2 => {
                         *idx
                             .offset(
-                                (n + 0 as libc::c_int) as isize,
-                            ) = ofkx + di * 2 as libc::c_int;
-                        *idx.offset((n + 1 as libc::c_int) as isize) = ofky;
-                        *idx.offset((n + 2 as libc::c_int) as isize) = ofkz;
-                        *idx.offset((n + 3 as libc::c_int) as isize) = ofkx + di;
-                        *idx.offset((n + 4 as libc::c_int) as isize) = ofky + di;
-                        *idx.offset((n + 5 as libc::c_int) as isize) = ofkz;
-                        *idx.offset((n + 6 as libc::c_int) as isize) = ofkx + di;
-                        *idx.offset((n + 7 as libc::c_int) as isize) = ofky;
-                        *idx.offset((n + 8 as libc::c_int) as isize) = ofkz + di;
-                        *idx.offset((n + 9 as libc::c_int) as isize) = ofkx;
+                                (n + 0 as i32) as isize,
+                            ) = ofkx + di * 2 as i32;
+                        *idx.offset((n + 1 as i32) as isize) = ofky;
+                        *idx.offset((n + 2 as i32) as isize) = ofkz;
+                        *idx.offset((n + 3 as i32) as isize) = ofkx + di;
+                        *idx.offset((n + 4 as i32) as isize) = ofky + di;
+                        *idx.offset((n + 5 as i32) as isize) = ofkz;
+                        *idx.offset((n + 6 as i32) as isize) = ofkx + di;
+                        *idx.offset((n + 7 as i32) as isize) = ofky;
+                        *idx.offset((n + 8 as i32) as isize) = ofkz + di;
+                        *idx.offset((n + 9 as i32) as isize) = ofkx;
                         *idx
                             .offset(
-                                (n + 10 as libc::c_int) as isize,
-                            ) = ofky + di * 2 as libc::c_int;
-                        *idx.offset((n + 11 as libc::c_int) as isize) = ofkz;
-                        *idx.offset((n + 12 as libc::c_int) as isize) = ofkx;
-                        *idx.offset((n + 13 as libc::c_int) as isize) = ofky + di;
-                        *idx.offset((n + 14 as libc::c_int) as isize) = ofkz + di;
-                        *idx.offset((n + 15 as libc::c_int) as isize) = ofkx;
-                        *idx.offset((n + 16 as libc::c_int) as isize) = ofky;
+                                (n + 10 as i32) as isize,
+                            ) = ofky + di * 2 as i32;
+                        *idx.offset((n + 11 as i32) as isize) = ofkz;
+                        *idx.offset((n + 12 as i32) as isize) = ofkx;
+                        *idx.offset((n + 13 as i32) as isize) = ofky + di;
+                        *idx.offset((n + 14 as i32) as isize) = ofkz + di;
+                        *idx.offset((n + 15 as i32) as isize) = ofkx;
+                        *idx.offset((n + 16 as i32) as isize) = ofky;
                         *idx
                             .offset(
-                                (n + 17 as libc::c_int) as isize,
-                            ) = ofkz + di * 2 as libc::c_int;
-                        n += 18 as libc::c_int;
+                                (n + 17 as i32) as isize,
+                            ) = ofkz + di * 2 as i32;
+                        n += 18 as i32;
                     }
                     _ => {
-                        i = 0 as libc::c_int;
+                        i = 0 as i32;
                         while i < nfi {
                             *idx
                                 .offset(
-                                    (n + 0 as libc::c_int) as isize,
+                                    (n + 0 as i32) as isize,
                                 ) = ofkx + di * i_nx[i as usize];
                             *idx
                                 .offset(
-                                    (n + 1 as libc::c_int) as isize,
+                                    (n + 1 as i32) as isize,
                                 ) = ofky + di * i_ny[i as usize];
                             *idx
                                 .offset(
-                                    (n + 2 as libc::c_int) as isize,
+                                    (n + 2 as i32) as isize,
                                 ) = ofkz + di * i_nz[i as usize];
-                            n += 3 as libc::c_int;
+                            n += 3 as i32;
                             i += 1;
                             i;
                         }
@@ -598,20 +598,20 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
     mut bc: *mut Rys2eT,
     mut envs: *mut CINTEnvVars,
 ) {
-    let nroots: libc::c_int = (*envs).nrys_roots;
-    let nmax: libc::c_int = (*envs).li_ceil + (*envs).lj_ceil;
-    let mmax: libc::c_int = (*envs).lk_ceil + (*envs).ll_ceil;
-    let dm: libc::c_int = (*envs).g2d_klmax;
-    let dn: libc::c_int = (*envs).g2d_ijmax;
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut m: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut off: libc::c_int = 0;
+    let nroots: i32 = (*envs).nrys_roots;
+    let nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+    let mmax: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let dm: i32 = (*envs).g2d_klmax;
+    let dn: i32 = (*envs).g2d_ijmax;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut m: i32 = 0;
+    let mut n: i32 = 0;
+    let mut off: i32 = 0;
     let mut gx: *mut f64 = g;
     let mut gy: *mut f64 = g.offset((*envs).g_size as isize);
     let mut gz: *mut f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p0x: *mut f64 = 0 as *mut f64;
     let mut p0y: *mut f64 = 0 as *mut f64;
     let mut p0z: *mut f64 = 0 as *mut f64;
@@ -620,10 +620,10 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
     let mut p1z: *mut f64 = 0 as *mut f64;
     let mut nb1: f64 = 0.;
     let mut mb0: f64 = 0.;
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < nroots {
-        *gx.offset(i as isize) = 1 as libc::c_int as f64;
-        *gy.offset(i as isize) = 1 as libc::c_int as f64;
+        *gx.offset(i as isize) = 1 as i32 as f64;
+        *gy.offset(i as isize) = 1 as i32 as f64;
         i += 1;
         i;
     }
@@ -651,7 +651,7 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
     let mut b10: f64 = 0.;
     let mut b01: f64 = 0.;
     let mut b00: f64 = 0.;
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < nroots {
         c00x = (*bc).c00x[i as usize];
         c00y = (*bc).c00y[i as usize];
@@ -662,7 +662,7 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
         b10 = (*bc).b10[i as usize];
         b01 = (*bc).b01[i as usize];
         b00 = (*bc).b00[i as usize];
-        if nmax > 0 as libc::c_int {
+        if nmax > 0 as i32 {
             s0x = *gx.offset(i as isize);
             s0y = *gy.offset(i as isize);
             s0z = *gz.offset(i as isize);
@@ -672,14 +672,14 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
             *gx.offset((i + dn) as isize) = s1x;
             *gy.offset((i + dn) as isize) = s1y;
             *gz.offset((i + dn) as isize) = s1z;
-            n = 1 as libc::c_int;
+            n = 1 as i32;
             while n < nmax {
                 s2x = c00x * s1x + n as f64 * b10 * s0x;
                 s2y = c00y * s1y + n as f64 * b10 * s0y;
                 s2z = c00z * s1z + n as f64 * b10 * s0z;
-                *gx.offset((i + (n + 1 as libc::c_int) * dn) as isize) = s2x;
-                *gy.offset((i + (n + 1 as libc::c_int) * dn) as isize) = s2y;
-                *gz.offset((i + (n + 1 as libc::c_int) * dn) as isize) = s2z;
+                *gx.offset((i + (n + 1 as i32) * dn) as isize) = s2x;
+                *gy.offset((i + (n + 1 as i32) * dn) as isize) = s2y;
+                *gz.offset((i + (n + 1 as i32) * dn) as isize) = s2z;
                 s0x = s1x;
                 s0y = s1y;
                 s0z = s1z;
@@ -690,7 +690,7 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
                 n;
             }
         }
-        if mmax > 0 as libc::c_int {
+        if mmax > 0 as i32 {
             s0x = *gx.offset(i as isize);
             s0y = *gy.offset(i as isize);
             s0z = *gz.offset(i as isize);
@@ -700,14 +700,14 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
             *gx.offset((i + dm) as isize) = s1x;
             *gy.offset((i + dm) as isize) = s1y;
             *gz.offset((i + dm) as isize) = s1z;
-            m = 1 as libc::c_int;
+            m = 1 as i32;
             while m < mmax {
                 s2x = c0px * s1x + m as f64 * b01 * s0x;
                 s2y = c0py * s1y + m as f64 * b01 * s0y;
                 s2z = c0pz * s1z + m as f64 * b01 * s0z;
-                *gx.offset((i + (m + 1 as libc::c_int) * dm) as isize) = s2x;
-                *gy.offset((i + (m + 1 as libc::c_int) * dm) as isize) = s2y;
-                *gz.offset((i + (m + 1 as libc::c_int) * dm) as isize) = s2z;
+                *gx.offset((i + (m + 1 as i32) * dm) as isize) = s2x;
+                *gy.offset((i + (m + 1 as i32) * dm) as isize) = s2y;
+                *gz.offset((i + (m + 1 as i32) * dm) as isize) = s2z;
                 s0x = s1x;
                 s0y = s1y;
                 s0z = s1z;
@@ -717,7 +717,7 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
                 m += 1;
                 m;
             }
-            if nmax > 0 as libc::c_int {
+            if nmax > 0 as i32 {
                 s0x = *gx.offset((i + dn) as isize);
                 s0y = *gy.offset((i + dn) as isize);
                 s0z = *gz.offset((i + dn) as isize);
@@ -727,7 +727,7 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
                 *gx.offset((i + dn + dm) as isize) = s1x;
                 *gy.offset((i + dn + dm) as isize) = s1y;
                 *gz.offset((i + dn + dm) as isize) = s1z;
-                m = 1 as libc::c_int;
+                m = 1 as i32;
                 while m < mmax {
                     s2x = c0px * s1x + m as f64 * b01 * s0x
                         + b00 * *gx.offset((i + m * dm) as isize);
@@ -735,9 +735,9 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
                         + b00 * *gy.offset((i + m * dm) as isize);
                     s2z = c0pz * s1z + m as f64 * b01 * s0z
                         + b00 * *gz.offset((i + m * dm) as isize);
-                    *gx.offset((i + dn + (m + 1 as libc::c_int) * dm) as isize) = s2x;
-                    *gy.offset((i + dn + (m + 1 as libc::c_int) * dm) as isize) = s2y;
-                    *gz.offset((i + dn + (m + 1 as libc::c_int) * dm) as isize) = s2z;
+                    *gx.offset((i + dn + (m + 1 as i32) * dm) as isize) = s2x;
+                    *gy.offset((i + dn + (m + 1 as i32) * dm) as isize) = s2y;
+                    *gz.offset((i + dn + (m + 1 as i32) * dm) as isize) = s2z;
                     s0x = s1x;
                     s0y = s1y;
                     s0z = s1z;
@@ -749,7 +749,7 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
                 }
             }
         }
-        m = 1 as libc::c_int;
+        m = 1 as i32;
         while m <= mmax {
             off = m * dm;
             j = off + i;
@@ -759,7 +759,7 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
             s1x = *gx.offset((j + dn) as isize);
             s1y = *gy.offset((j + dn) as isize);
             s1z = *gz.offset((j + dn) as isize);
-            n = 1 as libc::c_int;
+            n = 1 as i32;
             while n < nmax {
                 s2x = c00x * s1x + n as f64 * b10 * s0x
                     + m as f64 * b00 * *gx.offset((j + n * dn - dm) as isize);
@@ -767,9 +767,9 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
                     + m as f64 * b00 * *gy.offset((j + n * dn - dm) as isize);
                 s2z = c00z * s1z + n as f64 * b10 * s0z
                     + m as f64 * b00 * *gz.offset((j + n * dn - dm) as isize);
-                *gx.offset((j + (n + 1 as libc::c_int) * dn) as isize) = s2x;
-                *gy.offset((j + (n + 1 as libc::c_int) * dn) as isize) = s2y;
-                *gz.offset((j + (n + 1 as libc::c_int) * dn) as isize) = s2z;
+                *gx.offset((j + (n + 1 as i32) * dn) as isize) = s2x;
+                *gy.offset((j + (n + 1 as i32) * dn) as isize) = s2y;
+                *gz.offset((j + (n + 1 as i32) * dn) as isize) = s2z;
                 s0x = s1x;
                 s0y = s1y;
                 s0z = s1z;
@@ -791,31 +791,31 @@ pub unsafe extern "C" fn CINTg0_lj2d_4d(
     mut g: *mut f64,
     mut envs: *mut CINTEnvVars,
 ) {
-    let mut li: libc::c_int = (*envs).li_ceil;
-    let mut lk: libc::c_int = (*envs).lk_ceil;
-    if li == 0 as libc::c_int && lk == 0 as libc::c_int {
+    let mut li: i32 = (*envs).li_ceil;
+    let mut lk: i32 = (*envs).lk_ceil;
+    if li == 0 as i32 && lk == 0 as i32 {
         return;
     }
-    let mut nmax: libc::c_int = (*envs).li_ceil + (*envs).lj_ceil;
-    let mut mmax: libc::c_int = (*envs).lk_ceil + (*envs).ll_ceil;
-    let mut lj: libc::c_int = (*envs).lj_ceil;
-    let mut nroots: libc::c_int = (*envs).nrys_roots;
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut di: libc::c_int = (*envs).g_stride_i;
-    let mut dk: libc::c_int = (*envs).g_stride_k;
-    let mut dl: libc::c_int = (*envs).g_stride_l;
-    let mut dj: libc::c_int = (*envs).g_stride_j;
+    let mut nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+    let mut mmax: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let mut lj: i32 = (*envs).lj_ceil;
+    let mut nroots: i32 = (*envs).nrys_roots;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut ptr: i32 = 0;
+    let mut n: i32 = 0;
+    let mut di: i32 = (*envs).g_stride_i;
+    let mut dk: i32 = (*envs).g_stride_k;
+    let mut dl: i32 = (*envs).g_stride_l;
+    let mut dj: i32 = (*envs).g_stride_j;
     let mut rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
     let mut rkrl: *mut f64 = ((*envs).rkrl).as_mut_ptr();
     let mut gx: *mut f64 = g;
     let mut gy: *mut f64 = g.offset((*envs).g_size as isize);
     let mut gz: *mut f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *mut f64 = 0 as *mut f64;
     let mut p1y: *mut f64 = 0 as *mut f64;
     let mut p1z: *mut f64 = 0 as *mut f64;
@@ -825,20 +825,20 @@ pub unsafe extern "C" fn CINTg0_lj2d_4d(
     let mut rx: f64 = 0.;
     let mut ry: f64 = 0.;
     let mut rz: f64 = 0.;
-    rx = *rirj.offset(0 as libc::c_int as isize);
-    ry = *rirj.offset(1 as libc::c_int as isize);
-    rz = *rirj.offset(2 as libc::c_int as isize);
+    rx = *rirj.offset(0 as i32 as isize);
+    ry = *rirj.offset(1 as i32 as isize);
+    rz = *rirj.offset(2 as i32 as isize);
     p1x = gx.offset(-(di as isize));
     p1y = gy.offset(-(di as isize));
     p1z = gz.offset(-(di as isize));
     p2x = gx.offset(-(di as isize)).offset(dj as isize);
     p2y = gy.offset(-(di as isize)).offset(dj as isize);
     p2z = gz.offset(-(di as isize)).offset(dj as isize);
-    i = 1 as libc::c_int;
+    i = 1 as i32;
     while i <= li {
-        j = 0 as libc::c_int;
+        j = 0 as i32;
         while j <= nmax - i {
-            l = 0 as libc::c_int;
+            l = 0 as i32;
             while l <= mmax {
                 ptr = j * dj + l * dl + i * di;
                 n = ptr;
@@ -867,20 +867,20 @@ pub unsafe extern "C" fn CINTg0_lj2d_4d(
         i += 1;
         i;
     }
-    rx = *rkrl.offset(0 as libc::c_int as isize);
-    ry = *rkrl.offset(1 as libc::c_int as isize);
-    rz = *rkrl.offset(2 as libc::c_int as isize);
+    rx = *rkrl.offset(0 as i32 as isize);
+    ry = *rkrl.offset(1 as i32 as isize);
+    rz = *rkrl.offset(2 as i32 as isize);
     p1x = gx.offset(-(dk as isize));
     p1y = gy.offset(-(dk as isize));
     p1z = gz.offset(-(dk as isize));
     p2x = gx.offset(-(dk as isize)).offset(dl as isize);
     p2y = gy.offset(-(dk as isize)).offset(dl as isize);
     p2z = gz.offset(-(dk as isize)).offset(dl as isize);
-    j = 0 as libc::c_int;
+    j = 0 as i32;
     while j <= lj {
-        k = 1 as libc::c_int;
+        k = 1 as i32;
         while k <= lk {
-            l = 0 as libc::c_int;
+            l = 0 as i32;
             while l <= mmax - k {
                 ptr = j * dj + l * dl + k * dk;
                 n = ptr;
@@ -915,31 +915,31 @@ pub unsafe extern "C" fn CINTg0_kj2d_4d(
     mut g: *mut f64,
     mut envs: *mut CINTEnvVars,
 ) {
-    let mut li: libc::c_int = (*envs).li_ceil;
-    let mut ll: libc::c_int = (*envs).ll_ceil;
-    if li == 0 as libc::c_int && ll == 0 as libc::c_int {
+    let mut li: i32 = (*envs).li_ceil;
+    let mut ll: i32 = (*envs).ll_ceil;
+    if li == 0 as i32 && ll == 0 as i32 {
         return;
     }
-    let mut nmax: libc::c_int = (*envs).li_ceil + (*envs).lj_ceil;
-    let mut mmax: libc::c_int = (*envs).lk_ceil + (*envs).ll_ceil;
-    let mut lj: libc::c_int = (*envs).lj_ceil;
-    let mut nroots: libc::c_int = (*envs).nrys_roots;
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut di: libc::c_int = (*envs).g_stride_i;
-    let mut dk: libc::c_int = (*envs).g_stride_k;
-    let mut dl: libc::c_int = (*envs).g_stride_l;
-    let mut dj: libc::c_int = (*envs).g_stride_j;
+    let mut nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+    let mut mmax: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let mut lj: i32 = (*envs).lj_ceil;
+    let mut nroots: i32 = (*envs).nrys_roots;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut ptr: i32 = 0;
+    let mut n: i32 = 0;
+    let mut di: i32 = (*envs).g_stride_i;
+    let mut dk: i32 = (*envs).g_stride_k;
+    let mut dl: i32 = (*envs).g_stride_l;
+    let mut dj: i32 = (*envs).g_stride_j;
     let mut rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
     let mut rkrl: *mut f64 = ((*envs).rkrl).as_mut_ptr();
     let mut gx: *mut f64 = g;
     let mut gy: *mut f64 = g.offset((*envs).g_size as isize);
     let mut gz: *mut f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *mut f64 = 0 as *mut f64;
     let mut p1y: *mut f64 = 0 as *mut f64;
     let mut p1z: *mut f64 = 0 as *mut f64;
@@ -949,20 +949,20 @@ pub unsafe extern "C" fn CINTg0_kj2d_4d(
     let mut rx: f64 = 0.;
     let mut ry: f64 = 0.;
     let mut rz: f64 = 0.;
-    rx = *rirj.offset(0 as libc::c_int as isize);
-    ry = *rirj.offset(1 as libc::c_int as isize);
-    rz = *rirj.offset(2 as libc::c_int as isize);
+    rx = *rirj.offset(0 as i32 as isize);
+    ry = *rirj.offset(1 as i32 as isize);
+    rz = *rirj.offset(2 as i32 as isize);
     p1x = gx.offset(-(di as isize));
     p1y = gy.offset(-(di as isize));
     p1z = gz.offset(-(di as isize));
     p2x = gx.offset(-(di as isize)).offset(dj as isize);
     p2y = gy.offset(-(di as isize)).offset(dj as isize);
     p2z = gz.offset(-(di as isize)).offset(dj as isize);
-    i = 1 as libc::c_int;
+    i = 1 as i32;
     while i <= li {
-        j = 0 as libc::c_int;
+        j = 0 as i32;
         while j <= nmax - i {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= mmax {
                 ptr = j * dj + k * dk + i * di;
                 n = ptr;
@@ -991,20 +991,20 @@ pub unsafe extern "C" fn CINTg0_kj2d_4d(
         i += 1;
         i;
     }
-    rx = *rkrl.offset(0 as libc::c_int as isize);
-    ry = *rkrl.offset(1 as libc::c_int as isize);
-    rz = *rkrl.offset(2 as libc::c_int as isize);
+    rx = *rkrl.offset(0 as i32 as isize);
+    ry = *rkrl.offset(1 as i32 as isize);
+    rz = *rkrl.offset(2 as i32 as isize);
     p1x = gx.offset(-(dl as isize));
     p1y = gy.offset(-(dl as isize));
     p1z = gz.offset(-(dl as isize));
     p2x = gx.offset(-(dl as isize)).offset(dk as isize);
     p2y = gy.offset(-(dl as isize)).offset(dk as isize);
     p2z = gz.offset(-(dl as isize)).offset(dk as isize);
-    j = 0 as libc::c_int;
+    j = 0 as i32;
     while j <= lj {
-        l = 1 as libc::c_int;
+        l = 1 as i32;
         while l <= ll {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= mmax - l {
                 ptr = j * dj + l * dl + k * dk;
                 n = ptr;
@@ -1039,31 +1039,31 @@ pub unsafe extern "C" fn CINTg0_il2d_4d(
     mut g: *mut f64,
     mut envs: *mut CINTEnvVars,
 ) {
-    let mut lk: libc::c_int = (*envs).lk_ceil;
-    let mut lj: libc::c_int = (*envs).lj_ceil;
-    if lj == 0 as libc::c_int && lk == 0 as libc::c_int {
+    let mut lk: i32 = (*envs).lk_ceil;
+    let mut lj: i32 = (*envs).lj_ceil;
+    if lj == 0 as i32 && lk == 0 as i32 {
         return;
     }
-    let mut nmax: libc::c_int = (*envs).li_ceil + (*envs).lj_ceil;
-    let mut mmax: libc::c_int = (*envs).lk_ceil + (*envs).ll_ceil;
-    let mut ll: libc::c_int = (*envs).ll_ceil;
-    let mut nroots: libc::c_int = (*envs).nrys_roots;
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut di: libc::c_int = (*envs).g_stride_i;
-    let mut dk: libc::c_int = (*envs).g_stride_k;
-    let mut dl: libc::c_int = (*envs).g_stride_l;
-    let mut dj: libc::c_int = (*envs).g_stride_j;
+    let mut nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+    let mut mmax: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let mut ll: i32 = (*envs).ll_ceil;
+    let mut nroots: i32 = (*envs).nrys_roots;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut ptr: i32 = 0;
+    let mut n: i32 = 0;
+    let mut di: i32 = (*envs).g_stride_i;
+    let mut dk: i32 = (*envs).g_stride_k;
+    let mut dl: i32 = (*envs).g_stride_l;
+    let mut dj: i32 = (*envs).g_stride_j;
     let mut rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
     let mut rkrl: *mut f64 = ((*envs).rkrl).as_mut_ptr();
     let mut gx: *mut f64 = g;
     let mut gy: *mut f64 = g.offset((*envs).g_size as isize);
     let mut gz: *mut f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *mut f64 = 0 as *mut f64;
     let mut p1y: *mut f64 = 0 as *mut f64;
     let mut p1z: *mut f64 = 0 as *mut f64;
@@ -1073,20 +1073,20 @@ pub unsafe extern "C" fn CINTg0_il2d_4d(
     let mut rx: f64 = 0.;
     let mut ry: f64 = 0.;
     let mut rz: f64 = 0.;
-    rx = *rkrl.offset(0 as libc::c_int as isize);
-    ry = *rkrl.offset(1 as libc::c_int as isize);
-    rz = *rkrl.offset(2 as libc::c_int as isize);
+    rx = *rkrl.offset(0 as i32 as isize);
+    ry = *rkrl.offset(1 as i32 as isize);
+    rz = *rkrl.offset(2 as i32 as isize);
     p1x = gx.offset(-(dk as isize));
     p1y = gy.offset(-(dk as isize));
     p1z = gz.offset(-(dk as isize));
     p2x = gx.offset(-(dk as isize)).offset(dl as isize);
     p2y = gy.offset(-(dk as isize)).offset(dl as isize);
     p2z = gz.offset(-(dk as isize)).offset(dl as isize);
-    k = 1 as libc::c_int;
+    k = 1 as i32;
     while k <= lk {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l <= mmax - k {
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i <= nmax {
                 ptr = l * dl + k * dk + i * di;
                 n = ptr;
@@ -1115,20 +1115,20 @@ pub unsafe extern "C" fn CINTg0_il2d_4d(
         k += 1;
         k;
     }
-    rx = *rirj.offset(0 as libc::c_int as isize);
-    ry = *rirj.offset(1 as libc::c_int as isize);
-    rz = *rirj.offset(2 as libc::c_int as isize);
+    rx = *rirj.offset(0 as i32 as isize);
+    ry = *rirj.offset(1 as i32 as isize);
+    rz = *rirj.offset(2 as i32 as isize);
     p1x = gx.offset(-(dj as isize));
     p1y = gy.offset(-(dj as isize));
     p1z = gz.offset(-(dj as isize));
     p2x = gx.offset(-(dj as isize)).offset(di as isize);
     p2y = gy.offset(-(dj as isize)).offset(di as isize);
     p2z = gz.offset(-(dj as isize)).offset(di as isize);
-    j = 1 as libc::c_int;
+    j = 1 as i32;
     while j <= lj {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l <= ll {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= lk {
                 ptr = j * dj + l * dl + k * dk;
                 n = ptr;
@@ -1163,31 +1163,31 @@ pub unsafe extern "C" fn CINTg0_ik2d_4d(
     mut g: *mut f64,
     mut envs: *mut CINTEnvVars,
 ) {
-    let mut lj: libc::c_int = (*envs).lj_ceil;
-    let mut ll: libc::c_int = (*envs).ll_ceil;
-    if lj == 0 as libc::c_int && ll == 0 as libc::c_int {
+    let mut lj: i32 = (*envs).lj_ceil;
+    let mut ll: i32 = (*envs).ll_ceil;
+    if lj == 0 as i32 && ll == 0 as i32 {
         return;
     }
-    let mut nmax: libc::c_int = (*envs).li_ceil + (*envs).lj_ceil;
-    let mut mmax: libc::c_int = (*envs).lk_ceil + (*envs).ll_ceil;
-    let mut lk: libc::c_int = (*envs).lk_ceil;
-    let mut nroots: libc::c_int = (*envs).nrys_roots;
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut di: libc::c_int = (*envs).g_stride_i;
-    let mut dk: libc::c_int = (*envs).g_stride_k;
-    let mut dl: libc::c_int = (*envs).g_stride_l;
-    let mut dj: libc::c_int = (*envs).g_stride_j;
+    let mut nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+    let mut mmax: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let mut lk: i32 = (*envs).lk_ceil;
+    let mut nroots: i32 = (*envs).nrys_roots;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut ptr: i32 = 0;
+    let mut n: i32 = 0;
+    let mut di: i32 = (*envs).g_stride_i;
+    let mut dk: i32 = (*envs).g_stride_k;
+    let mut dl: i32 = (*envs).g_stride_l;
+    let mut dj: i32 = (*envs).g_stride_j;
     let mut rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
     let mut rkrl: *mut f64 = ((*envs).rkrl).as_mut_ptr();
     let mut gx: *mut f64 = g;
     let mut gy: *mut f64 = g.offset((*envs).g_size as isize);
     let mut gz: *mut f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *mut f64 = 0 as *mut f64;
     let mut p1y: *mut f64 = 0 as *mut f64;
     let mut p1z: *mut f64 = 0 as *mut f64;
@@ -1197,20 +1197,20 @@ pub unsafe extern "C" fn CINTg0_ik2d_4d(
     let mut rx: f64 = 0.;
     let mut ry: f64 = 0.;
     let mut rz: f64 = 0.;
-    rx = *rkrl.offset(0 as libc::c_int as isize);
-    ry = *rkrl.offset(1 as libc::c_int as isize);
-    rz = *rkrl.offset(2 as libc::c_int as isize);
+    rx = *rkrl.offset(0 as i32 as isize);
+    ry = *rkrl.offset(1 as i32 as isize);
+    rz = *rkrl.offset(2 as i32 as isize);
     p1x = gx.offset(-(dl as isize));
     p1y = gy.offset(-(dl as isize));
     p1z = gz.offset(-(dl as isize));
     p2x = gx.offset(-(dl as isize)).offset(dk as isize);
     p2y = gy.offset(-(dl as isize)).offset(dk as isize);
     p2z = gz.offset(-(dl as isize)).offset(dk as isize);
-    l = 1 as libc::c_int;
+    l = 1 as i32;
     while l <= ll {
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k <= mmax - l {
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i <= nmax {
                 ptr = l * dl + k * dk + i * di;
                 n = ptr;
@@ -1239,20 +1239,20 @@ pub unsafe extern "C" fn CINTg0_ik2d_4d(
         l += 1;
         l;
     }
-    rx = *rirj.offset(0 as libc::c_int as isize);
-    ry = *rirj.offset(1 as libc::c_int as isize);
-    rz = *rirj.offset(2 as libc::c_int as isize);
+    rx = *rirj.offset(0 as i32 as isize);
+    ry = *rirj.offset(1 as i32 as isize);
+    rz = *rirj.offset(2 as i32 as isize);
     p1x = gx.offset(-(dj as isize));
     p1y = gy.offset(-(dj as isize));
     p1z = gz.offset(-(dj as isize));
     p2x = gx.offset(-(dj as isize)).offset(di as isize);
     p2y = gy.offset(-(dj as isize)).offset(di as isize);
     p2z = gz.offset(-(dj as isize)).offset(di as isize);
-    j = 1 as libc::c_int;
+    j = 1 as i32;
     while j <= lj {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l <= ll {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= lk {
                 ptr = j * dj + l * dl + k * dk;
                 n = ptr;
@@ -1288,8 +1288,8 @@ unsafe extern "C" fn _g0_2d4d_0000(
     mut bc: *mut Rys2eT,
     mut envs: *mut CINTEnvVars,
 ) {
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0001(
@@ -1300,15 +1300,15 @@ unsafe extern "C" fn _g0_2d4d_0001(
     let mut cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(4 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(4 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0002(
@@ -1320,60 +1320,60 @@ unsafe extern "C" fn _g0_2d4d_0002(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(7 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(7 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(12 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(12 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(13 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(13 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(14 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(12 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(14 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(12 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(15 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(13 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(15 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(13 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0003(
@@ -1385,102 +1385,102 @@ unsafe extern "C" fn _g0_2d4d_0003(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(4 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(0 as libc::c_int as isize));
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(4 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(0 as i32 as isize));
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(5 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(1 as libc::c_int as isize));
-    *g.offset(8 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(9 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(10 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(5 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(1 as i32 as isize));
+    *g.offset(8 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(9 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(10 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(12 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(0 as libc::c_int as isize));
+            14 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(12 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(0 as i32 as isize));
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(13 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(1 as libc::c_int as isize));
+            15 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(13 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(1 as i32 as isize));
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(18 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(16 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(18 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(19 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(17 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(19 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(20 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(0 as libc::c_int as isize)
-            * *g.offset(18 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(20 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(0 as i32 as isize)
+            * *g.offset(18 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(21 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(1 as libc::c_int as isize)
-            * *g.offset(19 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(21 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(1 as i32 as isize)
+            * *g.offset(19 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0010(
@@ -1491,15 +1491,15 @@ unsafe extern "C" fn _g0_2d4d_0010(
     let mut cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(4 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(4 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0011(
@@ -1511,83 +1511,83 @@ unsafe extern "C" fn _g0_2d4d_0011(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    let mut xkxl: f64 = (*envs).rkrl[0 as libc::c_int as usize];
-    let mut ykyl: f64 = (*envs).rkrl[1 as libc::c_int as usize];
-    let mut zkzl: f64 = (*envs).rkrl[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    let mut xkxl: f64 = (*envs).rkrl[0 as i32 as usize];
+    let mut ykyl: f64 = (*envs).rkrl[1 as i32 as usize];
+    let mut zkzl: f64 = (*envs).rkrl[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = xkxl + *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = xkxl + *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(16 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
+    *g.offset(2 as i32 as isize) = xkxl + *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = xkxl + *cpx.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(16 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(0 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = ykyl + *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(1 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = ykyl + *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *g.offset(28 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *g.offset(28 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *g.offset(29 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *g.offset(29 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *g.offset(24 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize));
+            26 as i32 as isize,
+        ) = *g.offset(24 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize));
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *g.offset(25 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize));
+            27 as i32 as isize,
+        ) = *g.offset(25 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize));
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0012(
@@ -1599,161 +1599,161 @@ unsafe extern "C" fn _g0_2d4d_0012(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    let mut xkxl: f64 = (*envs).rkrl[0 as libc::c_int as usize];
-    let mut ykyl: f64 = (*envs).rkrl[1 as libc::c_int as usize];
-    let mut zkzl: f64 = (*envs).rkrl[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    let mut xkxl: f64 = (*envs).rkrl[0 as i32 as usize];
+    let mut ykyl: f64 = (*envs).rkrl[1 as i32 as usize];
+    let mut zkzl: f64 = (*envs).rkrl[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *g.offset(8 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *cpx.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *g.offset(8 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *cpx.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *g.offset(9 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *cpx.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *g.offset(9 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *cpx.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = xkxl + *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = xkxl + *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(20 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(21 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
+    *g.offset(2 as i32 as isize) = xkxl + *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = xkxl + *cpx.offset(1 as i32 as isize);
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(20 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(21 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *g.offset(24 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *cpy.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(0 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *g.offset(24 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *cpy.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *g.offset(25 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *cpy.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(1 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *g.offset(25 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *cpy.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(0 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = ykyl + *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(1 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = ykyl + *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(36 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(36 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(37 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(37 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *g.offset(40 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(0 as libc::c_int as isize)
-            * *g.offset(36 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *g.offset(40 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(0 as i32 as isize)
+            * *g.offset(36 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *g.offset(41 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(1 as libc::c_int as isize)
-            * *g.offset(37 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *g.offset(41 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(1 as i32 as isize)
+            * *g.offset(37 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *g.offset(36 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *g.offset(36 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *g.offset(37 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *g.offset(37 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *g.offset(32 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize));
+            34 as i32 as isize,
+        ) = *g.offset(32 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize));
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *g.offset(33 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize));
+            35 as i32 as isize,
+        ) = *g.offset(33 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize));
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0020(
@@ -1765,60 +1765,60 @@ unsafe extern "C" fn _g0_2d4d_0020(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(7 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(7 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(12 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(12 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(13 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(13 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(14 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(12 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(14 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(12 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(15 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(13 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(15 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(13 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0021(
@@ -1830,161 +1830,161 @@ unsafe extern "C" fn _g0_2d4d_0021(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    let mut xkxl: f64 = (*envs).rkrl[0 as libc::c_int as usize];
-    let mut ykyl: f64 = (*envs).rkrl[1 as libc::c_int as usize];
-    let mut zkzl: f64 = (*envs).rkrl[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    let mut xkxl: f64 = (*envs).rkrl[0 as i32 as usize];
+    let mut ykyl: f64 = (*envs).rkrl[1 as i32 as usize];
+    let mut zkzl: f64 = (*envs).rkrl[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = xkxl + *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = xkxl + *cpx.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
+    *g.offset(8 as i32 as isize) = xkxl + *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = xkxl + *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *g.offset(4 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *cpx.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *g.offset(4 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *cpx.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *g.offset(5 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *cpx.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(1 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(18 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *g.offset(5 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *cpx.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(1 as i32 as isize);
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(18 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = ykyl + *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = ykyl + *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *g.offset(20 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *cpy.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *g.offset(20 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *cpy.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *g.offset(21 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *cpy.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *g.offset(21 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *cpy.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(34 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(35 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *g.offset(32 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize));
+            40 as i32 as isize,
+        ) = *g.offset(32 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize));
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *g.offset(33 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize));
+            41 as i32 as isize,
+        ) = *g.offset(33 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize));
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *g.offset(34 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *g.offset(34 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *g.offset(35 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *g.offset(35 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *g.offset(36 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(0 as libc::c_int as isize)
-            * *g.offset(34 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *g.offset(36 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(0 as i32 as isize)
+            * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *g.offset(37 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(1 as libc::c_int as isize)
-            * *g.offset(35 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *g.offset(37 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(1 as i32 as isize)
+            * *g.offset(35 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0030(
@@ -1996,102 +1996,102 @@ unsafe extern "C" fn _g0_2d4d_0030(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(4 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(0 as libc::c_int as isize));
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(4 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(0 as i32 as isize));
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(5 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(1 as libc::c_int as isize));
-    *g.offset(8 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(9 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(10 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(5 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(1 as i32 as isize));
+    *g.offset(8 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(9 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(10 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(12 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(0 as libc::c_int as isize));
+            14 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(12 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(0 as i32 as isize));
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(13 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(1 as libc::c_int as isize));
+            15 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(13 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(1 as i32 as isize));
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(18 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(16 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(18 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(19 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(17 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(19 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(20 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(0 as libc::c_int as isize)
-            * *g.offset(18 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(20 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(0 as i32 as isize)
+            * *g.offset(18 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(21 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(1 as libc::c_int as isize)
-            * *g.offset(19 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(21 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(1 as i32 as isize)
+            * *g.offset(19 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0100(
@@ -2102,15 +2102,15 @@ unsafe extern "C" fn _g0_2d4d_0100(
     let mut c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(4 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(4 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0101(
@@ -2125,74 +2125,74 @@ unsafe extern "C" fn _g0_2d4d_0101(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(9 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(10 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(13 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
+    *g.offset(8 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(9 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(10 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(13 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(20 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(16 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(20 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(21 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(17 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(21 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(17 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0102(
@@ -2208,154 +2208,154 @@ unsafe extern "C" fn _g0_2d4d_0102(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(8 as libc::c_int as isize) + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(8 as i32 as isize) + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(9 as libc::c_int as isize) + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(9 as i32 as isize) + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(20 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(20 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(21 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(21 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(26 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(27 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(30 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(30 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(31 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(31 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(30 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(30 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(31 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(31 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(27 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0110(
@@ -2370,74 +2370,74 @@ unsafe extern "C" fn _g0_2d4d_0110(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(9 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(10 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(13 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
+    *g.offset(8 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(9 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(10 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(13 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(20 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(16 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(20 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(21 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(17 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(21 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(17 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0111(
@@ -2453,215 +2453,215 @@ unsafe extern "C" fn _g0_2d4d_0111(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    let mut xkxl: f64 = (*envs).rkrl[0 as libc::c_int as usize];
-    let mut ykyl: f64 = (*envs).rkrl[1 as libc::c_int as usize];
-    let mut zkzl: f64 = (*envs).rkrl[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(12 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(13 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    let mut xkxl: f64 = (*envs).rkrl[0 as i32 as usize];
+    let mut ykyl: f64 = (*envs).rkrl[1 as i32 as usize];
+    let mut zkzl: f64 = (*envs).rkrl[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(12 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(13 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *g.offset(16 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *cpx.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *g.offset(16 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *cpx.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *g.offset(17 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *cpx.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = xkxl + *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = xkxl + *cpx.offset(1 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *g.offset(17 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *cpx.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
+    *g.offset(2 as i32 as isize) = xkxl + *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = xkxl + *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(36 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(37 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(28 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(36 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(37 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(28 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *g.offset(40 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *cpy.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *g.offset(40 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *cpy.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *g.offset(41 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *cpy.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *g.offset(41 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *cpy.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(0 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = ykyl + *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(1 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = ykyl + *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            64 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(60 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            64 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(60 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            65 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(61 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            65 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(61 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *g.offset(52 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *g.offset(52 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *g.offset(53 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *g.offset(53 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            66 as libc::c_int as isize,
-        ) = *g.offset(64 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(60 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize);
+            66 as i32 as isize,
+        ) = *g.offset(64 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(60 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize);
     *g
         .offset(
-            67 as libc::c_int as isize,
-        ) = *g.offset(65 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(61 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize);
+            67 as i32 as isize,
+        ) = *g.offset(65 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(61 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize);
     *g
         .offset(
-            50 as libc::c_int as isize,
-        ) = *g.offset(48 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize));
+            50 as i32 as isize,
+        ) = *g.offset(48 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize));
     *g
         .offset(
-            51 as libc::c_int as isize,
-        ) = *g.offset(49 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize));
+            51 as i32 as isize,
+        ) = *g.offset(49 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize));
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *g.offset(60 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *g.offset(60 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *g.offset(61 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *g.offset(61 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0120(
@@ -2677,154 +2677,154 @@ unsafe extern "C" fn _g0_2d4d_0120(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(8 as libc::c_int as isize) + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(8 as i32 as isize) + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(9 as libc::c_int as isize) + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(9 as i32 as isize) + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(20 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(20 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(21 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(21 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(26 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(27 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(30 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(30 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(31 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(31 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(30 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(30 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(31 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(31 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(27 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0200(
@@ -2836,60 +2836,60 @@ unsafe extern "C" fn _g0_2d4d_0200(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(7 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(7 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(12 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(12 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(13 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(13 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(14 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(12 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(14 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(12 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(15 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(13 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(15 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(13 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0201(
@@ -2905,154 +2905,154 @@ unsafe extern "C" fn _g0_2d4d_0201(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(6 as libc::c_int as isize) + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(6 as i32 as isize) + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(7 as libc::c_int as isize) + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(16 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(7 as i32 as isize) + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(16 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(14 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(14 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(18 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(18 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(19 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(19 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(28 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(28 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(29 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(29 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(28 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(28 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(29 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(29 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(30 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(28 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(30 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(26 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(28 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(31 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(29 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(31 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(27 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(29 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0210(
@@ -3068,154 +3068,154 @@ unsafe extern "C" fn _g0_2d4d_0210(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(6 as libc::c_int as isize) + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(6 as i32 as isize) + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(7 as libc::c_int as isize) + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(7 as i32 as isize) + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(16 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(18 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(18 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(19 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(19 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(28 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(28 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(29 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(29 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(28 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(28 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(29 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(29 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(30 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(28 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(30 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(26 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(28 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(31 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(29 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(31 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(27 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(29 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_0300(
@@ -3227,102 +3227,102 @@ unsafe extern "C" fn _g0_2d4d_0300(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(4 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(0 as libc::c_int as isize));
+            6 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(4 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(0 as i32 as isize));
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(5 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(1 as libc::c_int as isize));
-    *g.offset(8 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(9 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(10 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(5 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(1 as i32 as isize));
+    *g.offset(8 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(9 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(10 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(12 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(0 as libc::c_int as isize));
+            14 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(12 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(0 as i32 as isize));
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(13 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(1 as libc::c_int as isize));
+            15 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(13 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(1 as i32 as isize));
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(18 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(16 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(18 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(19 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(17 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(19 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(20 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(0 as libc::c_int as isize)
-            * *g.offset(18 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(20 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(0 as i32 as isize)
+            * *g.offset(18 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(21 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(1 as libc::c_int as isize)
-            * *g.offset(19 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(21 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(1 as i32 as isize)
+            * *g.offset(19 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_1000(
@@ -3333,15 +3333,15 @@ unsafe extern "C" fn _g0_2d4d_1000(
     let mut c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(4 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(4 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_1001(
@@ -3356,74 +3356,74 @@ unsafe extern "C" fn _g0_2d4d_1001(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(9 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(10 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(13 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
+    *g.offset(8 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(9 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(10 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(13 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(18 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(16 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(18 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(19 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(17 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(19 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(17 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_1002(
@@ -3439,154 +3439,154 @@ unsafe extern "C" fn _g0_2d4d_1002(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(6 as libc::c_int as isize) + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(6 as i32 as isize) + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(7 as libc::c_int as isize) + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(7 as i32 as isize) + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(16 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(18 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(18 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(19 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(19 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(26 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(27 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(28 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(28 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(29 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(29 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(30 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(28 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(30 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(26 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(28 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(31 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(29 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(31 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(27 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(29 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_1010(
@@ -3601,74 +3601,74 @@ unsafe extern "C" fn _g0_2d4d_1010(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(9 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(10 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(13 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
+    *g.offset(8 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(9 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(10 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(13 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(18 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(16 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(18 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(19 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(17 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(19 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(17 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_1011(
@@ -3684,215 +3684,215 @@ unsafe extern "C" fn _g0_2d4d_1011(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    let mut xkxl: f64 = (*envs).rkrl[0 as libc::c_int as usize];
-    let mut ykyl: f64 = (*envs).rkrl[1 as libc::c_int as usize];
-    let mut zkzl: f64 = (*envs).rkrl[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    let mut xkxl: f64 = (*envs).rkrl[0 as i32 as usize];
+    let mut ykyl: f64 = (*envs).rkrl[1 as i32 as usize];
+    let mut zkzl: f64 = (*envs).rkrl[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *g.offset(10 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *cpx.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *g.offset(10 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *cpx.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *g.offset(11 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *cpx.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = xkxl + *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = xkxl + *cpx.offset(1 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *g.offset(11 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *cpx.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = xkxl + *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = xkxl + *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(27 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(32 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(33 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(27 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(32 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(33 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *g.offset(34 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *cpy.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *g.offset(34 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *cpy.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *g.offset(35 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *cpy.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *g.offset(35 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *cpy.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = ykyl + *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = ykyl + *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            50 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            50 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            51 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            51 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(50 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(51 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *g.offset(56 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *g.offset(56 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *g.offset(57 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *g.offset(57 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *g.offset(58 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(56 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *g.offset(58 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(50 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(56 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *g.offset(59 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(57 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *g.offset(59 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(51 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(57 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *g.offset(48 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize));
+            52 as i32 as isize,
+        ) = *g.offset(48 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize));
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *g.offset(49 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize));
+            53 as i32 as isize,
+        ) = *g.offset(49 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize));
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *g.offset(50 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *g.offset(50 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *g.offset(51 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *g.offset(51 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_1020(
@@ -3908,154 +3908,154 @@ unsafe extern "C" fn _g0_2d4d_1020(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(6 as libc::c_int as isize) + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(6 as i32 as isize) + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(7 as libc::c_int as isize) + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(7 as i32 as isize) + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(16 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(18 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(18 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(19 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(19 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(26 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(27 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(28 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(28 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(29 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(29 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(30 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(28 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(30 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(26 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(28 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(31 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(29 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(31 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(27 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(29 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_1100(
@@ -4067,83 +4067,83 @@ unsafe extern "C" fn _g0_2d4d_1100(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    let mut xixj: f64 = (*envs).rirj[0 as libc::c_int as usize];
-    let mut yiyj: f64 = (*envs).rirj[1 as libc::c_int as usize];
-    let mut zizj: f64 = (*envs).rirj[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    let mut xixj: f64 = (*envs).rirj[0 as i32 as usize];
+    let mut yiyj: f64 = (*envs).rirj[1 as i32 as usize];
+    let mut zizj: f64 = (*envs).rirj[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = xixj + *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = xixj + *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(16 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(2 as i32 as isize) = xixj + *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = xixj + *c0x.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(16 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(0 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = yiyj + *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(1 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = yiyj + *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *g.offset(28 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *g.offset(28 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *g.offset(29 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *g.offset(29 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *g.offset(24 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize));
+            26 as i32 as isize,
+        ) = *g.offset(24 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize));
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *g.offset(25 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize));
+            27 as i32 as isize,
+        ) = *g.offset(25 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize));
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_1101(
@@ -4159,215 +4159,215 @@ unsafe extern "C" fn _g0_2d4d_1101(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    let mut xixj: f64 = (*envs).rirj[0 as libc::c_int as usize];
-    let mut yiyj: f64 = (*envs).rirj[1 as libc::c_int as usize];
-    let mut zizj: f64 = (*envs).rirj[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    let mut xixj: f64 = (*envs).rirj[0 as i32 as usize];
+    let mut yiyj: f64 = (*envs).rirj[1 as i32 as usize];
+    let mut zizj: f64 = (*envs).rirj[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = xixj + *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = xixj + *c0x.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(2 as i32 as isize) = xixj + *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = xixj + *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *g.offset(12 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *c0x.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *g.offset(12 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *c0x.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *g.offset(13 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *c0x.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *g.offset(13 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *c0x.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(32 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(33 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(28 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(32 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(33 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(28 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(0 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = yiyj + *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(1 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = yiyj + *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *g.offset(36 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *c0y.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *g.offset(36 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *c0y.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *g.offset(37 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *c0y.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *g.offset(37 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *c0y.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(56 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(56 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(57 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(57 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *g.offset(56 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *g.offset(56 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *g.offset(57 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *g.offset(57 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            50 as libc::c_int as isize,
-        ) = *g.offset(48 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize));
+            50 as i32 as isize,
+        ) = *g.offset(48 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize));
     *g
         .offset(
-            51 as libc::c_int as isize,
-        ) = *g.offset(49 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize));
+            51 as i32 as isize,
+        ) = *g.offset(49 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize));
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *g.offset(60 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(56 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *g.offset(60 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(56 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *g.offset(61 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(57 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *g.offset(61 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(57 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = zizj * *g.offset(52 as libc::c_int as isize)
-        + *cpz.offset(0 as libc::c_int as isize) * *g.offset(56 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = zizj * *g.offset(52 as i32 as isize)
+        + *cpz.offset(0 as i32 as isize) * *g.offset(56 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = zizj * *g.offset(53 as libc::c_int as isize)
-        + *cpz.offset(1 as libc::c_int as isize) * *g.offset(57 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = zizj * *g.offset(53 as i32 as isize)
+        + *cpz.offset(1 as i32 as isize) * *g.offset(57 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_1110(
@@ -4383,215 +4383,215 @@ unsafe extern "C" fn _g0_2d4d_1110(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    let mut xixj: f64 = (*envs).rirj[0 as libc::c_int as usize];
-    let mut yiyj: f64 = (*envs).rirj[1 as libc::c_int as usize];
-    let mut zizj: f64 = (*envs).rirj[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+    let mut xixj: f64 = (*envs).rirj[0 as i32 as usize];
+    let mut yiyj: f64 = (*envs).rirj[1 as i32 as usize];
+    let mut zizj: f64 = (*envs).rirj[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = xixj + *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = xixj + *c0x.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(2 as i32 as isize) = xixj + *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = xixj + *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *g.offset(12 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *c0x.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *g.offset(12 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *c0x.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *g.offset(13 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *c0x.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *g.offset(13 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *c0x.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(32 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(33 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(28 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(32 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(33 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(28 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(0 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = yiyj + *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(1 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = yiyj + *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *g.offset(36 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *c0y.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *g.offset(36 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *c0y.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *g.offset(37 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *c0y.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *g.offset(37 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *c0y.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(56 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(56 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(57 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(57 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *g.offset(56 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *g.offset(56 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *g.offset(57 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *g.offset(57 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            50 as libc::c_int as isize,
-        ) = *g.offset(48 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize));
+            50 as i32 as isize,
+        ) = *g.offset(48 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize));
     *g
         .offset(
-            51 as libc::c_int as isize,
-        ) = *g.offset(49 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize));
+            51 as i32 as isize,
+        ) = *g.offset(49 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize));
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *g.offset(60 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(56 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *g.offset(60 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(56 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *g.offset(61 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(57 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *g.offset(61 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(57 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = zizj * *g.offset(52 as libc::c_int as isize)
-        + *cpz.offset(0 as libc::c_int as isize) * *g.offset(56 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = zizj * *g.offset(52 as i32 as isize)
+        + *cpz.offset(0 as i32 as isize) * *g.offset(56 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = zizj * *g.offset(53 as libc::c_int as isize)
-        + *cpz.offset(1 as libc::c_int as isize) * *g.offset(57 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = zizj * *g.offset(53 as i32 as isize)
+        + *cpz.offset(1 as i32 as isize) * *g.offset(57 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_1200(
@@ -4603,161 +4603,161 @@ unsafe extern "C" fn _g0_2d4d_1200(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    let mut xixj: f64 = (*envs).rirj[0 as libc::c_int as usize];
-    let mut yiyj: f64 = (*envs).rirj[1 as libc::c_int as usize];
-    let mut zizj: f64 = (*envs).rirj[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    let mut xixj: f64 = (*envs).rirj[0 as i32 as usize];
+    let mut yiyj: f64 = (*envs).rirj[1 as i32 as usize];
+    let mut zizj: f64 = (*envs).rirj[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *g.offset(8 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *c0x.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *g.offset(8 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *c0x.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *g.offset(9 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *c0x.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *g.offset(9 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *c0x.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            6 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(2 as libc::c_int as isize) = xixj + *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = xixj + *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(20 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(21 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(2 as i32 as isize) = xixj + *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = xixj + *c0x.offset(1 as i32 as isize);
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(20 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(21 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *g.offset(24 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *c0y.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(0 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *g.offset(24 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *c0y.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *g.offset(25 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *c0y.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(1 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *g.offset(25 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *c0y.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(0 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = yiyj + *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(1 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = yiyj + *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(36 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(36 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(37 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(37 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *g.offset(40 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(0 as libc::c_int as isize)
-            * *g.offset(36 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *g.offset(40 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(0 as i32 as isize)
+            * *g.offset(36 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *g.offset(41 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(1 as libc::c_int as isize)
-            * *g.offset(37 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *g.offset(41 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(1 as i32 as isize)
+            * *g.offset(37 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *g.offset(36 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *g.offset(36 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *g.offset(37 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *g.offset(37 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *g.offset(32 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize));
+            34 as i32 as isize,
+        ) = *g.offset(32 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize));
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *g.offset(33 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize));
+            35 as i32 as isize,
+        ) = *g.offset(33 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize));
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_2000(
@@ -4769,60 +4769,60 @@ unsafe extern "C" fn _g0_2d4d_2000(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(7 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(7 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(12 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(12 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(13 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(13 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(14 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(12 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(14 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(12 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(15 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(13 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(15 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(13 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_2001(
@@ -4838,154 +4838,154 @@ unsafe extern "C" fn _g0_2d4d_2001(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(8 as libc::c_int as isize) + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(8 as i32 as isize) + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(9 as libc::c_int as isize) + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(9 as i32 as isize) + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(20 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(20 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(21 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(21 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(26 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(27 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(26 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(27 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(30 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(30 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(31 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(31 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(27 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_2010(
@@ -5001,154 +5001,154 @@ unsafe extern "C" fn _g0_2d4d_2010(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(8 as libc::c_int as isize) + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(8 as i32 as isize) + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(9 as libc::c_int as isize) + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(9 as i32 as isize) + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(20 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(20 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(21 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(21 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(26 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(27 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(26 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(27 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(30 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(30 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(31 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(31 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(27 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_2100(
@@ -5160,161 +5160,161 @@ unsafe extern "C" fn _g0_2d4d_2100(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    let mut xixj: f64 = (*envs).rirj[0 as libc::c_int as usize];
-    let mut yiyj: f64 = (*envs).rirj[1 as libc::c_int as usize];
-    let mut zizj: f64 = (*envs).rirj[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    let mut xixj: f64 = (*envs).rirj[0 as i32 as usize];
+    let mut yiyj: f64 = (*envs).rirj[1 as i32 as usize];
+    let mut zizj: f64 = (*envs).rirj[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *g.offset(4 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *c0x.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *g.offset(4 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *c0x.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *g.offset(5 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *c0x.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *g.offset(5 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *c0x.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = xixj + *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = xixj + *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(18 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
+    *g.offset(8 as i32 as isize) = xixj + *c0x.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = xixj + *c0x.offset(1 as i32 as isize);
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(18 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *g.offset(20 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *c0y.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *g.offset(20 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *c0y.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *g.offset(21 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *c0y.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *g.offset(21 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *c0y.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = yiyj + *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = yiyj + *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(34 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(35 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *g.offset(36 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(0 as libc::c_int as isize)
-            * *g.offset(34 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *g.offset(36 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(0 as i32 as isize)
+            * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *g.offset(37 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(1 as libc::c_int as isize)
-            * *g.offset(35 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *g.offset(37 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(1 as i32 as isize)
+            * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *g.offset(34 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *g.offset(34 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *g.offset(35 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *g.offset(35 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *g.offset(32 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize));
+            40 as i32 as isize,
+        ) = *g.offset(32 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize));
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *g.offset(33 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize));
+            41 as i32 as isize,
+        ) = *g.offset(33 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize));
 }
 #[inline]
 unsafe extern "C" fn _g0_2d4d_3000(
@@ -5326,102 +5326,102 @@ unsafe extern "C" fn _g0_2d4d_3000(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            4 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            4 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            5 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            5 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            6 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(4 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(0 as libc::c_int as isize));
+            6 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(4 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(0 as i32 as isize));
     *g
         .offset(
-            7 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(5 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(1 as libc::c_int as isize));
-    *g.offset(8 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(9 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(10 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+            7 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(5 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(1 as i32 as isize));
+    *g.offset(8 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(9 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(10 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(12 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(0 as libc::c_int as isize));
+            14 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(12 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(0 as i32 as isize));
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(13 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(1 as libc::c_int as isize));
+            15 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(13 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(1 as i32 as isize));
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(16 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(17 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(18 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(16 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(18 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(16 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(19 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(17 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(19 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(17 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(20 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(0 as libc::c_int as isize)
-            * *g.offset(18 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(20 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(0 as i32 as isize)
+            * *g.offset(18 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(21 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(1 as libc::c_int as isize)
-            * *g.offset(19 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(21 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(1 as i32 as isize)
+            * *g.offset(19 as i32 as isize);
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTg0_2e_2d4d_unrolled(
@@ -5429,8 +5429,8 @@ pub unsafe extern "C" fn CINTg0_2e_2d4d_unrolled(
     mut bc: *mut Rys2eT,
     mut envs: *mut CINTEnvVars,
 ) {
-    let mut type_ijkl: libc::c_int = (*envs).li_ceil << 6 as libc::c_int
-        | (*envs).lj_ceil << 4 as libc::c_int | (*envs).lk_ceil << 2 as libc::c_int
+    let mut type_ijkl: i32 = (*envs).li_ceil << 6 as i32
+        | (*envs).lj_ceil << 4 as i32 | (*envs).lk_ceil << 2 as i32
         | (*envs).ll_ceil;
     match type_ijkl {
         0 => {
@@ -5591,10 +5591,10 @@ unsafe extern "C" fn _srg0_2d4d_0000(
     mut bc: *mut Rys2eT,
     mut envs: *mut CINTEnvVars,
 ) {
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0001(
@@ -5605,24 +5605,24 @@ unsafe extern "C" fn _srg0_2d4d_0001(
     let mut cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(5 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(6 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(5 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(6 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(8 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(8 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(9 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(9 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0002(
@@ -5634,114 +5634,114 @@ unsafe extern "C" fn _srg0_2d4d_0002(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *cpx.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *cpx.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *cpx.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(15 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(16 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *cpx.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(15 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(16 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *cpy.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *cpy.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *cpy.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *cpy.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(27 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(28 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(28 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(29 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(29 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(30 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(30 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(31 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(31 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(27 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0003(
@@ -5753,198 +5753,198 @@ unsafe extern "C" fn _srg0_2d4d_0003(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *cpx.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *cpx.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *cpx.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *cpx.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(8 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(0 as libc::c_int as isize));
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(8 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(0 as i32 as isize));
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(9 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(1 as libc::c_int as isize));
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(9 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(1 as i32 as isize));
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (*g.offset(10 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(2 as libc::c_int as isize));
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (*g.offset(10 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(2 as i32 as isize));
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (*g.offset(11 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(3 as libc::c_int as isize));
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(18 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(19 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(20 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(21 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(22 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(23 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (*g.offset(11 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(3 as i32 as isize));
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(18 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(19 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(20 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(21 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(22 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(23 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *cpy.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *cpy.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *cpy.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *cpy.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(24 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(0 as libc::c_int as isize));
+            28 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(24 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(0 as i32 as isize));
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(25 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(1 as libc::c_int as isize));
+            29 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(25 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(1 as i32 as isize));
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (*g.offset(26 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(2 as libc::c_int as isize));
+            30 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (*g.offset(26 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(2 as i32 as isize));
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (*g.offset(27 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(3 as libc::c_int as isize));
+            31 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (*g.offset(27 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(3 as i32 as isize));
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(36 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(36 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(37 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(37 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(38 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(34 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(38 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(39 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(35 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(39 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(40 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(0 as libc::c_int as isize)
-            * *g.offset(36 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(40 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(0 as i32 as isize)
+            * *g.offset(36 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(41 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(1 as libc::c_int as isize)
-            * *g.offset(37 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(41 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(1 as i32 as isize)
+            * *g.offset(37 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(42 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(2 as libc::c_int as isize)
-            * *g.offset(38 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(42 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(2 as i32 as isize)
+            * *g.offset(38 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(43 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(3 as libc::c_int as isize)
-            * *g.offset(39 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(43 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(3 as i32 as isize)
+            * *g.offset(39 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0010(
@@ -5955,24 +5955,24 @@ unsafe extern "C" fn _srg0_2d4d_0010(
     let mut cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(5 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(6 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(5 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(6 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(8 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(8 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(9 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(9 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0011(
@@ -5984,157 +5984,157 @@ unsafe extern "C" fn _srg0_2d4d_0011(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    let mut xkxl: f64 = (*envs).rkrl[0 as libc::c_int as usize];
-    let mut ykyl: f64 = (*envs).rkrl[1 as libc::c_int as usize];
-    let mut zkzl: f64 = (*envs).rkrl[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    let mut xkxl: f64 = (*envs).rkrl[0 as i32 as usize];
+    let mut ykyl: f64 = (*envs).rkrl[1 as i32 as usize];
+    let mut zkzl: f64 = (*envs).rkrl[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = xkxl + *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = xkxl + *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = xkxl + *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = xkxl + *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(27 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(32 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(33 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(34 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(35 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize);
+    *g.offset(4 as i32 as isize) = xkxl + *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = xkxl + *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = xkxl + *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = xkxl + *cpx.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(27 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(32 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(33 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(34 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(35 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = ykyl + *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = ykyl + *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(2 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = ykyl + *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(3 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = ykyl + *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *g.offset(56 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *g.offset(56 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *g.offset(57 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *g.offset(57 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *g.offset(58 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *g.offset(58 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *g.offset(59 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *g.offset(59 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *g.offset(48 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize));
+            52 as i32 as isize,
+        ) = *g.offset(48 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize));
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *g.offset(49 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize));
+            53 as i32 as isize,
+        ) = *g.offset(49 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize));
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *g.offset(50 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize));
+            54 as i32 as isize,
+        ) = *g.offset(50 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize));
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *g.offset(51 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize));
+            55 as i32 as isize,
+        ) = *g.offset(51 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize));
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0012(
@@ -6146,313 +6146,313 @@ unsafe extern "C" fn _srg0_2d4d_0012(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    let mut xkxl: f64 = (*envs).rkrl[0 as libc::c_int as usize];
-    let mut ykyl: f64 = (*envs).rkrl[1 as libc::c_int as usize];
-    let mut zkzl: f64 = (*envs).rkrl[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    let mut xkxl: f64 = (*envs).rkrl[0 as i32 as usize];
+    let mut ykyl: f64 = (*envs).rkrl[1 as i32 as usize];
+    let mut zkzl: f64 = (*envs).rkrl[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *cpx.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *cpx.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *cpx.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *cpx.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *g.offset(16 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *cpx.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *g.offset(16 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *cpx.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *g.offset(17 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *cpx.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *g.offset(17 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *cpx.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *g.offset(18 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *cpx.offset(2 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *g.offset(18 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *cpx.offset(2 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *g.offset(19 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *cpx.offset(3 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *g.offset(19 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *cpx.offset(3 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = xkxl + *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = xkxl + *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = xkxl + *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = xkxl + *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(32 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(33 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(34 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(35 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(40 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(41 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(42 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(43 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize);
+    *g.offset(4 as i32 as isize) = xkxl + *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = xkxl + *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = xkxl + *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = xkxl + *cpx.offset(3 as i32 as isize);
+    *g.offset(32 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(33 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(34 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(35 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(40 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(41 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(42 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(43 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            48 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            48 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            49 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            49 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            50 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *cpy.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            50 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *cpy.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            51 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *cpy.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            51 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *cpy.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *g.offset(48 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *cpy.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(0 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *g.offset(48 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *cpy.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *g.offset(49 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *cpy.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(1 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *g.offset(49 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *cpy.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *g.offset(50 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *cpy.offset(2 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(2 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *g.offset(50 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *cpy.offset(2 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *g.offset(51 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *cpy.offset(3 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(3 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *g.offset(51 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *cpy.offset(3 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = ykyl + *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = ykyl + *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(2 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = ykyl + *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(3 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = ykyl + *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            72 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(64 as libc::c_int as isize);
+            72 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            73 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(65 as libc::c_int as isize);
+            73 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            74 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(66 as libc::c_int as isize);
+            74 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            75 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(67 as libc::c_int as isize);
+            75 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            80 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(72 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(64 as libc::c_int as isize);
+            80 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(72 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            81 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(73 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(65 as libc::c_int as isize);
+            81 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(73 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            82 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(74 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(66 as libc::c_int as isize);
+            82 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(74 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            83 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(75 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(67 as libc::c_int as isize);
+            83 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(75 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            84 as libc::c_int as isize,
-        ) = *g.offset(80 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(0 as libc::c_int as isize)
-            * *g.offset(72 as libc::c_int as isize);
+            84 as i32 as isize,
+        ) = *g.offset(80 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(0 as i32 as isize)
+            * *g.offset(72 as i32 as isize);
     *g
         .offset(
-            85 as libc::c_int as isize,
-        ) = *g.offset(81 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(1 as libc::c_int as isize)
-            * *g.offset(73 as libc::c_int as isize);
+            85 as i32 as isize,
+        ) = *g.offset(81 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(1 as i32 as isize)
+            * *g.offset(73 as i32 as isize);
     *g
         .offset(
-            86 as libc::c_int as isize,
-        ) = *g.offset(82 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(2 as libc::c_int as isize)
-            * *g.offset(74 as libc::c_int as isize);
+            86 as i32 as isize,
+        ) = *g.offset(82 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(2 as i32 as isize)
+            * *g.offset(74 as i32 as isize);
     *g
         .offset(
-            87 as libc::c_int as isize,
-        ) = *g.offset(83 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(3 as libc::c_int as isize)
-            * *g.offset(75 as libc::c_int as isize);
+            87 as i32 as isize,
+        ) = *g.offset(83 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(3 as i32 as isize)
+            * *g.offset(75 as i32 as isize);
     *g
         .offset(
-            76 as libc::c_int as isize,
-        ) = *g.offset(72 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(64 as libc::c_int as isize);
+            76 as i32 as isize,
+        ) = *g.offset(72 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            77 as libc::c_int as isize,
-        ) = *g.offset(73 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(65 as libc::c_int as isize);
+            77 as i32 as isize,
+        ) = *g.offset(73 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            78 as libc::c_int as isize,
-        ) = *g.offset(74 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(66 as libc::c_int as isize);
+            78 as i32 as isize,
+        ) = *g.offset(74 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize) * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            79 as libc::c_int as isize,
-        ) = *g.offset(75 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(67 as libc::c_int as isize);
+            79 as i32 as isize,
+        ) = *g.offset(75 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize) * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *g.offset(64 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize));
+            68 as i32 as isize,
+        ) = *g.offset(64 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize));
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *g.offset(65 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize));
+            69 as i32 as isize,
+        ) = *g.offset(65 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize));
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *g.offset(66 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize));
+            70 as i32 as isize,
+        ) = *g.offset(66 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize));
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *g.offset(67 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize));
+            71 as i32 as isize,
+        ) = *g.offset(67 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize));
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0020(
@@ -6464,114 +6464,114 @@ unsafe extern "C" fn _srg0_2d4d_0020(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *cpx.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *cpx.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *cpx.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(15 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(16 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *cpx.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(15 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(16 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *cpy.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *cpy.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *cpy.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *cpy.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(27 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(28 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(28 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(29 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(29 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(30 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(30 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(31 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(31 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(27 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0021(
@@ -6583,325 +6583,325 @@ unsafe extern "C" fn _srg0_2d4d_0021(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    let mut xkxl: f64 = (*envs).rkrl[0 as libc::c_int as usize];
-    let mut ykyl: f64 = (*envs).rkrl[1 as libc::c_int as usize];
-    let mut zkzl: f64 = (*envs).rkrl[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    let mut xkxl: f64 = (*envs).rkrl[0 as i32 as usize];
+    let mut ykyl: f64 = (*envs).rkrl[1 as i32 as usize];
+    let mut zkzl: f64 = (*envs).rkrl[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *cpx.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *cpx.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *cpx.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *cpx.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = xkxl + *cpx.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = xkxl + *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = xkxl + *cpx.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = xkxl + *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = xkxl + *cpx.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = xkxl + *cpx.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = xkxl + *cpx.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = xkxl + *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *g.offset(8 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *cpx.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *g.offset(8 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *cpx.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *g.offset(9 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *cpx.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *g.offset(9 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *cpx.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *g.offset(10 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *cpx.offset(2 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(2 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *g.offset(10 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *cpx.offset(2 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *g.offset(11 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *cpx.offset(3 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(3 as libc::c_int as isize);
-    *g.offset(32 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(33 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(34 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(35 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(36 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(37 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(38 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(39 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *g.offset(11 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *cpx.offset(3 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(3 as i32 as isize);
+    *g.offset(32 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(33 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(34 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(35 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(36 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(37 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(38 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(39 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *cpy.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *cpy.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *cpy.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *cpy.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            48 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(0 as libc::c_int as isize);
+            48 as i32 as isize,
+        ) = ykyl + *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            49 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(1 as libc::c_int as isize);
+            49 as i32 as isize,
+        ) = ykyl + *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            50 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(2 as libc::c_int as isize);
+            50 as i32 as isize,
+        ) = ykyl + *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            51 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(3 as libc::c_int as isize);
+            51 as i32 as isize,
+        ) = ykyl + *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *g.offset(40 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *cpy.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(0 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *g.offset(40 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *cpy.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *g.offset(41 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *cpy.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(1 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *g.offset(41 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *cpy.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *g.offset(42 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *cpy.offset(2 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(2 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *g.offset(42 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *cpy.offset(2 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *g.offset(43 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *cpy.offset(3 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b01.offset(3 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *g.offset(43 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *cpy.offset(3 as i32 as isize) * 2 as i32 as f64
+            * *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(64 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(65 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(66 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(67 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            72 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(68 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(64 as libc::c_int as isize);
+            72 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(68 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            73 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(69 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(65 as libc::c_int as isize);
+            73 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(69 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            74 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(70 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(66 as libc::c_int as isize);
+            74 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(70 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            75 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(71 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(67 as libc::c_int as isize);
+            75 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(71 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            80 as libc::c_int as isize,
-        ) = *g.offset(64 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize));
+            80 as i32 as isize,
+        ) = *g.offset(64 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize));
     *g
         .offset(
-            81 as libc::c_int as isize,
-        ) = *g.offset(65 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize));
+            81 as i32 as isize,
+        ) = *g.offset(65 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize));
     *g
         .offset(
-            82 as libc::c_int as isize,
-        ) = *g.offset(66 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize));
+            82 as i32 as isize,
+        ) = *g.offset(66 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize));
     *g
         .offset(
-            83 as libc::c_int as isize,
-        ) = *g.offset(67 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize));
+            83 as i32 as isize,
+        ) = *g.offset(67 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize));
     *g
         .offset(
-            84 as libc::c_int as isize,
-        ) = *g.offset(68 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(64 as libc::c_int as isize);
+            84 as i32 as isize,
+        ) = *g.offset(68 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            85 as libc::c_int as isize,
-        ) = *g.offset(69 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(65 as libc::c_int as isize);
+            85 as i32 as isize,
+        ) = *g.offset(69 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            86 as libc::c_int as isize,
-        ) = *g.offset(70 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(66 as libc::c_int as isize);
+            86 as i32 as isize,
+        ) = *g.offset(70 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize) * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            87 as libc::c_int as isize,
-        ) = *g.offset(71 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(67 as libc::c_int as isize);
+            87 as i32 as isize,
+        ) = *g.offset(71 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize) * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            88 as libc::c_int as isize,
-        ) = *g.offset(72 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(0 as libc::c_int as isize)
-            * *g.offset(68 as libc::c_int as isize);
+            88 as i32 as isize,
+        ) = *g.offset(72 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(0 as i32 as isize)
+            * *g.offset(68 as i32 as isize);
     *g
         .offset(
-            89 as libc::c_int as isize,
-        ) = *g.offset(73 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(1 as libc::c_int as isize)
-            * *g.offset(69 as libc::c_int as isize);
+            89 as i32 as isize,
+        ) = *g.offset(73 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(1 as i32 as isize)
+            * *g.offset(69 as i32 as isize);
     *g
         .offset(
-            90 as libc::c_int as isize,
-        ) = *g.offset(74 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(2 as libc::c_int as isize)
-            * *g.offset(70 as libc::c_int as isize);
+            90 as i32 as isize,
+        ) = *g.offset(74 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(2 as i32 as isize)
+            * *g.offset(70 as i32 as isize);
     *g
         .offset(
-            91 as libc::c_int as isize,
-        ) = *g.offset(75 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b01.offset(3 as libc::c_int as isize)
-            * *g.offset(71 as libc::c_int as isize);
+            91 as i32 as isize,
+        ) = *g.offset(75 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + 2 as i32 as f64 * *b01.offset(3 as i32 as isize)
+            * *g.offset(71 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0030(
@@ -6913,198 +6913,198 @@ unsafe extern "C" fn _srg0_2d4d_0030(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *cpx.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *cpx.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *cpx.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *cpx.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(8 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(0 as libc::c_int as isize));
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(8 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(0 as i32 as isize));
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(9 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(1 as libc::c_int as isize));
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(9 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(1 as i32 as isize));
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (*g.offset(10 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(2 as libc::c_int as isize));
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (*g.offset(10 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(2 as i32 as isize));
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (*g.offset(11 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(3 as libc::c_int as isize));
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(18 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(19 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(20 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(21 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(22 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(23 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (*g.offset(11 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(3 as i32 as isize));
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(18 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(19 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(20 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(21 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(22 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(23 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *cpy.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *cpy.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *cpy.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *cpy.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(24 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(0 as libc::c_int as isize));
+            28 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(24 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(0 as i32 as isize));
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(25 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(1 as libc::c_int as isize));
+            29 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(25 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(1 as i32 as isize));
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (*g.offset(26 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(2 as libc::c_int as isize));
+            30 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (*g.offset(26 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(2 as i32 as isize));
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (*g.offset(27 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b01.offset(3 as libc::c_int as isize));
+            31 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (*g.offset(27 as i32 as isize)
+            + 2 as i32 as f64
+                * *b01.offset(3 as i32 as isize));
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(36 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(36 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(37 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(37 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(38 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(34 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(38 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(39 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(35 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(39 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(40 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(0 as libc::c_int as isize)
-            * *g.offset(36 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(40 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(0 as i32 as isize)
+            * *g.offset(36 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(41 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(1 as libc::c_int as isize)
-            * *g.offset(37 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(41 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(1 as i32 as isize)
+            * *g.offset(37 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(42 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(2 as libc::c_int as isize)
-            * *g.offset(38 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(42 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(2 as i32 as isize)
+            * *g.offset(38 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(43 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b01.offset(3 as libc::c_int as isize)
-            * *g.offset(39 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(43 as i32 as isize)
+        + 2 as i32 as f64 * *b01.offset(3 as i32 as isize)
+            * *g.offset(39 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0100(
@@ -7115,24 +7115,24 @@ unsafe extern "C" fn _srg0_2d4d_0100(
     let mut c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(5 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(6 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(5 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(6 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(8 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(8 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(9 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(9 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0101(
@@ -7147,142 +7147,142 @@ unsafe extern "C" fn _srg0_2d4d_0101(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(18 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(19 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(20 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(21 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(22 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(23 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(25 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(26 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(27 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(18 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(19 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(20 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(21 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(22 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(23 as i32 as isize) = *cpy.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(25 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(26 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(27 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(40 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(40 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(41 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(41 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(42 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(34 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(42 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(43 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(35 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(43 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(35 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0102(
@@ -7298,306 +7298,306 @@ unsafe extern "C" fn _srg0_2d4d_0102(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(13 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(14 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
+    *g.offset(12 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(13 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(14 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *cpx.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *cpx.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *cpx.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *cpx.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(16 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(16 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(17 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(17 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (*g.offset(18 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0x.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (*g.offset(18 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize)
+            * *c0x.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (*g.offset(19 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(27 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(28 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(30 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(31 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
-    *g.offset(36 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(37 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(38 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(39 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (*g.offset(19 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize)
+            * *c0x.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(27 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(28 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(30 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(31 as i32 as isize) = *cpy.offset(3 as i32 as isize);
+    *g.offset(36 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(37 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(38 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(39 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *cpy.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *cpy.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *cpy.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *cpy.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(40 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(40 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(41 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(41 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (*g.offset(42 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0y.offset(2 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (*g.offset(42 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize)
+            * *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (*g.offset(43 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0y.offset(3 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (*g.offset(43 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize)
+            * *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(52 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(52 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(53 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(53 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(54 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(54 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(55 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(55 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            64 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(60 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            64 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(60 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            65 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(61 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            65 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(61 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            66 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(62 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            66 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(62 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            67 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(63 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            67 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(63 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(64 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(60 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(64 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(60 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(65 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(61 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(65 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(61 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(66 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(62 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(54 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(66 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(62 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(54 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(67 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(63 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(55 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(67 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(63 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(55 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0110(
@@ -7612,142 +7612,142 @@ unsafe extern "C" fn _srg0_2d4d_0110(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(18 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(19 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(20 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(21 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(22 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(23 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(25 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(26 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(27 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(18 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(19 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(20 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(21 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(22 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(23 as i32 as isize) = *cpy.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(25 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(26 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(27 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(40 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(40 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(41 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(41 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(42 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(34 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(42 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(43 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(35 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(43 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(35 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0111(
@@ -7763,425 +7763,425 @@ unsafe extern "C" fn _srg0_2d4d_0111(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    let mut xkxl: f64 = (*envs).rkrl[0 as libc::c_int as usize];
-    let mut ykyl: f64 = (*envs).rkrl[1 as libc::c_int as usize];
-    let mut zkzl: f64 = (*envs).rkrl[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(24 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(25 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(26 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(27 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    let mut xkxl: f64 = (*envs).rkrl[0 as i32 as usize];
+    let mut ykyl: f64 = (*envs).rkrl[1 as i32 as usize];
+    let mut zkzl: f64 = (*envs).rkrl[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(24 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(25 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(26 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(27 as i32 as isize) = *c0x.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
-    *g
-        .offset(
-            35 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
-    *g
-        .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
-    *g
-        .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
+    *g
+        .offset(
+            35 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
+    *g
+        .offset(
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
+    *g
+        .offset(
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *g.offset(32 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *cpx.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *g.offset(32 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *cpx.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *g.offset(33 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *cpx.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *g.offset(33 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *cpx.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *g.offset(34 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *cpx.offset(2 as libc::c_int as isize) * *b00.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0x.offset(2 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *g.offset(34 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *cpx.offset(2 as i32 as isize) * *b00.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize)
+            * *c0x.offset(2 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *g.offset(35 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *cpx.offset(3 as libc::c_int as isize) * *b00.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = xkxl + *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = xkxl + *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = xkxl + *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = xkxl + *cpx.offset(3 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *g.offset(35 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *cpx.offset(3 as i32 as isize) * *b00.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize)
+            * *c0x.offset(3 as i32 as isize);
+    *g.offset(4 as i32 as isize) = xkxl + *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = xkxl + *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = xkxl + *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = xkxl + *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *b00.offset(2 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *b00.offset(3 as libc::c_int as isize);
-    *g.offset(48 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(49 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(50 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(51 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(72 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(73 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(74 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(75 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
-    *g.offset(56 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(57 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(58 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(59 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *b00.offset(3 as i32 as isize);
+    *g.offset(48 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(49 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(50 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(51 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(72 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(73 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(74 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(75 as i32 as isize) = *c0y.offset(3 as i32 as isize);
+    *g.offset(56 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(57 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(58 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(59 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            80 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            80 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            81 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            81 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            82 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            82 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            83 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            83 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            84 as libc::c_int as isize,
-        ) = *g.offset(80 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *cpy.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            84 as i32 as isize,
+        ) = *g.offset(80 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *cpy.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            85 as libc::c_int as isize,
-        ) = *g.offset(81 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *cpy.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            85 as i32 as isize,
+        ) = *g.offset(81 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *cpy.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            86 as libc::c_int as isize,
-        ) = *g.offset(82 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *cpy.offset(2 as libc::c_int as isize) * *b00.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0y.offset(2 as libc::c_int as isize);
+            86 as i32 as isize,
+        ) = *g.offset(82 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *cpy.offset(2 as i32 as isize) * *b00.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize)
+            * *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            87 as libc::c_int as isize,
-        ) = *g.offset(83 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *cpy.offset(3 as libc::c_int as isize) * *b00.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0y.offset(3 as libc::c_int as isize);
+            87 as i32 as isize,
+        ) = *g.offset(83 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *cpy.offset(3 as i32 as isize) * *b00.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize)
+            * *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(0 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = ykyl + *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(1 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = ykyl + *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(2 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = ykyl + *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(3 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = ykyl + *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            76 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            76 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            77 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            77 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            78 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *b00.offset(2 as libc::c_int as isize);
+            78 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            79 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *b00.offset(3 as libc::c_int as isize);
+            79 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            120 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(96 as libc::c_int as isize);
+            120 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            121 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(97 as libc::c_int as isize);
+            121 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            122 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(98 as libc::c_int as isize);
+            122 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            123 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(99 as libc::c_int as isize);
+            123 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            104 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(96 as libc::c_int as isize);
+            104 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            105 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(97 as libc::c_int as isize);
+            105 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            106 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(98 as libc::c_int as isize);
+            106 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            107 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(99 as libc::c_int as isize);
+            107 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            128 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(120 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            128 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(120 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            129 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(121 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            129 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(121 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            130 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(122 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            130 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(122 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            131 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(123 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            131 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(123 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            108 as libc::c_int as isize,
-        ) = *g.offset(104 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            108 as i32 as isize,
+        ) = *g.offset(104 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            109 as libc::c_int as isize,
-        ) = *g.offset(105 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            109 as i32 as isize,
+        ) = *g.offset(105 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            110 as libc::c_int as isize,
-        ) = *g.offset(106 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            110 as i32 as isize,
+        ) = *g.offset(106 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            111 as libc::c_int as isize,
-        ) = *g.offset(107 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            111 as i32 as isize,
+        ) = *g.offset(107 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            132 as libc::c_int as isize,
-        ) = *g.offset(128 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(120 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize)
-            * *g.offset(104 as libc::c_int as isize);
+            132 as i32 as isize,
+        ) = *g.offset(128 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(120 as i32 as isize)
+        + *b00.offset(0 as i32 as isize)
+            * *g.offset(104 as i32 as isize);
     *g
         .offset(
-            133 as libc::c_int as isize,
-        ) = *g.offset(129 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(121 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize)
-            * *g.offset(105 as libc::c_int as isize);
+            133 as i32 as isize,
+        ) = *g.offset(129 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(121 as i32 as isize)
+        + *b00.offset(1 as i32 as isize)
+            * *g.offset(105 as i32 as isize);
     *g
         .offset(
-            134 as libc::c_int as isize,
-        ) = *g.offset(130 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(122 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize)
-            * *g.offset(106 as libc::c_int as isize);
+            134 as i32 as isize,
+        ) = *g.offset(130 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize) * *g.offset(122 as i32 as isize)
+        + *b00.offset(2 as i32 as isize)
+            * *g.offset(106 as i32 as isize);
     *g
         .offset(
-            135 as libc::c_int as isize,
-        ) = *g.offset(131 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(123 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize)
-            * *g.offset(107 as libc::c_int as isize);
+            135 as i32 as isize,
+        ) = *g.offset(131 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize) * *g.offset(123 as i32 as isize)
+        + *b00.offset(3 as i32 as isize)
+            * *g.offset(107 as i32 as isize);
     *g
         .offset(
-            100 as libc::c_int as isize,
-        ) = *g.offset(96 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize));
+            100 as i32 as isize,
+        ) = *g.offset(96 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize));
     *g
         .offset(
-            101 as libc::c_int as isize,
-        ) = *g.offset(97 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize));
+            101 as i32 as isize,
+        ) = *g.offset(97 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize));
     *g
         .offset(
-            102 as libc::c_int as isize,
-        ) = *g.offset(98 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize));
+            102 as i32 as isize,
+        ) = *g.offset(98 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize));
     *g
         .offset(
-            103 as libc::c_int as isize,
-        ) = *g.offset(99 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize));
+            103 as i32 as isize,
+        ) = *g.offset(99 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize));
     *g
         .offset(
-            124 as libc::c_int as isize,
-        ) = *g.offset(120 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            124 as i32 as isize,
+        ) = *g.offset(120 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            125 as libc::c_int as isize,
-        ) = *g.offset(121 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            125 as i32 as isize,
+        ) = *g.offset(121 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            126 as libc::c_int as isize,
-        ) = *g.offset(122 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            126 as i32 as isize,
+        ) = *g.offset(122 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + *b00.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            127 as libc::c_int as isize,
-        ) = *g.offset(123 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            127 as i32 as isize,
+        ) = *g.offset(123 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + *b00.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0120(
@@ -8197,306 +8197,306 @@ unsafe extern "C" fn _srg0_2d4d_0120(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(13 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(14 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
+    *g.offset(12 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(13 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(14 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *cpx.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *cpx.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *cpx.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *cpx.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(16 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(16 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(17 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(17 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (*g.offset(18 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0x.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (*g.offset(18 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize)
+            * *c0x.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (*g.offset(19 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(27 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(28 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(30 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(31 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
-    *g.offset(36 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(37 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(38 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(39 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (*g.offset(19 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize)
+            * *c0x.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(27 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(28 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(30 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(31 as i32 as isize) = *cpy.offset(3 as i32 as isize);
+    *g.offset(36 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(37 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(38 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(39 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *cpy.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *cpy.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *cpy.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *cpy.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(40 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(40 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(41 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(41 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (*g.offset(42 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0y.offset(2 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (*g.offset(42 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize)
+            * *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (*g.offset(43 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0y.offset(3 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (*g.offset(43 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize)
+            * *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(52 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(52 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(53 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(53 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(54 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(54 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(55 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(55 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            64 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(60 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            64 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(60 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            65 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(61 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            65 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(61 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            66 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(62 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            66 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(62 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            67 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(63 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            67 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(63 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(64 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(60 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(64 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(60 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(65 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(61 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(65 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(61 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(66 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(62 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(54 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(66 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(62 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(54 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(67 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(63 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(55 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(67 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(63 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(55 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0200(
@@ -8508,114 +8508,114 @@ unsafe extern "C" fn _srg0_2d4d_0200(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(15 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(16 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(15 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(16 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(27 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(28 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(28 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(29 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(29 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(30 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(30 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(31 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(31 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(27 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0201(
@@ -8631,306 +8631,306 @@ unsafe extern "C" fn _srg0_2d4d_0201(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(12 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(12 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(13 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(13 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (*g.offset(14 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpx.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (*g.offset(14 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize)
+            * *cpx.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (*g.offset(15 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(27 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(32 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(33 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(34 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(35 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (*g.offset(15 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize)
+            * *cpx.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(27 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(32 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(33 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(34 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(35 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(28 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(30 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(31 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(28 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(30 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(31 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(36 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(36 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(37 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(37 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (*g.offset(38 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpy.offset(2 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (*g.offset(38 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize)
+            * *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (*g.offset(39 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpy.offset(3 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (*g.offset(39 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize)
+            * *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            64 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(56 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            64 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(56 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            65 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(57 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            65 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(57 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            66 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(58 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            66 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(58 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            67 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(59 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            67 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(59 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(56 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(56 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(57 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(57 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(58 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(58 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(59 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(59 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(60 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(56 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(60 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(56 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(61 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(57 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(61 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(57 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(62 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(54 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(58 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(62 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(54 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(58 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(63 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(55 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(59 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(63 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(55 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(59 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0210(
@@ -8946,306 +8946,306 @@ unsafe extern "C" fn _srg0_2d4d_0210(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *cpx.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(12 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(12 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(13 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(13 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (*g.offset(14 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpx.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (*g.offset(14 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize)
+            * *cpx.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (*g.offset(15 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(27 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(28 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(30 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(31 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
-    *g.offset(32 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(33 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(34 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(35 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (*g.offset(15 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize)
+            * *cpx.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(27 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(28 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(30 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(31 as i32 as isize) = *cpy.offset(3 as i32 as isize);
+    *g.offset(32 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(33 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(34 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(35 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(36 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(36 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(37 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(37 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (*g.offset(38 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpy.offset(2 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (*g.offset(38 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize)
+            * *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (*g.offset(39 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpy.offset(3 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (*g.offset(39 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize)
+            * *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(56 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(56 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(57 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(57 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(58 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(58 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(59 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(59 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            64 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(56 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            64 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(56 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            65 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(57 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            65 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(57 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            66 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(58 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            66 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(58 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            67 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(59 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            67 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(59 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(60 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(56 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(60 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(56 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(61 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(57 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(61 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(57 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(62 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(54 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(58 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(62 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(54 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(58 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(63 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(55 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(59 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(63 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(55 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(59 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0300(
@@ -9257,198 +9257,198 @@ unsafe extern "C" fn _srg0_2d4d_0300(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(8 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(0 as libc::c_int as isize));
+            12 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(8 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(0 as i32 as isize));
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(9 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(1 as libc::c_int as isize));
+            13 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(9 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(1 as i32 as isize));
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (*g.offset(10 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(2 as libc::c_int as isize));
+            14 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (*g.offset(10 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(2 as i32 as isize));
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (*g.offset(11 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(3 as libc::c_int as isize));
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(18 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(19 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(20 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(21 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(22 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(23 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (*g.offset(11 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(3 as i32 as isize));
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(18 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(19 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(20 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(21 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(22 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(23 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(24 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(0 as libc::c_int as isize));
+            28 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(24 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(0 as i32 as isize));
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(25 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(1 as libc::c_int as isize));
+            29 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(25 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(1 as i32 as isize));
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (*g.offset(26 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(2 as libc::c_int as isize));
+            30 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (*g.offset(26 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(2 as i32 as isize));
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (*g.offset(27 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(3 as libc::c_int as isize));
+            31 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (*g.offset(27 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(3 as i32 as isize));
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(36 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(36 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(37 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(37 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(38 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(34 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(38 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(39 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(35 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(39 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(40 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(0 as libc::c_int as isize)
-            * *g.offset(36 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(40 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(0 as i32 as isize)
+            * *g.offset(36 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(41 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(1 as libc::c_int as isize)
-            * *g.offset(37 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(41 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(1 as i32 as isize)
+            * *g.offset(37 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(42 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(2 as libc::c_int as isize)
-            * *g.offset(38 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(42 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(2 as i32 as isize)
+            * *g.offset(38 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(43 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(3 as libc::c_int as isize)
-            * *g.offset(39 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(43 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(3 as i32 as isize)
+            * *g.offset(39 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_1000(
@@ -9459,24 +9459,24 @@ unsafe extern "C" fn _srg0_2d4d_1000(
     let mut c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(3 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(5 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(6 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(3 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(4 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(5 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(6 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(8 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(8 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(9 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(9 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_1001(
@@ -9491,142 +9491,142 @@ unsafe extern "C" fn _srg0_2d4d_1001(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(18 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(19 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(20 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(21 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(22 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(23 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(25 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(26 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(27 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(18 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(19 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(20 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(21 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(22 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(23 as i32 as isize) = *c0y.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(25 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(26 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(27 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(36 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(36 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(37 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(37 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(38 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(34 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(38 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(39 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(35 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(39 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(35 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_1002(
@@ -9642,306 +9642,306 @@ unsafe extern "C" fn _srg0_2d4d_1002(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *cpx.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *cpx.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *cpx.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *cpx.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(12 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(12 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(13 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(13 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (*g.offset(14 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0x.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (*g.offset(14 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize)
+            * *c0x.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (*g.offset(15 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(27 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(28 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(30 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(31 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
-    *g.offset(32 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(33 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(34 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(35 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (*g.offset(15 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize)
+            * *c0x.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(27 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(28 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(30 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(31 as i32 as isize) = *c0y.offset(3 as i32 as isize);
+    *g.offset(32 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(33 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(34 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(35 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *cpy.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *cpy.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *cpy.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *cpy.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(36 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(36 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(37 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(37 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (*g.offset(38 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0y.offset(2 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (*g.offset(38 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize)
+            * *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (*g.offset(39 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0y.offset(3 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (*g.offset(39 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize)
+            * *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(52 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(52 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(53 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(53 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(54 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(54 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(55 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(55 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            64 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(56 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            64 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(56 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            65 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(57 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            65 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(57 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            66 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(58 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            66 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(58 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            67 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(59 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            67 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(59 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(60 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(56 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(60 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(56 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(61 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(57 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(61 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(57 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(62 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(54 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(58 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(62 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(54 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(58 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(63 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(55 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(59 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(63 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(55 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(59 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_1010(
@@ -9956,142 +9956,142 @@ unsafe extern "C" fn _srg0_2d4d_1010(
     let mut cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(18 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(19 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(20 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(21 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(22 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(23 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(25 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(26 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(27 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(18 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(19 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(20 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(21 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(22 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(23 as i32 as isize) = *c0y.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(25 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(26 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(27 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(36 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(36 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(37 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(37 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(38 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(34 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(38 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(39 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(35 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(39 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(35 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_1011(
@@ -10107,431 +10107,431 @@ unsafe extern "C" fn _srg0_2d4d_1011(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    let mut xkxl: f64 = (*envs).rkrl[0 as libc::c_int as usize];
-    let mut ykyl: f64 = (*envs).rkrl[1 as libc::c_int as usize];
-    let mut zkzl: f64 = (*envs).rkrl[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(16 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    let mut xkxl: f64 = (*envs).rkrl[0 as i32 as usize];
+    let mut ykyl: f64 = (*envs).rkrl[1 as i32 as usize];
+    let mut zkzl: f64 = (*envs).rkrl[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
+    *g.offset(16 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *g.offset(20 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *cpx.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *g.offset(20 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *cpx.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *g.offset(21 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *cpx.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *g.offset(21 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *cpx.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *g.offset(22 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *cpx.offset(2 as libc::c_int as isize) * *b00.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0x.offset(2 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *g.offset(22 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *cpx.offset(2 as i32 as isize) * *b00.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize)
+            * *c0x.offset(2 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *g.offset(23 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *cpx.offset(3 as libc::c_int as isize) * *b00.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = xkxl + *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = xkxl + *cpx.offset(1 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *g.offset(23 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *cpx.offset(3 as i32 as isize) * *b00.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize)
+            * *c0x.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = xkxl + *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = xkxl + *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = xkxl + *cpx.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = xkxl + *cpx.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = xkxl + *cpx.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = xkxl + *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xkxl + *cpx.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xkxl + *cpx.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(2 as libc::c_int as isize))
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (xkxl + *cpx.offset(2 as i32 as isize))
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (xkxl + *cpx.offset(3 as libc::c_int as isize))
-        + *b00.offset(3 as libc::c_int as isize);
-    *g.offset(48 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(49 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(50 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(51 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(52 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(53 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(54 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(55 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
-    *g.offset(64 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(65 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(66 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(67 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (xkxl + *cpx.offset(3 as i32 as isize))
+        + *b00.offset(3 as i32 as isize);
+    *g.offset(48 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(49 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(50 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(51 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(52 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(53 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(54 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(55 as i32 as isize) = *c0y.offset(3 as i32 as isize);
+    *g.offset(64 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(65 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(66 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(67 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            72 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize);
+            72 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            73 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize);
+            73 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            74 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize);
+            74 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            75 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize);
+            75 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            76 as libc::c_int as isize,
-        ) = *g.offset(68 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *cpy.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            76 as i32 as isize,
+        ) = *g.offset(68 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *cpy.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            77 as libc::c_int as isize,
-        ) = *g.offset(69 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *cpy.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            77 as i32 as isize,
+        ) = *g.offset(69 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *cpy.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            78 as libc::c_int as isize,
-        ) = *g.offset(70 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *cpy.offset(2 as libc::c_int as isize) * *b00.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0y.offset(2 as libc::c_int as isize);
+            78 as i32 as isize,
+        ) = *g.offset(70 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *cpy.offset(2 as i32 as isize) * *b00.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize)
+            * *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            79 as libc::c_int as isize,
-        ) = *g.offset(71 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *cpy.offset(3 as libc::c_int as isize) * *b00.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0y.offset(3 as libc::c_int as isize);
+            79 as i32 as isize,
+        ) = *g.offset(71 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *cpy.offset(3 as i32 as isize) * *b00.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize)
+            * *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(0 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = ykyl + *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(1 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = ykyl + *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(2 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = ykyl + *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = ykyl + *cpy.offset(3 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = ykyl + *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (ykyl + *cpy.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (ykyl + *cpy.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(2 as libc::c_int as isize))
-        + *b00.offset(2 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (ykyl + *cpy.offset(2 as i32 as isize))
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (ykyl + *cpy.offset(3 as libc::c_int as isize))
-        + *b00.offset(3 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (ykyl + *cpy.offset(3 as i32 as isize))
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            100 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(96 as libc::c_int as isize);
+            100 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            101 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(97 as libc::c_int as isize);
+            101 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            102 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(98 as libc::c_int as isize);
+            102 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            103 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(99 as libc::c_int as isize);
+            103 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            112 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(96 as libc::c_int as isize);
+            112 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            113 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(97 as libc::c_int as isize);
+            113 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            114 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(98 as libc::c_int as isize);
+            114 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            115 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(99 as libc::c_int as isize);
+            115 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            116 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(100 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            116 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(100 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            117 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(101 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            117 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(101 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            118 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(102 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            118 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(102 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            119 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(103 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            119 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(103 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            120 as libc::c_int as isize,
-        ) = *g.offset(112 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            120 as i32 as isize,
+        ) = *g.offset(112 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            121 as libc::c_int as isize,
-        ) = *g.offset(113 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            121 as i32 as isize,
+        ) = *g.offset(113 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            122 as libc::c_int as isize,
-        ) = *g.offset(114 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            122 as i32 as isize,
+        ) = *g.offset(114 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            123 as libc::c_int as isize,
-        ) = *g.offset(115 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            123 as i32 as isize,
+        ) = *g.offset(115 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            124 as libc::c_int as isize,
-        ) = *g.offset(116 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(100 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize)
-            * *g.offset(112 as libc::c_int as isize);
+            124 as i32 as isize,
+        ) = *g.offset(116 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize) * *g.offset(100 as i32 as isize)
+        + *b00.offset(0 as i32 as isize)
+            * *g.offset(112 as i32 as isize);
     *g
         .offset(
-            125 as libc::c_int as isize,
-        ) = *g.offset(117 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(101 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize)
-            * *g.offset(113 as libc::c_int as isize);
+            125 as i32 as isize,
+        ) = *g.offset(117 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize) * *g.offset(101 as i32 as isize)
+        + *b00.offset(1 as i32 as isize)
+            * *g.offset(113 as i32 as isize);
     *g
         .offset(
-            126 as libc::c_int as isize,
-        ) = *g.offset(118 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(102 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize)
-            * *g.offset(114 as libc::c_int as isize);
+            126 as i32 as isize,
+        ) = *g.offset(118 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize) * *g.offset(102 as i32 as isize)
+        + *b00.offset(2 as i32 as isize)
+            * *g.offset(114 as i32 as isize);
     *g
         .offset(
-            127 as libc::c_int as isize,
-        ) = *g.offset(119 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(103 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize)
-            * *g.offset(115 as libc::c_int as isize);
+            127 as i32 as isize,
+        ) = *g.offset(119 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize) * *g.offset(103 as i32 as isize)
+        + *b00.offset(3 as i32 as isize)
+            * *g.offset(115 as i32 as isize);
     *g
         .offset(
-            104 as libc::c_int as isize,
-        ) = *g.offset(96 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize));
+            104 as i32 as isize,
+        ) = *g.offset(96 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize));
     *g
         .offset(
-            105 as libc::c_int as isize,
-        ) = *g.offset(97 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize));
+            105 as i32 as isize,
+        ) = *g.offset(97 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize));
     *g
         .offset(
-            106 as libc::c_int as isize,
-        ) = *g.offset(98 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize));
+            106 as i32 as isize,
+        ) = *g.offset(98 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize));
     *g
         .offset(
-            107 as libc::c_int as isize,
-        ) = *g.offset(99 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize));
+            107 as i32 as isize,
+        ) = *g.offset(99 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize));
     *g
         .offset(
-            108 as libc::c_int as isize,
-        ) = *g.offset(100 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            108 as i32 as isize,
+        ) = *g.offset(100 as i32 as isize)
+        * (zkzl + *cpz.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            109 as libc::c_int as isize,
-        ) = *g.offset(101 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            109 as i32 as isize,
+        ) = *g.offset(101 as i32 as isize)
+        * (zkzl + *cpz.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            110 as libc::c_int as isize,
-        ) = *g.offset(102 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(2 as libc::c_int as isize))
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            110 as i32 as isize,
+        ) = *g.offset(102 as i32 as isize)
+        * (zkzl + *cpz.offset(2 as i32 as isize))
+        + *b00.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            111 as libc::c_int as isize,
-        ) = *g.offset(103 as libc::c_int as isize)
-        * (zkzl + *cpz.offset(3 as libc::c_int as isize))
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            111 as i32 as isize,
+        ) = *g.offset(103 as i32 as isize)
+        * (zkzl + *cpz.offset(3 as i32 as isize))
+        + *b00.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_1020(
@@ -10547,306 +10547,306 @@ unsafe extern "C" fn _srg0_2d4d_1020(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b01: *mut f64 = ((*bc).b01).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *cpx.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *cpx.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *cpx.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *cpx.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *cpx.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *cpx.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *cpx.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *cpx.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (*g.offset(12 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0x.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (*g.offset(12 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (*g.offset(13 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0x.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (*g.offset(13 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (*g.offset(14 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0x.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (*g.offset(14 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize)
+            * *c0x.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (*g.offset(15 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(27 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(28 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(30 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(31 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
-    *g.offset(32 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(33 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(34 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(35 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (*g.offset(15 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize)
+            * *c0x.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(27 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(28 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(30 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(31 as i32 as isize) = *c0y.offset(3 as i32 as isize);
+    *g.offset(32 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(33 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(34 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(35 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *cpy.offset(0 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *cpy.offset(0 as i32 as isize)
+        + *b01.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *cpy.offset(1 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *cpy.offset(1 as i32 as isize)
+        + *b01.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *cpy.offset(2 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *cpy.offset(2 as i32 as isize)
+        + *b01.offset(2 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *cpy.offset(3 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *cpy.offset(3 as i32 as isize)
+        + *b01.offset(3 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (*g.offset(36 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b01.offset(0 as libc::c_int as isize)
-            * *c0y.offset(0 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (*g.offset(36 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b01.offset(0 as i32 as isize)
+            * *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (*g.offset(37 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b01.offset(1 as libc::c_int as isize)
-            * *c0y.offset(1 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (*g.offset(37 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b01.offset(1 as i32 as isize)
+            * *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (*g.offset(38 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b01.offset(2 as libc::c_int as isize)
-            * *c0y.offset(2 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (*g.offset(38 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b01.offset(2 as i32 as isize)
+            * *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (*g.offset(39 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b01.offset(3 as libc::c_int as isize)
-            * *c0y.offset(3 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (*g.offset(39 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b01.offset(3 as i32 as isize)
+            * *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(52 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(52 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(53 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(53 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(54 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(54 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(55 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(55 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            64 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(56 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            64 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(56 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            65 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(57 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            65 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(57 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            66 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(58 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            66 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(58 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            67 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(59 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            67 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(59 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(60 as libc::c_int as isize)
-        + *b01.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(56 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(60 as i32 as isize)
+        + *b01.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(56 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(61 as libc::c_int as isize)
-        + *b01.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(57 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(61 as i32 as isize)
+        + *b01.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(57 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(62 as libc::c_int as isize)
-        + *b01.offset(2 as libc::c_int as isize) * *g.offset(54 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(58 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(62 as i32 as isize)
+        + *b01.offset(2 as i32 as isize) * *g.offset(54 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(58 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(63 as libc::c_int as isize)
-        + *b01.offset(3 as libc::c_int as isize) * *g.offset(55 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(59 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(63 as i32 as isize)
+        + *b01.offset(3 as i32 as isize) * *g.offset(55 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(59 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_1100(
@@ -10858,157 +10858,157 @@ unsafe extern "C" fn _srg0_2d4d_1100(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    let mut xixj: f64 = (*envs).rirj[0 as libc::c_int as usize];
-    let mut yiyj: f64 = (*envs).rirj[1 as libc::c_int as usize];
-    let mut zizj: f64 = (*envs).rirj[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    let mut xixj: f64 = (*envs).rirj[0 as i32 as usize];
+    let mut yiyj: f64 = (*envs).rirj[1 as i32 as usize];
+    let mut zizj: f64 = (*envs).rirj[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = xixj + *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = xixj + *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = xixj + *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = xixj + *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(27 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(32 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(33 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(34 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(35 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(4 as i32 as isize) = xixj + *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = xixj + *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = xixj + *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = xixj + *c0x.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(27 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(32 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(33 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(34 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(35 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = yiyj + *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = yiyj + *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(2 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = yiyj + *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(3 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = yiyj + *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *g.offset(56 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *g.offset(56 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *g.offset(57 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *g.offset(57 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *g.offset(58 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *g.offset(58 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *g.offset(59 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *g.offset(59 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *g.offset(48 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize));
+            52 as i32 as isize,
+        ) = *g.offset(48 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize));
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *g.offset(49 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize));
+            53 as i32 as isize,
+        ) = *g.offset(49 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize));
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *g.offset(50 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize));
+            54 as i32 as isize,
+        ) = *g.offset(50 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize));
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *g.offset(51 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize));
+            55 as i32 as isize,
+        ) = *g.offset(51 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize));
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_1101(
@@ -11024,425 +11024,425 @@ unsafe extern "C" fn _srg0_2d4d_1101(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    let mut xixj: f64 = (*envs).rirj[0 as libc::c_int as usize];
-    let mut yiyj: f64 = (*envs).rirj[1 as libc::c_int as usize];
-    let mut zizj: f64 = (*envs).rirj[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(16 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    let mut xixj: f64 = (*envs).rirj[0 as i32 as usize];
+    let mut yiyj: f64 = (*envs).rirj[1 as i32 as usize];
+    let mut zizj: f64 = (*envs).rirj[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(16 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *c0x.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
-    *g
-        .offset(
-            27 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
-    *g
-        .offset(
-            20 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
-    *g
-        .offset(
-            21 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
+    *g
+        .offset(
+            27 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
+    *g
+        .offset(
+            20 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
+    *g
+        .offset(
+            21 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = xixj + *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = xixj + *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = xixj + *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = xixj + *c0x.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(4 as i32 as isize) = xixj + *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = xixj + *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = xixj + *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = xixj + *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *g.offset(24 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *c0x.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *g.offset(24 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *c0x.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *g.offset(25 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *c0x.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *g.offset(25 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *c0x.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *g.offset(26 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *c0x.offset(2 as libc::c_int as isize) * *b00.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpx.offset(2 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *g.offset(26 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *c0x.offset(2 as i32 as isize) * *b00.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize)
+            * *cpx.offset(2 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *g.offset(27 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *c0x.offset(3 as libc::c_int as isize) * *b00.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpx.offset(3 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *g.offset(27 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *c0x.offset(3 as i32 as isize) * *b00.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize)
+            * *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *b00.offset(3 as libc::c_int as isize);
-    *g.offset(48 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(49 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(50 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(51 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(64 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(65 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(66 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(67 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
-    *g.offset(56 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(57 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(58 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(59 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *b00.offset(3 as i32 as isize);
+    *g.offset(48 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(49 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(50 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(51 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(64 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(65 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(66 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(67 as i32 as isize) = *c0y.offset(3 as i32 as isize);
+    *g.offset(56 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(57 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(58 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(59 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            72 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            72 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            73 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            73 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            74 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            74 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            75 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            75 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(0 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = yiyj + *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(1 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = yiyj + *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(2 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = yiyj + *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(3 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = yiyj + *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            76 as libc::c_int as isize,
-        ) = *g.offset(72 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *c0y.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            76 as i32 as isize,
+        ) = *g.offset(72 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *c0y.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            77 as libc::c_int as isize,
-        ) = *g.offset(73 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *c0y.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            77 as i32 as isize,
+        ) = *g.offset(73 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *c0y.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            78 as libc::c_int as isize,
-        ) = *g.offset(74 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *c0y.offset(2 as libc::c_int as isize) * *b00.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpy.offset(2 as libc::c_int as isize);
+            78 as i32 as isize,
+        ) = *g.offset(74 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *c0y.offset(2 as i32 as isize) * *b00.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize)
+            * *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            79 as libc::c_int as isize,
-        ) = *g.offset(75 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *c0y.offset(3 as libc::c_int as isize) * *b00.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpy.offset(3 as libc::c_int as isize);
+            79 as i32 as isize,
+        ) = *g.offset(75 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *c0y.offset(3 as i32 as isize) * *b00.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize)
+            * *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *b00.offset(2 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *b00.offset(3 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            112 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(96 as libc::c_int as isize);
+            112 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            113 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(97 as libc::c_int as isize);
+            113 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            114 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(98 as libc::c_int as isize);
+            114 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            115 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(99 as libc::c_int as isize);
+            115 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            104 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(96 as libc::c_int as isize);
+            104 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            105 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(97 as libc::c_int as isize);
+            105 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            106 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(98 as libc::c_int as isize);
+            106 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            107 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(99 as libc::c_int as isize);
+            107 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            120 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(112 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            120 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(112 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            121 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(113 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            121 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(113 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            122 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(114 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            122 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(114 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            123 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(115 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            123 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(115 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            116 as libc::c_int as isize,
-        ) = *g.offset(112 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            116 as i32 as isize,
+        ) = *g.offset(112 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            117 as libc::c_int as isize,
-        ) = *g.offset(113 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            117 as i32 as isize,
+        ) = *g.offset(113 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            118 as libc::c_int as isize,
-        ) = *g.offset(114 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            118 as i32 as isize,
+        ) = *g.offset(114 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            119 as libc::c_int as isize,
-        ) = *g.offset(115 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            119 as i32 as isize,
+        ) = *g.offset(115 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            100 as libc::c_int as isize,
-        ) = *g.offset(96 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize));
+            100 as i32 as isize,
+        ) = *g.offset(96 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize));
     *g
         .offset(
-            101 as libc::c_int as isize,
-        ) = *g.offset(97 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize));
+            101 as i32 as isize,
+        ) = *g.offset(97 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize));
     *g
         .offset(
-            102 as libc::c_int as isize,
-        ) = *g.offset(98 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize));
+            102 as i32 as isize,
+        ) = *g.offset(98 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize));
     *g
         .offset(
-            103 as libc::c_int as isize,
-        ) = *g.offset(99 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize));
+            103 as i32 as isize,
+        ) = *g.offset(99 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize));
     *g
         .offset(
-            124 as libc::c_int as isize,
-        ) = *g.offset(120 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(104 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize)
-            * *g.offset(112 as libc::c_int as isize);
+            124 as i32 as isize,
+        ) = *g.offset(120 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(104 as i32 as isize)
+        + *b00.offset(0 as i32 as isize)
+            * *g.offset(112 as i32 as isize);
     *g
         .offset(
-            125 as libc::c_int as isize,
-        ) = *g.offset(121 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(105 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize)
-            * *g.offset(113 as libc::c_int as isize);
+            125 as i32 as isize,
+        ) = *g.offset(121 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(105 as i32 as isize)
+        + *b00.offset(1 as i32 as isize)
+            * *g.offset(113 as i32 as isize);
     *g
         .offset(
-            126 as libc::c_int as isize,
-        ) = *g.offset(122 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(106 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize)
-            * *g.offset(114 as libc::c_int as isize);
+            126 as i32 as isize,
+        ) = *g.offset(122 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize) * *g.offset(106 as i32 as isize)
+        + *b00.offset(2 as i32 as isize)
+            * *g.offset(114 as i32 as isize);
     *g
         .offset(
-            127 as libc::c_int as isize,
-        ) = *g.offset(123 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(107 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize)
-            * *g.offset(115 as libc::c_int as isize);
+            127 as i32 as isize,
+        ) = *g.offset(123 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize) * *g.offset(107 as i32 as isize)
+        + *b00.offset(3 as i32 as isize)
+            * *g.offset(115 as i32 as isize);
     *g
         .offset(
-            108 as libc::c_int as isize,
-        ) = zizj * *g.offset(104 as libc::c_int as isize)
-        + *cpz.offset(0 as libc::c_int as isize) * *g.offset(112 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            108 as i32 as isize,
+        ) = zizj * *g.offset(104 as i32 as isize)
+        + *cpz.offset(0 as i32 as isize) * *g.offset(112 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            109 as libc::c_int as isize,
-        ) = zizj * *g.offset(105 as libc::c_int as isize)
-        + *cpz.offset(1 as libc::c_int as isize) * *g.offset(113 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            109 as i32 as isize,
+        ) = zizj * *g.offset(105 as i32 as isize)
+        + *cpz.offset(1 as i32 as isize) * *g.offset(113 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            110 as libc::c_int as isize,
-        ) = zizj * *g.offset(106 as libc::c_int as isize)
-        + *cpz.offset(2 as libc::c_int as isize) * *g.offset(114 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            110 as i32 as isize,
+        ) = zizj * *g.offset(106 as i32 as isize)
+        + *cpz.offset(2 as i32 as isize) * *g.offset(114 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            111 as libc::c_int as isize,
-        ) = zizj * *g.offset(107 as libc::c_int as isize)
-        + *cpz.offset(3 as libc::c_int as isize) * *g.offset(115 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            111 as i32 as isize,
+        ) = zizj * *g.offset(107 as i32 as isize)
+        + *cpz.offset(3 as i32 as isize) * *g.offset(115 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_1110(
@@ -11458,425 +11458,425 @@ unsafe extern "C" fn _srg0_2d4d_1110(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    let mut xixj: f64 = (*envs).rirj[0 as libc::c_int as usize];
-    let mut yiyj: f64 = (*envs).rirj[1 as libc::c_int as usize];
-    let mut zizj: f64 = (*envs).rirj[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(16 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(8 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+    let mut xixj: f64 = (*envs).rirj[0 as i32 as usize];
+    let mut yiyj: f64 = (*envs).rirj[1 as i32 as usize];
+    let mut zizj: f64 = (*envs).rirj[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(16 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *c0x.offset(3 as i32 as isize);
+    *g.offset(8 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
-    *g
-        .offset(
-            27 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
-    *g
-        .offset(
-            20 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
-    *g
-        .offset(
-            21 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
+    *g
+        .offset(
+            27 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
+    *g
+        .offset(
+            20 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
+    *g
+        .offset(
+            21 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = xixj + *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = xixj + *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = xixj + *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = xixj + *c0x.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(4 as i32 as isize) = xixj + *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = xixj + *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = xixj + *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = xixj + *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *g.offset(24 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *c0x.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *g.offset(24 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *c0x.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *g.offset(25 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *c0x.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *g.offset(25 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *c0x.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *g.offset(26 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *c0x.offset(2 as libc::c_int as isize) * *b00.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpx.offset(2 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *g.offset(26 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *c0x.offset(2 as i32 as isize) * *b00.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize)
+            * *cpx.offset(2 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *g.offset(27 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *c0x.offset(3 as libc::c_int as isize) * *b00.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpx.offset(3 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *g.offset(27 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *c0x.offset(3 as i32 as isize) * *b00.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize)
+            * *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *b00.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *b00.offset(3 as libc::c_int as isize);
-    *g.offset(48 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(49 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(50 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(51 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(64 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(65 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(66 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(67 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
-    *g.offset(56 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(57 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(58 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(59 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *b00.offset(3 as i32 as isize);
+    *g.offset(48 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(49 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(50 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(51 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(64 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(65 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(66 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(67 as i32 as isize) = *c0y.offset(3 as i32 as isize);
+    *g.offset(56 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(57 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(58 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(59 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            72 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            72 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            73 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            73 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            74 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            74 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            75 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            75 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(0 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = yiyj + *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(1 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = yiyj + *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(2 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = yiyj + *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(3 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = yiyj + *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            76 as libc::c_int as isize,
-        ) = *g.offset(72 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *c0y.offset(0 as libc::c_int as isize) * *b00.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            76 as i32 as isize,
+        ) = *g.offset(72 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *c0y.offset(0 as i32 as isize) * *b00.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            77 as libc::c_int as isize,
-        ) = *g.offset(73 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *c0y.offset(1 as libc::c_int as isize) * *b00.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            77 as i32 as isize,
+        ) = *g.offset(73 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *c0y.offset(1 as i32 as isize) * *b00.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            78 as libc::c_int as isize,
-        ) = *g.offset(74 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *c0y.offset(2 as libc::c_int as isize) * *b00.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpy.offset(2 as libc::c_int as isize);
+            78 as i32 as isize,
+        ) = *g.offset(74 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *c0y.offset(2 as i32 as isize) * *b00.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize)
+            * *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            79 as libc::c_int as isize,
-        ) = *g.offset(75 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *c0y.offset(3 as libc::c_int as isize) * *b00.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpy.offset(3 as libc::c_int as isize);
+            79 as i32 as isize,
+        ) = *g.offset(75 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *c0y.offset(3 as i32 as isize) * *b00.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize)
+            * *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b00.offset(0 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b00.offset(1 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *b00.offset(2 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *b00.offset(3 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            112 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(96 as libc::c_int as isize);
+            112 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            113 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(97 as libc::c_int as isize);
+            113 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            114 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(98 as libc::c_int as isize);
+            114 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            115 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(99 as libc::c_int as isize);
+            115 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            104 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(96 as libc::c_int as isize);
+            104 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            105 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(97 as libc::c_int as isize);
+            105 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            106 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(98 as libc::c_int as isize);
+            106 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            107 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(99 as libc::c_int as isize);
+            107 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            120 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(112 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            120 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(112 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            121 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(113 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            121 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(113 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            122 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(114 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            122 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(114 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            123 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(115 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            123 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(115 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            116 as libc::c_int as isize,
-        ) = *g.offset(112 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            116 as i32 as isize,
+        ) = *g.offset(112 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            117 as libc::c_int as isize,
-        ) = *g.offset(113 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            117 as i32 as isize,
+        ) = *g.offset(113 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            118 as libc::c_int as isize,
-        ) = *g.offset(114 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            118 as i32 as isize,
+        ) = *g.offset(114 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            119 as libc::c_int as isize,
-        ) = *g.offset(115 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            119 as i32 as isize,
+        ) = *g.offset(115 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
     *g
         .offset(
-            100 as libc::c_int as isize,
-        ) = *g.offset(96 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize));
+            100 as i32 as isize,
+        ) = *g.offset(96 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize));
     *g
         .offset(
-            101 as libc::c_int as isize,
-        ) = *g.offset(97 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize));
+            101 as i32 as isize,
+        ) = *g.offset(97 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize));
     *g
         .offset(
-            102 as libc::c_int as isize,
-        ) = *g.offset(98 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize));
+            102 as i32 as isize,
+        ) = *g.offset(98 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize));
     *g
         .offset(
-            103 as libc::c_int as isize,
-        ) = *g.offset(99 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize));
+            103 as i32 as isize,
+        ) = *g.offset(99 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize));
     *g
         .offset(
-            124 as libc::c_int as isize,
-        ) = *g.offset(120 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(104 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize)
-            * *g.offset(112 as libc::c_int as isize);
+            124 as i32 as isize,
+        ) = *g.offset(120 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(104 as i32 as isize)
+        + *b00.offset(0 as i32 as isize)
+            * *g.offset(112 as i32 as isize);
     *g
         .offset(
-            125 as libc::c_int as isize,
-        ) = *g.offset(121 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(105 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize)
-            * *g.offset(113 as libc::c_int as isize);
+            125 as i32 as isize,
+        ) = *g.offset(121 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(105 as i32 as isize)
+        + *b00.offset(1 as i32 as isize)
+            * *g.offset(113 as i32 as isize);
     *g
         .offset(
-            126 as libc::c_int as isize,
-        ) = *g.offset(122 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(106 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize)
-            * *g.offset(114 as libc::c_int as isize);
+            126 as i32 as isize,
+        ) = *g.offset(122 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize) * *g.offset(106 as i32 as isize)
+        + *b00.offset(2 as i32 as isize)
+            * *g.offset(114 as i32 as isize);
     *g
         .offset(
-            127 as libc::c_int as isize,
-        ) = *g.offset(123 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(107 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize)
-            * *g.offset(115 as libc::c_int as isize);
+            127 as i32 as isize,
+        ) = *g.offset(123 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize) * *g.offset(107 as i32 as isize)
+        + *b00.offset(3 as i32 as isize)
+            * *g.offset(115 as i32 as isize);
     *g
         .offset(
-            108 as libc::c_int as isize,
-        ) = zizj * *g.offset(104 as libc::c_int as isize)
-        + *cpz.offset(0 as libc::c_int as isize) * *g.offset(112 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(96 as libc::c_int as isize);
+            108 as i32 as isize,
+        ) = zizj * *g.offset(104 as i32 as isize)
+        + *cpz.offset(0 as i32 as isize) * *g.offset(112 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(96 as i32 as isize);
     *g
         .offset(
-            109 as libc::c_int as isize,
-        ) = zizj * *g.offset(105 as libc::c_int as isize)
-        + *cpz.offset(1 as libc::c_int as isize) * *g.offset(113 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(97 as libc::c_int as isize);
+            109 as i32 as isize,
+        ) = zizj * *g.offset(105 as i32 as isize)
+        + *cpz.offset(1 as i32 as isize) * *g.offset(113 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(97 as i32 as isize);
     *g
         .offset(
-            110 as libc::c_int as isize,
-        ) = zizj * *g.offset(106 as libc::c_int as isize)
-        + *cpz.offset(2 as libc::c_int as isize) * *g.offset(114 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(98 as libc::c_int as isize);
+            110 as i32 as isize,
+        ) = zizj * *g.offset(106 as i32 as isize)
+        + *cpz.offset(2 as i32 as isize) * *g.offset(114 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(98 as i32 as isize);
     *g
         .offset(
-            111 as libc::c_int as isize,
-        ) = zizj * *g.offset(107 as libc::c_int as isize)
-        + *cpz.offset(3 as libc::c_int as isize) * *g.offset(115 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(99 as libc::c_int as isize);
+            111 as i32 as isize,
+        ) = zizj * *g.offset(107 as i32 as isize)
+        + *cpz.offset(3 as i32 as isize) * *g.offset(115 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(99 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_1200(
@@ -11888,313 +11888,313 @@ unsafe extern "C" fn _srg0_2d4d_1200(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    let mut xixj: f64 = (*envs).rirj[0 as libc::c_int as usize];
-    let mut yiyj: f64 = (*envs).rirj[1 as libc::c_int as usize];
-    let mut zizj: f64 = (*envs).rirj[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(8 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(9 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(10 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(11 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    let mut xixj: f64 = (*envs).rirj[0 as i32 as usize];
+    let mut yiyj: f64 = (*envs).rirj[1 as i32 as usize];
+    let mut zizj: f64 = (*envs).rirj[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(8 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(9 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(10 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(11 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *g.offset(16 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *c0x.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *g.offset(16 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *c0x.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *g.offset(17 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *c0x.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *g.offset(17 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *c0x.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *g.offset(18 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *c0x.offset(2 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *g.offset(18 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *c0x.offset(2 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *g.offset(19 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *c0x.offset(3 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *g.offset(19 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *c0x.offset(3 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            12 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            13 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize);
+            14 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(4 as libc::c_int as isize) = xixj + *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = xixj + *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = xixj + *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = xixj + *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(32 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(33 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(34 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(35 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(40 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(41 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(42 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(43 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(4 as i32 as isize) = xixj + *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = xixj + *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = xixj + *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = xixj + *c0x.offset(3 as i32 as isize);
+    *g.offset(32 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(33 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(34 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(35 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(40 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(41 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(42 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(43 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            48 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            48 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            49 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            49 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            50 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            50 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            51 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            51 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *g.offset(48 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *c0y.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(0 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *g.offset(48 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *c0y.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *g.offset(49 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *c0y.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(1 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *g.offset(49 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *c0y.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *g.offset(50 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *c0y.offset(2 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(2 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *g.offset(50 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *c0y.offset(2 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *g.offset(51 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *c0y.offset(3 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(3 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *g.offset(51 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *c0y.offset(3 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(0 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = yiyj + *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(1 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = yiyj + *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(2 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = yiyj + *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(3 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = yiyj + *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            72 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(64 as libc::c_int as isize);
+            72 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            73 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(65 as libc::c_int as isize);
+            73 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            74 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(66 as libc::c_int as isize);
+            74 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            75 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(67 as libc::c_int as isize);
+            75 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            80 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(72 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(64 as libc::c_int as isize);
+            80 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(72 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            81 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(73 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(65 as libc::c_int as isize);
+            81 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(73 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            82 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(74 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(66 as libc::c_int as isize);
+            82 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(74 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            83 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(75 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(67 as libc::c_int as isize);
+            83 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(75 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            84 as libc::c_int as isize,
-        ) = *g.offset(80 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(0 as libc::c_int as isize)
-            * *g.offset(72 as libc::c_int as isize);
+            84 as i32 as isize,
+        ) = *g.offset(80 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(0 as i32 as isize)
+            * *g.offset(72 as i32 as isize);
     *g
         .offset(
-            85 as libc::c_int as isize,
-        ) = *g.offset(81 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(1 as libc::c_int as isize)
-            * *g.offset(73 as libc::c_int as isize);
+            85 as i32 as isize,
+        ) = *g.offset(81 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(1 as i32 as isize)
+            * *g.offset(73 as i32 as isize);
     *g
         .offset(
-            86 as libc::c_int as isize,
-        ) = *g.offset(82 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(2 as libc::c_int as isize)
-            * *g.offset(74 as libc::c_int as isize);
+            86 as i32 as isize,
+        ) = *g.offset(82 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(2 as i32 as isize)
+            * *g.offset(74 as i32 as isize);
     *g
         .offset(
-            87 as libc::c_int as isize,
-        ) = *g.offset(83 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(3 as libc::c_int as isize)
-            * *g.offset(75 as libc::c_int as isize);
+            87 as i32 as isize,
+        ) = *g.offset(83 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(3 as i32 as isize)
+            * *g.offset(75 as i32 as isize);
     *g
         .offset(
-            76 as libc::c_int as isize,
-        ) = *g.offset(72 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(64 as libc::c_int as isize);
+            76 as i32 as isize,
+        ) = *g.offset(72 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            77 as libc::c_int as isize,
-        ) = *g.offset(73 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(65 as libc::c_int as isize);
+            77 as i32 as isize,
+        ) = *g.offset(73 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            78 as libc::c_int as isize,
-        ) = *g.offset(74 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(66 as libc::c_int as isize);
+            78 as i32 as isize,
+        ) = *g.offset(74 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize) * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            79 as libc::c_int as isize,
-        ) = *g.offset(75 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(67 as libc::c_int as isize);
+            79 as i32 as isize,
+        ) = *g.offset(75 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize) * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *g.offset(64 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize));
+            68 as i32 as isize,
+        ) = *g.offset(64 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize));
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *g.offset(65 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize));
+            69 as i32 as isize,
+        ) = *g.offset(65 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize));
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *g.offset(66 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize));
+            70 as i32 as isize,
+        ) = *g.offset(66 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize));
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *g.offset(67 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize));
+            71 as i32 as isize,
+        ) = *g.offset(67 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize));
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_2000(
@@ -12206,114 +12206,114 @@ unsafe extern "C" fn _srg0_2d4d_2000(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(13 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(14 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(15 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(16 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(17 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(18 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(19 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(12 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(13 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(14 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(15 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(16 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(17 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(18 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(19 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(24 as libc::c_int as isize);
+            28 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(25 as libc::c_int as isize);
+            29 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(26 as libc::c_int as isize);
+            30 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(27 as libc::c_int as isize);
+            31 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(27 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(28 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(24 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(28 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(24 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(29 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(25 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(29 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(25 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(30 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(26 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(30 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(26 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(31 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(27 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(31 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(27 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_2001(
@@ -12329,306 +12329,306 @@ unsafe extern "C" fn _srg0_2d4d_2001(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(13 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(14 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(12 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(13 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(14 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(16 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(16 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(17 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(17 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (*g.offset(18 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpx.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (*g.offset(18 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize)
+            * *cpx.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (*g.offset(19 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(27 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(28 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(30 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(31 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (*g.offset(19 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize)
+            * *cpx.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(27 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(28 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(30 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(31 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(36 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(37 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(38 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(39 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(36 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(37 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(38 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(39 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(40 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(40 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(41 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(41 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (*g.offset(42 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpy.offset(2 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (*g.offset(42 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize)
+            * *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (*g.offset(43 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpy.offset(3 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (*g.offset(43 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize)
+            * *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(52 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(52 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(53 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(53 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(54 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(54 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(55 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(55 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            64 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(52 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            64 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(52 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            65 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(53 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            65 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(53 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            66 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(54 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            66 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(54 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            67 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(55 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            67 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(55 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(64 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(60 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(64 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(60 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(65 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(61 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(65 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(61 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(66 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(62 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(54 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(66 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(62 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(54 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(67 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(63 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(55 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(67 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(63 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(55 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_2010(
@@ -12644,306 +12644,306 @@ unsafe extern "C" fn _srg0_2d4d_2010(
     let mut cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     let mut b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(12 as libc::c_int as isize) = *cpx.offset(0 as libc::c_int as isize);
-    *g.offset(13 as libc::c_int as isize) = *cpx.offset(1 as libc::c_int as isize);
-    *g.offset(14 as libc::c_int as isize) = *cpx.offset(2 as libc::c_int as isize);
-    *g.offset(15 as libc::c_int as isize) = *cpx.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(12 as i32 as isize) = *cpx.offset(0 as i32 as isize);
+    *g.offset(13 as i32 as isize) = *cpx.offset(1 as i32 as isize);
+    *g.offset(14 as i32 as isize) = *cpx.offset(2 as i32 as isize);
+    *g.offset(15 as i32 as isize) = *cpx.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = *cpx.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = *cpx.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = *cpx.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = *cpx.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = *cpx.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = *cpx.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = *cpx.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = *cpx.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(16 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpx.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(16 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpx.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(17 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpx.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(17 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpx.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (*g.offset(18 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpx.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (*g.offset(18 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize)
+            * *cpx.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (*g.offset(19 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpx.offset(3 as libc::c_int as isize);
-    *g.offset(24 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(25 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(26 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(27 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(28 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(29 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(30 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(31 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (*g.offset(19 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize)
+            * *cpx.offset(3 as i32 as isize);
+    *g.offset(24 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(25 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(26 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(27 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(28 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(29 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(30 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(31 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            32 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            32 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            33 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            33 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            34 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            34 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            35 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
-    *g.offset(36 as libc::c_int as isize) = *cpy.offset(0 as libc::c_int as isize);
-    *g.offset(37 as libc::c_int as isize) = *cpy.offset(1 as libc::c_int as isize);
-    *g.offset(38 as libc::c_int as isize) = *cpy.offset(2 as libc::c_int as isize);
-    *g.offset(39 as libc::c_int as isize) = *cpy.offset(3 as libc::c_int as isize);
+            35 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
+    *g.offset(36 as i32 as isize) = *cpy.offset(0 as i32 as isize);
+    *g.offset(37 as i32 as isize) = *cpy.offset(1 as i32 as isize);
+    *g.offset(38 as i32 as isize) = *cpy.offset(2 as i32 as isize);
+    *g.offset(39 as i32 as isize) = *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *cpy.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *cpy.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b00.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *cpy.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *cpy.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b00.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *cpy.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *cpy.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b00.offset(2 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *cpy.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *cpy.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b00.offset(3 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(40 as libc::c_int as isize)
-            + *b00.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize)
-            * *cpy.offset(0 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(40 as i32 as isize)
+            + *b00.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize)
+            * *cpy.offset(0 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(41 as libc::c_int as isize)
-            + *b00.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize)
-            * *cpy.offset(1 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(41 as i32 as isize)
+            + *b00.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize)
+            * *cpy.offset(1 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (*g.offset(42 as libc::c_int as isize)
-            + *b00.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize)
-            * *cpy.offset(2 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (*g.offset(42 as i32 as isize)
+            + *b00.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize)
+            * *cpy.offset(2 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (*g.offset(43 as libc::c_int as isize)
-            + *b00.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize)
-            * *cpy.offset(3 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (*g.offset(43 as i32 as isize)
+            + *b00.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize)
+            * *cpy.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(52 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(52 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(53 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(53 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(54 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(54 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(55 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(55 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            60 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(48 as libc::c_int as isize);
+            60 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            61 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(49 as libc::c_int as isize);
+            61 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            62 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(50 as libc::c_int as isize);
+            62 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            63 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(51 as libc::c_int as isize);
+            63 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            64 as libc::c_int as isize,
-        ) = *cpz.offset(0 as libc::c_int as isize)
-        * *g.offset(52 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(48 as libc::c_int as isize);
+            64 as i32 as isize,
+        ) = *cpz.offset(0 as i32 as isize)
+        * *g.offset(52 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(48 as i32 as isize);
     *g
         .offset(
-            65 as libc::c_int as isize,
-        ) = *cpz.offset(1 as libc::c_int as isize)
-        * *g.offset(53 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(49 as libc::c_int as isize);
+            65 as i32 as isize,
+        ) = *cpz.offset(1 as i32 as isize)
+        * *g.offset(53 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(49 as i32 as isize);
     *g
         .offset(
-            66 as libc::c_int as isize,
-        ) = *cpz.offset(2 as libc::c_int as isize)
-        * *g.offset(54 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(50 as libc::c_int as isize);
+            66 as i32 as isize,
+        ) = *cpz.offset(2 as i32 as isize)
+        * *g.offset(54 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(50 as i32 as isize);
     *g
         .offset(
-            67 as libc::c_int as isize,
-        ) = *cpz.offset(3 as libc::c_int as isize)
-        * *g.offset(55 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(51 as libc::c_int as isize);
+            67 as i32 as isize,
+        ) = *cpz.offset(3 as i32 as isize)
+        * *g.offset(55 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(51 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(64 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(60 as libc::c_int as isize)
-        + *b00.offset(0 as libc::c_int as isize) * *g.offset(52 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(64 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(60 as i32 as isize)
+        + *b00.offset(0 as i32 as isize) * *g.offset(52 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(65 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(61 as libc::c_int as isize)
-        + *b00.offset(1 as libc::c_int as isize) * *g.offset(53 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(65 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(61 as i32 as isize)
+        + *b00.offset(1 as i32 as isize) * *g.offset(53 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(66 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(62 as libc::c_int as isize)
-        + *b00.offset(2 as libc::c_int as isize) * *g.offset(54 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(66 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(62 as i32 as isize)
+        + *b00.offset(2 as i32 as isize) * *g.offset(54 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(67 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(63 as libc::c_int as isize)
-        + *b00.offset(3 as libc::c_int as isize) * *g.offset(55 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(67 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(63 as i32 as isize)
+        + *b00.offset(3 as i32 as isize) * *g.offset(55 as i32 as isize);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_2100(
@@ -12955,325 +12955,325 @@ unsafe extern "C" fn _srg0_2d4d_2100(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    let mut xixj: f64 = (*envs).rirj[0 as libc::c_int as usize];
-    let mut yiyj: f64 = (*envs).rirj[1 as libc::c_int as usize];
-    let mut zizj: f64 = (*envs).rirj[2 as libc::c_int as usize];
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    let mut xixj: f64 = (*envs).rirj[0 as i32 as usize];
+    let mut yiyj: f64 = (*envs).rirj[1 as i32 as usize];
+    let mut zizj: f64 = (*envs).rirj[2 as i32 as usize];
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *g.offset(8 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *c0x.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *g.offset(8 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *c0x.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *g.offset(9 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *c0x.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *g.offset(9 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *c0x.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *g.offset(10 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *c0x.offset(2 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(2 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *g.offset(10 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *c0x.offset(2 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *g.offset(11 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *c0x.offset(3 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(3 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *g.offset(11 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *c0x.offset(3 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            20 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (xixj + *c0x.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            20 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (xixj + *c0x.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            21 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (xixj + *c0x.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            21 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (xixj + *c0x.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            22 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (xixj + *c0x.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize);
+            22 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (xixj + *c0x.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            23 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (xixj + *c0x.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize);
+            23 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (xixj + *c0x.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            16 as libc::c_int as isize,
-        ) = xixj + *c0x.offset(0 as libc::c_int as isize);
+            16 as i32 as isize,
+        ) = xixj + *c0x.offset(0 as i32 as isize);
     *g
         .offset(
-            17 as libc::c_int as isize,
-        ) = xixj + *c0x.offset(1 as libc::c_int as isize);
+            17 as i32 as isize,
+        ) = xixj + *c0x.offset(1 as i32 as isize);
     *g
         .offset(
-            18 as libc::c_int as isize,
-        ) = xixj + *c0x.offset(2 as libc::c_int as isize);
+            18 as i32 as isize,
+        ) = xixj + *c0x.offset(2 as i32 as isize);
     *g
         .offset(
-            19 as libc::c_int as isize,
-        ) = xixj + *c0x.offset(3 as libc::c_int as isize);
-    *g.offset(32 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(33 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(34 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(35 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(36 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(37 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(38 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(39 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            19 as i32 as isize,
+        ) = xixj + *c0x.offset(3 as i32 as isize);
+    *g.offset(32 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(33 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(34 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(35 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(36 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(37 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(38 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(39 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            56 as libc::c_int as isize,
-        ) = *g.offset(40 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *c0y.offset(0 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(0 as libc::c_int as isize);
+            56 as i32 as isize,
+        ) = *g.offset(40 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *c0y.offset(0 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            57 as libc::c_int as isize,
-        ) = *g.offset(41 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *c0y.offset(1 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(1 as libc::c_int as isize);
+            57 as i32 as isize,
+        ) = *g.offset(41 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *c0y.offset(1 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            58 as libc::c_int as isize,
-        ) = *g.offset(42 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *c0y.offset(2 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(2 as libc::c_int as isize);
+            58 as i32 as isize,
+        ) = *g.offset(42 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *c0y.offset(2 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            59 as libc::c_int as isize,
-        ) = *g.offset(43 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *c0y.offset(3 as libc::c_int as isize) * 2 as libc::c_int as f64
-            * *b10.offset(3 as libc::c_int as isize);
+            59 as i32 as isize,
+        ) = *g.offset(43 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *c0y.offset(3 as i32 as isize) * 2 as i32 as f64
+            * *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            52 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize);
+            52 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (yiyj + *c0y.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            53 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize);
+            53 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (yiyj + *c0y.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            54 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize);
+            54 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (yiyj + *c0y.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            55 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (yiyj + *c0y.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize);
+            55 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (yiyj + *c0y.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            48 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(0 as libc::c_int as isize);
+            48 as i32 as isize,
+        ) = yiyj + *c0y.offset(0 as i32 as isize);
     *g
         .offset(
-            49 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(1 as libc::c_int as isize);
+            49 as i32 as isize,
+        ) = yiyj + *c0y.offset(1 as i32 as isize);
     *g
         .offset(
-            50 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(2 as libc::c_int as isize);
+            50 as i32 as isize,
+        ) = yiyj + *c0y.offset(2 as i32 as isize);
     *g
         .offset(
-            51 as libc::c_int as isize,
-        ) = yiyj + *c0y.offset(3 as libc::c_int as isize);
+            51 as i32 as isize,
+        ) = yiyj + *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            68 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(64 as libc::c_int as isize);
+            68 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            69 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(65 as libc::c_int as isize);
+            69 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            70 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(66 as libc::c_int as isize);
+            70 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            71 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(67 as libc::c_int as isize);
+            71 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            72 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(68 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(64 as libc::c_int as isize);
+            72 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(68 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            73 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(69 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(65 as libc::c_int as isize);
+            73 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(69 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            74 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(70 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(66 as libc::c_int as isize);
+            74 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(70 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            75 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(71 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(67 as libc::c_int as isize);
+            75 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(71 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            88 as libc::c_int as isize,
-        ) = *g.offset(72 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(0 as libc::c_int as isize)
-            * *g.offset(68 as libc::c_int as isize);
+            88 as i32 as isize,
+        ) = *g.offset(72 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(0 as i32 as isize)
+            * *g.offset(68 as i32 as isize);
     *g
         .offset(
-            89 as libc::c_int as isize,
-        ) = *g.offset(73 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(1 as libc::c_int as isize)
-            * *g.offset(69 as libc::c_int as isize);
+            89 as i32 as isize,
+        ) = *g.offset(73 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(1 as i32 as isize)
+            * *g.offset(69 as i32 as isize);
     *g
         .offset(
-            90 as libc::c_int as isize,
-        ) = *g.offset(74 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(2 as libc::c_int as isize)
-            * *g.offset(70 as libc::c_int as isize);
+            90 as i32 as isize,
+        ) = *g.offset(74 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(2 as i32 as isize)
+            * *g.offset(70 as i32 as isize);
     *g
         .offset(
-            91 as libc::c_int as isize,
-        ) = *g.offset(75 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize))
-        + 2 as libc::c_int as f64 * *b10.offset(3 as libc::c_int as isize)
-            * *g.offset(71 as libc::c_int as isize);
+            91 as i32 as isize,
+        ) = *g.offset(75 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize))
+        + 2 as i32 as f64 * *b10.offset(3 as i32 as isize)
+            * *g.offset(71 as i32 as isize);
     *g
         .offset(
-            84 as libc::c_int as isize,
-        ) = *g.offset(68 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize))
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(64 as libc::c_int as isize);
+            84 as i32 as isize,
+        ) = *g.offset(68 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize))
+        + *b10.offset(0 as i32 as isize) * *g.offset(64 as i32 as isize);
     *g
         .offset(
-            85 as libc::c_int as isize,
-        ) = *g.offset(69 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize))
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(65 as libc::c_int as isize);
+            85 as i32 as isize,
+        ) = *g.offset(69 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize))
+        + *b10.offset(1 as i32 as isize) * *g.offset(65 as i32 as isize);
     *g
         .offset(
-            86 as libc::c_int as isize,
-        ) = *g.offset(70 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize))
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(66 as libc::c_int as isize);
+            86 as i32 as isize,
+        ) = *g.offset(70 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize))
+        + *b10.offset(2 as i32 as isize) * *g.offset(66 as i32 as isize);
     *g
         .offset(
-            87 as libc::c_int as isize,
-        ) = *g.offset(71 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize))
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(67 as libc::c_int as isize);
+            87 as i32 as isize,
+        ) = *g.offset(71 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize))
+        + *b10.offset(3 as i32 as isize) * *g.offset(67 as i32 as isize);
     *g
         .offset(
-            80 as libc::c_int as isize,
-        ) = *g.offset(64 as libc::c_int as isize)
-        * (zizj + *c0z.offset(0 as libc::c_int as isize));
+            80 as i32 as isize,
+        ) = *g.offset(64 as i32 as isize)
+        * (zizj + *c0z.offset(0 as i32 as isize));
     *g
         .offset(
-            81 as libc::c_int as isize,
-        ) = *g.offset(65 as libc::c_int as isize)
-        * (zizj + *c0z.offset(1 as libc::c_int as isize));
+            81 as i32 as isize,
+        ) = *g.offset(65 as i32 as isize)
+        * (zizj + *c0z.offset(1 as i32 as isize));
     *g
         .offset(
-            82 as libc::c_int as isize,
-        ) = *g.offset(66 as libc::c_int as isize)
-        * (zizj + *c0z.offset(2 as libc::c_int as isize));
+            82 as i32 as isize,
+        ) = *g.offset(66 as i32 as isize)
+        * (zizj + *c0z.offset(2 as i32 as isize));
     *g
         .offset(
-            83 as libc::c_int as isize,
-        ) = *g.offset(67 as libc::c_int as isize)
-        * (zizj + *c0z.offset(3 as libc::c_int as isize));
+            83 as i32 as isize,
+        ) = *g.offset(67 as i32 as isize)
+        * (zizj + *c0z.offset(3 as i32 as isize));
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_3000(
@@ -13285,198 +13285,198 @@ unsafe extern "C" fn _srg0_2d4d_3000(
     let mut c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
     let mut c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     let mut b10: *mut f64 = ((*bc).b10).as_mut_ptr();
-    *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(2 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(3 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(4 as libc::c_int as isize) = *c0x.offset(0 as libc::c_int as isize);
-    *g.offset(5 as libc::c_int as isize) = *c0x.offset(1 as libc::c_int as isize);
-    *g.offset(6 as libc::c_int as isize) = *c0x.offset(2 as libc::c_int as isize);
-    *g.offset(7 as libc::c_int as isize) = *c0x.offset(3 as libc::c_int as isize);
+    *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(2 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(3 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(4 as i32 as isize) = *c0x.offset(0 as i32 as isize);
+    *g.offset(5 as i32 as isize) = *c0x.offset(1 as i32 as isize);
+    *g.offset(6 as i32 as isize) = *c0x.offset(2 as i32 as isize);
+    *g.offset(7 as i32 as isize) = *c0x.offset(3 as i32 as isize);
     *g
         .offset(
-            8 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * *c0x.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            8 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * *c0x.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            9 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * *c0x.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            9 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * *c0x.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            10 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * *c0x.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            10 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * *c0x.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            11 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * *c0x.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            11 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * *c0x.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            12 as libc::c_int as isize,
-        ) = *c0x.offset(0 as libc::c_int as isize)
-        * (*g.offset(8 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(0 as libc::c_int as isize));
+            12 as i32 as isize,
+        ) = *c0x.offset(0 as i32 as isize)
+        * (*g.offset(8 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(0 as i32 as isize));
     *g
         .offset(
-            13 as libc::c_int as isize,
-        ) = *c0x.offset(1 as libc::c_int as isize)
-        * (*g.offset(9 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(1 as libc::c_int as isize));
+            13 as i32 as isize,
+        ) = *c0x.offset(1 as i32 as isize)
+        * (*g.offset(9 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(1 as i32 as isize));
     *g
         .offset(
-            14 as libc::c_int as isize,
-        ) = *c0x.offset(2 as libc::c_int as isize)
-        * (*g.offset(10 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(2 as libc::c_int as isize));
+            14 as i32 as isize,
+        ) = *c0x.offset(2 as i32 as isize)
+        * (*g.offset(10 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(2 as i32 as isize));
     *g
         .offset(
-            15 as libc::c_int as isize,
-        ) = *c0x.offset(3 as libc::c_int as isize)
-        * (*g.offset(11 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(3 as libc::c_int as isize));
-    *g.offset(16 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(17 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(18 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(19 as libc::c_int as isize) = 1 as libc::c_int as f64;
-    *g.offset(20 as libc::c_int as isize) = *c0y.offset(0 as libc::c_int as isize);
-    *g.offset(21 as libc::c_int as isize) = *c0y.offset(1 as libc::c_int as isize);
-    *g.offset(22 as libc::c_int as isize) = *c0y.offset(2 as libc::c_int as isize);
-    *g.offset(23 as libc::c_int as isize) = *c0y.offset(3 as libc::c_int as isize);
+            15 as i32 as isize,
+        ) = *c0x.offset(3 as i32 as isize)
+        * (*g.offset(11 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(3 as i32 as isize));
+    *g.offset(16 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(17 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(18 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(19 as i32 as isize) = 1 as i32 as f64;
+    *g.offset(20 as i32 as isize) = *c0y.offset(0 as i32 as isize);
+    *g.offset(21 as i32 as isize) = *c0y.offset(1 as i32 as isize);
+    *g.offset(22 as i32 as isize) = *c0y.offset(2 as i32 as isize);
+    *g.offset(23 as i32 as isize) = *c0y.offset(3 as i32 as isize);
     *g
         .offset(
-            24 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * *c0y.offset(0 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize);
+            24 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * *c0y.offset(0 as i32 as isize)
+        + *b10.offset(0 as i32 as isize);
     *g
         .offset(
-            25 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * *c0y.offset(1 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize);
+            25 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * *c0y.offset(1 as i32 as isize)
+        + *b10.offset(1 as i32 as isize);
     *g
         .offset(
-            26 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * *c0y.offset(2 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize);
+            26 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * *c0y.offset(2 as i32 as isize)
+        + *b10.offset(2 as i32 as isize);
     *g
         .offset(
-            27 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * *c0y.offset(3 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize);
+            27 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * *c0y.offset(3 as i32 as isize)
+        + *b10.offset(3 as i32 as isize);
     *g
         .offset(
-            28 as libc::c_int as isize,
-        ) = *c0y.offset(0 as libc::c_int as isize)
-        * (*g.offset(24 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(0 as libc::c_int as isize));
+            28 as i32 as isize,
+        ) = *c0y.offset(0 as i32 as isize)
+        * (*g.offset(24 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(0 as i32 as isize));
     *g
         .offset(
-            29 as libc::c_int as isize,
-        ) = *c0y.offset(1 as libc::c_int as isize)
-        * (*g.offset(25 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(1 as libc::c_int as isize));
+            29 as i32 as isize,
+        ) = *c0y.offset(1 as i32 as isize)
+        * (*g.offset(25 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(1 as i32 as isize));
     *g
         .offset(
-            30 as libc::c_int as isize,
-        ) = *c0y.offset(2 as libc::c_int as isize)
-        * (*g.offset(26 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(2 as libc::c_int as isize));
+            30 as i32 as isize,
+        ) = *c0y.offset(2 as i32 as isize)
+        * (*g.offset(26 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(2 as i32 as isize));
     *g
         .offset(
-            31 as libc::c_int as isize,
-        ) = *c0y.offset(3 as libc::c_int as isize)
-        * (*g.offset(27 as libc::c_int as isize)
-            + 2 as libc::c_int as f64
-                * *b10.offset(3 as libc::c_int as isize));
+            31 as i32 as isize,
+        ) = *c0y.offset(3 as i32 as isize)
+        * (*g.offset(27 as i32 as isize)
+            + 2 as i32 as f64
+                * *b10.offset(3 as i32 as isize));
     *g
         .offset(
-            36 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(32 as libc::c_int as isize);
+            36 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            37 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(33 as libc::c_int as isize);
+            37 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            38 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(34 as libc::c_int as isize);
+            38 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            39 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(35 as libc::c_int as isize);
+            39 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            40 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(36 as libc::c_int as isize)
-        + *b10.offset(0 as libc::c_int as isize) * *g.offset(32 as libc::c_int as isize);
+            40 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(36 as i32 as isize)
+        + *b10.offset(0 as i32 as isize) * *g.offset(32 as i32 as isize);
     *g
         .offset(
-            41 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(37 as libc::c_int as isize)
-        + *b10.offset(1 as libc::c_int as isize) * *g.offset(33 as libc::c_int as isize);
+            41 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(37 as i32 as isize)
+        + *b10.offset(1 as i32 as isize) * *g.offset(33 as i32 as isize);
     *g
         .offset(
-            42 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(38 as libc::c_int as isize)
-        + *b10.offset(2 as libc::c_int as isize) * *g.offset(34 as libc::c_int as isize);
+            42 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(38 as i32 as isize)
+        + *b10.offset(2 as i32 as isize) * *g.offset(34 as i32 as isize);
     *g
         .offset(
-            43 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(39 as libc::c_int as isize)
-        + *b10.offset(3 as libc::c_int as isize) * *g.offset(35 as libc::c_int as isize);
+            43 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(39 as i32 as isize)
+        + *b10.offset(3 as i32 as isize) * *g.offset(35 as i32 as isize);
     *g
         .offset(
-            44 as libc::c_int as isize,
-        ) = *c0z.offset(0 as libc::c_int as isize)
-        * *g.offset(40 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(0 as libc::c_int as isize)
-            * *g.offset(36 as libc::c_int as isize);
+            44 as i32 as isize,
+        ) = *c0z.offset(0 as i32 as isize)
+        * *g.offset(40 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(0 as i32 as isize)
+            * *g.offset(36 as i32 as isize);
     *g
         .offset(
-            45 as libc::c_int as isize,
-        ) = *c0z.offset(1 as libc::c_int as isize)
-        * *g.offset(41 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(1 as libc::c_int as isize)
-            * *g.offset(37 as libc::c_int as isize);
+            45 as i32 as isize,
+        ) = *c0z.offset(1 as i32 as isize)
+        * *g.offset(41 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(1 as i32 as isize)
+            * *g.offset(37 as i32 as isize);
     *g
         .offset(
-            46 as libc::c_int as isize,
-        ) = *c0z.offset(2 as libc::c_int as isize)
-        * *g.offset(42 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(2 as libc::c_int as isize)
-            * *g.offset(38 as libc::c_int as isize);
+            46 as i32 as isize,
+        ) = *c0z.offset(2 as i32 as isize)
+        * *g.offset(42 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(2 as i32 as isize)
+            * *g.offset(38 as i32 as isize);
     *g
         .offset(
-            47 as libc::c_int as isize,
-        ) = *c0z.offset(3 as libc::c_int as isize)
-        * *g.offset(43 as libc::c_int as isize)
-        + 2 as libc::c_int as f64 * *b10.offset(3 as libc::c_int as isize)
-            * *g.offset(39 as libc::c_int as isize);
+            47 as i32 as isize,
+        ) = *c0z.offset(3 as i32 as isize)
+        * *g.offset(43 as i32 as isize)
+        + 2 as i32 as f64 * *b10.offset(3 as i32 as isize)
+            * *g.offset(39 as i32 as isize);
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTsrg0_2e_2d4d_unrolled(
@@ -13484,8 +13484,8 @@ pub unsafe extern "C" fn CINTsrg0_2e_2d4d_unrolled(
     mut bc: *mut Rys2eT,
     mut envs: *mut CINTEnvVars,
 ) {
-    let mut type_ijkl: libc::c_int = (*envs).li_ceil << 6 as libc::c_int
-        | (*envs).lj_ceil << 4 as libc::c_int | (*envs).lk_ceil << 2 as libc::c_int
+    let mut type_ijkl: i32 = (*envs).li_ceil << 6 as i32
+        | (*envs).lj_ceil << 4 as i32 | (*envs).lk_ceil << 2 as i32
         | (*envs).ll_ceil;
     match type_ijkl {
         0 => {
@@ -13683,41 +13683,41 @@ pub unsafe extern "C" fn CINTg0_2e(
     mut rkl: *mut f64,
     mut cutoff: f64,
     mut envs: *mut CINTEnvVars,
-) -> libc::c_int {
-    let mut irys: libc::c_int = 0;
-    let mut nroots: libc::c_int = (*envs).nrys_roots;
-    let mut aij: f64 = (*envs).ai[0 as libc::c_int as usize]
-        + (*envs).aj[0 as libc::c_int as usize];
-    let mut akl: f64 = (*envs).ak[0 as libc::c_int as usize]
-        + (*envs).al[0 as libc::c_int as usize];
+) -> i32 {
+    let mut irys: i32 = 0;
+    let mut nroots: i32 = (*envs).nrys_roots;
+    let mut aij: f64 = (*envs).ai[0 as i32 as usize]
+        + (*envs).aj[0 as i32 as usize];
+    let mut akl: f64 = (*envs).ak[0 as i32 as usize]
+        + (*envs).al[0 as i32 as usize];
     let mut a0: f64 = 0.;
     let mut a1: f64 = 0.;
     let mut fac1: f64 = 0.;
     let mut x: f64 = 0.;
     let mut u: [f64; 32] = [0.; 32];
     let mut w: *mut f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
-    let mut xij_kl: f64 = *rij.offset(0 as libc::c_int as isize)
-        - *rkl.offset(0 as libc::c_int as isize);
-    let mut yij_kl: f64 = *rij.offset(1 as libc::c_int as isize)
-        - *rkl.offset(1 as libc::c_int as isize);
-    let mut zij_kl: f64 = *rij.offset(2 as libc::c_int as isize)
-        - *rkl.offset(2 as libc::c_int as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
+    let mut xij_kl: f64 = *rij.offset(0 as i32 as isize)
+        - *rkl.offset(0 as i32 as isize);
+    let mut yij_kl: f64 = *rij.offset(1 as i32 as isize)
+        - *rkl.offset(1 as i32 as isize);
+    let mut zij_kl: f64 = *rij.offset(2 as i32 as isize)
+        - *rkl.offset(2 as i32 as isize);
     let mut rr: f64 = xij_kl * xij_kl + yij_kl * yij_kl + zij_kl * zij_kl;
     a1 = aij * akl;
     a0 = a1 / (aij + akl);
-    fac1 = sqrt(a0 / (a1 * a1 * a1)) * (*envs).fac[0 as libc::c_int as usize];
+    fac1 = sqrt(a0 / (a1 * a1 * a1)) * (*envs).fac[0 as i32 as usize];
     x = a0 * rr;
-    let omega: f64 = *((*envs).env).offset(8 as libc::c_int as isize);
-    let mut theta: f64 = 0 as libc::c_int as f64;
+    let omega: f64 = *((*envs).env).offset(8 as i32 as isize);
+    let mut theta: f64 = 0 as i32 as f64;
     if omega == 0.0f64 {
         CINTrys_roots(nroots, x, u.as_mut_ptr(), w);
     } else if omega < 0.0f64 {
         theta = omega * omega / (omega * omega + a0);
-        if theta * x > cutoff || theta * x > 40 as libc::c_int as f64 {
-            return 0 as libc::c_int;
+        if theta * x > cutoff || theta * x > 40 as i32 as f64 {
+            return 0 as i32;
         }
-        let mut rorder: libc::c_int = (*envs).rys_order;
+        let mut rorder: i32 = (*envs).rys_order;
         if rorder == nroots {
             CINTsr_rys_roots(nroots, x, sqrt(theta), u.as_mut_ptr(), w);
         } else {
@@ -13729,26 +13729,26 @@ pub unsafe extern "C" fn CINTg0_2e(
                 u.as_mut_ptr().offset(rorder as isize),
                 w.offset(rorder as isize),
             );
-            if (*envs).g_size == 2 as libc::c_int {
+            if (*envs).g_size == 2 as i32 {
                 *g
                     .offset(
-                        0 as libc::c_int as isize,
-                    ) = 1 as libc::c_int as f64;
+                        0 as i32 as isize,
+                    ) = 1 as i32 as f64;
                 *g
                     .offset(
-                        1 as libc::c_int as isize,
-                    ) = 1 as libc::c_int as f64;
+                        1 as i32 as isize,
+                    ) = 1 as i32 as f64;
                 *g
                     .offset(
-                        2 as libc::c_int as isize,
-                    ) = 1 as libc::c_int as f64;
+                        2 as i32 as isize,
+                    ) = 1 as i32 as f64;
                 *g
                     .offset(
-                        3 as libc::c_int as isize,
-                    ) = 1 as libc::c_int as f64;
-                *g.offset(4 as libc::c_int as isize) *= fac1;
-                *g.offset(5 as libc::c_int as isize) *= fac1 * sqrt_theta;
-                return 1 as libc::c_int;
+                        3 as i32 as isize,
+                    ) = 1 as i32 as f64;
+                *g.offset(4 as i32 as isize) *= fac1;
+                *g.offset(5 as i32 as isize) *= fac1 * sqrt_theta;
+                return 1 as i32;
             }
             irys = rorder;
             while irys < nroots {
@@ -13764,7 +13764,7 @@ pub unsafe extern "C" fn CINTg0_2e(
         x *= theta;
         fac1 *= sqrt(theta);
         CINTrys_roots(nroots, x, u.as_mut_ptr(), w);
-        irys = 0 as libc::c_int;
+        irys = 0 as i32;
         while irys < nroots {
             let mut ut_0: f64 = u[irys as usize] * theta;
             u[irys as usize] = ut_0 / (u[irys as usize] + 1.0f64 - ut_0);
@@ -13772,11 +13772,11 @@ pub unsafe extern "C" fn CINTg0_2e(
             irys;
         }
     }
-    if (*envs).g_size == 1 as libc::c_int {
-        *g.offset(0 as libc::c_int as isize) = 1 as libc::c_int as f64;
-        *g.offset(1 as libc::c_int as isize) = 1 as libc::c_int as f64;
-        *g.offset(2 as libc::c_int as isize) *= fac1;
-        return 1 as libc::c_int;
+    if (*envs).g_size == 1 as i32 {
+        *g.offset(0 as i32 as isize) = 1 as i32 as f64;
+        *g.offset(1 as i32 as isize) = 1 as i32 as f64;
+        *g.offset(2 as i32 as isize) *= fac1;
+        return 1 as i32;
     }
     let mut u2: f64 = 0.;
     let mut tmp1: f64 = 0.;
@@ -13784,18 +13784,18 @@ pub unsafe extern "C" fn CINTg0_2e(
     let mut tmp3: f64 = 0.;
     let mut tmp4: f64 = 0.;
     let mut tmp5: f64 = 0.;
-    let mut rijrx: f64 = *rij.offset(0 as libc::c_int as isize)
-        - *((*envs).rx_in_rijrx).offset(0 as libc::c_int as isize);
-    let mut rijry: f64 = *rij.offset(1 as libc::c_int as isize)
-        - *((*envs).rx_in_rijrx).offset(1 as libc::c_int as isize);
-    let mut rijrz: f64 = *rij.offset(2 as libc::c_int as isize)
-        - *((*envs).rx_in_rijrx).offset(2 as libc::c_int as isize);
-    let mut rklrx: f64 = *rkl.offset(0 as libc::c_int as isize)
-        - *((*envs).rx_in_rklrx).offset(0 as libc::c_int as isize);
-    let mut rklry: f64 = *rkl.offset(1 as libc::c_int as isize)
-        - *((*envs).rx_in_rklrx).offset(1 as libc::c_int as isize);
-    let mut rklrz: f64 = *rkl.offset(2 as libc::c_int as isize)
-        - *((*envs).rx_in_rklrx).offset(2 as libc::c_int as isize);
+    let mut rijrx: f64 = *rij.offset(0 as i32 as isize)
+        - *((*envs).rx_in_rijrx).offset(0 as i32 as isize);
+    let mut rijry: f64 = *rij.offset(1 as i32 as isize)
+        - *((*envs).rx_in_rijrx).offset(1 as i32 as isize);
+    let mut rijrz: f64 = *rij.offset(2 as i32 as isize)
+        - *((*envs).rx_in_rijrx).offset(2 as i32 as isize);
+    let mut rklrx: f64 = *rkl.offset(0 as i32 as isize)
+        - *((*envs).rx_in_rklrx).offset(0 as i32 as isize);
+    let mut rklry: f64 = *rkl.offset(1 as i32 as isize)
+        - *((*envs).rx_in_rklrx).offset(1 as i32 as isize);
+    let mut rklrz: f64 = *rkl.offset(2 as i32 as isize)
+        - *((*envs).rx_in_rklrx).offset(2 as i32 as isize);
     let mut bc: Rys2eT = Rys2eT {
         c00x: [0.; 32],
         c00y: [0.; 32],
@@ -13816,7 +13816,7 @@ pub unsafe extern "C" fn CINTg0_2e(
     let mut c0px: *mut f64 = (bc.c0px).as_mut_ptr();
     let mut c0py: *mut f64 = (bc.c0py).as_mut_ptr();
     let mut c0pz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    irys = 0 as libc::c_int;
+    irys = 0 as i32;
     while irys < nroots {
         u2 = a0 * u[irys as usize];
         tmp4 = 0.5f64 / (u2 * (aij + akl) + a1);
@@ -13844,50 +13844,50 @@ pub unsafe extern "C" fn CINTg0_2e(
         (Some(((*envs).f_g0_2d4d).expect("non-null function pointer")))
             .expect("non-null function pointer"),
     )(g, &mut bc, envs);
-    return 1 as libc::c_int;
+    return 1 as i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTnabla1i_2e(
     mut f: *mut f64,
     mut g: *const f64,
-    li: libc::c_int,
-    lj: libc::c_int,
-    lk: libc::c_int,
-    ll: libc::c_int,
+    li: i32,
+    lj: i32,
+    lk: i32,
+    ll: i32,
     mut envs: *const CINTEnvVars,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let di: libc::c_int = (*envs).g_stride_i;
-    let dk: libc::c_int = (*envs).g_stride_k;
-    let dl: libc::c_int = (*envs).g_stride_l;
-    let dj: libc::c_int = (*envs).g_stride_j;
-    let nroots: libc::c_int = (*envs).nrys_roots;
-    let ai2: f64 = -(2 as libc::c_int) as f64
-        * (*envs).ai[0 as libc::c_int as usize];
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut n: i32 = 0;
+    let mut ptr: i32 = 0;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
+    let ai2: f64 = -(2 as i32) as f64
+        * (*envs).ai[0 as i32 as usize];
     let mut gx: *const f64 = g;
     let mut gy: *const f64 = g.offset((*envs).g_size as isize);
     let mut gz: *const f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut fx: *mut f64 = f;
     let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
     let mut fz: *mut f64 = f
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *const f64 = gx.offset(-(di as isize));
     let mut p1y: *const f64 = gy.offset(-(di as isize));
     let mut p1z: *const f64 = gz.offset(-(di as isize));
     let mut p2x: *const f64 = gx.offset(di as isize);
     let mut p2y: *const f64 = gy.offset(di as isize);
     let mut p2z: *const f64 = gz.offset(di as isize);
-    j = 0 as libc::c_int;
+    j = 0 as i32;
     while j <= lj {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l <= ll {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= lk {
                 ptr = dj * j + dl * l + dk * k;
                 n = ptr;
@@ -13899,7 +13899,7 @@ pub unsafe extern "C" fn CINTnabla1i_2e(
                     n;
                 }
                 ptr += di;
-                i = 1 as libc::c_int;
+                i = 1 as i32;
                 while i <= li {
                     n = ptr;
                     while n < ptr + nroots {
@@ -13939,45 +13939,45 @@ pub unsafe extern "C" fn CINTnabla1i_2e(
 pub unsafe extern "C" fn CINTnabla1j_2e(
     mut f: *mut f64,
     mut g: *const f64,
-    li: libc::c_int,
-    lj: libc::c_int,
-    lk: libc::c_int,
-    ll: libc::c_int,
+    li: i32,
+    lj: i32,
+    lk: i32,
+    ll: i32,
     mut envs: *const CINTEnvVars,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let di: libc::c_int = (*envs).g_stride_i;
-    let dk: libc::c_int = (*envs).g_stride_k;
-    let dl: libc::c_int = (*envs).g_stride_l;
-    let dj: libc::c_int = (*envs).g_stride_j;
-    let nroots: libc::c_int = (*envs).nrys_roots;
-    let aj2: f64 = -(2 as libc::c_int) as f64
-        * (*envs).aj[0 as libc::c_int as usize];
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut n: i32 = 0;
+    let mut ptr: i32 = 0;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
+    let aj2: f64 = -(2 as i32) as f64
+        * (*envs).aj[0 as i32 as usize];
     let mut gx: *const f64 = g;
     let mut gy: *const f64 = g.offset((*envs).g_size as isize);
     let mut gz: *const f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut fx: *mut f64 = f;
     let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
     let mut fz: *mut f64 = f
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *const f64 = gx.offset(-(dj as isize));
     let mut p1y: *const f64 = gy.offset(-(dj as isize));
     let mut p1z: *const f64 = gz.offset(-(dj as isize));
     let mut p2x: *const f64 = gx.offset(dj as isize);
     let mut p2y: *const f64 = gy.offset(dj as isize);
     let mut p2z: *const f64 = gz.offset(dj as isize);
-    l = 0 as libc::c_int;
+    l = 0 as i32;
     while l <= ll {
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k <= lk {
             ptr = dl * l + dk * k;
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i <= li {
                 n = ptr;
                 while n < ptr + nroots {
@@ -13997,14 +13997,14 @@ pub unsafe extern "C" fn CINTnabla1j_2e(
         l += 1;
         l;
     }
-    j = 1 as libc::c_int;
+    j = 1 as i32;
     while j <= lj {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l <= ll {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= lk {
                 ptr = dj * j + dl * l + dk * k;
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i <= li {
                     n = ptr;
                     while n < ptr + nroots {
@@ -14044,45 +14044,45 @@ pub unsafe extern "C" fn CINTnabla1j_2e(
 pub unsafe extern "C" fn CINTnabla1k_2e(
     mut f: *mut f64,
     mut g: *const f64,
-    li: libc::c_int,
-    lj: libc::c_int,
-    lk: libc::c_int,
-    ll: libc::c_int,
+    li: i32,
+    lj: i32,
+    lk: i32,
+    ll: i32,
     mut envs: *const CINTEnvVars,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let di: libc::c_int = (*envs).g_stride_i;
-    let dk: libc::c_int = (*envs).g_stride_k;
-    let dl: libc::c_int = (*envs).g_stride_l;
-    let dj: libc::c_int = (*envs).g_stride_j;
-    let nroots: libc::c_int = (*envs).nrys_roots;
-    let ak2: f64 = -(2 as libc::c_int) as f64
-        * (*envs).ak[0 as libc::c_int as usize];
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut n: i32 = 0;
+    let mut ptr: i32 = 0;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
+    let ak2: f64 = -(2 as i32) as f64
+        * (*envs).ak[0 as i32 as usize];
     let mut gx: *const f64 = g;
     let mut gy: *const f64 = g.offset((*envs).g_size as isize);
     let mut gz: *const f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut fx: *mut f64 = f;
     let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
     let mut fz: *mut f64 = f
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *const f64 = gx.offset(-(dk as isize));
     let mut p1y: *const f64 = gy.offset(-(dk as isize));
     let mut p1z: *const f64 = gz.offset(-(dk as isize));
     let mut p2x: *const f64 = gx.offset(dk as isize);
     let mut p2y: *const f64 = gy.offset(dk as isize);
     let mut p2z: *const f64 = gz.offset(dk as isize);
-    j = 0 as libc::c_int;
+    j = 0 as i32;
     while j <= lj {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l <= ll {
             ptr = dj * j + dl * l;
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i <= li {
                 n = ptr;
                 while n < ptr + nroots {
@@ -14096,10 +14096,10 @@ pub unsafe extern "C" fn CINTnabla1k_2e(
                 i += 1;
                 i;
             }
-            k = 1 as libc::c_int;
+            k = 1 as i32;
             while k <= lk {
                 ptr = dj * j + dl * l + dk * k;
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i <= li {
                     n = ptr;
                     while n < ptr + nroots {
@@ -14139,45 +14139,45 @@ pub unsafe extern "C" fn CINTnabla1k_2e(
 pub unsafe extern "C" fn CINTnabla1l_2e(
     mut f: *mut f64,
     mut g: *const f64,
-    li: libc::c_int,
-    lj: libc::c_int,
-    lk: libc::c_int,
-    ll: libc::c_int,
+    li: i32,
+    lj: i32,
+    lk: i32,
+    ll: i32,
     mut envs: *const CINTEnvVars,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let di: libc::c_int = (*envs).g_stride_i;
-    let dk: libc::c_int = (*envs).g_stride_k;
-    let dl: libc::c_int = (*envs).g_stride_l;
-    let dj: libc::c_int = (*envs).g_stride_j;
-    let nroots: libc::c_int = (*envs).nrys_roots;
-    let al2: f64 = -(2 as libc::c_int) as f64
-        * (*envs).al[0 as libc::c_int as usize];
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut n: i32 = 0;
+    let mut ptr: i32 = 0;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
+    let al2: f64 = -(2 as i32) as f64
+        * (*envs).al[0 as i32 as usize];
     let mut gx: *const f64 = g;
     let mut gy: *const f64 = g.offset((*envs).g_size as isize);
     let mut gz: *const f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut fx: *mut f64 = f;
     let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
     let mut fz: *mut f64 = f
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *const f64 = gx.offset(-(dl as isize));
     let mut p1y: *const f64 = gy.offset(-(dl as isize));
     let mut p1z: *const f64 = gz.offset(-(dl as isize));
     let mut p2x: *const f64 = gx.offset(dl as isize);
     let mut p2y: *const f64 = gy.offset(dl as isize);
     let mut p2z: *const f64 = gz.offset(dl as isize);
-    j = 0 as libc::c_int;
+    j = 0 as i32;
     while j <= lj {
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k <= lk {
             ptr = dj * j + dk * k;
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i <= li {
                 n = ptr;
                 while n < ptr + nroots {
@@ -14194,12 +14194,12 @@ pub unsafe extern "C" fn CINTnabla1l_2e(
             k += 1;
             k;
         }
-        l = 1 as libc::c_int;
+        l = 1 as i32;
         while l <= ll {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= lk {
                 ptr = dj * j + dl * l + dk * k;
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i <= li {
                     n = ptr;
                     while n < ptr + nroots {
@@ -14240,42 +14240,42 @@ pub unsafe extern "C" fn CINTx1i_2e(
     mut f: *mut f64,
     mut g: *const f64,
     mut ri: *const f64,
-    li: libc::c_int,
-    lj: libc::c_int,
-    lk: libc::c_int,
-    ll: libc::c_int,
+    li: i32,
+    lj: i32,
+    lk: i32,
+    ll: i32,
     mut envs: *const CINTEnvVars,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let di: libc::c_int = (*envs).g_stride_i;
-    let dk: libc::c_int = (*envs).g_stride_k;
-    let dl: libc::c_int = (*envs).g_stride_l;
-    let dj: libc::c_int = (*envs).g_stride_j;
-    let nroots: libc::c_int = (*envs).nrys_roots;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut n: i32 = 0;
+    let mut ptr: i32 = 0;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
     let mut gx: *const f64 = g;
     let mut gy: *const f64 = g.offset((*envs).g_size as isize);
     let mut gz: *const f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut fx: *mut f64 = f;
     let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
     let mut fz: *mut f64 = f
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *const f64 = gx.offset(di as isize);
     let mut p1y: *const f64 = gy.offset(di as isize);
     let mut p1z: *const f64 = gz.offset(di as isize);
-    j = 0 as libc::c_int;
+    j = 0 as i32;
     while j <= lj {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l <= ll {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= lk {
                 ptr = dj * j + dl * l + dk * k;
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i <= li {
                     n = ptr;
                     while n < ptr + nroots {
@@ -14283,19 +14283,19 @@ pub unsafe extern "C" fn CINTx1i_2e(
                             .offset(
                                 n as isize,
                             ) = *p1x.offset(n as isize)
-                            + *ri.offset(0 as libc::c_int as isize)
+                            + *ri.offset(0 as i32 as isize)
                                 * *gx.offset(n as isize);
                         *fy
                             .offset(
                                 n as isize,
                             ) = *p1y.offset(n as isize)
-                            + *ri.offset(1 as libc::c_int as isize)
+                            + *ri.offset(1 as i32 as isize)
                                 * *gy.offset(n as isize);
                         *fz
                             .offset(
                                 n as isize,
                             ) = *p1z.offset(n as isize)
-                            + *ri.offset(2 as libc::c_int as isize)
+                            + *ri.offset(2 as i32 as isize)
                                 * *gz.offset(n as isize);
                         n += 1;
                         n;
@@ -14319,42 +14319,42 @@ pub unsafe extern "C" fn CINTx1j_2e(
     mut f: *mut f64,
     mut g: *const f64,
     mut rj: *const f64,
-    li: libc::c_int,
-    lj: libc::c_int,
-    lk: libc::c_int,
-    ll: libc::c_int,
+    li: i32,
+    lj: i32,
+    lk: i32,
+    ll: i32,
     mut envs: *const CINTEnvVars,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let di: libc::c_int = (*envs).g_stride_i;
-    let dk: libc::c_int = (*envs).g_stride_k;
-    let dl: libc::c_int = (*envs).g_stride_l;
-    let dj: libc::c_int = (*envs).g_stride_j;
-    let nroots: libc::c_int = (*envs).nrys_roots;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut n: i32 = 0;
+    let mut ptr: i32 = 0;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
     let mut gx: *const f64 = g;
     let mut gy: *const f64 = g.offset((*envs).g_size as isize);
     let mut gz: *const f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut fx: *mut f64 = f;
     let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
     let mut fz: *mut f64 = f
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *const f64 = gx.offset(dj as isize);
     let mut p1y: *const f64 = gy.offset(dj as isize);
     let mut p1z: *const f64 = gz.offset(dj as isize);
-    j = 0 as libc::c_int;
+    j = 0 as i32;
     while j <= lj {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l <= ll {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= lk {
                 ptr = dj * j + dl * l + dk * k;
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i <= li {
                     n = ptr;
                     while n < ptr + nroots {
@@ -14362,19 +14362,19 @@ pub unsafe extern "C" fn CINTx1j_2e(
                             .offset(
                                 n as isize,
                             ) = *p1x.offset(n as isize)
-                            + *rj.offset(0 as libc::c_int as isize)
+                            + *rj.offset(0 as i32 as isize)
                                 * *gx.offset(n as isize);
                         *fy
                             .offset(
                                 n as isize,
                             ) = *p1y.offset(n as isize)
-                            + *rj.offset(1 as libc::c_int as isize)
+                            + *rj.offset(1 as i32 as isize)
                                 * *gy.offset(n as isize);
                         *fz
                             .offset(
                                 n as isize,
                             ) = *p1z.offset(n as isize)
-                            + *rj.offset(2 as libc::c_int as isize)
+                            + *rj.offset(2 as i32 as isize)
                                 * *gz.offset(n as isize);
                         n += 1;
                         n;
@@ -14398,42 +14398,42 @@ pub unsafe extern "C" fn CINTx1k_2e(
     mut f: *mut f64,
     mut g: *const f64,
     mut rk: *const f64,
-    li: libc::c_int,
-    lj: libc::c_int,
-    lk: libc::c_int,
-    ll: libc::c_int,
+    li: i32,
+    lj: i32,
+    lk: i32,
+    ll: i32,
     mut envs: *const CINTEnvVars,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let di: libc::c_int = (*envs).g_stride_i;
-    let dk: libc::c_int = (*envs).g_stride_k;
-    let dl: libc::c_int = (*envs).g_stride_l;
-    let dj: libc::c_int = (*envs).g_stride_j;
-    let nroots: libc::c_int = (*envs).nrys_roots;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut n: i32 = 0;
+    let mut ptr: i32 = 0;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
     let mut gx: *const f64 = g;
     let mut gy: *const f64 = g.offset((*envs).g_size as isize);
     let mut gz: *const f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut fx: *mut f64 = f;
     let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
     let mut fz: *mut f64 = f
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *const f64 = gx.offset(dk as isize);
     let mut p1y: *const f64 = gy.offset(dk as isize);
     let mut p1z: *const f64 = gz.offset(dk as isize);
-    j = 0 as libc::c_int;
+    j = 0 as i32;
     while j <= lj {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l <= ll {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= lk {
                 ptr = dj * j + dl * l + dk * k;
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i <= li {
                     n = ptr;
                     while n < ptr + nroots {
@@ -14441,19 +14441,19 @@ pub unsafe extern "C" fn CINTx1k_2e(
                             .offset(
                                 n as isize,
                             ) = *p1x.offset(n as isize)
-                            + *rk.offset(0 as libc::c_int as isize)
+                            + *rk.offset(0 as i32 as isize)
                                 * *gx.offset(n as isize);
                         *fy
                             .offset(
                                 n as isize,
                             ) = *p1y.offset(n as isize)
-                            + *rk.offset(1 as libc::c_int as isize)
+                            + *rk.offset(1 as i32 as isize)
                                 * *gy.offset(n as isize);
                         *fz
                             .offset(
                                 n as isize,
                             ) = *p1z.offset(n as isize)
-                            + *rk.offset(2 as libc::c_int as isize)
+                            + *rk.offset(2 as i32 as isize)
                                 * *gz.offset(n as isize);
                         n += 1;
                         n;
@@ -14477,42 +14477,42 @@ pub unsafe extern "C" fn CINTx1l_2e(
     mut f: *mut f64,
     mut g: *const f64,
     mut rl: *const f64,
-    li: libc::c_int,
-    lj: libc::c_int,
-    lk: libc::c_int,
-    ll: libc::c_int,
+    li: i32,
+    lj: i32,
+    lk: i32,
+    ll: i32,
     mut envs: *const CINTEnvVars,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut l: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut ptr: libc::c_int = 0;
-    let di: libc::c_int = (*envs).g_stride_i;
-    let dk: libc::c_int = (*envs).g_stride_k;
-    let dl: libc::c_int = (*envs).g_stride_l;
-    let dj: libc::c_int = (*envs).g_stride_j;
-    let nroots: libc::c_int = (*envs).nrys_roots;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut l: i32 = 0;
+    let mut n: i32 = 0;
+    let mut ptr: i32 = 0;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
     let mut gx: *const f64 = g;
     let mut gy: *const f64 = g.offset((*envs).g_size as isize);
     let mut gz: *const f64 = g
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut fx: *mut f64 = f;
     let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
     let mut fz: *mut f64 = f
-        .offset(((*envs).g_size * 2 as libc::c_int) as isize);
+        .offset(((*envs).g_size * 2 as i32) as isize);
     let mut p1x: *const f64 = gx.offset(dl as isize);
     let mut p1y: *const f64 = gy.offset(dl as isize);
     let mut p1z: *const f64 = gz.offset(dl as isize);
-    j = 0 as libc::c_int;
+    j = 0 as i32;
     while j <= lj {
-        l = 0 as libc::c_int;
+        l = 0 as i32;
         while l <= ll {
-            k = 0 as libc::c_int;
+            k = 0 as i32;
             while k <= lk {
                 ptr = dj * j + dl * l + dk * k;
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i <= li {
                     n = ptr;
                     while n < ptr + nroots {
@@ -14520,19 +14520,19 @@ pub unsafe extern "C" fn CINTx1l_2e(
                             .offset(
                                 n as isize,
                             ) = *p1x.offset(n as isize)
-                            + *rl.offset(0 as libc::c_int as isize)
+                            + *rl.offset(0 as i32 as isize)
                                 * *gx.offset(n as isize);
                         *fy
                             .offset(
                                 n as isize,
                             ) = *p1y.offset(n as isize)
-                            + *rl.offset(1 as libc::c_int as isize)
+                            + *rl.offset(1 as i32 as isize)
                                 * *gy.offset(n as isize);
                         *fz
                             .offset(
                                 n as isize,
                             ) = *p1z.offset(n as isize)
-                            + *rl.offset(2 as libc::c_int as isize)
+                            + *rl.offset(2 as i32 as isize)
                                 * *gz.offset(n as isize);
                         n += 1;
                         n;

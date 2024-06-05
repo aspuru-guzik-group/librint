@@ -14,8 +14,8 @@ extern "C" {
     pub type _IO_codecvt;
     pub type _IO_marker;
     static mut stderr: *mut FILE;
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-    fn exit(_: libc::c_int) -> !;
+    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
+    fn exit(_: i32) -> !;
     fn exp(_: f64) -> f64;
     fn pow(_: f64, _: f64) -> f64;
     fn sqrtl(_: f128::f128) -> f128::f128;
@@ -27,7 +27,7 @@ pub type __off64_t = libc::c_long;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _IO_FILE {
-    pub _flags: libc::c_int,
+    pub _flags: i32,
     pub _IO_read_ptr: *mut libc::c_char,
     pub _IO_read_end: *mut libc::c_char,
     pub _IO_read_base: *mut libc::c_char,
@@ -41,8 +41,8 @@ pub struct _IO_FILE {
     pub _IO_save_end: *mut libc::c_char,
     pub _markers: *mut _IO_marker,
     pub _chain: *mut _IO_FILE,
-    pub _fileno: libc::c_int,
-    pub _flags2: libc::c_int,
+    pub _fileno: i32,
+    pub _flags2: i32,
     pub _old_offset: __off_t,
     pub _cur_column: libc::c_ushort,
     pub _vtable_offset: libc::c_schar,
@@ -54,18 +54,18 @@ pub struct _IO_FILE {
     pub _freeres_list: *mut _IO_FILE,
     pub _freeres_buf: *mut libc::c_void,
     pub __pad5: size_t,
-    pub _mode: libc::c_int,
+    pub _mode: i32,
     pub _unused2: [libc::c_char; 20],
 }
 pub type _IO_lock_t = ();
 pub type FILE = _IO_FILE;
 pub type QuadratureFunction = unsafe extern "C" fn(
-    libc::c_int,
+    i32,
     f64,
     f64,
     *mut f64,
     *mut f64,
-) -> libc::c_int;
+) -> i32;
 static mut POLY_SMALLX_R0: [f64; 496] = [
     5.0000000000000000e-01f64,
     1.3069360623708470e-01f64,
@@ -3055,7 +3055,7 @@ static mut POLY_LARGEX_WW: [f64; 496] = [
     2.8025709293189409e-47f64,
 ];
 unsafe extern "C" fn segment_solve(
-    mut n: libc::c_int,
+    mut n: i32,
     mut x: f64,
     mut lower: f64,
     mut u: *mut f64,
@@ -3063,8 +3063,8 @@ unsafe extern "C" fn segment_solve(
     mut breakpoint: f64,
     mut fn1: Option::<QuadratureFunction>,
     mut fn2: Option::<QuadratureFunction>,
-) -> libc::c_int {
-    let mut error: libc::c_int = 0;
+) -> i32 {
+    let mut error: i32 = 0;
     if x <= breakpoint {
         error = fn1.expect("non-null function pointer")(n, x, lower, u, w);
     } else {
@@ -3077,16 +3077,16 @@ unsafe extern "C" fn segment_solve(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTrys_roots(
-    mut nroots: libc::c_int,
+    mut nroots: i32,
     mut x: f64,
     mut u: *mut f64,
     mut w: *mut f64,
 ) {
     if x <= 3e-7f64 {
-        let mut off: libc::c_int = nroots * (nroots - 1 as libc::c_int)
-            / 2 as libc::c_int;
-        let mut i: libc::c_int = 0;
-        i = 0 as libc::c_int;
+        let mut off: i32 = nroots * (nroots - 1 as i32)
+            / 2 as i32;
+        let mut i: i32 = 0;
+        i = 0 as i32;
         while i < nroots {
             *u
                 .offset(
@@ -3102,13 +3102,13 @@ pub unsafe extern "C" fn CINTrys_roots(
             i;
         }
         return;
-    } else if x >= (35 as libc::c_int + nroots * 5 as libc::c_int) as f64 {
-        let mut off_0: libc::c_int = nroots * (nroots - 1 as libc::c_int)
-            / 2 as libc::c_int;
-        let mut i_0: libc::c_int = 0;
+    } else if x >= (35 as i32 + nroots * 5 as i32) as f64 {
+        let mut off_0: i32 = nroots * (nroots - 1 as i32)
+            / 2 as i32;
+        let mut i_0: i32 = 0;
         let mut rt: f64 = 0.;
         let mut t: f64 = sqrt(0.78539816339744827900f64 / x);
-        i_0 = 0 as libc::c_int;
+        i_0 = 0 as i32;
         while i_0 < nroots {
             rt = POLY_LARGEX_RT[(off_0 + i_0) as usize];
             *u.offset(i_0 as isize) = rt / (x - rt);
@@ -3118,7 +3118,7 @@ pub unsafe extern "C" fn CINTrys_roots(
         }
         return;
     }
-    let mut err: libc::c_int = 0;
+    let mut err: i32 = 0;
     match nroots {
         1 => {
             err = rys_root1(x, u, w);
@@ -3142,26 +3142,26 @@ pub unsafe extern "C" fn CINTrys_roots(
                 0.0f64,
                 u,
                 w,
-                11 as libc::c_int as f64,
+                11 as i32 as f64,
                 Some(
                     CINTrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTrys_schmidt
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3172,26 +3172,26 @@ pub unsafe extern "C" fn CINTrys_roots(
                 0.0f64,
                 u,
                 w,
-                11 as libc::c_int as f64,
+                11 as i32 as f64,
                 Some(
                     CINTrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_schmidt
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3202,26 +3202,26 @@ pub unsafe extern "C" fn CINTrys_roots(
                 0.0f64,
                 u,
                 w,
-                10 as libc::c_int as f64,
+                10 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3232,26 +3232,26 @@ pub unsafe extern "C" fn CINTrys_roots(
                 0.0f64,
                 u,
                 w,
-                18 as libc::c_int as f64,
+                18 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3262,26 +3262,26 @@ pub unsafe extern "C" fn CINTrys_roots(
                 0.0f64,
                 u,
                 w,
-                22 as libc::c_int as f64,
+                22 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3292,26 +3292,26 @@ pub unsafe extern "C" fn CINTrys_roots(
                 0.0f64,
                 u,
                 w,
-                50 as libc::c_int as f64,
+                50 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3327,7 +3327,7 @@ pub unsafe extern "C" fn CINTrys_roots(
     }
 }
 unsafe extern "C" fn segment_solve1(
-    mut n: libc::c_int,
+    mut n: i32,
     mut x: f64,
     mut lower: f64,
     mut u: *mut f64,
@@ -3338,8 +3338,8 @@ unsafe extern "C" fn segment_solve1(
     mut fn1: Option::<QuadratureFunction>,
     mut fn2: Option::<QuadratureFunction>,
     mut fn3: Option::<QuadratureFunction>,
-) -> libc::c_int {
-    let mut error: libc::c_int = 0;
+) -> i32 {
+    let mut error: i32 = 0;
     if lower < lower_bp1 {
         if x <= breakpoint {
             error = fn1.expect("non-null function pointer")(n, x, lower, u, w);
@@ -3349,7 +3349,7 @@ unsafe extern "C" fn segment_solve1(
     } else if lower < lower_bp2 {
         error = fn3.expect("non-null function pointer")(n, x, lower, u, w);
     } else {
-        return 1 as libc::c_int
+        return 1 as i32
     }
     if error != 0 {
         error = CINTlrys_schmidt(n, x, lower, u, w);
@@ -3358,13 +3358,13 @@ unsafe extern "C" fn segment_solve1(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTsr_rys_roots(
-    mut nroots: libc::c_int,
+    mut nroots: i32,
     mut x: f64,
     mut lower: f64,
     mut u: *mut f64,
     mut w: *mut f64,
 ) {
-    let mut err: libc::c_int = 1 as libc::c_int;
+    let mut err: i32 = 1 as i32;
     match nroots {
         1 => {
             err = CINTrys_schmidt(nroots, x, lower, u, w);
@@ -3386,26 +3386,26 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     lower,
                     u,
                     w,
-                    10 as libc::c_int as f64,
+                    10 as i32 as f64,
                     Some(
                         CINTlrys_jacobi
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                 );
             } else {
@@ -3422,26 +3422,26 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     lower,
                     u,
                     w,
-                    10 as libc::c_int as f64,
+                    10 as i32 as f64,
                     Some(
                         CINTlrys_jacobi
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                 );
             } else {
@@ -3456,26 +3456,26 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     lower,
                     u,
                     w,
-                    50 as libc::c_int as f64,
+                    50 as i32 as f64,
                     Some(
                         CINTrys_schmidt
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                 );
             } else if lower < 0.8f64 {
@@ -3485,26 +3485,26 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     lower,
                     u,
                     w,
-                    10 as libc::c_int as f64,
+                    10 as i32 as f64,
                     Some(
                         CINTlrys_jacobi
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                 );
             } else {
@@ -3519,26 +3519,26 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     lower,
                     u,
                     w,
-                    60 as libc::c_int as f64,
+                    60 as i32 as f64,
                     Some(
                         CINTrys_schmidt
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                 );
             } else if lower < 0.8f64 {
@@ -3548,26 +3548,26 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     lower,
                     u,
                     w,
-                    10 as libc::c_int as f64,
+                    10 as i32 as f64,
                     Some(
                         CINTlrys_jacobi
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
                             as unsafe extern "C" fn(
-                                libc::c_int,
+                                i32,
                                 f64,
                                 f64,
                                 *mut f64,
                                 *mut f64,
-                            ) -> libc::c_int,
+                            ) -> i32,
                     ),
                 );
             } else {
@@ -3583,36 +3583,36 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 w,
                 0.5f64,
                 1.0f64,
-                60 as libc::c_int as f64,
+                60 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3625,36 +3625,36 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 w,
                 0.15f64,
                 1.0f64,
-                60 as libc::c_int as f64,
+                60 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3667,36 +3667,36 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 w,
                 0.15f64,
                 1.0f64,
-                60 as libc::c_int as f64,
+                60 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3709,36 +3709,36 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 w,
                 0.25f64,
                 1.0f64,
-                60 as libc::c_int as f64,
+                60 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3751,36 +3751,36 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 w,
                 0.25f64,
                 0.75f64,
-                60 as libc::c_int as f64,
+                60 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3793,36 +3793,36 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 w,
                 0.25f64,
                 0.65f64,
-                60 as libc::c_int as f64,
+                60 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3835,36 +3835,36 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 w,
                 0.15f64,
                 0.65f64,
-                60 as libc::c_int as f64,
+                60 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3877,36 +3877,36 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 w,
                 0.15f64,
                 0.55f64,
-                60 as libc::c_int as f64,
+                60 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3919,36 +3919,36 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 w,
                 0.25f64,
                 0.45f64,
-                60 as libc::c_int as f64,
+                60 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -3961,36 +3961,36 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 w,
                 0.25f64,
                 0.35f64,
-                60 as libc::c_int as f64,
+                60 as i32 as f64,
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
                         as unsafe extern "C" fn(
-                            libc::c_int,
+                            i32,
                             f64,
                             f64,
                             *mut f64,
                             *mut f64,
-                        ) -> libc::c_int,
+                        ) -> i32,
                 ),
             );
         }
@@ -4001,7 +4001,7 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     as *const libc::c_char,
                 nroots,
             );
-            exit(1 as libc::c_int);
+            exit(1 as i32);
         }
     }
     if err != 0 {
@@ -4020,17 +4020,17 @@ unsafe extern "C" fn rys_root1(
     mut X: f64,
     mut roots: *mut f64,
     mut weights: *mut f64,
-) -> libc::c_int {
+) -> i32 {
     let mut Y: f64 = 0.;
     let mut F1: f64 = 0.;
     if X > 33.0f64 {
-        *weights.offset(0 as libc::c_int as isize) = sqrt(0.78539816339744827900f64 / X);
-        *roots.offset(0 as libc::c_int as isize) = 0.5E+00f64 / (X - 0.5E+00f64);
-        return 0 as libc::c_int;
+        *weights.offset(0 as i32 as isize) = sqrt(0.78539816339744827900f64 / X);
+        *roots.offset(0 as i32 as isize) = 0.5E+00f64 / (X - 0.5E+00f64);
+        return 0 as i32;
     } else if X < 3.0e-7f64 {
-        *weights.offset(0 as libc::c_int as isize) = 1.0E+00f64 - X / 3.0E+00f64;
-        *roots.offset(0 as libc::c_int as isize) = 0.5E+00f64 - X / 5.0E+00f64;
-        return 0 as libc::c_int;
+        *weights.offset(0 as i32 as isize) = 1.0E+00f64 - X / 3.0E+00f64;
+        *roots.offset(0 as i32 as isize) = 0.5E+00f64 - X / 5.0E+00f64;
+        return 0 as i32;
     }
     let mut E: f64 = exp(-X);
     if X > 15.0f64 {
@@ -4075,15 +4075,15 @@ unsafe extern "C" fn rys_root1(
             - 1.99999999997023E-01f64) * X + 3.33333333333318E-01f64;
     }
     let mut WW1: f64 = 2.0f64 * X * F1 + E;
-    *weights.offset(0 as libc::c_int as isize) = WW1;
-    *roots.offset(0 as libc::c_int as isize) = F1 / (WW1 - F1);
-    return 0 as libc::c_int;
+    *weights.offset(0 as i32 as isize) = WW1;
+    *roots.offset(0 as i32 as isize) = F1 / (WW1 - F1);
+    return 0 as i32;
 }
 unsafe extern "C" fn rys_root2(
     mut X: f64,
     mut roots: *mut f64,
     mut weights: *mut f64,
-) -> libc::c_int {
+) -> i32 {
     let mut R12: f64 = 0.;
     let mut R22: f64 = 0.;
     let mut W22: f64 = 0.;
@@ -4166,7 +4166,7 @@ unsafe extern "C" fn rys_root2(
             + 1.12155283108289E+00f64;
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
         WW1 = WW1 - WW2;
-    } else if X < 10 as libc::c_int as f64 {
+    } else if X < 10 as i32 as f64 {
         E = exp(-X);
         WW1 = ((((((4.6897511375022E-01f64 / X - 6.9955602298985E-01f64) / X
             + 5.3689283271887E-01f64) / X - 3.2883030418398E-01f64) / X
@@ -4191,7 +4191,7 @@ unsafe extern "C" fn rys_root2(
             - 9.53478510453887E-02f64) * Y + 5.44765245686790E-01f64;
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
         WW1 = WW1 - WW2;
-    } else if X < 15 as libc::c_int as f64 {
+    } else if X < 15 as i32 as f64 {
         E = exp(-X);
         WW1 = (((-1.8784686463512E-01f64 / X + 2.2991849164985E-01f64) / X
             - 4.9893752514047E-01f64) / X - 2.1916512131607E-05f64) * E
@@ -4209,7 +4209,7 @@ unsafe extern "C" fn rys_root2(
             + 8.00839033297501E+00f64) * E + R22 / (X - R22);
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
         WW1 = WW1 - WW2;
-    } else if X < 33 as libc::c_int as f64 {
+    } else if X < 33 as i32 as f64 {
         E = exp(-X);
         WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X
             - 6.0156581186481E-05f64) * E + sqrt(0.78539816339744827900f64 / X);
@@ -4224,7 +4224,7 @@ unsafe extern "C" fn rys_root2(
             + 2.98011277766958E+00f64) * E + R22 / (X - R22);
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
         WW1 = WW1 - WW2;
-    } else if X < 40 as libc::c_int as f64 {
+    } else if X < 40 as i32 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         E = exp(-X);
         RT1 = (-8.78947307498880E-01f64 * X + 1.09243702330261E+01f64) * E
@@ -4240,17 +4240,17 @@ unsafe extern "C" fn rys_root2(
         WW2 = W22 * WW1;
         WW1 = WW1 - WW2;
     }
-    *roots.offset(0 as libc::c_int as isize) = RT1;
-    *roots.offset(1 as libc::c_int as isize) = RT2;
-    *weights.offset(0 as libc::c_int as isize) = WW1;
-    *weights.offset(1 as libc::c_int as isize) = WW2;
-    return 0 as libc::c_int;
+    *roots.offset(0 as i32 as isize) = RT1;
+    *roots.offset(1 as i32 as isize) = RT2;
+    *weights.offset(0 as i32 as isize) = WW1;
+    *weights.offset(1 as i32 as isize) = WW2;
+    return 0 as i32;
 }
 unsafe extern "C" fn rys_root3(
     mut X: f64,
     mut roots: *mut f64,
     mut weights: *mut f64,
-) -> libc::c_int {
+) -> i32 {
     let mut R13: f64 = 0.;
     let mut R23: f64 = 0.;
     let mut W23: f64 = 0.;
@@ -4380,7 +4380,7 @@ unsafe extern "C" fn rys_root3(
         WW3 = (A2 - T2 * A1) / ((T3 - T2) * (T3 - T1));
         WW2 = (T3 * A1 - A2) / ((T3 - T2) * (T2 - T1));
         WW1 = WW1 - WW2 - WW3;
-    } else if X < 10 as libc::c_int as f64 {
+    } else if X < 10 as i32 as f64 {
         E = exp(-X);
         WW1 = ((((((4.6897511375022E-01f64 / X - 6.9955602298985E-01f64) / X
             + 5.3689283271887E-01f64) / X - 3.2883030418398E-01f64) / X
@@ -4418,7 +4418,7 @@ unsafe extern "C" fn rys_root3(
         WW3 = (A2 - T2 * A1) / ((T3 - T2) * (T3 - T1));
         WW2 = (T3 * A1 - A2) / ((T3 - T2) * (T2 - T1));
         WW1 = WW1 - WW2 - WW3;
-    } else if X < 15 as libc::c_int as f64 {
+    } else if X < 15 as i32 as f64 {
         E = exp(-X);
         WW1 = (((-1.8784686463512E-01f64 / X + 2.2991849164985E-01f64) / X
             - 4.9893752514047E-01f64) / X - 2.1916512131607E-05f64) * E
@@ -4455,13 +4455,13 @@ unsafe extern "C" fn rys_root3(
         WW3 = (A2 - T2 * A1) / ((T3 - T2) * (T3 - T1));
         WW2 = (T3 * A1 - A2) / ((T3 - T2) * (T2 - T1));
         WW1 = WW1 - WW2 - WW3;
-    } else if X < 33 as libc::c_int as f64 {
+    } else if X < 33 as i32 as f64 {
         E = exp(-X);
         WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X
             - 6.0156581186481E-05f64) * E + sqrt(0.78539816339744827900f64 / X);
         F1 = (WW1 - E) / (X + X);
         F2 = (F1 + F1 + F1 - E) / (X + X);
-        if X < 20 as libc::c_int as f64 {
+        if X < 20 as i32 as f64 {
             RT1 = ((((((-2.43270989903742E-06f64 * X + 3.57901398988359E-04f64) * X
                 - 2.34112415981143E-02f64) * X + 7.81425144913975E-01f64) * X
                 - 1.73209218219175E+01f64) * X + 2.43517435690398E+02f64) * X
@@ -4500,7 +4500,7 @@ unsafe extern "C" fn rys_root3(
         WW3 = (A2 - T2 * A1) / ((T3 - T2) * (T3 - T1));
         WW2 = (T3 * A1 - A2) / ((T3 - T2) * (T2 - T1));
         WW1 = WW1 - WW2 - WW3;
-    } else if X < 47 as libc::c_int as f64 {
+    } else if X < 47 as i32 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         E = exp(-X);
         RT1 = ((-7.39058467995275E+00f64 * X + 3.21318352526305E+02f64) * X
@@ -4523,19 +4523,19 @@ unsafe extern "C" fn rys_root3(
         WW3 = W33 * WW1;
         WW1 = WW1 - WW2 - WW3;
     }
-    *roots.offset(0 as libc::c_int as isize) = RT1;
-    *roots.offset(1 as libc::c_int as isize) = RT2;
-    *roots.offset(2 as libc::c_int as isize) = RT3;
-    *weights.offset(0 as libc::c_int as isize) = WW1;
-    *weights.offset(1 as libc::c_int as isize) = WW2;
-    *weights.offset(2 as libc::c_int as isize) = WW3;
-    return 0 as libc::c_int;
+    *roots.offset(0 as i32 as isize) = RT1;
+    *roots.offset(1 as i32 as isize) = RT2;
+    *roots.offset(2 as i32 as isize) = RT3;
+    *weights.offset(0 as i32 as isize) = WW1;
+    *weights.offset(1 as i32 as isize) = WW2;
+    *weights.offset(2 as i32 as isize) = WW3;
+    return 0 as i32;
 }
 unsafe extern "C" fn rys_root4(
     mut X: f64,
     mut roots: *mut f64,
     mut weights: *mut f64,
-) -> libc::c_int {
+) -> i32 {
     let mut R14: f64 = 0.;
     let mut R24: f64 = 0.;
     let mut W24: f64 = 0.;
@@ -4606,7 +4606,7 @@ unsafe extern "C" fn rys_root4(
             + 2.18417516259781E-03f64) * X - 9.99791027771119E-03f64) * X
             + 3.48791097377370E-02f64) * X - 8.28299075413889E-02f64) * X
             + 1.01228536290376E-01f64;
-    } else if X <= 5 as libc::c_int as f64 {
+    } else if X <= 5 as i32 as f64 {
         Y = X - 3.0E+00f64;
         RT1 = (((((((((-1.48570633747284E-15f64 * Y - 1.33273068108777E-13f64) * Y
             + 4.068543696670E-12f64) * Y - 9.163164161821E-11f64) * Y
@@ -4717,7 +4717,7 @@ unsafe extern "C" fn rys_root4(
             - 6.19785782240693E-07f64) * Y + 3.95841149373135E-06f64) * Y
             - 2.11366761402403E-05f64) * Y + 9.00474771229507E-05f64) * Y
             - 2.78777909813289E-04f64) * Y + 5.26543779837487E-04f64;
-    } else if X <= 15 as libc::c_int as f64 {
+    } else if X <= 15 as i32 as f64 {
         Y = X - 12.5E+00f64;
         RT1 = (((((((((((4.94869622744119E-17f64 * Y + 8.03568805739160E-16f64) * Y
             - 5.599125915431E-15f64) * Y - 1.378685560217E-13f64) * Y
@@ -4770,7 +4770,7 @@ unsafe extern "C" fn rys_root4(
         WW1 = (((-1.8784686463512E-01f64 / X + 2.2991849164985E-01f64) / X
             - 4.9893752514047E-01f64) / X - 2.1916512131607E-05f64) * exp(-X)
             + sqrt(0.78539816339744827900f64 / X) - WW4 - WW3 - WW2;
-    } else if X <= 20 as libc::c_int as f64 {
+    } else if X <= 20 as i32 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         Y = X - 17.5E+00f64;
         RT1 = (((((((((((4.36701759531398E-17f64 * Y - 1.12860600219889E-16f64) * Y
@@ -4824,7 +4824,7 @@ unsafe extern "C" fn rys_root4(
             + 4.97836392625268E-02f64;
         WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X
             - 6.0156581186481E-05f64) * exp(-X) + WW1 - WW2 - WW3 - WW4;
-    } else if X <= 35 as libc::c_int as f64 {
+    } else if X <= 35 as i32 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         E = exp(-X);
         RT1 = ((((((-4.45711399441838E-05f64 * X + 1.27267770241379E-03f64) * X
@@ -4849,7 +4849,7 @@ unsafe extern "C" fn rys_root4(
             + 1.70830039597097E+04f64) * X - 2.90517939780207E+05f64) * X
             + (3.49059698304732E+07f64 / X - 1.64944522586065E+07f64) / X
             + 2.96817940164703E+06f64) * E + R44 / (X - R44);
-        if X <= 25 as libc::c_int as f64 {
+        if X <= 25 as i32 as f64 {
             WW4 = (((((((2.33766206773151E-07f64 * X - 3.81542906607063E-05f64) * X
                 + 3.51416601267000E-03f64) * X - 1.66538571864728E-01f64) * X
                 + 4.80006136831847E+00f64) * X - 8.73165934223603E+01f64) * X
@@ -4874,9 +4874,9 @@ unsafe extern "C" fn rys_root4(
             + 7.67135400969617E+05f64) * E + W24 * WW1;
         WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X
             - 6.0156581186481E-05f64) * E + WW1 - WW2 - WW3 - WW4;
-    } else if X <= 53 as libc::c_int as f64 {
+    } else if X <= 53 as i32 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
-        E = exp(-X) * pow(X, 4 as libc::c_int as f64);
+        E = exp(-X) * pow(X, 4 as i32 as f64);
         RT4 = ((-2.19135070169653E-03f64 * X - 1.19108256987623E-01f64) * X
             - 7.50238795695573E-01f64) * E + R44 / (X - R44);
         RT3 = ((-9.65842534508637E-04f64 * X - 4.49822013469279E-02f64) * X
@@ -4903,21 +4903,21 @@ unsafe extern "C" fn rys_root4(
         WW2 = W24 * WW1;
         WW1 = WW1 - WW2 - WW3 - WW4;
     }
-    *roots.offset(0 as libc::c_int as isize) = RT1;
-    *roots.offset(1 as libc::c_int as isize) = RT2;
-    *roots.offset(2 as libc::c_int as isize) = RT3;
-    *roots.offset(3 as libc::c_int as isize) = RT4;
-    *weights.offset(0 as libc::c_int as isize) = WW1;
-    *weights.offset(1 as libc::c_int as isize) = WW2;
-    *weights.offset(2 as libc::c_int as isize) = WW3;
-    *weights.offset(3 as libc::c_int as isize) = WW4;
-    return 0 as libc::c_int;
+    *roots.offset(0 as i32 as isize) = RT1;
+    *roots.offset(1 as i32 as isize) = RT2;
+    *roots.offset(2 as i32 as isize) = RT3;
+    *roots.offset(3 as i32 as isize) = RT4;
+    *weights.offset(0 as i32 as isize) = WW1;
+    *weights.offset(1 as i32 as isize) = WW2;
+    *weights.offset(2 as i32 as isize) = WW3;
+    *weights.offset(3 as i32 as isize) = WW4;
+    return 0 as i32;
 }
 unsafe extern "C" fn rys_root5(
     mut X: f64,
     mut roots: *mut f64,
     mut weights: *mut f64,
-) -> libc::c_int {
+) -> i32 {
     let mut R15: f64 = 0.;
     let mut R25: f64 = 0.;
     let mut W25: f64 = 0.;
@@ -5338,7 +5338,7 @@ unsafe extern "C" fn rys_root5(
             - 1.18527596836592E-11f64) * Y + 1.36296870441445E-10f64) * Y
             - 1.17842611094141E-09f64) * Y + 7.80430641995926E-09f64) * Y
             - 5.97767417400540E-08f64) * Y + 1.65186146094969E-06f64;
-    } else if X < 40 as libc::c_int as f64 {
+    } else if X < 40 as i32 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         E = exp(-X);
         RT1 = ((((((((-1.73363958895356E-06f64 * X + 1.19921331441483E-04f64) * X
@@ -5429,75 +5429,75 @@ unsafe extern "C" fn rys_root5(
         WW5 = W55 * WW1;
         WW1 = WW1 - WW2 - WW3 - WW4 - WW5;
     }
-    *roots.offset(0 as libc::c_int as isize) = RT1;
-    *roots.offset(1 as libc::c_int as isize) = RT2;
-    *roots.offset(2 as libc::c_int as isize) = RT3;
-    *roots.offset(3 as libc::c_int as isize) = RT4;
-    *roots.offset(4 as libc::c_int as isize) = RT5;
-    *weights.offset(0 as libc::c_int as isize) = WW1;
-    *weights.offset(1 as libc::c_int as isize) = WW2;
-    *weights.offset(2 as libc::c_int as isize) = WW3;
-    *weights.offset(3 as libc::c_int as isize) = WW4;
-    *weights.offset(4 as libc::c_int as isize) = WW5;
-    return 0 as libc::c_int;
+    *roots.offset(0 as i32 as isize) = RT1;
+    *roots.offset(1 as i32 as isize) = RT2;
+    *roots.offset(2 as i32 as isize) = RT3;
+    *roots.offset(3 as i32 as isize) = RT4;
+    *roots.offset(4 as i32 as isize) = RT5;
+    *weights.offset(0 as i32 as isize) = WW1;
+    *weights.offset(1 as i32 as isize) = WW2;
+    *weights.offset(2 as i32 as isize) = WW3;
+    *weights.offset(3 as i32 as isize) = WW4;
+    *weights.offset(4 as i32 as isize) = WW5;
+    return 0 as i32;
 }
 unsafe extern "C" fn R_dsmit(
     mut cs: *mut f64,
     mut fmt_ints: *mut f64,
-    mut n: libc::c_int,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
+    mut n: i32,
+) -> i32 {
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
     let mut fac: f64 = 0.;
     let mut dot: f64 = 0.;
     let mut tmp: f64 = 0.;
     let mut v: [f64; 32] = [0.; 32];
-    fac = -*fmt_ints.offset(1 as libc::c_int as isize)
-        / *fmt_ints.offset(0 as libc::c_int as isize);
-    tmp = *fmt_ints.offset(2 as libc::c_int as isize)
-        + fac * *fmt_ints.offset(1 as libc::c_int as isize);
-    if tmp <= 0 as libc::c_int as f64 {
+    fac = -*fmt_ints.offset(1 as i32 as isize)
+        / *fmt_ints.offset(0 as i32 as isize);
+    tmp = *fmt_ints.offset(2 as i32 as isize)
+        + fac * *fmt_ints.offset(1 as i32 as isize);
+    if tmp <= 0 as i32 as f64 {
         fprintf(
             stderr,
             b"libcint::rys_roots negative value in sqrt for roots %d (j=1)\n\0"
                 as *const u8 as *const libc::c_char,
-            n - 1 as libc::c_int,
+            n - 1 as i32,
         );
-        k = 1 as libc::c_int;
+        k = 1 as i32;
         while k < n {
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < n {
-                *cs.offset((i + k * n) as isize) = 0 as libc::c_int as f64;
+                *cs.offset((i + k * n) as isize) = 0 as i32 as f64;
                 i += 1;
                 i;
             }
             k += 1;
             k;
         }
-        return 1 as libc::c_int;
+        return 1 as i32;
     }
-    tmp = 1 as libc::c_int as f64 / sqrt(tmp);
+    tmp = 1 as i32 as f64 / sqrt(tmp);
     *cs
         .offset(
-            (0 as libc::c_int + 0 as libc::c_int * n) as isize,
-        ) = 1 as libc::c_int as f64
-        / sqrt(*fmt_ints.offset(0 as libc::c_int as isize));
-    *cs.offset((0 as libc::c_int + 1 as libc::c_int * n) as isize) = fac * tmp;
-    *cs.offset((1 as libc::c_int + 1 as libc::c_int * n) as isize) = tmp;
-    j = 2 as libc::c_int;
+            (0 as i32 + 0 as i32 * n) as isize,
+        ) = 1 as i32 as f64
+        / sqrt(*fmt_ints.offset(0 as i32 as isize));
+    *cs.offset((0 as i32 + 1 as i32 * n) as isize) = fac * tmp;
+    *cs.offset((1 as i32 + 1 as i32 * n) as isize) = tmp;
+    j = 2 as i32;
     while j < n {
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k < j {
-            v[k as usize] = 0 as libc::c_int as f64;
+            v[k as usize] = 0 as i32 as f64;
             k += 1;
             k;
         }
         fac = *fmt_ints.offset((j + j) as isize);
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k < j {
-            dot = 0 as libc::c_int as f64;
-            i = 0 as libc::c_int;
+            dot = 0 as i32 as f64;
+            i = 0 as i32;
             while i <= k {
                 dot
                     += *cs.offset((i + k * n) as isize)
@@ -5505,7 +5505,7 @@ unsafe extern "C" fn R_dsmit(
                 i += 1;
                 i;
             }
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i <= k {
                 v[i as usize] -= dot * *cs.offset((i + k * n) as isize);
                 i += 1;
@@ -5515,36 +5515,36 @@ unsafe extern "C" fn R_dsmit(
             k += 1;
             k;
         }
-        if fac <= 0 as libc::c_int as f64 {
+        if fac <= 0 as i32 as f64 {
             k = j;
             while k < n {
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i < n {
                     *cs
                         .offset(
                             (i + k * n) as isize,
-                        ) = 0 as libc::c_int as f64;
+                        ) = 0 as i32 as f64;
                     i += 1;
                     i;
                 }
                 k += 1;
                 k;
             }
-            if fac == 0 as libc::c_int as f64 {
-                return 0 as libc::c_int;
+            if fac == 0 as i32 as f64 {
+                return 0 as i32;
             }
             fprintf(
                 stderr,
                 b"libcint::rys_roots negative value in sqrt for roots %d (j=%d)\n\0"
                     as *const u8 as *const libc::c_char,
-                n - 1 as libc::c_int,
+                n - 1 as i32,
                 j,
             );
             return j;
         }
-        fac = 1 as libc::c_int as f64 / sqrt(fac);
+        fac = 1 as i32 as f64 / sqrt(fac);
         *cs.offset((j + j * n) as isize) = fac;
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k < j {
             *cs.offset((k + j * n) as isize) = fac * v[k as usize];
             k += 1;
@@ -5553,72 +5553,72 @@ unsafe extern "C" fn R_dsmit(
         j += 1;
         j;
     }
-    return 0 as libc::c_int;
+    return 0 as i32;
 }
 unsafe extern "C" fn _rdk_rys_roots(
-    mut nroots: libc::c_int,
+    mut nroots: i32,
     mut fmt_ints: *mut f64,
     mut roots: *mut f64,
     mut weights: *mut f64,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut order: libc::c_int = 0;
-    let mut nroots1: libc::c_int = nroots + 1 as libc::c_int;
+) -> i32 {
+    let mut i: i32 = 0;
+    let mut k: i32 = 0;
+    let mut j: i32 = 0;
+    let mut order: i32 = 0;
+    let mut nroots1: i32 = nroots + 1 as i32;
     let mut rt: [f64; 1056] = [0.; 1056];
     let mut cs: *mut f64 = rt.as_mut_ptr().offset(nroots1 as isize);
     let mut a: *mut f64 = 0 as *mut f64;
     let mut root: f64 = 0.;
     let mut poly: f64 = 0.;
     let mut dum: f64 = 0.;
-    if *fmt_ints.offset(0 as libc::c_int as isize) == 0 as libc::c_int as f64
+    if *fmt_ints.offset(0 as i32 as isize) == 0 as i32 as f64
     {
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k < nroots {
-            *roots.offset(k as isize) = 0 as libc::c_int as f64;
-            *weights.offset(k as isize) = 0 as libc::c_int as f64;
+            *roots.offset(k as isize) = 0 as i32 as f64;
+            *weights.offset(k as isize) = 0 as i32 as f64;
             k += 1;
             k;
         }
-        return 0 as libc::c_int;
+        return 0 as i32;
     }
-    if nroots == 1 as libc::c_int {
+    if nroots == 1 as i32 {
         *roots
             .offset(
-                0 as libc::c_int as isize,
-            ) = *fmt_ints.offset(1 as libc::c_int as isize)
-            / (*fmt_ints.offset(0 as libc::c_int as isize)
-                - *fmt_ints.offset(1 as libc::c_int as isize));
+                0 as i32 as isize,
+            ) = *fmt_ints.offset(1 as i32 as isize)
+            / (*fmt_ints.offset(0 as i32 as isize)
+                - *fmt_ints.offset(1 as i32 as isize));
         *weights
             .offset(
-                0 as libc::c_int as isize,
-            ) = *fmt_ints.offset(0 as libc::c_int as isize);
-        return 0 as libc::c_int;
+                0 as i32 as isize,
+            ) = *fmt_ints.offset(0 as i32 as isize);
+        return 0 as i32;
     }
-    let mut error: libc::c_int = R_dsmit(cs, fmt_ints, nroots1);
+    let mut error: i32 = R_dsmit(cs, fmt_ints, nroots1);
     if error != 0 {
-        return 1 as libc::c_int;
+        return 1 as i32;
     }
     error = _CINT_polynomial_roots(rt.as_mut_ptr(), cs, nroots);
     if error != 0 {
         return error;
     }
-    k = 0 as libc::c_int;
+    k = 0 as i32;
     while k < nroots {
         root = rt[k as usize];
-        if root == 1 as libc::c_int as f64 {
-            *roots.offset(k as isize) = 0 as libc::c_int as f64;
-            *weights.offset(k as isize) = 0 as libc::c_int as f64;
+        if root == 1 as i32 as f64 {
+            *roots.offset(k as isize) = 0 as i32 as f64;
+            *weights.offset(k as isize) = 0 as i32 as f64;
         } else {
-            dum = 1 as libc::c_int as f64
-                / *fmt_ints.offset(0 as libc::c_int as isize);
-            j = 1 as libc::c_int;
+            dum = 1 as i32 as f64
+                / *fmt_ints.offset(0 as i32 as isize);
+            j = 1 as i32;
             while j < nroots {
                 order = j;
                 a = cs.offset((j * nroots1) as isize);
                 poly = *a.offset(order as isize);
-                i = 1 as libc::c_int;
+                i = 1 as i32;
                 while i <= order {
                     poly = poly * root + *a.offset((order - i) as isize);
                     i += 1;
@@ -5629,87 +5629,87 @@ unsafe extern "C" fn _rdk_rys_roots(
                 j;
             }
             *roots
-                .offset(k as isize) = root / (1 as libc::c_int as f64 - root);
-            *weights.offset(k as isize) = 1 as libc::c_int as f64 / dum;
+                .offset(k as isize) = root / (1 as i32 as f64 - root);
+            *weights.offset(k as isize) = 1 as i32 as f64 / dum;
         }
         k += 1;
         k;
     }
-    return 0 as libc::c_int;
+    return 0 as i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTrys_schmidt(
-    mut nroots: libc::c_int,
+    mut nroots: i32,
     mut x: f64,
     mut lower: f64,
     mut roots: *mut f64,
     mut weights: *mut f64,
-) -> libc::c_int {
+) -> i32 {
     let mut fmt_ints: [f64; 64] = [0.; 64];
-    if lower == 0 as libc::c_int as f64 {
-        gamma_inc_like(fmt_ints.as_mut_ptr(), x, nroots * 2 as libc::c_int);
+    if lower == 0 as i32 as f64 {
+        gamma_inc_like(fmt_ints.as_mut_ptr(), x, nroots * 2 as i32);
     } else {
-        fmt_erfc_like(fmt_ints.as_mut_ptr(), x, lower, nroots * 2 as libc::c_int);
+        fmt_erfc_like(fmt_ints.as_mut_ptr(), x, lower, nroots * 2 as i32);
     }
     return _rdk_rys_roots(nroots, fmt_ints.as_mut_ptr(), roots, weights);
 }
 unsafe extern "C" fn R_lsmit(
     mut cs: *mut f128::f128,
     mut fmt_ints: *mut f128::f128,
-    mut n: libc::c_int,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
+    mut n: i32,
+) -> i32 {
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
     let mut fac: f128::f128 = f128::f128::ZERO;
     let mut dot: f128::f128 = f128::f128::ZERO;
     let mut tmp: f128::f128 = f128::f128::ZERO;
     let mut v: [f128::f128; 32] = [f128::f128::ZERO; 32];
-    fac = -*fmt_ints.offset(1 as libc::c_int as isize)
-        / *fmt_ints.offset(0 as libc::c_int as isize);
-    tmp = *fmt_ints.offset(2 as libc::c_int as isize)
-        + fac * *fmt_ints.offset(1 as libc::c_int as isize);
-    if tmp <= f128::f128::new(0 as libc::c_int) {
+    fac = -*fmt_ints.offset(1 as i32 as isize)
+        / *fmt_ints.offset(0 as i32 as isize);
+    tmp = *fmt_ints.offset(2 as i32 as isize)
+        + fac * *fmt_ints.offset(1 as i32 as isize);
+    if tmp <= f128::f128::new(0 as i32) {
         fprintf(
             stderr,
             b"libcint::rys_roots negative value in sqrtl for roots %d (j=1)\n\0"
                 as *const u8 as *const libc::c_char,
-            n - 1 as libc::c_int,
+            n - 1 as i32,
         );
-        k = 1 as libc::c_int;
+        k = 1 as i32;
         while k < n {
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < n {
-                *cs.offset((i + k * n) as isize) = f128::f128::new(0 as libc::c_int);
+                *cs.offset((i + k * n) as isize) = f128::f128::new(0 as i32);
                 i += 1;
                 i;
             }
             k += 1;
             k;
         }
-        return 1 as libc::c_int;
+        return 1 as i32;
     }
-    tmp = f128::f128::new(1 as libc::c_int) / sqrtl(tmp);
+    tmp = f128::f128::new(1 as i32) / sqrtl(tmp);
     *cs
         .offset(
-            (0 as libc::c_int + 0 as libc::c_int * n) as isize,
-        ) = f128::f128::new(1 as libc::c_int)
-        / sqrtl(*fmt_ints.offset(0 as libc::c_int as isize));
-    *cs.offset((0 as libc::c_int + 1 as libc::c_int * n) as isize) = fac * tmp;
-    *cs.offset((1 as libc::c_int + 1 as libc::c_int * n) as isize) = tmp;
-    j = 2 as libc::c_int;
+            (0 as i32 + 0 as i32 * n) as isize,
+        ) = f128::f128::new(1 as i32)
+        / sqrtl(*fmt_ints.offset(0 as i32 as isize));
+    *cs.offset((0 as i32 + 1 as i32 * n) as isize) = fac * tmp;
+    *cs.offset((1 as i32 + 1 as i32 * n) as isize) = tmp;
+    j = 2 as i32;
     while j < n {
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k < j {
-            v[k as usize] = f128::f128::new(0 as libc::c_int);
+            v[k as usize] = f128::f128::new(0 as i32);
             k += 1;
             k;
         }
         fac = *fmt_ints.offset((j + j) as isize);
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k < j {
-            dot = f128::f128::new(0 as libc::c_int);
-            i = 0 as libc::c_int;
+            dot = f128::f128::new(0 as i32);
+            i = 0 as i32;
             while i <= k {
                 dot
                     += *cs.offset((i + k * n) as isize)
@@ -5717,7 +5717,7 @@ unsafe extern "C" fn R_lsmit(
                 i += 1;
                 i;
             }
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i <= k {
                 v[i as usize] -= dot * *cs.offset((i + k * n) as isize);
                 i += 1;
@@ -5727,33 +5727,33 @@ unsafe extern "C" fn R_lsmit(
             k += 1;
             k;
         }
-        if fac <= f128::f128::new(0 as libc::c_int) {
+        if fac <= f128::f128::new(0 as i32) {
             k = j;
             while k < n {
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i < n {
-                    *cs.offset((i + k * n) as isize) = f128::f128::new(0 as libc::c_int);
+                    *cs.offset((i + k * n) as isize) = f128::f128::new(0 as i32);
                     i += 1;
                     i;
                 }
                 k += 1;
                 k;
             }
-            if fac == f128::f128::new(0 as libc::c_int) {
-                return 0 as libc::c_int;
+            if fac == f128::f128::new(0 as i32) {
+                return 0 as i32;
             }
             fprintf(
                 stderr,
                 b"libcint::rys_roots negative value in sqrtl for roots %d (j=%d)\n\0"
                     as *const u8 as *const libc::c_char,
-                n - 1 as libc::c_int,
+                n - 1 as i32,
                 j,
             );
             return j;
         }
-        fac = f128::f128::new(1 as libc::c_int) / sqrtl(fac);
+        fac = f128::f128::new(1 as i32) / sqrtl(fac);
         *cs.offset((j + j * n) as isize) = fac;
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k < j {
             *cs.offset((k + j * n) as isize) = fac * v[k as usize];
             k += 1;
@@ -5762,26 +5762,26 @@ unsafe extern "C" fn R_lsmit(
         j += 1;
         j;
     }
-    return 0 as libc::c_int;
+    return 0 as i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTlrys_schmidt(
-    mut nroots: libc::c_int,
+    mut nroots: i32,
     mut x: f64,
     mut lower: f64,
     mut roots: *mut f64,
     mut weights: *mut f64,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut order: libc::c_int = 0;
-    let mut error: libc::c_int = 0;
-    let mut nroots1: libc::c_int = nroots + 1 as libc::c_int;
+) -> i32 {
+    let mut i: i32 = 0;
+    let mut k: i32 = 0;
+    let mut j: i32 = 0;
+    let mut order: i32 = 0;
+    let mut error: i32 = 0;
+    let mut nroots1: i32 = nroots + 1 as i32;
     let mut fmt_ints: [f128::f128; 1088] = [f128::f128::ZERO; 1088];
     let mut qcs: *mut f128::f128 = fmt_ints
         .as_mut_ptr()
-        .offset((nroots1 * 2 as libc::c_int) as isize);
+        .offset((nroots1 * 2 as i32) as isize);
     let mut rt: [f64; 1056] = [0.; 1056];
     let mut cs: *mut f64 = rt.as_mut_ptr().offset(nroots as isize);
     let mut a: *mut f64 = 0 as *mut f64;
@@ -5789,34 +5789,34 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
     let mut poly: f64 = 0.;
     let mut dum: f64 = 0.;
     let mut dum0: f64 = 0.;
-    if lower == 0 as libc::c_int as f64 {
+    if lower == 0 as i32 as f64 {
         lgamma_inc_like(
             fmt_ints.as_mut_ptr(),
             f128::f128::new(x),
-            nroots * 2 as libc::c_int,
+            nroots * 2 as i32,
         );
     } else {
         fmt_lerfc_like(
             fmt_ints.as_mut_ptr(),
             f128::f128::new(x),
             f128::f128::new(lower),
-            nroots * 2 as libc::c_int,
+            nroots * 2 as i32,
         );
     }
-    if fmt_ints[0 as libc::c_int as usize] == f128::f128::new(0 as libc::c_int) {
-        k = 0 as libc::c_int;
+    if fmt_ints[0 as i32 as usize] == f128::f128::new(0 as i32) {
+        k = 0 as i32;
         while k < nroots {
-            *roots.offset(k as isize) = 0 as libc::c_int as f64;
-            *weights.offset(k as isize) = 0 as libc::c_int as f64;
+            *roots.offset(k as isize) = 0 as i32 as f64;
+            *weights.offset(k as isize) = 0 as i32 as f64;
             k += 1;
             k;
         }
-        return 0 as libc::c_int;
+        return 0 as i32;
     }
-    if nroots == 1 as libc::c_int {
-        rt[0 as libc::c_int
-            as usize] = (fmt_ints[1 as libc::c_int as usize]
-            / fmt_ints[0 as libc::c_int as usize])
+    if nroots == 1 as i32 {
+        rt[0 as i32
+            as usize] = (fmt_ints[1 as i32 as usize]
+            / fmt_ints[0 as i32 as usize])
             .to_f64()
             .unwrap();
     } else {
@@ -5824,9 +5824,9 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
         if error != 0 {
             return error;
         }
-        k = 1 as libc::c_int;
+        k = 1 as i32;
         while k < nroots1 {
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i <= k {
                 *cs
                     .offset(
@@ -5843,23 +5843,23 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
             return error;
         }
     }
-    dum0 = (f128::f128::new(1 as libc::c_int) / fmt_ints[0 as libc::c_int as usize])
+    dum0 = (f128::f128::new(1 as i32) / fmt_ints[0 as i32 as usize])
         .to_f64()
         .unwrap();
-    k = 0 as libc::c_int;
+    k = 0 as i32;
     while k < nroots {
         root = rt[k as usize];
-        if root == 1 as libc::c_int as f64 {
-            *roots.offset(k as isize) = 0 as libc::c_int as f64;
-            *weights.offset(k as isize) = 0 as libc::c_int as f64;
+        if root == 1 as i32 as f64 {
+            *roots.offset(k as isize) = 0 as i32 as f64;
+            *weights.offset(k as isize) = 0 as i32 as f64;
         } else {
             dum = dum0;
-            j = 1 as libc::c_int;
+            j = 1 as i32;
             while j < nroots {
                 order = j;
                 a = cs.offset((j * nroots1) as isize);
                 poly = *a.offset(order as isize);
-                i = 1 as libc::c_int;
+                i = 1 as i32;
                 while i <= order {
                     poly = poly * root + *a.offset((order - i) as isize);
                     i += 1;
@@ -5870,11 +5870,11 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
                 j;
             }
             *roots
-                .offset(k as isize) = root / (1 as libc::c_int as f64 - root);
-            *weights.offset(k as isize) = 1 as libc::c_int as f64 / dum;
+                .offset(k as isize) = root / (1 as i32 as f64 - root);
+            *weights.offset(k as isize) = 1 as i32 as f64 / dum;
         }
         k += 1;
         k;
     }
-    return 0 as libc::c_int;
+    return 0 as i32;
 }
