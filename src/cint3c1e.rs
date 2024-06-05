@@ -1,223 +1,39 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+
+use crate::g1e::CINTnuc_mod;
+use crate::g1e::CINTprim_to_ctr_0;
+use crate::g1e::CINTprim_to_ctr_1;
+use crate::g2e::CINTg2e_index_xyz;
+use crate::g3c1e::CINTinit_int3c1e_EnvVars;
+use crate::g3c1e::CINTg3c1e_ovlp;
+use crate::g3c1e::CINTg3c1e_ovlp;
+use crate::g3c1e::CINTg3c1e_nuc;
+use crate::optimizer::CINTOpt_non0coeff_byshell;
+use crate::misc::CINTsquare_dist;
+use crate::fblas::CINTdmat_transpose;
+use crate::fblas::CINTdplus_transpose;
+use crate::cart2sph::c2s_sph_3c2e1;
+use crate::cart2sph::c2s_sph_3c1e;
+use crate::cart2sph::c2s_cart_3c1e;
+use crate::cart2sph::c2s_dset0;
+use crate::rys_roots::CINTrys_roots;
+use crate::g1e_grids::CINTgout1e;
+
+use crate::cint::CINTOpt;
+use crate::cint::CINTEnvVars;
+
+
+pub type size_t = libc::c_ulong;
+pub type uintptr_t = libc::c_ulong;
+
 extern "C" {
     fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
     fn free(__ptr: *mut libc::c_void);
     fn abs(_: libc::c_int) -> libc::c_int;
     fn exp(_: libc::c_double) -> libc::c_double;
     fn sqrt(_: libc::c_double) -> libc::c_double;
-    fn CINTg2e_index_xyz(idx: *mut libc::c_int, envs: *const CINTEnvVars);
-    fn CINTinit_int3c1e_EnvVars(
-        envs: *mut CINTEnvVars,
-        ng: *mut libc::c_int,
-        shls: *mut libc::c_int,
-        atm: *mut libc::c_int,
-        natm: libc::c_int,
-        bas: *mut libc::c_int,
-        nbas: libc::c_int,
-        env: *mut libc::c_double,
-    );
-    fn CINTprim_to_ctr_0(
-        gc: *mut libc::c_double,
-        gp: *mut libc::c_double,
-        coeff: *mut libc::c_double,
-        nf: size_t,
-        nprim: libc::c_int,
-        nctr: libc::c_int,
-        non0ctr: libc::c_int,
-        sortedidx: *mut libc::c_int,
-    );
-    fn CINTprim_to_ctr_1(
-        gc: *mut libc::c_double,
-        gp: *mut libc::c_double,
-        coeff: *mut libc::c_double,
-        nf: size_t,
-        nprim: libc::c_int,
-        nctr: libc::c_int,
-        non0ctr: libc::c_int,
-        sortedidx: *mut libc::c_int,
-    );
-    fn CINTg3c1e_ovlp(
-        g: *mut libc::c_double,
-        ai: libc::c_double,
-        aj: libc::c_double,
-        ak: libc::c_double,
-        envs: *mut CINTEnvVars,
-    );
-    fn CINTg3c1e_nuc(
-        g: *mut libc::c_double,
-        ai: libc::c_double,
-        aj: libc::c_double,
-        ak: libc::c_double,
-        rijk: *mut libc::c_double,
-        cr: *mut libc::c_double,
-        t2: libc::c_double,
-        envs: *mut CINTEnvVars,
-    );
-    fn CINTOpt_non0coeff_byshell(
-        sortedidx: *mut libc::c_int,
-        non0ctr: *mut libc::c_int,
-        ci: *mut libc::c_double,
-        iprim: libc::c_int,
-        ictr: libc::c_int,
-    );
-    fn CINTnuc_mod(
-        aij: libc::c_double,
-        nuc_id: libc::c_int,
-        atm: *mut libc::c_int,
-        env: *mut libc::c_double,
-    ) -> libc::c_double;
-    fn CINTsquare_dist(
-        r1: *const libc::c_double,
-        r2: *const libc::c_double,
-    ) -> libc::c_double;
-    fn CINTdmat_transpose(
-        a_t: *mut libc::c_double,
-        a: *mut libc::c_double,
-        m: libc::c_int,
-        n: libc::c_int,
-    );
-    fn CINTdplus_transpose(
-        a_t: *mut libc::c_double,
-        a: *mut libc::c_double,
-        m: libc::c_int,
-        n: libc::c_int,
-    );
-    fn c2s_sph_3c2e1(
-        fijkl: *mut libc::c_double,
-        gctr: *mut libc::c_double,
-        dims: *mut libc::c_int,
-        envs: *mut CINTEnvVars,
-        cache: *mut libc::c_double,
-    );
-    fn c2s_sph_3c1e(
-        fijkl: *mut libc::c_double,
-        gctr: *mut libc::c_double,
-        dims: *mut libc::c_int,
-        envs: *mut CINTEnvVars,
-        cache: *mut libc::c_double,
-    );
-    fn c2s_cart_3c1e(
-        fijkl: *mut libc::c_double,
-        gctr: *mut libc::c_double,
-        dims: *mut libc::c_int,
-        envs: *mut CINTEnvVars,
-        cache: *mut libc::c_double,
-    );
-    fn c2s_dset0(
-        out: *mut libc::c_double,
-        dims: *mut libc::c_int,
-        counts: *mut libc::c_int,
-    );
-    fn CINTrys_roots(
-        nroots: libc::c_int,
-        x: libc::c_double,
-        u: *mut libc::c_double,
-        w: *mut libc::c_double,
-    );
-    fn CINTgout1e(
-        gout: *mut libc::c_double,
-        g: *mut libc::c_double,
-        idx: *mut libc::c_int,
-        envs: *mut CINTEnvVars,
-        empty: libc::c_int,
-    );
 }
-pub type size_t = libc::c_ulong;
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct PairData {
-    pub rij: [libc::c_double; 3],
-    pub eij: libc::c_double,
-    pub cceij: libc::c_double,
-}
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct CINTOpt {
-    pub index_xyz_array: *mut *mut libc::c_int,
-    pub non0ctr: *mut *mut libc::c_int,
-    pub sortedidx: *mut *mut libc::c_int,
-    pub nbas: libc::c_int,
-    pub log_max_coeff: *mut *mut libc::c_double,
-    pub pairdata: *mut *mut PairData,
-}
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct CINTEnvVars {
-    pub atm: *mut libc::c_int,
-    pub bas: *mut libc::c_int,
-    pub env: *mut libc::c_double,
-    pub shls: *mut libc::c_int,
-    pub natm: libc::c_int,
-    pub nbas: libc::c_int,
-    pub i_l: libc::c_int,
-    pub j_l: libc::c_int,
-    pub k_l: libc::c_int,
-    pub l_l: libc::c_int,
-    pub nfi: libc::c_int,
-    pub nfj: libc::c_int,
-    pub c2rust_unnamed: C2RustUnnamed_1,
-    pub c2rust_unnamed_0: C2RustUnnamed_0,
-    pub nf: libc::c_int,
-    pub rys_order: libc::c_int,
-    pub x_ctr: [libc::c_int; 4],
-    pub gbits: libc::c_int,
-    pub ncomp_e1: libc::c_int,
-    pub ncomp_e2: libc::c_int,
-    pub ncomp_tensor: libc::c_int,
-    pub li_ceil: libc::c_int,
-    pub lj_ceil: libc::c_int,
-    pub lk_ceil: libc::c_int,
-    pub ll_ceil: libc::c_int,
-    pub g_stride_i: libc::c_int,
-    pub g_stride_k: libc::c_int,
-    pub g_stride_l: libc::c_int,
-    pub g_stride_j: libc::c_int,
-    pub nrys_roots: libc::c_int,
-    pub g_size: libc::c_int,
-    pub g2d_ijmax: libc::c_int,
-    pub g2d_klmax: libc::c_int,
-    pub common_factor: libc::c_double,
-    pub expcutoff: libc::c_double,
-    pub rirj: [libc::c_double; 3],
-    pub rkrl: [libc::c_double; 3],
-    pub rx_in_rijrx: *mut libc::c_double,
-    pub rx_in_rklrx: *mut libc::c_double,
-    pub ri: *mut libc::c_double,
-    pub rj: *mut libc::c_double,
-    pub rk: *mut libc::c_double,
-    pub c2rust_unnamed_1: C2RustUnnamed,
-    pub f_g0_2e: Option::<unsafe extern "C" fn() -> libc::c_int>,
-    pub f_g0_2d4d: Option::<unsafe extern "C" fn() -> ()>,
-    pub f_gout: Option::<unsafe extern "C" fn() -> ()>,
-    pub opt: *mut CINTOpt,
-    pub idx: *mut libc::c_int,
-    pub ai: [libc::c_double; 1],
-    pub aj: [libc::c_double; 1],
-    pub ak: [libc::c_double; 1],
-    pub al: [libc::c_double; 1],
-    pub fac: [libc::c_double; 1],
-    pub rij: [libc::c_double; 3],
-    pub rkl: [libc::c_double; 3],
-}
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub union C2RustUnnamed {
-    pub rl: *mut libc::c_double,
-    pub grids: *mut libc::c_double,
-}
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub union C2RustUnnamed_0 {
-    pub nfl: libc::c_int,
-    pub ngrids: libc::c_int,
-}
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub union C2RustUnnamed_1 {
-    pub nfk: libc::c_int,
-    pub grids_offset: libc::c_int,
-}
-pub type uintptr_t = libc::c_ulong;
+
 #[no_mangle]
 pub unsafe extern "C" fn CINT3c1e_loop_nopt(
     mut gctr: *mut libc::c_double,
@@ -1271,65 +1087,7 @@ pub unsafe extern "C" fn int3c1e_sph(
         1 as libc::c_int,
         1 as libc::c_int,
     ];
-    let mut envs: CINTEnvVars = CINTEnvVars {
-        atm: 0 as *mut libc::c_int,
-        bas: 0 as *mut libc::c_int,
-        env: 0 as *mut libc::c_double,
-        shls: 0 as *mut libc::c_int,
-        natm: 0,
-        nbas: 0,
-        i_l: 0,
-        j_l: 0,
-        k_l: 0,
-        l_l: 0,
-        nfi: 0,
-        nfj: 0,
-        c2rust_unnamed: C2RustUnnamed_1 { nfk: 0 },
-        c2rust_unnamed_0: C2RustUnnamed_0 { nfl: 0 },
-        nf: 0,
-        rys_order: 0,
-        x_ctr: [0; 4],
-        gbits: 0,
-        ncomp_e1: 0,
-        ncomp_e2: 0,
-        ncomp_tensor: 0,
-        li_ceil: 0,
-        lj_ceil: 0,
-        lk_ceil: 0,
-        ll_ceil: 0,
-        g_stride_i: 0,
-        g_stride_k: 0,
-        g_stride_l: 0,
-        g_stride_j: 0,
-        nrys_roots: 0,
-        g_size: 0,
-        g2d_ijmax: 0,
-        g2d_klmax: 0,
-        common_factor: 0.,
-        expcutoff: 0.,
-        rirj: [0.; 3],
-        rkrl: [0.; 3],
-        rx_in_rijrx: 0 as *mut libc::c_double,
-        rx_in_rklrx: 0 as *mut libc::c_double,
-        ri: 0 as *mut libc::c_double,
-        rj: 0 as *mut libc::c_double,
-        rk: 0 as *mut libc::c_double,
-        c2rust_unnamed_1: C2RustUnnamed {
-            rl: 0 as *mut libc::c_double,
-        },
-        f_g0_2e: None,
-        f_g0_2d4d: None,
-        f_gout: None,
-        opt: 0 as *mut CINTOpt,
-        idx: 0 as *mut libc::c_int,
-        ai: [0.; 1],
-        aj: [0.; 1],
-        ak: [0.; 1],
-        al: [0.; 1],
-        fac: [0.; 1],
-        rij: [0.; 3],
-        rkl: [0.; 3],
-    };
+    let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int3c1e_EnvVars(
         &mut envs,
         ng.as_mut_ptr(),
@@ -1431,65 +1189,7 @@ pub unsafe extern "C" fn int3c1e_cart(
         1 as libc::c_int,
         1 as libc::c_int,
     ];
-    let mut envs: CINTEnvVars = CINTEnvVars {
-        atm: 0 as *mut libc::c_int,
-        bas: 0 as *mut libc::c_int,
-        env: 0 as *mut libc::c_double,
-        shls: 0 as *mut libc::c_int,
-        natm: 0,
-        nbas: 0,
-        i_l: 0,
-        j_l: 0,
-        k_l: 0,
-        l_l: 0,
-        nfi: 0,
-        nfj: 0,
-        c2rust_unnamed: C2RustUnnamed_1 { nfk: 0 },
-        c2rust_unnamed_0: C2RustUnnamed_0 { nfl: 0 },
-        nf: 0,
-        rys_order: 0,
-        x_ctr: [0; 4],
-        gbits: 0,
-        ncomp_e1: 0,
-        ncomp_e2: 0,
-        ncomp_tensor: 0,
-        li_ceil: 0,
-        lj_ceil: 0,
-        lk_ceil: 0,
-        ll_ceil: 0,
-        g_stride_i: 0,
-        g_stride_k: 0,
-        g_stride_l: 0,
-        g_stride_j: 0,
-        nrys_roots: 0,
-        g_size: 0,
-        g2d_ijmax: 0,
-        g2d_klmax: 0,
-        common_factor: 0.,
-        expcutoff: 0.,
-        rirj: [0.; 3],
-        rkrl: [0.; 3],
-        rx_in_rijrx: 0 as *mut libc::c_double,
-        rx_in_rklrx: 0 as *mut libc::c_double,
-        ri: 0 as *mut libc::c_double,
-        rj: 0 as *mut libc::c_double,
-        rk: 0 as *mut libc::c_double,
-        c2rust_unnamed_1: C2RustUnnamed {
-            rl: 0 as *mut libc::c_double,
-        },
-        f_g0_2e: None,
-        f_g0_2d4d: None,
-        f_gout: None,
-        opt: 0 as *mut CINTOpt,
-        idx: 0 as *mut libc::c_int,
-        ai: [0.; 1],
-        aj: [0.; 1],
-        ak: [0.; 1],
-        al: [0.; 1],
-        fac: [0.; 1],
-        rij: [0.; 3],
-        rkl: [0.; 3],
-    };
+    let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int3c1e_EnvVars(
         &mut envs,
         ng.as_mut_ptr(),
@@ -1580,65 +1280,7 @@ pub unsafe extern "C" fn int3c1e_rinv_sph(
         1 as libc::c_int,
         1 as libc::c_int,
     ];
-    let mut envs: CINTEnvVars = CINTEnvVars {
-        atm: 0 as *mut libc::c_int,
-        bas: 0 as *mut libc::c_int,
-        env: 0 as *mut libc::c_double,
-        shls: 0 as *mut libc::c_int,
-        natm: 0,
-        nbas: 0,
-        i_l: 0,
-        j_l: 0,
-        k_l: 0,
-        l_l: 0,
-        nfi: 0,
-        nfj: 0,
-        c2rust_unnamed: C2RustUnnamed_1 { nfk: 0 },
-        c2rust_unnamed_0: C2RustUnnamed_0 { nfl: 0 },
-        nf: 0,
-        rys_order: 0,
-        x_ctr: [0; 4],
-        gbits: 0,
-        ncomp_e1: 0,
-        ncomp_e2: 0,
-        ncomp_tensor: 0,
-        li_ceil: 0,
-        lj_ceil: 0,
-        lk_ceil: 0,
-        ll_ceil: 0,
-        g_stride_i: 0,
-        g_stride_k: 0,
-        g_stride_l: 0,
-        g_stride_j: 0,
-        nrys_roots: 0,
-        g_size: 0,
-        g2d_ijmax: 0,
-        g2d_klmax: 0,
-        common_factor: 0.,
-        expcutoff: 0.,
-        rirj: [0.; 3],
-        rkrl: [0.; 3],
-        rx_in_rijrx: 0 as *mut libc::c_double,
-        rx_in_rklrx: 0 as *mut libc::c_double,
-        ri: 0 as *mut libc::c_double,
-        rj: 0 as *mut libc::c_double,
-        rk: 0 as *mut libc::c_double,
-        c2rust_unnamed_1: C2RustUnnamed {
-            rl: 0 as *mut libc::c_double,
-        },
-        f_g0_2e: None,
-        f_g0_2d4d: None,
-        f_gout: None,
-        opt: 0 as *mut CINTOpt,
-        idx: 0 as *mut libc::c_int,
-        ai: [0.; 1],
-        aj: [0.; 1],
-        ak: [0.; 1],
-        al: [0.; 1],
-        fac: [0.; 1],
-        rij: [0.; 3],
-        rkl: [0.; 3],
-    };
+    let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int3c1e_EnvVars(
         &mut envs,
         ng.as_mut_ptr(),
@@ -1740,65 +1382,7 @@ pub unsafe extern "C" fn int3c1e_rinv_cart(
         1 as libc::c_int,
         1 as libc::c_int,
     ];
-    let mut envs: CINTEnvVars = CINTEnvVars {
-        atm: 0 as *mut libc::c_int,
-        bas: 0 as *mut libc::c_int,
-        env: 0 as *mut libc::c_double,
-        shls: 0 as *mut libc::c_int,
-        natm: 0,
-        nbas: 0,
-        i_l: 0,
-        j_l: 0,
-        k_l: 0,
-        l_l: 0,
-        nfi: 0,
-        nfj: 0,
-        c2rust_unnamed: C2RustUnnamed_1 { nfk: 0 },
-        c2rust_unnamed_0: C2RustUnnamed_0 { nfl: 0 },
-        nf: 0,
-        rys_order: 0,
-        x_ctr: [0; 4],
-        gbits: 0,
-        ncomp_e1: 0,
-        ncomp_e2: 0,
-        ncomp_tensor: 0,
-        li_ceil: 0,
-        lj_ceil: 0,
-        lk_ceil: 0,
-        ll_ceil: 0,
-        g_stride_i: 0,
-        g_stride_k: 0,
-        g_stride_l: 0,
-        g_stride_j: 0,
-        nrys_roots: 0,
-        g_size: 0,
-        g2d_ijmax: 0,
-        g2d_klmax: 0,
-        common_factor: 0.,
-        expcutoff: 0.,
-        rirj: [0.; 3],
-        rkrl: [0.; 3],
-        rx_in_rijrx: 0 as *mut libc::c_double,
-        rx_in_rklrx: 0 as *mut libc::c_double,
-        ri: 0 as *mut libc::c_double,
-        rj: 0 as *mut libc::c_double,
-        rk: 0 as *mut libc::c_double,
-        c2rust_unnamed_1: C2RustUnnamed {
-            rl: 0 as *mut libc::c_double,
-        },
-        f_g0_2e: None,
-        f_g0_2d4d: None,
-        f_gout: None,
-        opt: 0 as *mut CINTOpt,
-        idx: 0 as *mut libc::c_int,
-        ai: [0.; 1],
-        aj: [0.; 1],
-        ak: [0.; 1],
-        al: [0.; 1],
-        fac: [0.; 1],
-        rij: [0.; 3],
-        rkl: [0.; 3],
-    };
+    let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int3c1e_EnvVars(
         &mut envs,
         ng.as_mut_ptr(),

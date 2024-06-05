@@ -1,5 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+
 extern "C" {
     pub type _IO_wide_data;
     pub type _IO_codecvt;
@@ -9,9 +9,11 @@ extern "C" {
     fn sqrt(_: libc::c_double) -> libc::c_double;
     fn fabs(_: libc::c_double) -> libc::c_double;
 }
+
 pub type size_t = libc::c_ulong;
 pub type __off_t = libc::c_long;
 pub type __off64_t = libc::c_long;
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _IO_FILE {

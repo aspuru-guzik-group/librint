@@ -1,10 +1,12 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+
 extern "C" {
     fn exp(_: libc::c_double) -> libc::c_double;
     fn pow(_: libc::c_double, _: libc::c_double) -> libc::c_double;
     fn sqrt(_: libc::c_double) -> libc::c_double;
     fn lgamma(_: libc::c_double) -> libc::c_double;
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn CINTsquare_dist(
     mut r1: *const libc::c_double,
