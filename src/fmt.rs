@@ -1,14 +1,14 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
-    fn expl(_: f128::f128) -> f128::f128;
+    fn expl(_: f64) -> f64;
     fn exp(_: f64) -> f64;
-    fn sqrtl(_: f128::f128) -> f128::f128;
+    fn sqrtl(_: f64) -> f64;
     fn sqrt(_: f64) -> f64;
-    fn fabsl(_: f128::f128) -> f128::f128;
+    fn fabsl(_: f64) -> f64;
     fn fabs(_: f64) -> f64;
-    fn erfl(_: f128::f128) -> f128::f128;
+    fn erfl(_: f64) -> f64;
     fn erf(_: f64) -> f64;
-    fn erfcl(_: f128::f128) -> f128::f128;
+    fn erfcl(_: f64) -> f64;
     fn erfc(_: f64) -> f64;
 }
 static mut TURNOVER_POINT: [f64; 40] = [
@@ -114,27 +114,27 @@ pub unsafe extern "C" fn gamma_inc_like(
     };
 }
 unsafe extern "C" fn fmt1_lgamma_inc_like(
-    mut f: *mut f128::f128,
-    mut t: f128::f128,
+    mut f: *mut f64,
+    mut t: f64,
     mut m: i32,
 ) {
-    let mut b: f128::f128 = f128::f128::new(m) + f128::f128::new(0.5);
-    let mut bi: f128::f128 = f128::f128::ZERO;
-    let mut e: f128::f128 = f128::f128::new(0.5) * expl(-t);
-    let mut x: f128::f128 = e;
-    let mut s: f128::f128 = e;
-    let mut tol: f128::f128 = f128::f128::new(2.0e-20f64) * e;
+    let mut b: f64 = m as f64 + 0.5f64;
+    let mut bi: f64 = 0.0f64;
+    let mut e: f64 = 0.5f64 * expl(-t);
+    let mut x: f64 = e;
+    let mut s: f64 = e;
+    let mut tol: f64 = 2.0e-20f64 * e;
     let mut i: i32 = 0;
-    bi = b + f128::f128::new(1.0f64);
+    bi = b + 1.0f64;
     while x > tol {
         x *= t / bi;
         s += x;
-        bi += f128::f128::new(1.0f64);
+        bi += 1.0f64;
     }
     *f.offset(m as isize) = s / b;
     i = m;
     while i > 0 as i32 {
-        b -= f128::f128::new(1 as i32);
+        b -= 1 as f64;
         *f.offset((i - 1 as i32) as isize) = (e + t * *f.offset(i as isize)) / b;
         i -= 1;
         i;
@@ -142,31 +142,31 @@ unsafe extern "C" fn fmt1_lgamma_inc_like(
 }
 #[no_mangle]
 pub unsafe extern "C" fn lgamma_inc_like(
-    mut f: *mut f128::f128,
-    mut t: f128::f128,
+    mut f: *mut f64,
+    mut t: f64,
     mut m: i32,
 ) {
-    if t < f128::f128::new(TURNOVER_POINT[m as usize]) {
+    if t < TURNOVER_POINT[m as usize] {
         fmt1_lgamma_inc_like(f, t, m);
     } else {
         let mut i: i32 = 0;
-        let mut tt: f128::f128 = sqrtl(t);
+        let mut tt: f64 = sqrtl(t);
         *f
             .offset(
                 0 as i32 as isize,
-            ) = f128::f128::new(
-            0.8862269254527580136490837416705725913987747280611935641069038949264,
-        ) / tt * erfl(tt);
+            ) = 
+            0.8862269254527580136490837416705725913987747280611935641069038949264f64
+         / tt * erfl(tt);
         if m > 0 as i32 {
-            let mut e: f128::f128 = expl(-t);
-            let mut b: f128::f128 = f128::f128::new(0.5) / t;
+            let mut e: f64 = expl(-t);
+            let mut b: f64 = 0.5f64 / t;
             i = 1 as i32;
             while i <= m {
                 *f
                     .offset(
                         i as isize,
                     ) = b
-                    * (f128::f128::new(2 as i32 * i - 1 as i32)
+                    * ((2 as i32 * i - 1 as i32) as f64
                         * *f.offset((i - 1 as i32) as isize) - e);
                 i += 1;
                 i;
@@ -193,11 +193,11 @@ unsafe extern "C" fn _pow(
 }
 #[inline]
 unsafe extern "C" fn _powl(
-    mut base: f128::f128,
+    mut base: f64,
     mut exponent: i32,
-) -> f128::f128 {
+) -> f64 {
     let mut i: i32 = 0;
-    let mut result: f128::f128 = f128::f128::new(1.0);
+    let mut result: f64 = 1.0f64;
     i = 1 as i32;
     while i <= exponent {
         if i & exponent != 0 {
@@ -295,41 +295,41 @@ pub unsafe extern "C" fn fmt_erfc_like(
 }
 #[no_mangle]
 pub unsafe extern "C" fn fmt_lerfc_like(
-    mut f: *mut f128::f128,
-    mut t: f128::f128,
-    mut lower: f128::f128,
+    mut f: *mut f64,
+    mut t: f64,
+    mut lower: f64,
     mut m: i32,
 ) {
-    if lower == f128::f128::new(0 as i32) {
+    if lower == 0.0f64 {
         return lgamma_inc_like(f, t, m);
     }
     let mut i: i32 = 0;
-    let mut lower2: f128::f128 = lower * lower;
-    if t * lower2 > f128::f128::new(200 as i32) {
+    let mut lower2: f64 = lower * lower;
+    if t * lower2 > 200.0f64 {
         i = 0 as i32;
         while i <= m {
-            *f.offset(i as isize) = f128::f128::new(0 as i32);
+            *f.offset(i as isize) = 0.0f64;
             i += 1;
             i;
         }
         return;
     }
-    if t < f128::f128::new(TURNOVER_POINT[m as usize]) {
+    if t < TURNOVER_POINT[m as usize] {
         fmt1_lerfc_like(f, t, lower, m);
     } else {
-        let mut tt: f128::f128 = sqrtl(t);
-        let mut val: f128::f128 = f128::f128::new(
-            0.8862269254527580136490837416705725913987747280611935641069038949264,
-        ) / tt * (erfcl(lower * tt) - erfcl(tt));
+        let mut tt: f64 = sqrtl(t);
+        let mut val: f64 = 
+            0.8862269254527580136490837416705725913987747280611935641069038949264f64
+         / tt * (erfcl(lower * tt) - erfcl(tt));
         *f.offset(0 as i32 as isize) = val;
         if m > 0 as i32 {
-            let mut e: f128::f128 = expl(-t);
-            let mut e1: f128::f128 = expl(-t * lower2) * lower;
-            let mut b: f128::f128 = f128::f128::new(0.5) / t;
+            let mut e: f64 = expl(-t);
+            let mut e1: f64 = expl(-t * lower2) * lower;
+            let mut b: f64 = 0.5f64 / t;
             i = 0 as i32;
             while i < m {
                 val = b
-                    * (f128::f128::new(2 as i32 * i + 1 as i32) * val - e
+                    * ((2 as i32 * i + 1 as i32) as f64 * val - e
                         + e1);
                 e1 *= lower2;
                 *f.offset((i + 1 as i32) as isize) = val;
@@ -341,37 +341,37 @@ pub unsafe extern "C" fn fmt_lerfc_like(
 }
 #[no_mangle]
 pub unsafe extern "C" fn fmt1_lerfc_like(
-    mut f: *mut f128::f128,
-    mut t: f128::f128,
-    mut lower: f128::f128,
+    mut f: *mut f64,
+    mut t: f64,
+    mut lower: f64,
     mut m: i32,
 ) {
     let mut i: i32 = 0;
-    let mut lower2: f128::f128 = lower * lower;
-    let mut b: f128::f128 = f128::f128::new(m) + f128::f128::new(0.5);
-    let mut bi: f128::f128 = f128::f128::ZERO;
-    let mut e: f128::f128 = f128::f128::new(0.5) * expl(-t);
-    let mut e1: f128::f128 = f128::f128::new(0.5) * expl(-t * lower2) * lower;
+    let mut lower2: f64 = lower * lower;
+    let mut b: f64 = m as f64 + 0.5f64;
+    let mut bi: f64 = 0.0f64;
+    let mut e: f64 = 0.5f64 * expl(-t);
+    let mut e1: f64 = 0.5f64 * expl(-t * lower2) * lower;
     e1 *= _powl(lower2, m);
-    let mut x: f128::f128 = e;
-    let mut x1: f128::f128 = e1;
-    let mut s: f128::f128 = e - e1;
-    let mut div: f128::f128 = f128::f128::new(1.0);
-    let mut delta: f128::f128 = s;
-    let mut tol: f128::f128 = f128::f128::new(2.0e-20f64) * fabsl(delta);
-    bi = b + f128::f128::new(1.0);
+    let mut x: f64 = e;
+    let mut x1: f64 = e1;
+    let mut s: f64 = e - e1;
+    let mut div: f64 = 1.0f64;
+    let mut delta: f64 = s;
+    let mut tol: f64 = 2.0e-20f64 * fabsl(delta);
+    bi = b + 1.0f64;
     while fabsl(delta) > tol {
         div *= t / bi;
         x1 *= lower2;
         delta = (x - x1) * div;
         s += delta;
-        bi += f128::f128::new(1.0);
+        bi += 1.0f64;
     }
-    let mut val: f128::f128 = s / b;
+    let mut val: f64 = s / b;
     *f.offset(m as isize) = val;
     i = m;
     while i > 0 as i32 {
-        b -= f128::f128::new(1.0);
+        b -= 1.0f64;
         e1 /= lower2;
         val = (e - e1 + t * val) / b;
         *f.offset((i - 1 as i32) as isize) = val;
