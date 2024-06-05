@@ -11,8 +11,8 @@ use crate::cint::CINTOpt;
 use crate::cint::CINTEnvVars;
 
 unsafe extern "C" fn CINTgout1e_int1e_r2_origi(
-    mut gout: *mut libc::c_double,
-    mut g: *mut libc::c_double,
+    mut gout: *mut f64,
+    mut g: *mut f64,
     mut idx: *mut libc::c_int,
     mut envs: *mut CINTEnvVars,
     mut empty: libc::c_int,
@@ -22,14 +22,14 @@ unsafe extern "C" fn CINTgout1e_int1e_r2_origi(
     let mut iy: libc::c_int = 0;
     let mut iz: libc::c_int = 0;
     let mut n: libc::c_int = 0;
-    let mut g0: *mut libc::c_double = g;
-    let mut g1: *mut libc::c_double = g0
+    let mut g0: *mut f64 = g;
+    let mut g1: *mut f64 = g0
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g2: *mut libc::c_double = g1
+    let mut g2: *mut f64 = g1
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g3: *mut libc::c_double = g2
+    let mut g3: *mut f64 = g2
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut s: libc::c_double = 0.;
+    let mut s: f64 = 0.;
     g1 = g0.offset((*envs).g_stride_i as isize);
     g3 = g1.offset((*envs).g_stride_i as isize);
     n = 0 as libc::c_int;
@@ -64,7 +64,7 @@ pub unsafe extern "C" fn int1e_r2_origi_optimizer(
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     let mut ng: [libc::c_int; 8] = [
         2 as libc::c_int,
@@ -80,16 +80,16 @@ pub unsafe extern "C" fn int1e_r2_origi_optimizer(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_r2_origi_cart(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut shls: *mut libc::c_int,
     mut atm: *mut libc::c_int,
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut ng: [libc::c_int; 8] = [
         2 as libc::c_int,
@@ -107,8 +107,8 @@ pub unsafe extern "C" fn int1e_r2_origi_cart(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut libc::c_int,
                 *mut CINTEnvVars,
                 libc::c_int,
@@ -119,8 +119,8 @@ pub unsafe extern "C" fn int1e_r2_origi_cart(
         Some(
             CINTgout1e_int1e_r2_origi
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
                     libc::c_int,
@@ -135,11 +135,11 @@ pub unsafe extern "C" fn int1e_r2_origi_cart(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -147,11 +147,11 @@ pub unsafe extern "C" fn int1e_r2_origi_cart(
             Some(
                 c2s_cart_1e
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -160,16 +160,16 @@ pub unsafe extern "C" fn int1e_r2_origi_cart(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_r2_origi_sph(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut shls: *mut libc::c_int,
     mut atm: *mut libc::c_int,
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut ng: [libc::c_int; 8] = [
         2 as libc::c_int,
@@ -187,8 +187,8 @@ pub unsafe extern "C" fn int1e_r2_origi_sph(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut libc::c_int,
                 *mut CINTEnvVars,
                 libc::c_int,
@@ -199,8 +199,8 @@ pub unsafe extern "C" fn int1e_r2_origi_sph(
         Some(
             CINTgout1e_int1e_r2_origi
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
                     libc::c_int,
@@ -215,11 +215,11 @@ pub unsafe extern "C" fn int1e_r2_origi_sph(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -227,11 +227,11 @@ pub unsafe extern "C" fn int1e_r2_origi_sph(
             Some(
                 c2s_sph_1e
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -239,8 +239,8 @@ pub unsafe extern "C" fn int1e_r2_origi_sph(
     );
 }
 unsafe extern "C" fn CINTgout1e_int1e_r4_origi(
-    mut gout: *mut libc::c_double,
-    mut g: *mut libc::c_double,
+    mut gout: *mut f64,
+    mut g: *mut f64,
     mut idx: *mut libc::c_int,
     mut envs: *mut CINTEnvVars,
     mut empty: libc::c_int,
@@ -250,38 +250,38 @@ unsafe extern "C" fn CINTgout1e_int1e_r4_origi(
     let mut iy: libc::c_int = 0;
     let mut iz: libc::c_int = 0;
     let mut n: libc::c_int = 0;
-    let mut g0: *mut libc::c_double = g;
-    let mut g1: *mut libc::c_double = g0
+    let mut g0: *mut f64 = g;
+    let mut g1: *mut f64 = g0
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g2: *mut libc::c_double = g1
+    let mut g2: *mut f64 = g1
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g3: *mut libc::c_double = g2
+    let mut g3: *mut f64 = g2
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g4: *mut libc::c_double = g3
+    let mut g4: *mut f64 = g3
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g5: *mut libc::c_double = g4
+    let mut g5: *mut f64 = g4
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g6: *mut libc::c_double = g5
+    let mut g6: *mut f64 = g5
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g7: *mut libc::c_double = g6
+    let mut g7: *mut f64 = g6
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g8: *mut libc::c_double = g7
+    let mut g8: *mut f64 = g7
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g9: *mut libc::c_double = g8
+    let mut g9: *mut f64 = g8
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g10: *mut libc::c_double = g9
+    let mut g10: *mut f64 = g9
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g11: *mut libc::c_double = g10
+    let mut g11: *mut f64 = g10
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g12: *mut libc::c_double = g11
+    let mut g12: *mut f64 = g11
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g13: *mut libc::c_double = g12
+    let mut g13: *mut f64 = g12
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g14: *mut libc::c_double = g13
+    let mut g14: *mut f64 = g13
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g15: *mut libc::c_double = g14
+    let mut g15: *mut f64 = g14
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut s: libc::c_double = 0.;
+    let mut s: f64 = 0.;
     g1 = g0.offset((*envs).g_stride_i as isize);
     g3 = g1.offset((*envs).g_stride_i as isize);
     g4 = g0.offset((*envs).g_stride_i as isize);
@@ -300,12 +300,12 @@ unsafe extern "C" fn CINTgout1e_int1e_r4_origi(
             += *g12.offset((ix + 0 as libc::c_int) as isize)
                 * *g3.offset((iy + 0 as libc::c_int) as isize)
                 * *g0.offset((iz + 0 as libc::c_int) as isize)
-                * 2 as libc::c_int as libc::c_double;
+                * 2 as libc::c_int as f64;
         s
             += *g12.offset((ix + 0 as libc::c_int) as isize)
                 * *g0.offset((iy + 0 as libc::c_int) as isize)
                 * *g3.offset((iz + 0 as libc::c_int) as isize)
-                * 2 as libc::c_int as libc::c_double;
+                * 2 as libc::c_int as f64;
         s
             += *g0.offset((ix + 0 as libc::c_int) as isize)
                 * *g15.offset((iy + 0 as libc::c_int) as isize)
@@ -314,7 +314,7 @@ unsafe extern "C" fn CINTgout1e_int1e_r4_origi(
             += *g0.offset((ix + 0 as libc::c_int) as isize)
                 * *g12.offset((iy + 0 as libc::c_int) as isize)
                 * *g3.offset((iz + 0 as libc::c_int) as isize)
-                * 2 as libc::c_int as libc::c_double;
+                * 2 as libc::c_int as f64;
         s
             += *g0.offset((ix + 0 as libc::c_int) as isize)
                 * *g0.offset((iy + 0 as libc::c_int) as isize)
@@ -335,7 +335,7 @@ pub unsafe extern "C" fn int1e_r4_origi_optimizer(
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     let mut ng: [libc::c_int; 8] = [
         4 as libc::c_int,
@@ -351,16 +351,16 @@ pub unsafe extern "C" fn int1e_r4_origi_optimizer(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_r4_origi_cart(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut shls: *mut libc::c_int,
     mut atm: *mut libc::c_int,
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut ng: [libc::c_int; 8] = [
         4 as libc::c_int,
@@ -378,8 +378,8 @@ pub unsafe extern "C" fn int1e_r4_origi_cart(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut libc::c_int,
                 *mut CINTEnvVars,
                 libc::c_int,
@@ -390,8 +390,8 @@ pub unsafe extern "C" fn int1e_r4_origi_cart(
         Some(
             CINTgout1e_int1e_r4_origi
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
                     libc::c_int,
@@ -406,11 +406,11 @@ pub unsafe extern "C" fn int1e_r4_origi_cart(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -418,11 +418,11 @@ pub unsafe extern "C" fn int1e_r4_origi_cart(
             Some(
                 c2s_cart_1e
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -431,16 +431,16 @@ pub unsafe extern "C" fn int1e_r4_origi_cart(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_r4_origi_sph(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut shls: *mut libc::c_int,
     mut atm: *mut libc::c_int,
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut ng: [libc::c_int; 8] = [
         4 as libc::c_int,
@@ -458,8 +458,8 @@ pub unsafe extern "C" fn int1e_r4_origi_sph(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut libc::c_int,
                 *mut CINTEnvVars,
                 libc::c_int,
@@ -470,8 +470,8 @@ pub unsafe extern "C" fn int1e_r4_origi_sph(
         Some(
             CINTgout1e_int1e_r4_origi
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
                     libc::c_int,
@@ -486,11 +486,11 @@ pub unsafe extern "C" fn int1e_r4_origi_sph(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -498,11 +498,11 @@ pub unsafe extern "C" fn int1e_r4_origi_sph(
             Some(
                 c2s_sph_1e
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -511,8 +511,8 @@ pub unsafe extern "C" fn int1e_r4_origi_sph(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTgout1e_int1e_r2_origi_ip2(
-    mut gout: *mut libc::c_double,
-    mut g: *mut libc::c_double,
+    mut gout: *mut f64,
+    mut g: *mut f64,
     mut idx: *mut libc::c_int,
     mut envs: *mut CINTEnvVars,
     mut gout_empty: libc::c_int,
@@ -522,22 +522,22 @@ pub unsafe extern "C" fn CINTgout1e_int1e_r2_origi_ip2(
     let mut iy: libc::c_int = 0;
     let mut iz: libc::c_int = 0;
     let mut n: libc::c_int = 0;
-    let mut g0: *mut libc::c_double = g;
-    let mut g1: *mut libc::c_double = g0
+    let mut g0: *mut f64 = g;
+    let mut g1: *mut f64 = g0
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g2: *mut libc::c_double = g1
+    let mut g2: *mut f64 = g1
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g3: *mut libc::c_double = g2
+    let mut g3: *mut f64 = g2
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g4: *mut libc::c_double = g3
+    let mut g4: *mut f64 = g3
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g5: *mut libc::c_double = g4
+    let mut g5: *mut f64 = g4
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g6: *mut libc::c_double = g5
+    let mut g6: *mut f64 = g5
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g7: *mut libc::c_double = g6
+    let mut g7: *mut f64 = g6
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut s: [libc::c_double; 3] = [0.; 3];
+    let mut s: [f64; 3] = [0.; 3];
     CINTnabla1j_1e(
         g1,
         g0,
@@ -617,7 +617,7 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_optimizer(
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     let mut ng: [libc::c_int; 8] = [
         2 as libc::c_int,
@@ -633,16 +633,16 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_optimizer(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_r2_origi_ip2_cart(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut shls: *mut libc::c_int,
     mut atm: *mut libc::c_int,
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut ng: [libc::c_int; 8] = [
         2 as libc::c_int,
@@ -660,8 +660,8 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_cart(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut libc::c_int,
                 *mut CINTEnvVars,
                 libc::c_int,
@@ -672,8 +672,8 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_cart(
         Some(
             CINTgout1e_int1e_r2_origi_ip2
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
                     libc::c_int,
@@ -688,11 +688,11 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_cart(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -700,11 +700,11 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_cart(
             Some(
                 c2s_cart_1e
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -713,16 +713,16 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_cart(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_r2_origi_ip2_sph(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut shls: *mut libc::c_int,
     mut atm: *mut libc::c_int,
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut ng: [libc::c_int; 8] = [
         2 as libc::c_int,
@@ -740,8 +740,8 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_sph(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut libc::c_int,
                 *mut CINTEnvVars,
                 libc::c_int,
@@ -752,8 +752,8 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_sph(
         Some(
             CINTgout1e_int1e_r2_origi_ip2
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
                     libc::c_int,
@@ -768,11 +768,11 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_sph(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -780,11 +780,11 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_sph(
             Some(
                 c2s_sph_1e
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -793,8 +793,8 @@ pub unsafe extern "C" fn int1e_r2_origi_ip2_sph(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTgout1e_int1e_r4_origi_ip2(
-    mut gout: *mut libc::c_double,
-    mut g: *mut libc::c_double,
+    mut gout: *mut f64,
+    mut g: *mut f64,
     mut idx: *mut libc::c_int,
     mut envs: *mut CINTEnvVars,
     mut gout_empty: libc::c_int,
@@ -804,70 +804,70 @@ pub unsafe extern "C" fn CINTgout1e_int1e_r4_origi_ip2(
     let mut iy: libc::c_int = 0;
     let mut iz: libc::c_int = 0;
     let mut n: libc::c_int = 0;
-    let mut g0: *mut libc::c_double = g;
-    let mut g1: *mut libc::c_double = g0
+    let mut g0: *mut f64 = g;
+    let mut g1: *mut f64 = g0
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g2: *mut libc::c_double = g1
+    let mut g2: *mut f64 = g1
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g3: *mut libc::c_double = g2
+    let mut g3: *mut f64 = g2
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g4: *mut libc::c_double = g3
+    let mut g4: *mut f64 = g3
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g5: *mut libc::c_double = g4
+    let mut g5: *mut f64 = g4
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g6: *mut libc::c_double = g5
+    let mut g6: *mut f64 = g5
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g7: *mut libc::c_double = g6
+    let mut g7: *mut f64 = g6
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g8: *mut libc::c_double = g7
+    let mut g8: *mut f64 = g7
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g9: *mut libc::c_double = g8
+    let mut g9: *mut f64 = g8
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g10: *mut libc::c_double = g9
+    let mut g10: *mut f64 = g9
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g11: *mut libc::c_double = g10
+    let mut g11: *mut f64 = g10
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g12: *mut libc::c_double = g11
+    let mut g12: *mut f64 = g11
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g13: *mut libc::c_double = g12
+    let mut g13: *mut f64 = g12
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g14: *mut libc::c_double = g13
+    let mut g14: *mut f64 = g13
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g15: *mut libc::c_double = g14
+    let mut g15: *mut f64 = g14
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g16: *mut libc::c_double = g15
+    let mut g16: *mut f64 = g15
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g17: *mut libc::c_double = g16
+    let mut g17: *mut f64 = g16
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g18: *mut libc::c_double = g17
+    let mut g18: *mut f64 = g17
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g19: *mut libc::c_double = g18
+    let mut g19: *mut f64 = g18
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g20: *mut libc::c_double = g19
+    let mut g20: *mut f64 = g19
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g21: *mut libc::c_double = g20
+    let mut g21: *mut f64 = g20
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g22: *mut libc::c_double = g21
+    let mut g22: *mut f64 = g21
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g23: *mut libc::c_double = g22
+    let mut g23: *mut f64 = g22
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g24: *mut libc::c_double = g23
+    let mut g24: *mut f64 = g23
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g25: *mut libc::c_double = g24
+    let mut g25: *mut f64 = g24
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g26: *mut libc::c_double = g25
+    let mut g26: *mut f64 = g25
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g27: *mut libc::c_double = g26
+    let mut g27: *mut f64 = g26
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g28: *mut libc::c_double = g27
+    let mut g28: *mut f64 = g27
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g29: *mut libc::c_double = g28
+    let mut g29: *mut f64 = g28
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g30: *mut libc::c_double = g29
+    let mut g30: *mut f64 = g29
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut g31: *mut libc::c_double = g30
+    let mut g31: *mut f64 = g30
         .offset(((*envs).g_size * 3 as libc::c_int) as isize);
-    let mut s: [libc::c_double; 243] = [0.; 243];
+    let mut s: [f64; 243] = [0.; 243];
     CINTnabla1j_1e(
         g1,
         g0,
@@ -897,18 +897,18 @@ pub unsafe extern "C" fn CINTgout1e_int1e_r4_origi_ip2(
             as usize] = *g31.offset((ix + 0 as libc::c_int) as isize)
             * *g0.offset((iy + 0 as libc::c_int) as isize)
             * *g0.offset((iz + 0 as libc::c_int) as isize)
-            + 2 as libc::c_int as libc::c_double
+            + 2 as libc::c_int as f64
                 * *g25.offset((ix + 0 as libc::c_int) as isize)
                 * *g6.offset((iy + 0 as libc::c_int) as isize)
                 * *g0.offset((iz + 0 as libc::c_int) as isize)
-            + 2 as libc::c_int as libc::c_double
+            + 2 as libc::c_int as f64
                 * *g25.offset((ix + 0 as libc::c_int) as isize)
                 * *g0.offset((iy + 0 as libc::c_int) as isize)
                 * *g6.offset((iz + 0 as libc::c_int) as isize)
             + *g1.offset((ix + 0 as libc::c_int) as isize)
                 * *g30.offset((iy + 0 as libc::c_int) as isize)
                 * *g0.offset((iz + 0 as libc::c_int) as isize)
-            + 2 as libc::c_int as libc::c_double
+            + 2 as libc::c_int as f64
                 * *g1.offset((ix + 0 as libc::c_int) as isize)
                 * *g24.offset((iy + 0 as libc::c_int) as isize)
                 * *g6.offset((iz + 0 as libc::c_int) as isize)
@@ -919,18 +919,18 @@ pub unsafe extern "C" fn CINTgout1e_int1e_r4_origi_ip2(
             as usize] = *g30.offset((ix + 0 as libc::c_int) as isize)
             * *g1.offset((iy + 0 as libc::c_int) as isize)
             * *g0.offset((iz + 0 as libc::c_int) as isize)
-            + 2 as libc::c_int as libc::c_double
+            + 2 as libc::c_int as f64
                 * *g24.offset((ix + 0 as libc::c_int) as isize)
                 * *g7.offset((iy + 0 as libc::c_int) as isize)
                 * *g0.offset((iz + 0 as libc::c_int) as isize)
-            + 2 as libc::c_int as libc::c_double
+            + 2 as libc::c_int as f64
                 * *g24.offset((ix + 0 as libc::c_int) as isize)
                 * *g1.offset((iy + 0 as libc::c_int) as isize)
                 * *g6.offset((iz + 0 as libc::c_int) as isize)
             + *g0.offset((ix + 0 as libc::c_int) as isize)
                 * *g31.offset((iy + 0 as libc::c_int) as isize)
                 * *g0.offset((iz + 0 as libc::c_int) as isize)
-            + 2 as libc::c_int as libc::c_double
+            + 2 as libc::c_int as f64
                 * *g0.offset((ix + 0 as libc::c_int) as isize)
                 * *g25.offset((iy + 0 as libc::c_int) as isize)
                 * *g6.offset((iz + 0 as libc::c_int) as isize)
@@ -941,18 +941,18 @@ pub unsafe extern "C" fn CINTgout1e_int1e_r4_origi_ip2(
             as usize] = *g30.offset((ix + 0 as libc::c_int) as isize)
             * *g0.offset((iy + 0 as libc::c_int) as isize)
             * *g1.offset((iz + 0 as libc::c_int) as isize)
-            + 2 as libc::c_int as libc::c_double
+            + 2 as libc::c_int as f64
                 * *g24.offset((ix + 0 as libc::c_int) as isize)
                 * *g6.offset((iy + 0 as libc::c_int) as isize)
                 * *g1.offset((iz + 0 as libc::c_int) as isize)
-            + 2 as libc::c_int as libc::c_double
+            + 2 as libc::c_int as f64
                 * *g24.offset((ix + 0 as libc::c_int) as isize)
                 * *g0.offset((iy + 0 as libc::c_int) as isize)
                 * *g7.offset((iz + 0 as libc::c_int) as isize)
             + *g0.offset((ix + 0 as libc::c_int) as isize)
                 * *g30.offset((iy + 0 as libc::c_int) as isize)
                 * *g1.offset((iz + 0 as libc::c_int) as isize)
-            + 2 as libc::c_int as libc::c_double
+            + 2 as libc::c_int as f64
                 * *g0.offset((ix + 0 as libc::c_int) as isize)
                 * *g24.offset((iy + 0 as libc::c_int) as isize)
                 * *g7.offset((iz + 0 as libc::c_int) as isize)
@@ -991,7 +991,7 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_optimizer(
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     let mut ng: [libc::c_int; 8] = [
         4 as libc::c_int,
@@ -1007,16 +1007,16 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_optimizer(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_r4_origi_ip2_cart(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut shls: *mut libc::c_int,
     mut atm: *mut libc::c_int,
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut ng: [libc::c_int; 8] = [
         4 as libc::c_int,
@@ -1034,8 +1034,8 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_cart(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut libc::c_int,
                 *mut CINTEnvVars,
                 libc::c_int,
@@ -1046,8 +1046,8 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_cart(
         Some(
             CINTgout1e_int1e_r4_origi_ip2
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
                     libc::c_int,
@@ -1062,11 +1062,11 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_cart(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -1074,11 +1074,11 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_cart(
             Some(
                 c2s_cart_1e
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -1087,16 +1087,16 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_cart(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_r4_origi_ip2_sph(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut shls: *mut libc::c_int,
     mut atm: *mut libc::c_int,
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut ng: [libc::c_int; 8] = [
         4 as libc::c_int,
@@ -1114,8 +1114,8 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_sph(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut libc::c_int,
                 *mut CINTEnvVars,
                 libc::c_int,
@@ -1126,8 +1126,8 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_sph(
         Some(
             CINTgout1e_int1e_r4_origi_ip2
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
                     libc::c_int,
@@ -1142,11 +1142,11 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_sph(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -1154,11 +1154,11 @@ pub unsafe extern "C" fn int1e_r4_origi_ip2_sph(
             Some(
                 c2s_sph_1e
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),

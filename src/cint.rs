@@ -3,9 +3,9 @@
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct PairData {
-    pub rij: [libc::c_double; 3],
-    pub eij: libc::c_double,
-    pub cceij: libc::c_double,
+    pub rij: [f64; 3],
+    pub eij: f64,
+    pub cceij: f64,
 }
 
 #[derive(Copy, Clone)]
@@ -15,7 +15,7 @@ pub struct CINTOpt {
     pub non0ctr: *mut *mut libc::c_int,
     pub sortedidx: *mut *mut libc::c_int,
     pub nbas: libc::c_int,
-    pub log_max_coeff: *mut *mut libc::c_double,
+    pub log_max_coeff: *mut *mut f64,
     pub pairdata: *mut *mut PairData,
 }
 
@@ -24,7 +24,7 @@ pub struct CINTOpt {
 pub struct CINTEnvVars {
     pub atm: *mut libc::c_int,
     pub bas: *mut libc::c_int,
-    pub env: *mut libc::c_double,
+    pub env: *mut f64,
     pub shls: *mut libc::c_int,
     pub natm: libc::c_int,
     pub nbas: libc::c_int,
@@ -55,35 +55,35 @@ pub struct CINTEnvVars {
     pub g_size: libc::c_int,
     pub g2d_ijmax: libc::c_int,
     pub g2d_klmax: libc::c_int,
-    pub common_factor: libc::c_double,
-    pub expcutoff: libc::c_double,
-    pub rirj: [libc::c_double; 3],
-    pub rkrl: [libc::c_double; 3],
-    pub rx_in_rijrx: *mut libc::c_double,
-    pub rx_in_rklrx: *mut libc::c_double,
-    pub ri: *mut libc::c_double,
-    pub rj: *mut libc::c_double,
-    pub rk: *mut libc::c_double,
+    pub common_factor: f64,
+    pub expcutoff: f64,
+    pub rirj: [f64; 3],
+    pub rkrl: [f64; 3],
+    pub rx_in_rijrx: *mut f64,
+    pub rx_in_rklrx: *mut f64,
+    pub ri: *mut f64,
+    pub rj: *mut f64,
+    pub rk: *mut f64,
     pub c2rust_unnamed_1: C2RustUnnamed,
     pub f_g0_2e: Option::<unsafe extern "C" fn() -> libc::c_int>,
     pub f_g0_2d4d: Option::<unsafe extern "C" fn() -> ()>,
     pub f_gout: Option::<unsafe extern "C" fn() -> ()>,
     pub opt: *mut CINTOpt,
     pub idx: *mut libc::c_int,
-    pub ai: [libc::c_double; 1],
-    pub aj: [libc::c_double; 1],
-    pub ak: [libc::c_double; 1],
-    pub al: [libc::c_double; 1],
-    pub fac: [libc::c_double; 1],
-    pub rij: [libc::c_double; 3],
-    pub rkl: [libc::c_double; 3],
+    pub ai: [f64; 1],
+    pub aj: [f64; 1],
+    pub ak: [f64; 1],
+    pub al: [f64; 1],
+    pub fac: [f64; 1],
+    pub rij: [f64; 3],
+    pub rkl: [f64; 3],
 }
 
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed {
-    pub rl: *mut libc::c_double,
-    pub grids: *mut libc::c_double,
+    pub rl: *mut f64,
+    pub grids: *mut f64,
 }
 
 #[derive(Copy, Clone)]

@@ -6,8 +6,8 @@ extern "C" {
     pub type _IO_marker;
     static mut stderr: *mut FILE;
     fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-    fn sqrt(_: libc::c_double) -> libc::c_double;
-    fn fabs(_: libc::c_double) -> libc::c_double;
+    fn sqrt(_: f64) -> f64;
+    fn fabs(_: f64) -> f64;
 }
 pub type size_t = libc::c_ulong;
 pub type __off_t = libc::c_long;
@@ -48,23 +48,23 @@ pub struct _IO_FILE {
 pub type _IO_lock_t = ();
 pub type FILE = _IO_FILE;
 unsafe extern "C" fn R_dnode(
-    mut a: *mut libc::c_double,
-    mut roots: *mut libc::c_double,
+    mut a: *mut f64,
+    mut roots: *mut f64,
     mut order: libc::c_int,
 ) -> libc::c_int {
-    let accrt: libc::c_double = 1e-15f64;
-    let mut x0: libc::c_double = 0.;
-    let mut x1: libc::c_double = 0.;
-    let mut xi: libc::c_double = 0.;
-    let mut x1init: libc::c_double = 0.;
-    let mut p0: libc::c_double = 0.;
-    let mut p1: libc::c_double = 0.;
-    let mut pi: libc::c_double = 0.;
-    let mut p1init: libc::c_double = 0.;
+    let accrt: f64 = 1e-15f64;
+    let mut x0: f64 = 0.;
+    let mut x1: f64 = 0.;
+    let mut xi: f64 = 0.;
+    let mut x1init: f64 = 0.;
+    let mut p0: f64 = 0.;
+    let mut p1: f64 = 0.;
+    let mut pi: f64 = 0.;
+    let mut p1init: f64 = 0.;
     let mut i: libc::c_int = 0;
     let mut m: libc::c_int = 0;
     let mut n: libc::c_int = 0;
-    x1init = 0 as libc::c_int as libc::c_double;
+    x1init = 0 as libc::c_int as f64;
     p1init = *a.offset(0 as libc::c_int as isize);
     m = 0 as libc::c_int;
     while m < order {
@@ -78,8 +78,8 @@ unsafe extern "C" fn R_dnode(
             i += 1;
             i;
         }
-        if !(p1init == 0 as libc::c_int as libc::c_double) {
-            if p0 * p1init > 0 as libc::c_int as libc::c_double {
+        if !(p1init == 0 as libc::c_int as f64) {
+            if p0 * p1init > 0 as libc::c_int as f64 {
                 fprintf(
                     stderr,
                     b"ROOT NUMBER %d WAS NOT FOUND FOR POLYNOMIAL OF ORDER %d\n\0"
@@ -98,9 +98,9 @@ unsafe extern "C" fn R_dnode(
                 x0 = x1init;
                 p0 = p1init;
             }
-            if p1 == 0 as libc::c_int as libc::c_double {
+            if p1 == 0 as libc::c_int as f64 {
                 *roots.offset(m as isize) = x1;
-            } else if p0 == 0 as libc::c_int as libc::c_double {
+            } else if p0 == 0 as libc::c_int as f64 {
                 *roots.offset(m as isize) = x0;
             } else {
                 xi = x0 + (x0 - x1) / (p1 - p0) * p0;
@@ -123,10 +123,10 @@ unsafe extern "C" fn R_dnode(
                         i += 1;
                         i;
                     }
-                    if pi == 0 as libc::c_int as libc::c_double {
+                    if pi == 0 as libc::c_int as f64 {
                         break;
                     }
-                    if p0 * pi <= 0 as libc::c_int as libc::c_double {
+                    if p0 * pi <= 0 as libc::c_int as f64 {
                         x1 = xi;
                         p1 = pi;
                         xi = x0 * 0.25f64 + xi * 0.75f64;
@@ -142,10 +142,10 @@ unsafe extern "C" fn R_dnode(
                         i += 1;
                         i;
                     }
-                    if pi == 0 as libc::c_int as libc::c_double {
+                    if pi == 0 as libc::c_int as f64 {
                         break;
                     }
-                    if p0 * pi <= 0 as libc::c_int as libc::c_double {
+                    if p0 * pi <= 0 as libc::c_int as f64 {
                         x1 = xi;
                         p1 = pi;
                     } else {
@@ -163,11 +163,11 @@ unsafe extern "C" fn R_dnode(
     return 0 as libc::c_int;
 }
 unsafe extern "C" fn _qr_step(
-    mut A: *mut libc::c_double,
+    mut A: *mut f64,
     mut nroots: libc::c_int,
     mut n0: libc::c_int,
     mut n1: libc::c_int,
-    mut shift: libc::c_double,
+    mut shift: f64,
 ) {
     let mut m1: libc::c_int = n0 + 1 as libc::c_int;
     let mut j: libc::c_int = 0;
@@ -175,15 +175,15 @@ unsafe extern "C" fn _qr_step(
     let mut m3: libc::c_int = 0;
     let mut j1: libc::c_int = 0;
     let mut j2: libc::c_int = 0;
-    let mut c: libc::c_double = *A.offset((n0 * nroots + n0) as isize) - shift;
-    let mut s: libc::c_double = *A.offset((m1 * nroots + n0) as isize);
-    let mut v: libc::c_double = sqrt(c * c + s * s);
-    let mut x: libc::c_double = 0.;
-    let mut y: libc::c_double = 0.;
-    if v == 0 as libc::c_int as libc::c_double {
-        v = 1 as libc::c_int as libc::c_double;
-        c = 1 as libc::c_int as libc::c_double;
-        s = 0 as libc::c_int as libc::c_double;
+    let mut c: f64 = *A.offset((n0 * nroots + n0) as isize) - shift;
+    let mut s: f64 = *A.offset((m1 * nroots + n0) as isize);
+    let mut v: f64 = sqrt(c * c + s * s);
+    let mut x: f64 = 0.;
+    let mut y: f64 = 0.;
+    if v == 0 as libc::c_int as f64 {
+        v = 1 as libc::c_int as f64;
+        c = 1 as libc::c_int as f64;
+        s = 0 as libc::c_int as f64;
     }
     v = 1.0f64 / v;
     c *= v;
@@ -215,11 +215,11 @@ unsafe extern "C" fn _qr_step(
         s = *A.offset((j2 * nroots + j) as isize);
         v = sqrt(c * c + s * s);
         *A.offset((j1 * nroots + j) as isize) = v;
-        *A.offset((j2 * nroots + j) as isize) = 0 as libc::c_int as libc::c_double;
-        if v == 0 as libc::c_int as libc::c_double {
-            v = 1 as libc::c_int as libc::c_double;
-            c = 1 as libc::c_int as libc::c_double;
-            s = 0 as libc::c_int as libc::c_double;
+        *A.offset((j2 * nroots + j) as isize) = 0 as libc::c_int as f64;
+        if v == 0 as libc::c_int as f64 {
+            v = 1 as libc::c_int as f64;
+            c = 1 as libc::c_int as f64;
+            s = 0 as libc::c_int as f64;
         }
         v = 1.0f64 / v;
         c *= v;
@@ -248,10 +248,10 @@ unsafe extern "C" fn _qr_step(
     }
 }
 unsafe extern "C" fn _hessenberg_qr(
-    mut A: *mut libc::c_double,
+    mut A: *mut f64,
     mut nroots: libc::c_int,
 ) -> libc::c_int {
-    let mut eps: libc::c_double = 1e-15f64;
+    let mut eps: f64 = 1e-15f64;
     let mut maxits: libc::c_int = 30 as libc::c_int;
     let mut n0: libc::c_int = 0 as libc::c_int;
     let mut n1: libc::c_int = nroots;
@@ -263,7 +263,7 @@ unsafe extern "C" fn _hessenberg_qr(
     while ic < nroots * maxits {
         k = n0;
         while (k + 1 as libc::c_int) < n1 {
-            let mut s: libc::c_double = fabs(*A.offset((k * nroots + k) as isize))
+            let mut s: f64 = fabs(*A.offset((k * nroots + k) as isize))
                 + fabs(
                     *A
                         .offset(
@@ -279,7 +279,7 @@ unsafe extern "C" fn _hessenberg_qr(
         }
         k1 = k + 1 as libc::c_int;
         if k1 < n1 {
-            *A.offset((k1 * nroots + k) as isize) = 0 as libc::c_int as libc::c_double;
+            *A.offset((k1 * nroots + k) as isize) = 0 as libc::c_int as f64;
             n0 = k1;
             its = 0 as libc::c_int;
             if n0 + 1 as libc::c_int >= n1 {
@@ -292,19 +292,19 @@ unsafe extern "C" fn _hessenberg_qr(
         } else {
             let mut m1: libc::c_int = n1 - 1 as libc::c_int;
             let mut m2: libc::c_int = n1 - 2 as libc::c_int;
-            let mut a11: libc::c_double = *A.offset((m1 * nroots + m1) as isize);
-            let mut a22: libc::c_double = *A.offset((m2 * nroots + m2) as isize);
-            let mut shift: libc::c_double = 0.;
-            let mut t: libc::c_double = a11 + a22;
-            let mut s_0: libc::c_double = (a11 - a22) * (a11 - a22);
+            let mut a11: f64 = *A.offset((m1 * nroots + m1) as isize);
+            let mut a22: f64 = *A.offset((m2 * nroots + m2) as isize);
+            let mut shift: f64 = 0.;
+            let mut t: f64 = a11 + a22;
+            let mut s_0: f64 = (a11 - a22) * (a11 - a22);
             s_0
-                += 4 as libc::c_int as libc::c_double
+                += 4 as libc::c_int as f64
                     * *A.offset((m1 * nroots + m2) as isize)
                     * *A.offset((m2 * nroots + m1) as isize);
-            if s_0 > 0 as libc::c_int as libc::c_double {
+            if s_0 > 0 as libc::c_int as f64 {
                 s_0 = sqrt(s_0);
-                let mut a: libc::c_double = (t + s_0) * 0.5f64;
-                let mut b: libc::c_double = (t - s_0) * 0.5f64;
+                let mut a: f64 = (t + s_0) * 0.5f64;
+                let mut b: f64 = (t - s_0) * 0.5f64;
                 if fabs(a11 - a) > fabs(a11 - b) {
                     shift = b;
                 } else {
@@ -341,8 +341,8 @@ unsafe extern "C" fn _hessenberg_qr(
 }
 #[no_mangle]
 pub unsafe extern "C" fn _CINT_polynomial_roots(
-    mut roots: *mut libc::c_double,
-    mut cs: *mut libc::c_double,
+    mut roots: *mut f64,
+    mut cs: *mut f64,
     mut nroots: libc::c_int,
 ) -> libc::c_int {
     if nroots == 1 as libc::c_int {
@@ -353,13 +353,13 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
             / *cs.offset(3 as libc::c_int as isize);
         return 0 as libc::c_int;
     } else if nroots == 2 as libc::c_int {
-        let mut dum: libc::c_double = sqrt(
+        let mut dum: f64 = sqrt(
             *cs.offset((2 as libc::c_int * 3 as libc::c_int + 1 as libc::c_int) as isize)
                 * *cs
                     .offset(
                         (2 as libc::c_int * 3 as libc::c_int + 1 as libc::c_int) as isize,
                     )
-                - 4 as libc::c_int as libc::c_double
+                - 4 as libc::c_int as f64
                     * *cs
                         .offset(
                             (2 as libc::c_int * 3 as libc::c_int + 0 as libc::c_int)
@@ -380,7 +380,7 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
             / *cs
                 .offset(
                     (2 as libc::c_int * 3 as libc::c_int + 2 as libc::c_int) as isize,
-                ) / 2 as libc::c_int as libc::c_double;
+                ) / 2 as libc::c_int as f64;
         *roots
             .offset(
                 1 as libc::c_int as isize,
@@ -390,13 +390,13 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
             / *cs
                 .offset(
                     (2 as libc::c_int * 3 as libc::c_int + 2 as libc::c_int) as isize,
-                ) / 2 as libc::c_int as libc::c_double;
+                ) / 2 as libc::c_int as f64;
         return 0 as libc::c_int;
     }
-    let mut A: [libc::c_double; 1024] = [0.; 1024];
+    let mut A: [f64; 1024] = [0.; 1024];
     let mut nroots1: libc::c_int = nroots + 1 as libc::c_int;
     let mut i: libc::c_int = 0;
-    let mut fac: libc::c_double = -1.0f64
+    let mut fac: f64 = -1.0f64
         / *cs.offset((nroots * nroots1 + nroots) as isize);
     i = 0 as libc::c_int;
     while i < nroots {
@@ -407,7 +407,7 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
     }
     i = nroots;
     while i < nroots * nroots {
-        A[i as usize] = 0 as libc::c_int as libc::c_double;
+        A[i as usize] = 0 as libc::c_int as f64;
         i += 1;
         i;
     }
@@ -431,11 +431,11 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
     } else {
         let mut k: libc::c_int = 0;
         let mut order: libc::c_int = 0;
-        let mut a: *mut libc::c_double = 0 as *mut libc::c_double;
-        let mut dum_0: libc::c_double = sqrt(
+        let mut a: *mut f64 = 0 as *mut f64;
+        let mut dum_0: f64 = sqrt(
             *cs.offset((2 as libc::c_int * nroots1 + 1 as libc::c_int) as isize)
                 * *cs.offset((2 as libc::c_int * nroots1 + 1 as libc::c_int) as isize)
-                - 4 as libc::c_int as libc::c_double
+                - 4 as libc::c_int as f64
                     * *cs
                         .offset((2 as libc::c_int * nroots1 + 0 as libc::c_int) as isize)
                     * *cs
@@ -457,7 +457,7 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
             / *cs.offset((2 as libc::c_int * nroots1 + 2 as libc::c_int) as isize);
         i = 2 as libc::c_int;
         while i < nroots {
-            *roots.offset(i as isize) = 1 as libc::c_int as libc::c_double;
+            *roots.offset(i as isize) = 1 as libc::c_int as f64;
             i += 1;
             i;
         }

@@ -1,10 +1,10 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 #[no_mangle]
-pub unsafe extern "C" fn CINTdset0(mut n: libc::c_int, mut x: *mut libc::c_double) {
+pub unsafe extern "C" fn CINTdset0(mut n: libc::c_int, mut x: *mut f64) {
     let mut i: libc::c_int = 0;
     i = 0 as libc::c_int;
     while i < n {
-        *x.offset(i as isize) = 0 as libc::c_int as libc::c_double;
+        *x.offset(i as isize) = 0 as libc::c_int as f64;
         i += 1;
         i;
     }
@@ -12,10 +12,10 @@ pub unsafe extern "C" fn CINTdset0(mut n: libc::c_int, mut x: *mut libc::c_doubl
 #[no_mangle]
 pub unsafe extern "C" fn CINTdaxpy2v(
     mut n: libc::c_int,
-    mut a: libc::c_double,
-    mut x: *mut libc::c_double,
-    mut y: *mut libc::c_double,
-    mut v: *mut libc::c_double,
+    mut a: f64,
+    mut x: *mut f64,
+    mut y: *mut f64,
+    mut v: *mut f64,
 ) {
     let mut i: libc::c_int = 0;
     i = 0 as libc::c_int;
@@ -27,8 +27,8 @@ pub unsafe extern "C" fn CINTdaxpy2v(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTdmat_transpose(
-    mut a_t: *mut libc::c_double,
-    mut a: *mut libc::c_double,
+    mut a_t: *mut f64,
+    mut a: *mut f64,
     mut m: libc::c_int,
     mut n: libc::c_int,
 ) {
@@ -108,8 +108,8 @@ pub unsafe extern "C" fn CINTdmat_transpose(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTdplus_transpose(
-    mut a_t: *mut libc::c_double,
-    mut a: *mut libc::c_double,
+    mut a_t: *mut f64,
+    mut a: *mut f64,
     mut m: libc::c_int,
     mut n: libc::c_int,
 ) {
@@ -174,20 +174,20 @@ pub unsafe extern "C" fn CINTdgemm_NN1(
     mut m: libc::c_int,
     mut n: libc::c_int,
     mut k: libc::c_int,
-    mut a: *mut libc::c_double,
-    mut b: *mut libc::c_double,
-    mut c: *mut libc::c_double,
+    mut a: *mut f64,
+    mut b: *mut f64,
+    mut c: *mut f64,
     mut ldc: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut kp: libc::c_int = 0;
-    let mut bi: libc::c_double = 0.;
+    let mut bi: f64 = 0.;
     j = 0 as libc::c_int;
     while j < n {
         i = 0 as libc::c_int;
         while i < m {
-            *c.offset((i + ldc * j) as isize) = 0 as libc::c_int as libc::c_double;
+            *c.offset((i + ldc * j) as isize) = 0 as libc::c_int as f64;
             i += 1;
             i;
         }
@@ -213,9 +213,9 @@ pub unsafe extern "C" fn CINTdgemm_NN(
     mut m: libc::c_int,
     mut n: libc::c_int,
     mut k: libc::c_int,
-    mut a: *mut libc::c_double,
-    mut b: *mut libc::c_double,
-    mut c: *mut libc::c_double,
+    mut a: *mut f64,
+    mut b: *mut f64,
+    mut c: *mut f64,
 ) {
     CINTdgemm_NN1(m, n, k, a, b, c, m);
 }
@@ -224,19 +224,19 @@ pub unsafe extern "C" fn CINTdgemm_TN(
     mut m: libc::c_int,
     mut n: libc::c_int,
     mut k: libc::c_int,
-    mut a: *mut libc::c_double,
-    mut b: *mut libc::c_double,
-    mut c: *mut libc::c_double,
+    mut a: *mut f64,
+    mut b: *mut f64,
+    mut c: *mut f64,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut kp: libc::c_int = 0;
-    let mut ci: libc::c_double = 0.;
+    let mut ci: f64 = 0.;
     j = 0 as libc::c_int;
     while j < n {
         i = 0 as libc::c_int;
         while i < m {
-            ci = 0 as libc::c_int as libc::c_double;
+            ci = 0 as libc::c_int as f64;
             kp = 0 as libc::c_int;
             while kp < k {
                 ci
@@ -258,19 +258,19 @@ pub unsafe extern "C" fn CINTdgemm_NT(
     mut m: libc::c_int,
     mut n: libc::c_int,
     mut k: libc::c_int,
-    mut a: *mut libc::c_double,
-    mut b: *mut libc::c_double,
-    mut c: *mut libc::c_double,
+    mut a: *mut f64,
+    mut b: *mut f64,
+    mut c: *mut f64,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut kp: libc::c_int = 0;
-    let mut bi: libc::c_double = 0.;
+    let mut bi: f64 = 0.;
     j = 0 as libc::c_int;
     while j < n {
         i = 0 as libc::c_int;
         while i < m {
-            *c.offset((i + m * j) as isize) = 0 as libc::c_int as libc::c_double;
+            *c.offset((i + m * j) as isize) = 0 as libc::c_int as f64;
             i += 1;
             i;
         }

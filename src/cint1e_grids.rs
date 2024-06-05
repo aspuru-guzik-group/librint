@@ -28,13 +28,13 @@ extern "C" {
 
 #[no_mangle]
 pub unsafe extern "C" fn CINT1e_grids_loop(
-    mut gctr: *mut libc::c_double,
+    mut gctr: *mut f64,
     mut envs: *mut CINTEnvVars,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut shls: *mut libc::c_int = (*envs).shls;
     let mut bas: *mut libc::c_int = (*envs).bas;
-    let mut env: *mut libc::c_double = (*envs).env;
+    let mut env: *mut f64 = (*envs).env;
     let mut i_sh: libc::c_int = *shls.offset(0 as libc::c_int as isize);
     let mut j_sh: libc::c_int = *shls.offset(1 as libc::c_int as isize);
     let mut i_ctr: libc::c_int = (*envs).x_ctr[0 as libc::c_int as usize];
@@ -46,36 +46,36 @@ pub unsafe extern "C" fn CINT1e_grids_loop(
     let mut nf: libc::c_int = (*envs).nf;
     let mut n_comp: libc::c_int = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
     let mut ngrids: libc::c_int = (*envs).c2rust_unnamed_0.ngrids;
-    let mut grids: *mut libc::c_double = (*envs).c2rust_unnamed_1.grids;
-    let mut ai: *mut libc::c_double = env
+    let mut grids: *mut f64 = (*envs).c2rust_unnamed_1.grids;
+    let mut ai: *mut f64 = env
         .offset(
             *bas.offset((8 as libc::c_int * i_sh + 5 as libc::c_int) as isize) as isize,
         );
-    let mut aj: *mut libc::c_double = env
+    let mut aj: *mut f64 = env
         .offset(
             *bas.offset((8 as libc::c_int * j_sh + 5 as libc::c_int) as isize) as isize,
         );
-    let mut ci: *mut libc::c_double = env
+    let mut ci: *mut f64 = env
         .offset(
             *bas.offset((8 as libc::c_int * i_sh + 6 as libc::c_int) as isize) as isize,
         );
-    let mut cj: *mut libc::c_double = env
+    let mut cj: *mut f64 = env
         .offset(
             *bas.offset((8 as libc::c_int * j_sh + 6 as libc::c_int) as isize) as isize,
         );
-    let mut expcutoff: libc::c_double = (*envs).expcutoff;
-    let mut log_maxci: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut log_maxcj: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut expcutoff: f64 = (*envs).expcutoff;
+    let mut log_maxci: *mut f64 = 0 as *mut f64;
+    let mut log_maxcj: *mut f64 = 0 as *mut f64;
     let mut pdata_base: *mut PairData = 0 as *mut PairData;
     let mut pdata_ij: *mut PairData = 0 as *mut PairData;
     log_maxci = ((cache as uintptr_t).wrapping_add(7 as libc::c_int as libc::c_ulong)
         & (8 as libc::c_int as uintptr_t).wrapping_neg()) as *mut libc::c_void
-        as *mut libc::c_double;
+        as *mut f64;
     cache = log_maxci.offset((i_prim + j_prim) as isize);
     pdata_base = ((cache as uintptr_t).wrapping_add(7 as libc::c_int as libc::c_ulong)
         & (8 as libc::c_int as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut PairData;
-    cache = pdata_base.offset((i_prim * j_prim) as isize) as *mut libc::c_double;
+    cache = pdata_base.offset((i_prim * j_prim) as isize) as *mut f64;
     log_maxcj = log_maxci.offset(i_prim as isize);
     CINTOpt_log_max_pgto_coeff(log_maxci, ci, i_prim, i_ctr);
     CINTOpt_log_max_pgto_coeff(log_maxcj, cj, j_prim, j_ctr);
@@ -102,11 +102,11 @@ pub unsafe extern "C" fn CINT1e_grids_loop(
     {
         return 0 as libc::c_int;
     }
-    let mut fac1i: libc::c_double = 0.;
-    let mut fac1j: libc::c_double = 0.;
-    let mut expij: libc::c_double = 0.;
-    let mut cutoff: libc::c_double = 0.;
-    let mut rij: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut fac1i: f64 = 0.;
+    let mut fac1j: f64 = 0.;
+    let mut expij: f64 = 0.;
+    let mut cutoff: f64 = 0.;
+    let mut rij: *mut f64 = 0 as *mut f64;
     let mut ip: libc::c_int = 0;
     let mut jp: libc::c_int = 0;
     let mut i: libc::c_int = 0;
@@ -132,7 +132,7 @@ pub unsafe extern "C" fn CINT1e_grids_loop(
     idx = ((cache as uintptr_t).wrapping_add(7 as libc::c_int as libc::c_ulong)
         & (8 as libc::c_int as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut libc::c_int;
-    cache = idx.offset((nf * 3 as libc::c_int) as isize) as *mut libc::c_double;
+    cache = idx.offset((nf * 3 as libc::c_int) as isize) as *mut f64;
     CINTg1e_index_xyz(idx, envs);
     let mut non0ctri: *mut libc::c_int = 0 as *mut libc::c_int;
     let mut non0ctrj: *mut libc::c_int = 0 as *mut libc::c_int;
@@ -142,7 +142,7 @@ pub unsafe extern "C" fn CINT1e_grids_loop(
         & (8 as libc::c_int as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut libc::c_int;
     cache = non0ctri.offset((i_prim + j_prim + i_prim * i_ctr + j_prim * j_ctr) as isize)
-        as *mut libc::c_double;
+        as *mut f64;
     non0ctrj = non0ctri.offset(i_prim as isize);
     non0idxi = non0ctrj.offset(j_prim as isize);
     non0idxj = non0idxi.offset((i_prim * i_ctr) as isize);
@@ -155,17 +155,17 @@ pub unsafe extern "C" fn CINT1e_grids_loop(
     let leni: libc::c_int = 104 as libc::c_int * nf * i_ctr * n_comp;
     let len0: libc::c_int = 104 as libc::c_int * nf * n_comp;
     let len: libc::c_int = leng + lenj + leni + len0;
-    let mut gridsT: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut gridsT: *mut f64 = 0 as *mut f64;
     gridsT = ((cache as uintptr_t).wrapping_add(63 as libc::c_int as libc::c_ulong)
         & (64 as libc::c_int as uintptr_t).wrapping_neg()) as *mut libc::c_void
-        as *mut libc::c_double;
+        as *mut f64;
     cache = gridsT.offset((len + 104 as libc::c_int * 3 as libc::c_int) as isize);
-    let mut g: *mut libc::c_double = gridsT
+    let mut g: *mut f64 = gridsT
         .offset((104 as libc::c_int * 3 as libc::c_int) as isize);
-    let mut g1: *mut libc::c_double = g.offset(leng as isize);
-    let mut gout: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut gctri: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut gctrj: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut g1: *mut f64 = g.offset(leng as isize);
+    let mut gout: *mut f64 = 0 as *mut f64;
+    let mut gctri: *mut f64 = 0 as *mut f64;
+    let mut gctrj: *mut f64 = 0 as *mut f64;
     if n_comp == 1 as libc::c_int {
         gctrj = gctr;
     } else {
@@ -350,8 +350,8 @@ pub unsafe extern "C" fn CINT1e_grids_loop(
     return (all_empty == 0) as libc::c_int;
 }
 unsafe extern "C" fn _transpose_comps(
-    mut gctr: *mut libc::c_double,
-    mut gctrj: *mut libc::c_double,
+    mut gctr: *mut f64,
+    mut gctrj: *mut f64,
     mut bgrids: libc::c_int,
     mut dij: libc::c_int,
     mut ngrids: libc::c_int,
@@ -360,8 +360,8 @@ unsafe extern "C" fn _transpose_comps(
     let mut n: libc::c_int = 0;
     let mut ic: libc::c_int = 0;
     let mut ig: libc::c_int = 0;
-    let mut pgctr: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut pgctrj: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut pgctr: *mut f64 = 0 as *mut f64;
+    let mut pgctrj: *mut f64 = 0 as *mut f64;
     ic = 0 as libc::c_int;
     while ic < n_comp {
         pgctr = gctr.offset((ic * dij * ngrids) as isize);
@@ -452,10 +452,10 @@ pub unsafe extern "C" fn int1e_grids_cache_size(mut envs: *mut CINTEnvVars) -> s
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT1e_grids_drv(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut envs: *mut CINTEnvVars,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
     mut f_c2s: Option::<unsafe extern "C" fn() -> ()>,
 ) -> libc::c_int {
     if out.is_null() {
@@ -466,19 +466,19 @@ pub unsafe extern "C" fn CINT1e_grids_drv(
     let mut nc: libc::c_int = ngrids_nf * *x_ctr.offset(0 as libc::c_int as isize)
         * *x_ctr.offset(1 as libc::c_int as isize);
     let mut n_comp: libc::c_int = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
-    let mut stack: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut stack: *mut f64 = 0 as *mut f64;
     if cache.is_null() {
         let mut cache_size: size_t = int1e_grids_cache_size(envs);
         stack = malloc(
-            (::core::mem::size_of::<libc::c_double>() as libc::c_ulong)
+            (::core::mem::size_of::<f64>() as libc::c_ulong)
                 .wrapping_mul(cache_size),
-        ) as *mut libc::c_double;
+        ) as *mut f64;
         cache = stack;
     }
-    let mut gctr: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut gctr: *mut f64 = 0 as *mut f64;
     gctr = ((cache as uintptr_t).wrapping_add(63 as libc::c_int as libc::c_ulong)
         & (64 as libc::c_int as uintptr_t).wrapping_neg()) as *mut libc::c_void
-        as *mut libc::c_double;
+        as *mut f64;
     cache = gctr.offset((nc * n_comp) as isize);
     let mut has_value: libc::c_int = CINT1e_grids_loop(gctr, envs, cache);
     let mut counts: [libc::c_int; 4] = [0; 4];
@@ -489,11 +489,11 @@ pub unsafe extern "C" fn CINT1e_grids_drv(
         == ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -501,11 +501,11 @@ pub unsafe extern "C" fn CINT1e_grids_drv(
             Some(
                 c2s_sph_1e_grids
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         )
@@ -522,11 +522,11 @@ pub unsafe extern "C" fn CINT1e_grids_drv(
         == ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -534,11 +534,11 @@ pub unsafe extern "C" fn CINT1e_grids_drv(
             Some(
                 c2s_cart_1e_grids
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         )
@@ -588,16 +588,16 @@ pub unsafe extern "C" fn CINT1e_grids_drv(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_grids_sph(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut shls: *mut libc::c_int,
     mut atm: *mut libc::c_int,
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut ng: [libc::c_int; 8] = [
         0 as libc::c_int,
@@ -624,8 +624,8 @@ pub unsafe extern "C" fn int1e_grids_sph(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut libc::c_int,
                 *mut CINTEnvVars,
                 libc::c_int,
@@ -636,8 +636,8 @@ pub unsafe extern "C" fn int1e_grids_sph(
         Some(
             CINTgout1e_grids
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
                     libc::c_int,
@@ -652,11 +652,11 @@ pub unsafe extern "C" fn int1e_grids_sph(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -664,11 +664,11 @@ pub unsafe extern "C" fn int1e_grids_sph(
             Some(
                 c2s_sph_1e_grids
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -681,22 +681,22 @@ pub unsafe extern "C" fn int1e_grids_optimizer(
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     *opt = 0 as *mut CINTOpt;
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_grids_cart(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut libc::c_int,
     mut shls: *mut libc::c_int,
     mut atm: *mut libc::c_int,
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> libc::c_int {
     let mut ng: [libc::c_int; 8] = [
         0 as libc::c_int,
@@ -723,8 +723,8 @@ pub unsafe extern "C" fn int1e_grids_cart(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut libc::c_int,
                 *mut CINTEnvVars,
                 libc::c_int,
@@ -735,8 +735,8 @@ pub unsafe extern "C" fn int1e_grids_cart(
         Some(
             CINTgout1e_grids
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
                     libc::c_int,
@@ -751,11 +751,11 @@ pub unsafe extern "C" fn int1e_grids_cart(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut libc::c_int,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -763,11 +763,11 @@ pub unsafe extern "C" fn int1e_grids_cart(
             Some(
                 c2s_cart_1e_grids
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut libc::c_int,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),

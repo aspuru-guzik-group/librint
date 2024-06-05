@@ -11,7 +11,7 @@ pub type uintptr_t = libc::c_ulong;
 pub type size_t = libc::c_ulong;
 
 extern "C" {
-    fn sqrt(_: libc::c_double) -> libc::c_double;
+    fn sqrt(_: f64) -> f64;
 }
 
 #[no_mangle]
@@ -23,23 +23,23 @@ pub unsafe extern "C" fn CINTinit_int1e_grids_EnvVars(
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     CINTinit_int1e_EnvVars(envs, ng, shls, atm, natm, bas, nbas, env);
     let mut ngrids: libc::c_int = *shls.offset(3 as libc::c_int as isize)
         - *shls.offset(2 as libc::c_int as isize);
-    let mut grids: *mut libc::c_double = env
+    let mut grids: *mut f64 = env
         .offset(*env.offset(12 as libc::c_int as isize) as size_t as isize)
         .offset((*shls.offset(2 as libc::c_int as isize) * 3 as libc::c_int) as isize);
     (*envs).c2rust_unnamed_0.ngrids = ngrids;
     (*envs).c2rust_unnamed_1.grids = grids;
     (*envs)
-        .common_factor = 2 as libc::c_int as libc::c_double * 3.14159265358979323846f64
+        .common_factor = 2 as libc::c_int as f64 * 3.14159265358979323846f64
         * CINTcommon_fac_sp((*envs).i_l) * CINTcommon_fac_sp((*envs).j_l);
     let mut rys_order: libc::c_int = (*envs).nrys_roots;
     let mut nroots: libc::c_int = rys_order;
-    let mut omega: libc::c_double = *env.offset(8 as libc::c_int as isize);
-    if omega < 0 as libc::c_int as libc::c_double && rys_order <= 3 as libc::c_int {
+    let mut omega: f64 = *env.offset(8 as libc::c_int as isize);
+    if omega < 0 as libc::c_int as f64 && rys_order <= 3 as libc::c_int {
         nroots *= 2 as libc::c_int;
     }
     (*envs).rys_order = rys_order;
@@ -86,11 +86,11 @@ pub unsafe extern "C" fn CINTinit_int1e_grids_EnvVars(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTg0_1e_grids(
-    mut g: *mut libc::c_double,
-    mut cutoff: libc::c_double,
+    mut g: *mut f64,
+    mut cutoff: f64,
     mut envs: *mut CINTEnvVars,
-    mut cache: *mut libc::c_double,
-    mut gridsT: *mut libc::c_double,
+    mut cache: *mut f64,
+    mut gridsT: *mut f64,
 ) -> libc::c_int {
     let mut ngrids: libc::c_int = (*envs).c2rust_unnamed_0.ngrids;
     let mut bgrids: libc::c_int = if ngrids - (*envs).c2rust_unnamed.grids_offset
@@ -101,32 +101,32 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
         104 as libc::c_int
     };
     let mut nroots: libc::c_int = (*envs).nrys_roots;
-    let mut gx: *mut libc::c_double = g;
-    let mut gy: *mut libc::c_double = g.offset((*envs).g_size as isize);
-    let mut gz: *mut libc::c_double = g
+    let mut gx: *mut f64 = g;
+    let mut gy: *mut f64 = g.offset((*envs).g_size as isize);
+    let mut gz: *mut f64 = g
         .offset(((*envs).g_size * 2 as libc::c_int) as isize);
-    let mut w: *mut libc::c_double = gz;
-    let mut rij: *mut libc::c_double = ((*envs).rij).as_mut_ptr();
-    let mut ubuf: [libc::c_double; 32] = [0.; 32];
-    let mut wbuf: [libc::c_double; 32] = [0.; 32];
-    let mut u: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut w: *mut f64 = gz;
+    let mut rij: *mut f64 = ((*envs).rij).as_mut_ptr();
+    let mut ubuf: [f64; 32] = [0.; 32];
+    let mut wbuf: [f64; 32] = [0.; 32];
+    let mut u: *mut f64 = 0 as *mut f64;
     u = ((cache as uintptr_t).wrapping_add(63 as libc::c_int as libc::c_ulong)
         & (64 as libc::c_int as uintptr_t).wrapping_neg()) as *mut libc::c_void
-        as *mut libc::c_double;
+        as *mut f64;
     cache = u.offset((104 as libc::c_int * nroots) as isize);
-    let mut rijrg: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut rijrg: *mut f64 = 0 as *mut f64;
     rijrg = ((cache as uintptr_t).wrapping_add(63 as libc::c_int as libc::c_ulong)
         & (64 as libc::c_int as uintptr_t).wrapping_neg()) as *mut libc::c_void
-        as *mut libc::c_double;
+        as *mut f64;
     cache = rijrg.offset((104 as libc::c_int * 3 as libc::c_int) as isize);
-    let mut aij: libc::c_double = (*envs).ai[0 as libc::c_int as usize]
+    let mut aij: f64 = (*envs).ai[0 as libc::c_int as usize]
         + (*envs).aj[0 as libc::c_int as usize];
     let mut n: libc::c_int = 0;
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut ig: libc::c_int = 0;
-    let mut x: libc::c_double = 0.;
-    let mut fac1: libc::c_double = 0.;
+    let mut x: f64 = 0.;
+    let mut fac1: f64 = 0.;
     i = 0 as libc::c_int;
     while i < nroots {
         ig = 0 as libc::c_int;
@@ -134,11 +134,11 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
             *gx
                 .offset(
                     (ig + 104 as libc::c_int * i) as isize,
-                ) = 1 as libc::c_int as libc::c_double;
+                ) = 1 as libc::c_int as f64;
             *gy
                 .offset(
                     (ig + 104 as libc::c_int * i) as isize,
-                ) = 1 as libc::c_int as libc::c_double;
+                ) = 1 as libc::c_int as f64;
             ig += 1;
             ig;
         }
@@ -165,13 +165,13 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
         ig += 1;
         ig;
     }
-    let mut omega: libc::c_double = *((*envs).env).offset(8 as libc::c_int as isize);
-    let mut zeta: libc::c_double = *((*envs).env).offset(7 as libc::c_int as isize);
-    let mut omega2: libc::c_double = 0.;
-    let mut theta: libc::c_double = 0.;
-    let mut sqrt_theta: libc::c_double = 0.;
-    let mut a0: libc::c_double = 0.;
-    let mut tau2: libc::c_double = 0.;
+    let mut omega: f64 = *((*envs).env).offset(8 as libc::c_int as isize);
+    let mut zeta: f64 = *((*envs).env).offset(7 as libc::c_int as isize);
+    let mut omega2: f64 = 0.;
+    let mut theta: f64 = 0.;
+    let mut sqrt_theta: f64 = 0.;
+    let mut a0: f64 = 0.;
+    let mut tau2: f64 = 0.;
     if omega == 0.0f64 && zeta == 0.0f64 {
         fac1 = (*envs).fac[0 as libc::c_int as usize] / aij;
         ig = 0 as libc::c_int;
@@ -199,7 +199,7 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                     .offset(
                         (ig + 104 as libc::c_int * i) as isize,
                     ) = ubuf[i as usize]
-                    / (ubuf[i as usize] + 1 as libc::c_int as libc::c_double);
+                    / (ubuf[i as usize] + 1 as libc::c_int as f64);
                 *w
                     .offset(
                         (ig + 104 as libc::c_int * i) as isize,
@@ -225,16 +225,16 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
             theta = omega2 / (omega2 + a0);
         }
         sqrt_theta = sqrt(theta);
-        let mut temp_cutoff: libc::c_double = if cutoff
-            < 40 as libc::c_int as libc::c_double
+        let mut temp_cutoff: f64 = if cutoff
+            < 40 as libc::c_int as f64
         {
             cutoff
         } else {
-            40 as libc::c_int as libc::c_double
+            40 as libc::c_int as f64
         };
         let mut rorder: libc::c_int = (*envs).rys_order;
-        let mut tau_theta: libc::c_double = 0.;
-        let mut fac_theta: libc::c_double = 0.;
+        let mut tau_theta: f64 = 0.;
+        let mut fac_theta: f64 = 0.;
         ig = 0 as libc::c_int;
         while ig < bgrids {
             x = a0
@@ -259,11 +259,11 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                     *u
                         .offset(
                             (ig + 104 as libc::c_int * i) as isize,
-                        ) = 0 as libc::c_int as libc::c_double;
+                        ) = 0 as libc::c_int as f64;
                     *w
                         .offset(
                             (ig + 104 as libc::c_int * i) as isize,
-                        ) = 0 as libc::c_int as libc::c_double;
+                        ) = 0 as libc::c_int as f64;
                     i += 1;
                     i;
                 }
@@ -281,7 +281,7 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                         .offset(
                             (ig + 104 as libc::c_int * i) as isize,
                         ) = ubuf[i as usize]
-                        / (ubuf[i as usize] + 1 as libc::c_int as libc::c_double) * tau2;
+                        / (ubuf[i as usize] + 1 as libc::c_int as f64) * tau2;
                     *w
                         .offset(
                             (ig + 104 as libc::c_int * i) as isize,
@@ -305,7 +305,7 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                         .offset(
                             (ig + 104 as libc::c_int * i) as isize,
                         ) = ubuf[i as usize]
-                        / (ubuf[i as usize] + 1 as libc::c_int as libc::c_double) * tau2;
+                        / (ubuf[i as usize] + 1 as libc::c_int as f64) * tau2;
                     *w
                         .offset(
                             (ig + 104 as libc::c_int * i) as isize,
@@ -315,7 +315,7 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                             (ig + 104 as libc::c_int * (i + rorder)) as isize,
                         ) = ubuf[(i + rorder) as usize]
                         / (ubuf[(i + rorder) as usize]
-                            + 1 as libc::c_int as libc::c_double) * tau_theta;
+                            + 1 as libc::c_int as f64) * tau_theta;
                     *w
                         .offset(
                             (ig + 104 as libc::c_int * (i + rorder)) as isize,
@@ -370,7 +370,7 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                     .offset(
                         (ig + 104 as libc::c_int * i) as isize,
                     ) = ubuf[i as usize]
-                    / (ubuf[i as usize] + 1 as libc::c_int as libc::c_double) * theta;
+                    / (ubuf[i as usize] + 1 as libc::c_int as f64) * theta;
                 *w
                     .offset(
                         (ig + 104 as libc::c_int * i) as isize,
@@ -386,11 +386,11 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
     if nmax == 0 as libc::c_int {
         return 1 as libc::c_int;
     }
-    let mut rirj: *mut libc::c_double = ((*envs).rirj).as_mut_ptr();
+    let mut rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
     let mut lj: libc::c_int = 0;
     let mut di: libc::c_int = 0;
     let mut dj: libc::c_int = 0;
-    let mut rx: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut rx: *mut f64 = 0 as *mut f64;
     if (*envs).li_ceil > (*envs).lj_ceil {
         lj = (*envs).lj_ceil;
         di = (*envs).g_stride_i;
@@ -402,7 +402,7 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
         dj = (*envs).g_stride_i;
         rx = (*envs).rj;
     }
-    let mut rijrx: [libc::c_double; 3] = [0.; 3];
+    let mut rijrx: [f64; 3] = [0.; 3];
     rijrx[0 as libc::c_int
         as usize] = *rij.offset(0 as libc::c_int as isize)
         - *rx.offset(0 as libc::c_int as isize);
@@ -412,27 +412,27 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
     rijrx[2 as libc::c_int
         as usize] = *rij.offset(2 as libc::c_int as isize)
         - *rx.offset(2 as libc::c_int as isize);
-    let mut p0x: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut p0y: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut p0z: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut p1x: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut p1y: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut p1z: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut p2x: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut p2y: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut p2z: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut t2: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut p0x: *mut f64 = 0 as *mut f64;
+    let mut p0y: *mut f64 = 0 as *mut f64;
+    let mut p0z: *mut f64 = 0 as *mut f64;
+    let mut p1x: *mut f64 = 0 as *mut f64;
+    let mut p1y: *mut f64 = 0 as *mut f64;
+    let mut p1z: *mut f64 = 0 as *mut f64;
+    let mut p2x: *mut f64 = 0 as *mut f64;
+    let mut p2y: *mut f64 = 0 as *mut f64;
+    let mut p2z: *mut f64 = 0 as *mut f64;
+    let mut t2: *mut f64 = 0 as *mut f64;
     t2 = ((cache as uintptr_t).wrapping_add(63 as libc::c_int as libc::c_ulong)
         & (64 as libc::c_int as uintptr_t).wrapping_neg()) as *mut libc::c_void
-        as *mut libc::c_double;
+        as *mut f64;
     cache = t2.offset((104 as libc::c_int * 4 as libc::c_int) as isize);
-    let mut rirgx: *mut libc::c_double = t2.offset(104 as libc::c_int as isize);
-    let mut rirgy: *mut libc::c_double = rirgx.offset(104 as libc::c_int as isize);
-    let mut rirgz: *mut libc::c_double = rirgy.offset(104 as libc::c_int as isize);
-    let mut aij2: libc::c_double = 0.5f64 / aij;
-    let mut tx: libc::c_double = 0.;
-    let mut ty: libc::c_double = 0.;
-    let mut tz: libc::c_double = 0.;
+    let mut rirgx: *mut f64 = t2.offset(104 as libc::c_int as isize);
+    let mut rirgy: *mut f64 = rirgx.offset(104 as libc::c_int as isize);
+    let mut rirgz: *mut f64 = rirgy.offset(104 as libc::c_int as isize);
+    let mut aij2: f64 = 0.5f64 / aij;
+    let mut tx: f64 = 0.;
+    let mut ty: f64 = 0.;
+    let mut tz: f64 = 0.;
     n = 0 as libc::c_int;
     while n < nroots {
         p0x = gx.offset((104 as libc::c_int * n) as isize);
@@ -486,7 +486,7 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                     .offset(
                         ig as isize,
                     ) = aij2
-                    * (1 as libc::c_int as libc::c_double
+                    * (1 as libc::c_int as f64
                         - *u.offset((ig + 104 as libc::c_int * n) as isize));
                 ig += 1;
                 ig;
@@ -508,19 +508,19 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                 *p1x
                     .offset(
                         ig as isize,
-                    ) = i as libc::c_double * *t2.offset(ig as isize)
+                    ) = i as f64 * *t2.offset(ig as isize)
                     * *p2x.offset(ig as isize)
                     + *rirgx.offset(ig as isize) * *p0x.offset(ig as isize);
                 *p1y
                     .offset(
                         ig as isize,
-                    ) = i as libc::c_double * *t2.offset(ig as isize)
+                    ) = i as f64 * *t2.offset(ig as isize)
                     * *p2y.offset(ig as isize)
                     + *rirgy.offset(ig as isize) * *p0y.offset(ig as isize);
                 *p1z
                     .offset(
                         ig as isize,
-                    ) = i as libc::c_double * *t2.offset(ig as isize)
+                    ) = i as f64 * *t2.offset(ig as isize)
                     * *p2z.offset(ig as isize)
                     + *rirgz.offset(ig as isize) * *p0z.offset(ig as isize);
                 ig += 1;
@@ -583,8 +583,8 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTgout1e_grids(
-    mut gout: *mut libc::c_double,
-    mut g: *mut libc::c_double,
+    mut gout: *mut f64,
+    mut g: *mut f64,
     mut idx: *mut libc::c_int,
     mut envs: *mut CINTEnvVars,
     mut gout_empty: libc::c_int,
@@ -602,10 +602,10 @@ pub unsafe extern "C" fn CINTgout1e_grids(
     let mut i: libc::c_int = 0;
     let mut n: libc::c_int = 0;
     let mut ig: libc::c_int = 0;
-    let mut gx: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut gy: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut gz: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut s: [libc::c_double; 104] = [0.; 104];
+    let mut gx: *mut f64 = 0 as *mut f64;
+    let mut gy: *mut f64 = 0 as *mut f64;
+    let mut gz: *mut f64 = 0 as *mut f64;
+    let mut s: [f64; 104] = [0.; 104];
     if gout_empty != 0 {
         n = 0 as libc::c_int;
         while n < nf {
@@ -614,7 +614,7 @@ pub unsafe extern "C" fn CINTgout1e_grids(
             gz = g.offset(*idx.offset(2 as libc::c_int as isize) as isize);
             ig = 0 as libc::c_int;
             while ig < bgrids {
-                s[ig as usize] = 0 as libc::c_int as libc::c_double;
+                s[ig as usize] = 0 as libc::c_int as f64;
                 ig += 1;
                 ig;
             }
@@ -650,7 +650,7 @@ pub unsafe extern "C" fn CINTgout1e_grids(
             gz = g.offset(*idx.offset(2 as libc::c_int as isize) as isize);
             ig = 0 as libc::c_int;
             while ig < bgrids {
-                s[ig as usize] = 0 as libc::c_int as libc::c_double;
+                s[ig as usize] = 0 as libc::c_int as f64;
                 ig += 1;
                 ig;
             }
@@ -682,8 +682,8 @@ pub unsafe extern "C" fn CINTgout1e_grids(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTnabla1i_grids(
-    mut f: *mut libc::c_double,
-    mut g: *mut libc::c_double,
+    mut f: *mut f64,
+    mut g: *mut f64,
     mut li: libc::c_int,
     mut lj: libc::c_int,
     mut envs: *mut CINTEnvVars,
@@ -699,20 +699,20 @@ pub unsafe extern "C" fn CINTnabla1i_grids(
     let mut nroots: libc::c_int = (*envs).nrys_roots;
     let di: libc::c_int = (*envs).g_stride_i;
     let dj: libc::c_int = (*envs).g_stride_j;
-    let ai2: libc::c_double = -(2 as libc::c_int) as libc::c_double
+    let ai2: f64 = -(2 as libc::c_int) as f64
         * (*envs).ai[0 as libc::c_int as usize];
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut n: libc::c_int = 0;
     let mut ig: libc::c_int = 0;
     let mut ptr: libc::c_int = 0;
-    let mut gx: *const libc::c_double = g;
-    let mut gy: *const libc::c_double = g.offset((*envs).g_size as isize);
-    let mut gz: *const libc::c_double = g
+    let mut gx: *const f64 = g;
+    let mut gy: *const f64 = g.offset((*envs).g_size as isize);
+    let mut gz: *const f64 = g
         .offset(((*envs).g_size * 2 as libc::c_int) as isize);
-    let mut fx: *mut libc::c_double = f;
-    let mut fy: *mut libc::c_double = f.offset((*envs).g_size as isize);
-    let mut fz: *mut libc::c_double = f
+    let mut fx: *mut f64 = f;
+    let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let mut fz: *mut f64 = f
         .offset(((*envs).g_size * 2 as libc::c_int) as isize);
     j = 0 as libc::c_int;
     while j <= lj {
@@ -740,17 +740,17 @@ pub unsafe extern "C" fn CINTnabla1i_grids(
                     *fx
                         .offset(
                             ig as isize,
-                        ) = i as libc::c_double * *gx.offset((ig - di) as isize)
+                        ) = i as f64 * *gx.offset((ig - di) as isize)
                         + ai2 * *gx.offset((ig + di) as isize);
                     *fy
                         .offset(
                             ig as isize,
-                        ) = i as libc::c_double * *gy.offset((ig - di) as isize)
+                        ) = i as f64 * *gy.offset((ig - di) as isize)
                         + ai2 * *gy.offset((ig + di) as isize);
                     *fz
                         .offset(
                             ig as isize,
-                        ) = i as libc::c_double * *gz.offset((ig - di) as isize)
+                        ) = i as f64 * *gz.offset((ig - di) as isize)
                         + ai2 * *gz.offset((ig + di) as isize);
                     ig += 1;
                     ig;
@@ -767,8 +767,8 @@ pub unsafe extern "C" fn CINTnabla1i_grids(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTnabla1j_grids(
-    mut f: *mut libc::c_double,
-    mut g: *mut libc::c_double,
+    mut f: *mut f64,
+    mut g: *mut f64,
     mut li: libc::c_int,
     mut lj: libc::c_int,
     mut envs: *mut CINTEnvVars,
@@ -784,20 +784,20 @@ pub unsafe extern "C" fn CINTnabla1j_grids(
     let mut nroots: libc::c_int = (*envs).nrys_roots;
     let di: libc::c_int = (*envs).g_stride_i;
     let dj: libc::c_int = (*envs).g_stride_j;
-    let aj2: libc::c_double = -(2 as libc::c_int) as libc::c_double
+    let aj2: f64 = -(2 as libc::c_int) as f64
         * (*envs).aj[0 as libc::c_int as usize];
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut n: libc::c_int = 0;
     let mut ig: libc::c_int = 0;
     let mut ptr: libc::c_int = 0;
-    let mut gx: *const libc::c_double = g;
-    let mut gy: *const libc::c_double = g.offset((*envs).g_size as isize);
-    let mut gz: *const libc::c_double = g
+    let mut gx: *const f64 = g;
+    let mut gy: *const f64 = g.offset((*envs).g_size as isize);
+    let mut gz: *const f64 = g
         .offset(((*envs).g_size * 2 as libc::c_int) as isize);
-    let mut fx: *mut libc::c_double = f;
-    let mut fy: *mut libc::c_double = f.offset((*envs).g_size as isize);
-    let mut fz: *mut libc::c_double = f
+    let mut fx: *mut f64 = f;
+    let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let mut fz: *mut f64 = f
         .offset(((*envs).g_size * 2 as libc::c_int) as isize);
     i = 0 as libc::c_int;
     while i <= li {
@@ -830,17 +830,17 @@ pub unsafe extern "C" fn CINTnabla1j_grids(
                     *fx
                         .offset(
                             ig as isize,
-                        ) = j as libc::c_double * *gx.offset((ig - dj) as isize)
+                        ) = j as f64 * *gx.offset((ig - dj) as isize)
                         + aj2 * *gx.offset((ig + dj) as isize);
                     *fy
                         .offset(
                             ig as isize,
-                        ) = j as libc::c_double * *gy.offset((ig - dj) as isize)
+                        ) = j as f64 * *gy.offset((ig - dj) as isize)
                         + aj2 * *gy.offset((ig + dj) as isize);
                     *fz
                         .offset(
                             ig as isize,
-                        ) = j as libc::c_double * *gz.offset((ig - dj) as isize)
+                        ) = j as f64 * *gz.offset((ig - dj) as isize)
                         + aj2 * *gz.offset((ig + dj) as isize);
                     ig += 1;
                     ig;
@@ -857,9 +857,9 @@ pub unsafe extern "C" fn CINTnabla1j_grids(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTx1i_grids(
-    mut f: *mut libc::c_double,
-    mut g: *mut libc::c_double,
-    mut ri: *mut libc::c_double,
+    mut f: *mut f64,
+    mut g: *mut f64,
+    mut ri: *mut f64,
     mut li: libc::c_int,
     mut lj: libc::c_int,
     mut envs: *mut CINTEnvVars,
@@ -880,13 +880,13 @@ pub unsafe extern "C" fn CINTx1i_grids(
     let mut ptr: libc::c_int = 0;
     let di: libc::c_int = (*envs).g_stride_i;
     let dj: libc::c_int = (*envs).g_stride_j;
-    let mut gx: *const libc::c_double = g;
-    let mut gy: *const libc::c_double = g.offset((*envs).g_size as isize);
-    let mut gz: *const libc::c_double = g
+    let mut gx: *const f64 = g;
+    let mut gy: *const f64 = g.offset((*envs).g_size as isize);
+    let mut gz: *const f64 = g
         .offset(((*envs).g_size * 2 as libc::c_int) as isize);
-    let mut fx: *mut libc::c_double = f;
-    let mut fy: *mut libc::c_double = f.offset((*envs).g_size as isize);
-    let mut fz: *mut libc::c_double = f
+    let mut fx: *mut f64 = f;
+    let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let mut fz: *mut f64 = f
         .offset(((*envs).g_size * 2 as libc::c_int) as isize);
     j = 0 as libc::c_int;
     while j <= lj {
@@ -930,9 +930,9 @@ pub unsafe extern "C" fn CINTx1i_grids(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTx1j_grids(
-    mut f: *mut libc::c_double,
-    mut g: *mut libc::c_double,
-    mut rj: *mut libc::c_double,
+    mut f: *mut f64,
+    mut g: *mut f64,
+    mut rj: *mut f64,
     mut li: libc::c_int,
     mut lj: libc::c_int,
     mut envs: *mut CINTEnvVars,
@@ -953,13 +953,13 @@ pub unsafe extern "C" fn CINTx1j_grids(
     let mut ptr: libc::c_int = 0;
     let di: libc::c_int = (*envs).g_stride_i;
     let dj: libc::c_int = (*envs).g_stride_j;
-    let mut gx: *const libc::c_double = g;
-    let mut gy: *const libc::c_double = g.offset((*envs).g_size as isize);
-    let mut gz: *const libc::c_double = g
+    let mut gx: *const f64 = g;
+    let mut gy: *const f64 = g.offset((*envs).g_size as isize);
+    let mut gz: *const f64 = g
         .offset(((*envs).g_size * 2 as libc::c_int) as isize);
-    let mut fx: *mut libc::c_double = f;
-    let mut fy: *mut libc::c_double = f.offset((*envs).g_size as isize);
-    let mut fz: *mut libc::c_double = f
+    let mut fx: *mut f64 = f;
+    let mut fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let mut fz: *mut f64 = f
         .offset(((*envs).g_size * 2 as libc::c_int) as isize);
     j = 0 as libc::c_int;
     while j <= lj {

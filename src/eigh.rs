@@ -6,8 +6,8 @@ extern "C" {
     pub type _IO_marker;
     static mut stderr: *mut FILE;
     fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-    fn sqrt(_: libc::c_double) -> libc::c_double;
-    fn fabs(_: libc::c_double) -> libc::c_double;
+    fn sqrt(_: f64) -> f64;
+    fn fabs(_: f64) -> f64;
 }
 
 pub type size_t = libc::c_ulong;
@@ -52,21 +52,21 @@ pub type FILE = _IO_FILE;
 unsafe extern "C" fn _dlarrk(
     mut n: libc::c_int,
     mut iw: libc::c_int,
-    mut gl: libc::c_double,
-    mut gu: libc::c_double,
-    mut diag: *mut libc::c_double,
-    mut e2: *mut libc::c_double,
-    mut reltol: libc::c_double,
-    mut w: *mut libc::c_double,
-    mut werr: *mut libc::c_double,
+    mut gl: f64,
+    mut gu: f64,
+    mut diag: *mut f64,
+    mut e2: *mut f64,
+    mut reltol: f64,
+    mut w: *mut f64,
+    mut werr: *mut f64,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut it: libc::c_int = 0;
-    let mut mid: libc::c_double = 0.;
-    let mut tmp1: libc::c_double = 0.;
-    let mut left: libc::c_double = 0.;
-    let mut right: libc::c_double = 0.;
-    let mut tnorm: libc::c_double = 0.;
+    let mut mid: f64 = 0.;
+    let mut tmp1: f64 = 0.;
+    let mut left: f64 = 0.;
+    let mut right: f64 = 0.;
+    let mut tnorm: f64 = 0.;
     let mut negcnt: libc::c_int = 0;
     let mut info: libc::c_int = 0;
     if n <= 0 as libc::c_int {
@@ -74,12 +74,12 @@ unsafe extern "C" fn _dlarrk(
     }
     tnorm = if fabs(gl) > fabs(gu) { fabs(gl) } else { fabs(gu) };
     info = -(1 as libc::c_int);
-    left = gl - tnorm * 2.0f64 * 2.2204460492503131e-16f64 * n as libc::c_double;
-    right = gu + tnorm * 2.0f64 * 2.2204460492503131e-16f64 * n as libc::c_double;
+    left = gl - tnorm * 2.0f64 * 2.2204460492503131e-16f64 * n as f64;
+    right = gu + tnorm * 2.0f64 * 2.2204460492503131e-16f64 * n as f64;
     it = 0 as libc::c_int;
     while it < 1000 as libc::c_int {
         tmp1 = fabs(right - left);
-        if tmp1 <= 0 as libc::c_int as libc::c_double
+        if tmp1 <= 0 as libc::c_int as f64
             || tmp1
                 < reltol
                     * (if fabs(right) > fabs(left) { fabs(right) } else { fabs(left) })
@@ -120,19 +120,19 @@ unsafe extern "C" fn _dlarrk(
 }
 unsafe extern "C" fn _dlarrc(
     mut n: libc::c_int,
-    mut vl: libc::c_double,
-    mut vu: libc::c_double,
-    mut diag: *mut libc::c_double,
-    mut e2: *mut libc::c_double,
+    mut vl: f64,
+    mut vu: f64,
+    mut diag: *mut f64,
+    mut e2: *mut f64,
     mut lcnt: *mut libc::c_int,
     mut rcnt: *mut libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut left_count: libc::c_int = 0 as libc::c_int;
     let mut right_count: libc::c_int = 0 as libc::c_int;
-    let mut tmp: libc::c_double = 0.;
-    let mut lpivot: libc::c_double = 0.;
-    let mut rpivot: libc::c_double = 0.;
+    let mut tmp: f64 = 0.;
+    let mut lpivot: f64 = 0.;
+    let mut rpivot: f64 = 0.;
     lpivot = *diag.offset(0 as libc::c_int as isize) - vl;
     rpivot = *diag.offset(0 as libc::c_int as isize) - vu;
     if lpivot <= 0.0f64 {
@@ -166,20 +166,20 @@ unsafe extern "C" fn _dlasq4(
     mut i0: libc::c_int,
     mut n0: libc::c_int,
     mut n0init: libc::c_int,
-    mut qvecp: *mut libc::c_double,
-    mut qvec1p: *mut libc::c_double,
-    mut evecp: *mut libc::c_double,
-    mut evec1p: *mut libc::c_double,
-    mut dmin: *mut libc::c_double,
-    mut dn: *mut libc::c_double,
-    mut tau: *mut libc::c_double,
+    mut qvecp: *mut f64,
+    mut qvec1p: *mut f64,
+    mut evecp: *mut f64,
+    mut evec1p: *mut f64,
+    mut dmin: *mut f64,
+    mut dn: *mut f64,
+    mut tau: *mut f64,
 ) -> libc::c_int {
-    let mut a2: libc::c_double = 0.;
-    let mut b1: libc::c_double = 0.;
-    let mut b2: libc::c_double = 0.;
-    let mut gap1: libc::c_double = 0.;
-    let mut gap2: libc::c_double = 0.;
-    let mut s: libc::c_double = 0.0f64;
+    let mut a2: f64 = 0.;
+    let mut b1: f64 = 0.;
+    let mut b2: f64 = 0.;
+    let mut gap1: f64 = 0.;
+    let mut gap2: f64 = 0.;
+    let mut s: f64 = 0.0f64;
     let mut i: libc::c_int = 0;
     if n0init == n0 {
         if *dmin.offset(0 as libc::c_int as isize)
@@ -461,18 +461,18 @@ unsafe extern "C" fn _dlasq4(
 unsafe extern "C" fn _dlasq5(
     mut i0: libc::c_int,
     mut n0: libc::c_int,
-    mut qvecp: *mut libc::c_double,
-    mut qvec1p: *mut libc::c_double,
-    mut evecp: *mut libc::c_double,
-    mut evec1p: *mut libc::c_double,
-    mut tau: libc::c_double,
-    mut tol: libc::c_double,
-    mut dmin: *mut libc::c_double,
-    mut dn: *mut libc::c_double,
+    mut qvecp: *mut f64,
+    mut qvec1p: *mut f64,
+    mut evecp: *mut f64,
+    mut evec1p: *mut f64,
+    mut tau: f64,
+    mut tol: f64,
+    mut dmin: *mut f64,
+    mut dn: *mut f64,
 ) {
-    let mut diag: libc::c_double = *qvecp.offset(i0 as isize) - tau;
-    let mut diag_min: libc::c_double = diag;
-    let mut temp: libc::c_double = 0.;
+    let mut diag: f64 = *qvecp.offset(i0 as isize) - tau;
+    let mut diag_min: f64 = diag;
+    let mut temp: f64 = 0.;
     let mut j: libc::c_int = 0;
     j = i0;
     while j < n0 - 3 as libc::c_int {
@@ -526,9 +526,9 @@ unsafe extern "C" fn _dlasq5(
 }
 unsafe extern "C" fn _dlasq2(
     mut n: libc::c_int,
-    mut work: *mut libc::c_double,
-    mut diag: *mut libc::c_double,
-    mut diag_off: *mut libc::c_double,
+    mut work: *mut f64,
+    mut diag: *mut f64,
+    mut diag_off: *mut f64,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -541,27 +541,27 @@ unsafe extern "C" fn _dlasq2(
     let mut n2: libc::c_int = 0;
     let mut n0init: libc::c_int = 0;
     let mut nbig: libc::c_int = 0;
-    let mut emax: libc::c_double = 0.;
-    let mut qmin: libc::c_double = 0.;
-    let mut temp: libc::c_double = 0.;
-    let mut diag_sum: libc::c_double = 0.;
-    let mut tol: libc::c_double = 0.;
-    let mut tol2: libc::c_double = 0.;
-    let mut s: libc::c_double = 0.;
-    let mut t: libc::c_double = 0.;
-    let mut dmin: [libc::c_double; 3] = [0.0f64, 0.0f64, 0.0f64];
-    let mut dn: [libc::c_double; 3] = [0.0f64, 0.0f64, 0.0f64];
-    let mut sigma: libc::c_double = 0.;
-    let mut tau: libc::c_double = 0.;
-    let mut qvec: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut qvec1: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut evec: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut evec1: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut qvecp: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut qvec1p: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut evecp: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut evec1p: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut swap: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut emax: f64 = 0.;
+    let mut qmin: f64 = 0.;
+    let mut temp: f64 = 0.;
+    let mut diag_sum: f64 = 0.;
+    let mut tol: f64 = 0.;
+    let mut tol2: f64 = 0.;
+    let mut s: f64 = 0.;
+    let mut t: f64 = 0.;
+    let mut dmin: [f64; 3] = [0.0f64, 0.0f64, 0.0f64];
+    let mut dn: [f64; 3] = [0.0f64, 0.0f64, 0.0f64];
+    let mut sigma: f64 = 0.;
+    let mut tau: f64 = 0.;
+    let mut qvec: *mut f64 = 0 as *mut f64;
+    let mut qvec1: *mut f64 = 0 as *mut f64;
+    let mut evec: *mut f64 = 0 as *mut f64;
+    let mut evec1: *mut f64 = 0 as *mut f64;
+    let mut qvecp: *mut f64 = 0 as *mut f64;
+    let mut qvec1p: *mut f64 = 0 as *mut f64;
+    let mut evecp: *mut f64 = 0 as *mut f64;
+    let mut evec1p: *mut f64 = 0 as *mut f64;
+    let mut swap: *mut f64 = 0 as *mut f64;
     qvec = work;
     qvec1 = work.offset((n * 1 as libc::c_int) as isize);
     evec = work.offset((n * 2 as libc::c_int) as isize);
@@ -675,8 +675,8 @@ unsafe extern "C" fn _dlasq2(
         qvec1p = qvec1;
         evecp = evec;
         evec1p = evec1;
-        if qmin < 0 as libc::c_int as libc::c_double
-            || emax < 0 as libc::c_int as libc::c_double
+        if qmin < 0 as libc::c_int as f64
+            || emax < 0 as libc::c_int as f64
         {
             fprintf(
                 stderr,
@@ -784,7 +784,7 @@ unsafe extern "C" fn _dlasq2(
                 iter += 1;
                 iter;
             }
-            if dmin[0 as libc::c_int as usize] < 0 as libc::c_int as libc::c_double {
+            if dmin[0 as libc::c_int as usize] < 0 as libc::c_int as f64 {
                 tau = 0.0f64;
                 _dlasq5(
                     i0,
@@ -824,30 +824,30 @@ unsafe extern "C" fn _dlasq2(
 }
 unsafe extern "C" fn _compute_eigenvalues(
     mut n: libc::c_int,
-    mut diag: *mut libc::c_double,
-    mut diag_off1: *mut libc::c_double,
-    mut w: *mut libc::c_double,
-    mut werr: *mut libc::c_double,
-    mut wgap: *mut libc::c_double,
-    mut work: *mut libc::c_double,
+    mut diag: *mut f64,
+    mut diag_off1: *mut f64,
+    mut w: *mut f64,
+    mut werr: *mut f64,
+    mut wgap: *mut f64,
+    mut work: *mut f64,
 ) -> libc::c_int {
-    let mut gl: libc::c_double = 0.;
-    let mut gu: libc::c_double = 0.;
-    let mut eabs: libc::c_double = 0.;
-    let mut eold: libc::c_double = 0.;
-    let mut tmp: libc::c_double = 0.;
-    let mut tmp1: libc::c_double = 0.;
-    let mut dmax: libc::c_double = 0.;
-    let mut eps: libc::c_double = 0.;
-    let mut rtol: libc::c_double = 0.;
-    let mut rtl: libc::c_double = 0.;
-    let mut sigma: libc::c_double = 0.;
-    let mut tau: libc::c_double = 0.;
-    let mut sgndef: libc::c_double = 0.;
-    let mut spectral_diameter: libc::c_double = 0.;
-    let mut isleft: libc::c_double = 0.;
-    let mut isrght: libc::c_double = 0.;
-    let mut dpivot: libc::c_double = 0.;
+    let mut gl: f64 = 0.;
+    let mut gu: f64 = 0.;
+    let mut eabs: f64 = 0.;
+    let mut eold: f64 = 0.;
+    let mut tmp: f64 = 0.;
+    let mut tmp1: f64 = 0.;
+    let mut dmax: f64 = 0.;
+    let mut eps: f64 = 0.;
+    let mut rtol: f64 = 0.;
+    let mut rtl: f64 = 0.;
+    let mut sigma: f64 = 0.;
+    let mut tau: f64 = 0.;
+    let mut sgndef: f64 = 0.;
+    let mut spectral_diameter: f64 = 0.;
+    let mut isleft: f64 = 0.;
+    let mut isrght: f64 = 0.;
+    let mut dpivot: f64 = 0.;
     let mut idum: libc::c_int = 0;
     let mut ip: libc::c_int = 0;
     let mut i: libc::c_int = 0;
@@ -865,7 +865,7 @@ unsafe extern "C" fn _compute_eigenvalues(
         *diag_off1.offset(0 as libc::c_int as isize) = 0.0f64;
         return 0 as libc::c_int;
     }
-    eps = 2 as libc::c_int as libc::c_double * 2.2204460492503131e-16f64;
+    eps = 2 as libc::c_int as f64 * 2.2204460492503131e-16f64;
     rtl = 2.1e-8f64;
     rtol = 16.0f64 * 2.2204460492503131e-16f64;
     gl = *diag.offset(0 as libc::c_int as isize);
@@ -900,7 +900,7 @@ unsafe extern "C" fn _compute_eigenvalues(
         *wgap.offset(0 as libc::c_int as isize) = 0.0f64;
         return 0 as libc::c_int;
     }
-    let mut e2: *mut libc::c_double = work;
+    let mut e2: *mut f64 = work;
     work = work.offset(n as isize);
     i = 0 as libc::c_int;
     while i < n - 1 as libc::c_int {
@@ -951,8 +951,8 @@ unsafe extern "C" fn _compute_eigenvalues(
         sigma = if isrght < gu { isrght } else { gu };
         sgndef = -1.0f64;
     }
-    tau = (if spectral_diameter * n as libc::c_double > 2.0f64 * fabs(sigma) {
-        spectral_diameter * n as libc::c_double
+    tau = (if spectral_diameter * n as f64 > 2.0f64 * fabs(sigma) {
+        spectral_diameter * n as f64
     } else {
         2.0f64 * fabs(sigma)
     }) * eps;
@@ -996,9 +996,9 @@ unsafe extern "C" fn _compute_eigenvalues(
         }
         if idum == 6 as libc::c_int - 1 as libc::c_int {
             if sgndef == 1.0f64 {
-                sigma = gl - spectral_diameter * 2.0f64 * eps * n as libc::c_double;
+                sigma = gl - spectral_diameter * 2.0f64 * eps * n as f64;
             } else {
-                sigma = gu + spectral_diameter * 2.0f64 * eps * n as libc::c_double;
+                sigma = gu + spectral_diameter * 2.0f64 * eps * n as f64;
             }
         } else if idum == 6 as libc::c_int {
             return -(2 as libc::c_int)
@@ -1110,25 +1110,25 @@ unsafe extern "C" fn _compute_eigenvalues(
 }
 unsafe extern "C" fn _dlarrf(
     mut n: libc::c_int,
-    mut diag: *mut libc::c_double,
-    mut diag_off1: *mut libc::c_double,
-    mut ld: *mut libc::c_double,
+    mut diag: *mut f64,
+    mut diag_off1: *mut f64,
+    mut ld: *mut f64,
     mut clstrt: libc::c_int,
-    mut w: *mut libc::c_double,
-    mut wgap: *mut libc::c_double,
-    mut werr: *mut libc::c_double,
-    mut clgapl: libc::c_double,
-    mut sigma: *mut libc::c_double,
-    mut dplus: *mut libc::c_double,
-    mut lplus: *mut libc::c_double,
+    mut w: *mut f64,
+    mut wgap: *mut f64,
+    mut werr: *mut f64,
+    mut clgapl: f64,
+    mut sigma: *mut f64,
+    mut dplus: *mut f64,
+    mut lplus: *mut f64,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut ktry: libc::c_int = 0;
-    let mut s: libc::c_double = 0.;
-    let mut tmp: libc::c_double = 0.;
-    let mut max1: libc::c_double = 0.;
-    let mut growthbound: libc::c_double = 0.;
-    let mut lsigma: libc::c_double = 0.;
+    let mut s: f64 = 0.;
+    let mut tmp: f64 = 0.;
+    let mut max1: f64 = 0.;
+    let mut growthbound: f64 = 0.;
+    let mut lsigma: f64 = 0.;
     lsigma = *w.offset(clstrt as isize) - *werr.offset(clstrt as isize);
     lsigma -= fabs(lsigma) * 4.0f64 * 2.2204460492503131e-16f64;
     growthbound = *diag.offset(0 as libc::c_int as isize) * 8.0f64;
@@ -1178,17 +1178,17 @@ unsafe extern "C" fn _dlarrf(
 }
 unsafe extern "C" fn _dlaneg(
     mut n: libc::c_int,
-    mut diag: *mut libc::c_double,
-    mut lld: *mut libc::c_double,
-    mut sigma: libc::c_double,
+    mut diag: *mut f64,
+    mut lld: *mut f64,
+    mut sigma: f64,
     mut twist_index: libc::c_int,
 ) -> libc::c_int {
     let mut j: libc::c_int = 0;
     let mut negcnt: libc::c_int = 0;
-    let mut p: libc::c_double = 0.;
-    let mut t: libc::c_double = 0.;
-    let mut dplus: libc::c_double = 0.;
-    let mut dminus: libc::c_double = 0.;
+    let mut p: f64 = 0.;
+    let mut t: f64 = 0.;
+    let mut dplus: f64 = 0.;
+    let mut dminus: f64 = 0.;
     negcnt = 0 as libc::c_int;
     t = -sigma;
     j = 0 as libc::c_int;
@@ -1222,26 +1222,26 @@ unsafe extern "C" fn _dlaneg(
 }
 unsafe extern "C" fn _dlarrb(
     mut n: libc::c_int,
-    mut diag: *mut libc::c_double,
-    mut lld: *mut libc::c_double,
+    mut diag: *mut f64,
+    mut lld: *mut f64,
     mut ifirst: libc::c_int,
     mut ilast: libc::c_int,
-    mut rtol1: libc::c_double,
-    mut rtol2: libc::c_double,
-    mut w: *mut libc::c_double,
-    mut wgap: *mut libc::c_double,
-    mut werr: *mut libc::c_double,
+    mut rtol1: f64,
+    mut rtol2: f64,
+    mut w: *mut f64,
+    mut wgap: *mut f64,
+    mut werr: *mut f64,
     mut twist_index: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut iter: libc::c_int = 0;
     let mut negcnt: libc::c_int = 0;
-    let mut mid: libc::c_double = 0.;
-    let mut back: libc::c_double = 0.;
-    let mut left: libc::c_double = 0.;
-    let mut right: libc::c_double = 0.;
-    let mut width: libc::c_double = 0.;
-    let mut cvrgd: libc::c_double = if rtol1 * *wgap.offset(ifirst as isize)
+    let mut mid: f64 = 0.;
+    let mut back: f64 = 0.;
+    let mut left: f64 = 0.;
+    let mut right: f64 = 0.;
+    let mut width: f64 = 0.;
+    let mut cvrgd: f64 = if rtol1 * *wgap.offset(ifirst as isize)
         > rtol2
             * (if fabs(*w.offset(ifirst as isize))
                 > fabs(*w.offset((ilast - 1 as libc::c_int) as isize))
@@ -1326,33 +1326,33 @@ unsafe extern "C" fn _dlarrb(
 }
 unsafe extern "C" fn _dlar1v(
     mut n: libc::c_int,
-    mut lambda: libc::c_double,
-    mut diag: *mut libc::c_double,
-    mut diag_off1: *mut libc::c_double,
-    mut ld: *mut libc::c_double,
-    mut lld: *mut libc::c_double,
-    mut gaptol: libc::c_double,
-    mut vec: *mut libc::c_double,
+    mut lambda: f64,
+    mut diag: *mut f64,
+    mut diag_off1: *mut f64,
+    mut ld: *mut f64,
+    mut lld: *mut f64,
+    mut gaptol: f64,
+    mut vec: *mut f64,
     mut negcnt: *mut libc::c_int,
     mut twist_index: *mut libc::c_int,
-    mut resid: *mut libc::c_double,
-    mut rqcorr: *mut libc::c_double,
-    mut work: *mut libc::c_double,
+    mut resid: *mut f64,
+    mut rqcorr: *mut f64,
+    mut work: *mut f64,
 ) {
     let mut i: libc::c_int = 0;
     let mut r1: libc::c_int = 0;
     let mut r2: libc::c_int = 0;
     let mut neg1: libc::c_int = 0;
     let mut neg2: libc::c_int = 0;
-    let mut s: libc::c_double = 0.;
-    let mut tmp: libc::c_double = 0.;
-    let mut nrminv: libc::c_double = 0.;
-    let mut mingma: libc::c_double = 0.;
-    let mut dplus: libc::c_double = 0.;
-    let mut dminus: libc::c_double = 0.;
-    let mut lplus: *mut libc::c_double = work;
-    let mut uminus: *mut libc::c_double = work.offset(n as isize);
-    let mut work_p: *mut libc::c_double = work.offset((n * 2 as libc::c_int) as isize);
+    let mut s: f64 = 0.;
+    let mut tmp: f64 = 0.;
+    let mut nrminv: f64 = 0.;
+    let mut mingma: f64 = 0.;
+    let mut dplus: f64 = 0.;
+    let mut dminus: f64 = 0.;
+    let mut lplus: *mut f64 = work;
+    let mut uminus: *mut f64 = work.offset(n as isize);
+    let mut work_p: *mut f64 = work.offset((n * 2 as libc::c_int) as isize);
     if *twist_index == -(1 as libc::c_int) {
         r1 = 0 as libc::c_int;
         r2 = n;
@@ -1413,7 +1413,7 @@ unsafe extern "C" fn _dlar1v(
         i;
     }
     *vec.offset(*twist_index as isize) = 1.0f64;
-    let mut ztz: libc::c_double = 1.0f64;
+    let mut ztz: f64 = 1.0f64;
     i = *twist_index - 1 as libc::c_int;
     while i >= 0 as libc::c_int {
         tmp = -(*lplus.offset(i as isize)
@@ -1444,13 +1444,13 @@ unsafe extern "C" fn _dlar1v(
 }
 unsafe extern "C" fn _compute_eigenvectors(
     mut n: libc::c_int,
-    mut diag: *mut libc::c_double,
-    mut diag_off1: *mut libc::c_double,
-    mut w: *mut libc::c_double,
-    mut werr: *mut libc::c_double,
-    mut wgap: *mut libc::c_double,
-    mut vec: *mut libc::c_double,
-    mut work: *mut libc::c_double,
+    mut diag: *mut f64,
+    mut diag_off1: *mut f64,
+    mut w: *mut f64,
+    mut werr: *mut f64,
+    mut wgap: *mut f64,
+    mut vec: *mut f64,
+    mut work: *mut f64,
     mut iwork: *mut libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
@@ -1469,29 +1469,29 @@ unsafe extern "C" fn _compute_eigenvectors(
     let mut newlst: libc::c_int = 0;
     let mut needbs: libc::c_int = 0;
     let mut iinfo: libc::c_int = 0;
-    let mut fudge: libc::c_double = 0.;
-    let mut eps: libc::c_double = 0.;
-    let mut rqtol: libc::c_double = 0.;
-    let mut tol: libc::c_double = 0.;
-    let mut tmp: libc::c_double = 0.;
-    let mut left: libc::c_double = 0.;
-    let mut right: libc::c_double = 0.;
-    let mut gap: libc::c_double = 0.;
-    let mut bstw: libc::c_double = 0.;
-    let mut savgap: libc::c_double = 0.;
-    let mut gaptol: libc::c_double = 0.;
-    let mut sigma: libc::c_double = 0.;
-    let mut tau: libc::c_double = 0.;
-    let mut resid: libc::c_double = 0.;
-    let mut lambda: libc::c_double = 0.;
-    let mut bstres: libc::c_double = 0.;
-    let mut rqcorr: libc::c_double = 0.;
-    let mut resid_tol: libc::c_double = 0.;
-    let mut rqcorr_tol: libc::c_double = 0.;
-    let mut buf_w: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut buf_ld: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut buf_lld: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut buf_wrk: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut fudge: f64 = 0.;
+    let mut eps: f64 = 0.;
+    let mut rqtol: f64 = 0.;
+    let mut tol: f64 = 0.;
+    let mut tmp: f64 = 0.;
+    let mut left: f64 = 0.;
+    let mut right: f64 = 0.;
+    let mut gap: f64 = 0.;
+    let mut bstw: f64 = 0.;
+    let mut savgap: f64 = 0.;
+    let mut gaptol: f64 = 0.;
+    let mut sigma: f64 = 0.;
+    let mut tau: f64 = 0.;
+    let mut resid: f64 = 0.;
+    let mut lambda: f64 = 0.;
+    let mut bstres: f64 = 0.;
+    let mut rqcorr: f64 = 0.;
+    let mut resid_tol: f64 = 0.;
+    let mut rqcorr_tol: f64 = 0.;
+    let mut buf_w: *mut f64 = 0 as *mut f64;
+    let mut buf_ld: *mut f64 = 0 as *mut f64;
+    let mut buf_lld: *mut f64 = 0 as *mut f64;
+    let mut buf_wrk: *mut f64 = 0 as *mut f64;
     let mut twist_indices: *mut libc::c_int = 0 as *mut libc::c_int;
     let mut swap: *mut libc::c_int = 0 as *mut libc::c_int;
     let mut old_cluster_range: *mut libc::c_int = 0 as *mut libc::c_int;
@@ -1520,7 +1520,7 @@ unsafe extern "C" fn _compute_eigenvectors(
     new_cluster_range = iwork.offset((n * 3 as libc::c_int) as isize);
     eps = 2.2204460492503131e-16f64;
     rqtol = 2.2204460492503131e-16f64 * 2.0f64;
-    tol = 2.2204460492503131e-16f64 * 8 as libc::c_int as libc::c_double;
+    tol = 2.2204460492503131e-16f64 * 8 as libc::c_int as f64;
     sigma = *diag_off1.offset((n - 1 as libc::c_int) as isize);
     if 1 as libc::c_int == n {
         *vec.offset(0 as libc::c_int as isize) = 1.0f64;
@@ -1659,7 +1659,7 @@ unsafe extern "C" fn _compute_eigenvectors(
                         right = lambda + *werr.offset(newfst as isize);
                         gap = *wgap.offset(newfst as isize);
                         if newfst == 0 as libc::c_int || newfst + 1 as libc::c_int == n {
-                            gaptol = 0 as libc::c_int as libc::c_double;
+                            gaptol = 0 as libc::c_int as f64;
                         } else {
                             gaptol = gap * eps;
                         }
@@ -1668,7 +1668,7 @@ unsafe extern "C" fn _compute_eigenvectors(
                         rqcorr_tol = rqtol * fabs(lambda);
                         needbs = 0 as libc::c_int;
                         bstres = 1e307f64;
-                        bstw = 0 as libc::c_int as libc::c_double;
+                        bstw = 0 as libc::c_int as f64;
                         *twist_indices.offset(newfst as isize) = -(1 as libc::c_int);
                         iter = 0 as libc::c_int;
                         while iter < 6 as libc::c_int {
@@ -1699,13 +1699,13 @@ unsafe extern "C" fn _compute_eigenvectors(
                                 break;
                             } else {
                                 if newfst < negcnt {
-                                    if rqcorr > 0 as libc::c_int as libc::c_double {
+                                    if rqcorr > 0 as libc::c_int as f64 {
                                         needbs = 1 as libc::c_int;
                                         break;
                                     } else {
                                         right = lambda;
                                     }
-                                } else if rqcorr < 0 as libc::c_int as libc::c_double {
+                                } else if rqcorr < 0 as libc::c_int as f64 {
                                     needbs = 1 as libc::c_int;
                                     break;
                                 } else {
@@ -1828,26 +1828,26 @@ unsafe extern "C" fn _compute_eigenvectors(
     return 0 as libc::c_int;
 }
 unsafe extern "C" fn _dlaev2(
-    mut eig: *mut libc::c_double,
-    mut vec: *mut libc::c_double,
-    mut diag: *mut libc::c_double,
-    mut diag_off1: *mut libc::c_double,
+    mut eig: *mut f64,
+    mut vec: *mut f64,
+    mut diag: *mut f64,
+    mut diag_off1: *mut f64,
 ) -> libc::c_int {
-    let mut a: libc::c_double = *diag.offset(0 as libc::c_int as isize);
-    let mut b: libc::c_double = *diag_off1.offset(0 as libc::c_int as isize);
-    let mut c: libc::c_double = *diag.offset(1 as libc::c_int as isize);
-    let mut df: libc::c_double = 0.;
-    let mut cs: libc::c_double = 0.;
-    let mut ct: libc::c_double = 0.;
-    let mut tb: libc::c_double = 0.;
-    let mut sm: libc::c_double = 0.;
-    let mut tn: libc::c_double = 0.;
-    let mut rt: libc::c_double = 0.;
-    let mut tmp: libc::c_double = 0.;
-    let mut rt1: libc::c_double = 0.;
-    let mut rt2: libc::c_double = 0.;
-    let mut cs1: libc::c_double = 0.;
-    let mut sn1: libc::c_double = 0.;
+    let mut a: f64 = *diag.offset(0 as libc::c_int as isize);
+    let mut b: f64 = *diag_off1.offset(0 as libc::c_int as isize);
+    let mut c: f64 = *diag.offset(1 as libc::c_int as isize);
+    let mut df: f64 = 0.;
+    let mut cs: f64 = 0.;
+    let mut ct: f64 = 0.;
+    let mut tb: f64 = 0.;
+    let mut sm: f64 = 0.;
+    let mut tn: f64 = 0.;
+    let mut rt: f64 = 0.;
+    let mut tmp: f64 = 0.;
+    let mut rt1: f64 = 0.;
+    let mut rt2: f64 = 0.;
+    let mut cs1: f64 = 0.;
+    let mut sn1: f64 = 0.;
     let mut sgn1: libc::c_int = 0;
     let mut sgn2: libc::c_int = 0;
     sm = a + c;
@@ -1902,10 +1902,10 @@ unsafe extern "C" fn _dlaev2(
 #[no_mangle]
 pub unsafe extern "C" fn _CINTdiagonalize(
     mut n: libc::c_int,
-    mut diag: *mut libc::c_double,
-    mut diag_off1: *mut libc::c_double,
-    mut eig: *mut libc::c_double,
-    mut vec: *mut libc::c_double,
+    mut diag: *mut f64,
+    mut diag_off1: *mut f64,
+    mut eig: *mut f64,
+    mut vec: *mut f64,
 ) -> libc::c_int {
     if n == 0 as libc::c_int {
         return 0 as libc::c_int
@@ -1917,13 +1917,13 @@ pub unsafe extern "C" fn _CINTdiagonalize(
         return _dlaev2(eig, vec, diag, diag_off1)
     }
     let mut iwork: [libc::c_int; 160] = [0; 160];
-    let mut work: [libc::c_double; 289] = [0.; 289];
-    let mut buf_err: *mut libc::c_double = work.as_mut_ptr().offset(n as isize);
-    let mut buf_gp: *mut libc::c_double = work
+    let mut work: [f64; 289] = [0.; 289];
+    let mut buf_err: *mut f64 = work.as_mut_ptr().offset(n as isize);
+    let mut buf_gp: *mut f64 = work
         .as_mut_ptr()
         .offset((n * 2 as libc::c_int) as isize)
         .offset(1 as libc::c_int as isize);
-    let mut buf_wrk: *mut libc::c_double = work
+    let mut buf_wrk: *mut f64 = work
         .as_mut_ptr()
         .offset((n * 3 as libc::c_int) as isize)
         .offset(1 as libc::c_int as isize);

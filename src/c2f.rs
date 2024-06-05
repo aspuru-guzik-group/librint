@@ -129,8 +129,8 @@ pub unsafe extern "C" fn cintshells_spinor_offset_(
 #[no_mangle]
 pub unsafe extern "C" fn cintgto_norm_(
     mut n: *mut libc::c_int,
-    mut a: *mut libc::c_double,
-) -> libc::c_double {
+    mut a: *mut f64,
+) -> f64 {
     return CINTgto_norm(*n, *a);
 }
 #[no_mangle]
@@ -140,7 +140,7 @@ pub unsafe extern "C" fn cintinit_2e_optimizer_(
     mut natm: *mut libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: *mut libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, *natm, bas, *nbas, env);
 }
@@ -151,7 +151,7 @@ pub unsafe extern "C" fn cintinit_optimizer_(
     mut natm: *mut libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: *mut libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     cintinit_2e_optimizer_(opt, atm, natm, bas, nbas, env);
 }

@@ -11,13 +11,13 @@ extern "C" {
     static mut stderr: *mut FILE;
     fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
     fn expl(_: f128::f128) -> f128::f128;
-    fn exp(_: libc::c_double) -> libc::c_double;
+    fn exp(_: f64) -> f64;
     fn sqrtl(_: f128::f128) -> f128::f128;
-    fn sqrt(_: libc::c_double) -> libc::c_double;
+    fn sqrt(_: f64) -> f64;
     fn erfl(_: f128::f128) -> f128::f128;
-    fn erf(_: libc::c_double) -> libc::c_double;
+    fn erf(_: f64) -> f64;
     fn erfcl(_: f128::f128) -> f128::f128;
-    fn erfc(_: libc::c_double) -> libc::c_double;
+    fn erfc(_: f64) -> f64;
 }
 pub type size_t = libc::c_ulong;
 pub type __off_t = libc::c_long;
@@ -57,7 +57,7 @@ pub struct _IO_FILE {
 }
 pub type _IO_lock_t = ();
 pub type FILE = _IO_FILE;
-static mut JACOBI_ALPHA: [libc::c_double; 48] = [
+static mut JACOBI_ALPHA: [f64; 48] = [
     0.333333333333333333333333333333333333f64,
     0.523809523809523809523809523809523810f64,
     0.506493506493506493506493506493506494f64,
@@ -107,8 +107,8 @@ static mut JACOBI_ALPHA: [libc::c_double; 48] = [
     0.500014610911428654919493878028111394f64,
     0.500013998936080857854803034969342330f64,
 ];
-static mut JACOBI_BETA: [libc::c_double; 48] = [
-    0 as libc::c_int as libc::c_double,
+static mut JACOBI_BETA: [f64; 48] = [
+    0 as libc::c_int as f64,
     0.0888888888888888888888888888888888889f64,
     0.0653061224489795918367346938775510204f64,
     0.0635727908455181182453909726636999364f64,
@@ -157,7 +157,7 @@ static mut JACOBI_BETA: [libc::c_double; 48] = [
     0.0625037330705176781129155364679885059f64,
     0.0625035750546917580575963715315712799f64,
 ];
-static mut JACOBI_RN_PART2: [libc::c_double; 88] = [
+static mut JACOBI_RN_PART2: [f64; 88] = [
     0.142857142857142857142857142857142857f64,
     0.0649350649350649350649350649350649351f64,
     0.0424242424242424242424242424242424242f64,
@@ -247,7 +247,7 @@ static mut JACOBI_RN_PART2: [libc::c_double; 88] = [
     0.00143681699877665295532730691232132154f64,
     0.00142048874443240640423739015288311063f64,
 ];
-static mut JACOBI_SN: [libc::c_double; 88] = [
+static mut JACOBI_SN: [f64; 88] = [
     0.133333333333333333333333333333333333f64,
     0.0816326530612244897959183673469387755f64,
     0.0741682559864378046196228014409832592f64,
@@ -337,7 +337,7 @@ static mut JACOBI_SN: [libc::c_double; 88] = [
     0.0628602395359548608299450549157781435f64,
     0.0628561340405736106069856843147540300f64,
 ];
-static mut JACOBI_COEF: [libc::c_double; 1176] = [
+static mut JACOBI_COEF: [f64; 1176] = [
     1.0f64,
     -0.333333333333333333333333333333333333f64,
     1.0f64,
@@ -5057,25 +5057,25 @@ static mut JACOBI_COEF_ORDER: [libc::c_int; 2080] = [
 ];
 unsafe extern "C" fn laguerre_moments(
     mut n: libc::c_int,
-    mut t: libc::c_double,
-    mut lower: libc::c_double,
-    mut alpha: *mut libc::c_double,
-    mut beta: *mut libc::c_double,
-    mut moments: *mut libc::c_double,
+    mut t: f64,
+    mut lower: f64,
+    mut alpha: *mut f64,
+    mut beta: *mut f64,
+    mut moments: *mut f64,
 ) {
     let mut i: libc::c_int = 0;
-    let mut tt: libc::c_double = sqrt(t);
-    let mut t_inv: libc::c_double = 0.5f64 / t;
-    let mut t2_inv: libc::c_double = 0.5f64 / (t * t);
-    let mut e0: libc::c_double = exp(-t) * t_inv;
-    let mut l00: libc::c_double = 0.0f64;
-    let mut l01: libc::c_double = 1.0f64;
-    let mut fac0: libc::c_double = 0.;
-    let mut fac1: libc::c_double = 0.;
-    let mut l02: libc::c_double = 0.;
+    let mut tt: f64 = sqrt(t);
+    let mut t_inv: f64 = 0.5f64 / t;
+    let mut t2_inv: f64 = 0.5f64 / (t * t);
+    let mut e0: f64 = exp(-t) * t_inv;
+    let mut l00: f64 = 0.0f64;
+    let mut l01: f64 = 1.0f64;
+    let mut fac0: f64 = 0.;
+    let mut fac1: f64 = 0.;
+    let mut l02: f64 = 0.;
     *alpha.offset(0 as libc::c_int as isize) = t_inv;
-    *beta.offset(0 as libc::c_int as isize) = 0 as libc::c_int as libc::c_double;
-    if lower == 0 as libc::c_int as libc::c_double {
+    *beta.offset(0 as libc::c_int as isize) = 0 as libc::c_int as f64;
+    if lower == 0 as libc::c_int as f64 {
         *moments
             .offset(
                 0 as libc::c_int as isize,
@@ -5087,15 +5087,15 @@ unsafe extern "C" fn laguerre_moments(
             *alpha
                 .offset(
                     i as isize,
-                ) = (i * 4 as libc::c_int + 1 as libc::c_int) as libc::c_double * t_inv;
+                ) = (i * 4 as libc::c_int + 1 as libc::c_int) as f64 * t_inv;
             *beta
                 .offset(
                     i as isize,
-                ) = (i * (i * 2 as libc::c_int - 1 as libc::c_int)) as libc::c_double
+                ) = (i * (i * 2 as libc::c_int - 1 as libc::c_int)) as f64
                 * t2_inv;
-            fac0 = (i * 4 as libc::c_int - 1 as libc::c_int) as libc::c_double * t_inv;
+            fac0 = (i * 4 as libc::c_int - 1 as libc::c_int) as f64 * t_inv;
             fac1 = ((i - 1 as libc::c_int) * (i * 2 as libc::c_int - 1 as libc::c_int))
-                as libc::c_double * t2_inv;
+                as f64 * t2_inv;
             l02 = (1.0f64 - fac0) * l01 - fac1 * l00;
             l00 = l01;
             l01 = l02;
@@ -5104,11 +5104,11 @@ unsafe extern "C" fn laguerre_moments(
             i;
         }
     } else {
-        let mut lower2: libc::c_double = lower * lower;
-        let mut l10: libc::c_double = 0.0f64;
-        let mut l11: libc::c_double = 1.0f64;
-        let mut l12: libc::c_double = 0.;
-        let mut et: libc::c_double = exp(-t * lower2) * lower * t_inv;
+        let mut lower2: f64 = lower * lower;
+        let mut l10: f64 = 0.0f64;
+        let mut l11: f64 = 1.0f64;
+        let mut l12: f64 = 0.;
+        let mut et: f64 = exp(-t * lower2) * lower * t_inv;
         *moments
             .offset(
                 0 as libc::c_int as isize,
@@ -5120,15 +5120,15 @@ unsafe extern "C" fn laguerre_moments(
             *alpha
                 .offset(
                     i as isize,
-                ) = (i * 4 as libc::c_int + 1 as libc::c_int) as libc::c_double * t_inv;
+                ) = (i * 4 as libc::c_int + 1 as libc::c_int) as f64 * t_inv;
             *beta
                 .offset(
                     i as isize,
-                ) = (i * (i * 2 as libc::c_int - 1 as libc::c_int)) as libc::c_double
+                ) = (i * (i * 2 as libc::c_int - 1 as libc::c_int)) as f64
                 * t2_inv;
-            fac0 = (i * 4 as libc::c_int - 1 as libc::c_int) as libc::c_double * t_inv;
+            fac0 = (i * 4 as libc::c_int - 1 as libc::c_int) as f64 * t_inv;
             fac1 = ((i - 1 as libc::c_int) * (i * 2 as libc::c_int - 1 as libc::c_int))
-                as libc::c_double * t2_inv;
+                as f64 * t2_inv;
             l12 = (lower2 - fac0) * l11 - fac1 * l10;
             l10 = l11;
             l11 = l12;
@@ -5143,16 +5143,16 @@ unsafe extern "C" fn laguerre_moments(
 }
 unsafe extern "C" fn naive_jacobi_moments(
     mut n: libc::c_int,
-    mut t: libc::c_double,
-    mut lower: libc::c_double,
-    mut mus: *mut libc::c_double,
+    mut t: f64,
+    mut lower: f64,
+    mut mus: *mut f64,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut k: libc::c_int = 0;
-    let mut s: libc::c_double = 0.;
-    let mut fmt: [libc::c_double; 64] = [0.; 64];
-    let mut coef: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut s: f64 = 0.;
+    let mut fmt: [f64; 64] = [0.; 64];
+    let mut coef: *mut f64 = 0 as *mut f64;
     let mut order: *mut libc::c_int = 0 as *mut libc::c_int;
     fmt_erfc_like(fmt.as_mut_ptr(), t, lower, n - 1 as libc::c_int);
     i = 0 as libc::c_int;
@@ -5163,7 +5163,7 @@ unsafe extern "C" fn naive_jacobi_moments(
         order = JACOBI_COEF_ORDER
             .as_mut_ptr()
             .offset((i * (i + 1 as libc::c_int) / 2 as libc::c_int) as isize);
-        s = 0 as libc::c_int as libc::c_double;
+        s = 0 as libc::c_int as f64;
         j = 0 as libc::c_int;
         while j <= i {
             k = *order.offset(j as isize);
@@ -5178,21 +5178,21 @@ unsafe extern "C" fn naive_jacobi_moments(
 }
 unsafe extern "C" fn flocke_jacobi_moments(
     mut n: libc::c_int,
-    mut t: libc::c_double,
-    mut mus: *mut libc::c_double,
+    mut t: f64,
+    mut mus: *mut f64,
 ) {
     if t < 3e-7f64 {
         return naive_jacobi_moments(n, t, 0.0f64, mus);
     }
-    let mut t_inv: libc::c_double = 0.5f64 / t;
-    let mut mu1: libc::c_double = 1.0f64;
-    let mut mu2: libc::c_double = 0.0f64;
-    let mut mu0: libc::c_double = 0.;
-    let mut rn: libc::c_double = 0.;
+    let mut t_inv: f64 = 0.5f64 / t;
+    let mut mu1: f64 = 1.0f64;
+    let mut mu2: f64 = 0.0f64;
+    let mut mu0: f64 = 0.;
+    let mut rn: f64 = 0.;
     let mut i: libc::c_int = 0;
     i = n - 1 as libc::c_int + 20 as libc::c_int;
     while i >= n {
-        rn = (2 as libc::c_int * i + 3 as libc::c_int) as libc::c_double * t_inv
+        rn = (2 as libc::c_int * i + 3 as libc::c_int) as f64 * t_inv
             + JACOBI_RN_PART2[i as usize];
         mu0 = (mu2 - rn * mu1) / JACOBI_SN[i as usize];
         mu2 = mu1;
@@ -5201,7 +5201,7 @@ unsafe extern "C" fn flocke_jacobi_moments(
         i;
     }
     while i >= 0 as libc::c_int {
-        rn = (2 as libc::c_int * i + 3 as libc::c_int) as libc::c_double * t_inv
+        rn = (2 as libc::c_int * i + 3 as libc::c_int) as f64 * t_inv
             + JACOBI_RN_PART2[i as usize];
         mu0 = (mu2 - rn * mu1) / JACOBI_SN[i as usize];
         *mus.offset(i as isize) = mu0;
@@ -5210,8 +5210,8 @@ unsafe extern "C" fn flocke_jacobi_moments(
         i -= 1;
         i;
     }
-    let mut tt: libc::c_double = sqrt(t);
-    let mut norm: libc::c_double = 0.8862269254527580136490837416705725913987747280611935641069038949264f64
+    let mut tt: f64 = sqrt(t);
+    let mut norm: f64 = 0.8862269254527580136490837416705725913987747280611935641069038949264f64
         * erf(tt) / tt / mu0;
     i = 0 as libc::c_int;
     while i < n {
@@ -5222,30 +5222,30 @@ unsafe extern "C" fn flocke_jacobi_moments(
 }
 unsafe extern "C" fn wheeler_recursion(
     mut n: libc::c_int,
-    mut alpha: *mut libc::c_double,
-    mut beta: *mut libc::c_double,
-    mut moments: *mut libc::c_double,
-    mut a: *mut libc::c_double,
-    mut b: *mut libc::c_double,
+    mut alpha: *mut f64,
+    mut beta: *mut f64,
+    mut moments: *mut f64,
+    mut a: *mut f64,
+    mut b: *mut f64,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut nc: libc::c_int = 0;
-    let mut a0: libc::c_double = *alpha.offset(0 as libc::c_int as isize)
+    let mut a0: f64 = *alpha.offset(0 as libc::c_int as isize)
         + *moments.offset(1 as libc::c_int as isize)
             / *moments.offset(0 as libc::c_int as isize);
-    let mut b0: libc::c_double = 0 as libc::c_int as libc::c_double;
-    let mut a1: libc::c_double = 0.;
-    let mut b1: libc::c_double = 0.;
+    let mut b0: f64 = 0 as libc::c_int as f64;
+    let mut a1: f64 = 0.;
+    let mut b1: f64 = 0.;
     *a.offset(0 as libc::c_int as isize) = a0;
     *b.offset(0 as libc::c_int as isize) = b0;
-    let mut buf: [libc::c_double; 128] = [0.; 128];
-    let mut s0: *mut libc::c_double = moments;
-    let mut sm: *mut libc::c_double = buf.as_mut_ptr();
-    let mut sk: *mut libc::c_double = buf
+    let mut buf: [f64; 128] = [0.; 128];
+    let mut s0: *mut f64 = moments;
+    let mut sm: *mut f64 = buf.as_mut_ptr();
+    let mut sk: *mut f64 = buf
         .as_mut_ptr()
         .offset((n * 2 as libc::c_int) as isize);
-    let mut swap: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut swap: *mut f64 = 0 as *mut f64;
     i = 2 as libc::c_int;
     while i < n * 2 as libc::c_int {
         *sm.offset(i as isize) = 0.0f64;
@@ -5289,16 +5289,16 @@ unsafe extern "C" fn wheeler_recursion(
 }
 unsafe extern "C" fn rys_wheeler_partial(
     mut n: libc::c_int,
-    mut alpha: *mut libc::c_double,
-    mut beta: *mut libc::c_double,
-    mut moments: *mut libc::c_double,
-    mut roots: *mut libc::c_double,
-    mut weights: *mut libc::c_double,
+    mut alpha: *mut f64,
+    mut beta: *mut f64,
+    mut moments: *mut f64,
+    mut roots: *mut f64,
+    mut weights: *mut f64,
 ) -> libc::c_int {
-    let mut a: [libc::c_double; 1088] = [0.; 1088];
-    let mut b: *mut libc::c_double = a.as_mut_ptr().offset(n as isize);
-    let mut c0: *mut libc::c_double = b.offset(n as isize);
-    let mut mu0: libc::c_double = *moments.offset(0 as libc::c_int as isize);
+    let mut a: [f64; 1088] = [0.; 1088];
+    let mut b: *mut f64 = a.as_mut_ptr().offset(n as isize);
+    let mut c0: *mut f64 = b.offset(n as isize);
+    let mut mu0: f64 = *moments.offset(0 as libc::c_int as isize);
     let mut first_seen: libc::c_int = 1 as libc::c_int;
     let mut i: libc::c_int = 0;
     wheeler_recursion(n, alpha, beta, moments, a.as_mut_ptr(), b);
@@ -5316,8 +5316,8 @@ unsafe extern "C" fn rys_wheeler_partial(
                 );
                 i = 0 as libc::c_int;
                 while i < n {
-                    *roots.offset(i as isize) = 0 as libc::c_int as libc::c_double;
-                    *weights.offset(i as isize) = 0 as libc::c_int as libc::c_double;
+                    *roots.offset(i as isize) = 0 as libc::c_int as f64;
+                    *weights.offset(i as isize) = 0 as libc::c_int as f64;
                     i += 1;
                     i;
                 }
@@ -5342,7 +5342,7 @@ unsafe extern "C" fn rys_wheeler_partial(
             .offset(
                 i as isize,
             ) = *roots.offset(i as isize)
-            / (1 as libc::c_int as libc::c_double - *roots.offset(i as isize));
+            / (1 as libc::c_int as f64 - *roots.offset(i as isize));
         *weights
             .offset(
                 i as isize,
@@ -5354,8 +5354,8 @@ unsafe extern "C" fn rys_wheeler_partial(
 }
 unsafe extern "C" fn llaguerre_moments(
     mut n: libc::c_int,
-    mut t: libc::c_double,
-    mut lower: libc::c_double,
+    mut t: f64,
+    mut lower: f64,
     mut alpha: *mut f128::f128,
     mut beta: *mut f128::f128,
     mut moments: *mut f128::f128,
@@ -5372,7 +5372,7 @@ unsafe extern "C" fn llaguerre_moments(
     let mut l02: f128::f128 = f128::f128::ZERO;
     *alpha.offset(0 as libc::c_int as isize) = t_inv;
     *beta.offset(0 as libc::c_int as isize) = f128::f128::new(0 as libc::c_int);
-    if lower == 0 as libc::c_int as libc::c_double {
+    if lower == 0 as libc::c_int as f64 {
         *moments
             .offset(
                 0 as libc::c_int as isize,
@@ -5445,8 +5445,8 @@ unsafe extern "C" fn llaguerre_moments(
 }
 unsafe extern "C" fn lnaive_jacobi_moments(
     mut n: libc::c_int,
-    mut t: libc::c_double,
-    mut lower: libc::c_double,
+    mut t: f64,
+    mut lower: f64,
     mut mus: *mut f128::f128,
 ) {
     let mut i: libc::c_int = 0;
@@ -5485,7 +5485,7 @@ unsafe extern "C" fn lnaive_jacobi_moments(
 }
 unsafe extern "C" fn lflocke_jacobi_moments(
     mut n: libc::c_int,
-    mut t: libc::c_double,
+    mut t: f64,
     mut mus: *mut f128::f128,
 ) {
     if t < 3e-7f64 {
@@ -5600,15 +5600,15 @@ unsafe extern "C" fn lrys_wheeler_partial(
     mut alpha: *mut f128::f128,
     mut beta: *mut f128::f128,
     mut moments: *mut f128::f128,
-    mut roots: *mut libc::c_double,
-    mut weights: *mut libc::c_double,
+    mut roots: *mut f64,
+    mut weights: *mut f64,
 ) -> libc::c_int {
     let mut a: [f128::f128; 64] = [f128::f128::ZERO; 64];
     let mut b: *mut f128::f128 = a.as_mut_ptr().offset(n as isize);
-    let mut da: [libc::c_double; 1088] = [0.; 1088];
-    let mut db: *mut libc::c_double = da.as_mut_ptr().offset(n as isize);
-    let mut c0: *mut libc::c_double = db.offset(n as isize);
-    let mut mu0: libc::c_double = (*moments.offset(0 as libc::c_int as isize))
+    let mut da: [f64; 1088] = [0.; 1088];
+    let mut db: *mut f64 = da.as_mut_ptr().offset(n as isize);
+    let mut c0: *mut f64 = db.offset(n as isize);
+    let mut mu0: f64 = (*moments.offset(0 as libc::c_int as isize))
         .to_f64()
         .unwrap();
     let mut first_seen: libc::c_int = 1 as libc::c_int;
@@ -5629,8 +5629,8 @@ unsafe extern "C" fn lrys_wheeler_partial(
                 );
                 i = 0 as libc::c_int;
                 while i < n {
-                    *roots.offset(i as isize) = 0 as libc::c_int as libc::c_double;
-                    *weights.offset(i as isize) = 0 as libc::c_int as libc::c_double;
+                    *roots.offset(i as isize) = 0 as libc::c_int as f64;
+                    *weights.offset(i as isize) = 0 as libc::c_int as f64;
                     i += 1;
                     i;
                 }
@@ -5656,7 +5656,7 @@ unsafe extern "C" fn lrys_wheeler_partial(
             .offset(
                 i as isize,
             ) = *roots.offset(i as isize)
-            / (1 as libc::c_int as libc::c_double - *roots.offset(i as isize));
+            / (1 as libc::c_int as f64 - *roots.offset(i as isize));
         *weights
             .offset(
                 i as isize,
@@ -5669,31 +5669,31 @@ unsafe extern "C" fn lrys_wheeler_partial(
 #[no_mangle]
 pub unsafe extern "C" fn CINTrys_laguerre(
     mut n: libc::c_int,
-    mut x: libc::c_double,
-    mut lower: libc::c_double,
-    mut roots: *mut libc::c_double,
-    mut weights: *mut libc::c_double,
+    mut x: f64,
+    mut lower: f64,
+    mut roots: *mut f64,
+    mut weights: *mut f64,
 ) -> libc::c_int {
-    let mut moments: [libc::c_double; 192] = [0.; 192];
-    let mut alpha: *mut libc::c_double = moments
+    let mut moments: [f64; 192] = [0.; 192];
+    let mut alpha: *mut f64 = moments
         .as_mut_ptr()
         .offset((n * 2 as libc::c_int) as isize);
-    let mut beta: *mut libc::c_double = alpha.offset((n * 2 as libc::c_int) as isize);
+    let mut beta: *mut f64 = alpha.offset((n * 2 as libc::c_int) as isize);
     laguerre_moments(n * 2 as libc::c_int, x, lower, alpha, beta, moments.as_mut_ptr());
     return rys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights);
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTrys_jacobi(
     mut n: libc::c_int,
-    mut x: libc::c_double,
-    mut lower: libc::c_double,
-    mut roots: *mut libc::c_double,
-    mut weights: *mut libc::c_double,
+    mut x: f64,
+    mut lower: f64,
+    mut roots: *mut f64,
+    mut weights: *mut f64,
 ) -> libc::c_int {
-    let mut moments: [libc::c_double; 64] = [0.; 64];
-    let mut alpha: *mut libc::c_double = JACOBI_ALPHA.as_mut_ptr();
-    let mut beta: *mut libc::c_double = JACOBI_BETA.as_mut_ptr();
-    if lower == 0 as libc::c_int as libc::c_double {
+    let mut moments: [f64; 64] = [0.; 64];
+    let mut alpha: *mut f64 = JACOBI_ALPHA.as_mut_ptr();
+    let mut beta: *mut f64 = JACOBI_BETA.as_mut_ptr();
+    if lower == 0 as libc::c_int as f64 {
         flocke_jacobi_moments(n * 2 as libc::c_int, x, moments.as_mut_ptr());
     } else {
         naive_jacobi_moments(n * 2 as libc::c_int, x, lower, moments.as_mut_ptr());
@@ -5703,10 +5703,10 @@ pub unsafe extern "C" fn CINTrys_jacobi(
 #[no_mangle]
 pub unsafe extern "C" fn CINTlrys_laguerre(
     mut n: libc::c_int,
-    mut x: libc::c_double,
-    mut lower: libc::c_double,
-    mut roots: *mut libc::c_double,
-    mut weights: *mut libc::c_double,
+    mut x: f64,
+    mut lower: f64,
+    mut roots: *mut f64,
+    mut weights: *mut f64,
 ) -> libc::c_int {
     let mut moments: [f128::f128; 192] = [f128::f128::ZERO; 192];
     let mut alpha: *mut f128::f128 = moments
@@ -5719,15 +5719,15 @@ pub unsafe extern "C" fn CINTlrys_laguerre(
 #[no_mangle]
 pub unsafe extern "C" fn CINTlrys_jacobi(
     mut n: libc::c_int,
-    mut x: libc::c_double,
-    mut lower: libc::c_double,
-    mut roots: *mut libc::c_double,
-    mut weights: *mut libc::c_double,
+    mut x: f64,
+    mut lower: f64,
+    mut roots: *mut f64,
+    mut weights: *mut f64,
 ) -> libc::c_int {
     let mut moments: [f128::f128; 64] = [f128::f128::ZERO; 64];
     let mut alpha: *mut f128::f128 = lJACOBI_ALPHA.as_mut_ptr();
     let mut beta: *mut f128::f128 = lJACOBI_BETA.as_mut_ptr();
-    if lower == 0 as libc::c_int as libc::c_double {
+    if lower == 0 as libc::c_int as f64 {
         lflocke_jacobi_moments(n * 2 as libc::c_int, x, moments.as_mut_ptr());
     } else {
         lnaive_jacobi_moments(n * 2 as libc::c_int, x, lower, moments.as_mut_ptr());

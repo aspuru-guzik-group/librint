@@ -18,7 +18,7 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
     mut natm: libc::c_int,
     mut bas: *mut libc::c_int,
     mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     (*envs).natm = natm;
     (*envs).nbas = nbas;
@@ -76,17 +76,17 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
         );
     (*envs)
         .common_factor = 3.14159265358979323846f64 * 3.14159265358979323846f64
-        * 3.14159265358979323846f64 * 2 as libc::c_int as libc::c_double
+        * 3.14159265358979323846f64 * 2 as libc::c_int as f64
         / 1.7724538509055160272981674833411451f64 * CINTcommon_fac_sp((*envs).i_l)
         * CINTcommon_fac_sp((*envs).k_l);
-    if *env.offset(0 as libc::c_int as isize) == 0 as libc::c_int as libc::c_double {
-        (*envs).expcutoff = 60 as libc::c_int as libc::c_double;
+    if *env.offset(0 as libc::c_int as isize) == 0 as libc::c_int as f64 {
+        (*envs).expcutoff = 60 as libc::c_int as f64;
     } else {
         (*envs)
-            .expcutoff = if 40 as libc::c_int as libc::c_double
+            .expcutoff = if 40 as libc::c_int as f64
             > *env.offset(0 as libc::c_int as isize)
         {
-            40 as libc::c_int as libc::c_double
+            40 as libc::c_int as f64
         } else {
             *env.offset(0 as libc::c_int as isize)
         };
@@ -102,8 +102,8 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
     let mut rys_order: libc::c_int = ((*envs).li_ceil + (*envs).lk_ceil)
         / 2 as libc::c_int + 1 as libc::c_int;
     let mut nrys_roots: libc::c_int = rys_order;
-    let mut omega: libc::c_double = *env.offset(8 as libc::c_int as isize);
-    if omega < 0 as libc::c_int as libc::c_double && rys_order <= 3 as libc::c_int {
+    let mut omega: f64 = *env.offset(8 as libc::c_int as isize);
+    if omega < 0 as libc::c_int as f64 && rys_order <= 3 as libc::c_int {
         nrys_roots *= 2 as libc::c_int;
     }
     (*envs).rys_order = rys_order;
@@ -114,8 +114,8 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
     (*envs).g_stride_k = nrys_roots * dli;
     (*envs).g_stride_l = (*envs).g_stride_k;
     (*envs).g_size = nrys_roots * dli * dlk;
-    (*envs).aj[0 as libc::c_int as usize] = 0 as libc::c_int as libc::c_double;
-    (*envs).al[0 as libc::c_int as usize] = 0 as libc::c_int as libc::c_double;
+    (*envs).aj[0 as libc::c_int as usize] = 0 as libc::c_int as f64;
+    (*envs).al[0 as libc::c_int as usize] = 0 as libc::c_int as f64;
     (*envs)
         .rij[0 as libc::c_int
         as usize] = *((*envs).ri).offset(0 as libc::c_int as isize);
@@ -161,7 +161,7 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
             .f_g0_2d4d = ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
+                    *mut f64,
                     *mut Rys2eT,
                     *mut CINTEnvVars,
                 ) -> (),
@@ -171,7 +171,7 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
             Some(
                 CINTg0_2e_2d4d_unrolled
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
+                        *mut f64,
                         *mut Rys2eT,
                         *mut CINTEnvVars,
                     ) -> (),
@@ -182,7 +182,7 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
                 .f_g0_2d4d = ::core::mem::transmute::<
                 Option::<
                     unsafe extern "C" fn(
-                        *mut libc::c_double,
+                        *mut f64,
                         *mut Rys2eT,
                         *mut CINTEnvVars,
                     ) -> (),
@@ -192,7 +192,7 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
                 Some(
                     CINTsrg0_2e_2d4d_unrolled
                         as unsafe extern "C" fn(
-                            *mut libc::c_double,
+                            *mut f64,
                             *mut Rys2eT,
                             *mut CINTEnvVars,
                         ) -> (),
@@ -204,7 +204,7 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
             .f_g0_2d4d = ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
+                    *mut f64,
                     *mut Rys2eT,
                     *mut CINTEnvVars,
                 ) -> (),
@@ -214,7 +214,7 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
             Some(
                 CINTg0_2e_2d
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
+                        *mut f64,
                         *mut Rys2eT,
                         *mut CINTEnvVars,
                     ) -> (),
@@ -225,10 +225,10 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
         .f_g0_2e = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
-                *mut libc::c_double,
-                libc::c_double,
+                *mut f64,
+                *mut f64,
+                *mut f64,
+                f64,
                 *mut CINTEnvVars,
             ) -> libc::c_int,
         >,
@@ -237,10 +237,10 @@ pub unsafe extern "C" fn CINTinit_int2c2e_EnvVars(
         Some(
             CINTg0_2e
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
-                    *mut libc::c_double,
-                    libc::c_double,
+                    *mut f64,
+                    *mut f64,
+                    *mut f64,
+                    f64,
                     *mut CINTEnvVars,
                 ) -> libc::c_int,
         ),
