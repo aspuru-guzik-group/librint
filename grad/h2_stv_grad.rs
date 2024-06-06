@@ -6,6 +6,12 @@ use librint::cint1e::cint1e_ovlp_cart;
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
+#[autodiff(df, Forward, Dual, Dual)]
+fn f(mut out: &mut [f64], shls: &mut [i32], atm: &mut [i32],
+    natm: i32, bas: &mut [i32], nbas: i32, mut env: &mut [f64]) -> i32 {
+    return cint1e_ovlp_cart(&mut out, shls, atm, natm, bas, nbas, env);
+}
+
 fn main() -> io::Result<()> {
     const natm: usize = 2;
     const nbas: usize = 2;
@@ -14,12 +20,14 @@ fn main() -> io::Result<()> {
     let mut bas_arr: [i32; nbas * BAS_SLOTS] = [0, 0, 3, 1, 0, 28, 31, 0, 1, 0, 3, 1, 0, 28, 31, 0];
     let mut env_arr: [f64; 34] = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
         -1.5117809, 0., 0., 0., 1.5117809, 0., 3.42525091, 0.62391373, 0.1688554, 0.98170675, 0.94946401, 0.29590645];
+    let mut denv_arr: [f64; 34] = [0.0; 34];
 
     let mut shls_arr: [i32; 4] = [0, 0, 0, 0];
 
     let mut buf;
+    let mut dbuf;
 
-	println!("buf");
+	println!("denv");
     for i in 0..nbas {
         for j in 0..nbas {
             shls_arr[0] = i as i32;
@@ -29,11 +37,14 @@ fn main() -> io::Result<()> {
             let dj = CINTcgto_cart(j, &bas_arr);
 
             buf = vec![0.0; (di * dj) as usize];
+            dbuf = vec![0.0; (di * dj) as usize];
+            dbuf[0] = 1.0;
 
-            cint1e_ovlp_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
+            // cint1e_ovlp_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
+            df(&mut buf, &mut dbuf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr, &mut denv_arr);
 
-            for i in 0..((di*dj) as usize) {
-                print!("{} ", buf[i]);
+            for i in 28..36 {
+                print!("{} ", denv_arr[i]);
             }
         }
         println!();
