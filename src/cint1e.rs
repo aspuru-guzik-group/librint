@@ -333,14 +333,14 @@ pub unsafe extern "C" fn CINT1e_drv(
         * *x_ctr.offset(1 as i32 as isize);
     let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
     let mut stack: *mut f64 = 0 as *mut f64;
-    if cache.is_null() {
-        let mut cache_size: size_t = int1e_cache_size(envs) as size_t;
-        stack = malloc(
-            (::core::mem::size_of::<f64>() as libc::c_ulong)
-                .wrapping_mul(cache_size),
-        ) as *mut f64;
-        cache = stack;
-    }
+    // if cache.is_null() {
+    let mut cache_size: size_t = int1e_cache_size(envs) as size_t;
+    stack = malloc(
+        (::core::mem::size_of::<f64>() as libc::c_ulong)
+            .wrapping_mul(cache_size),
+    ) as *mut f64;
+    cache = stack;
+    // }
     let mut gctr: *mut f64 = 0 as *mut f64;
     gctr = ((cache as uintptr_t).wrapping_add(7 as i32 as libc::c_ulong)
         & (8 as i32 as uintptr_t).wrapping_neg()) as *mut libc::c_void
@@ -348,9 +348,9 @@ pub unsafe extern "C" fn CINT1e_drv(
     cache = gctr.offset((nc * n_comp) as isize);
     let mut has_value: i32 = CINT1e_loop(gctr, envs, cache, int1e_type);
     let mut counts: [i32; 4] = [0; 4];
-    if dims.is_null() {
-        dims = counts.as_mut_ptr();
-    }
+    // if dims.is_null() {
+    dims = counts.as_mut_ptr();
+    // }
     if f_c2s
         == ::core::mem::transmute::<
             Option::<
@@ -941,18 +941,19 @@ pub fn cint1e_ovlp_cart(
 ) -> i32 {
     let mut dims = [0;0];
     let mut cache = [0.0;0];
-    unsafe { 
+    unsafe {
         return int1e_ovlp_cart(
-        out,
-        &mut dims,
-        shls,
-        atm,
-        natm,
-        bas,
-        nbas,
-        env,
-        &mut cache,
-    );}
+            out,
+            &mut dims,
+            shls,
+            atm,
+            natm,
+            bas,
+            nbas,
+            env,
+            &mut cache,
+        );
+    }
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint1e_ovlp_cart_optimizer(

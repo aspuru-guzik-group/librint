@@ -38,16 +38,13 @@ fn main() -> io::Result<()> {
 
             buf = vec![0.0; (di * dj) as usize];
 
-            for i in 0..((di*dj) as usize) {
-                println!("{} ", buf[i]);
-            }
-
             cint1e_ovlp_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
 
             for i in 0..((di*dj) as usize) {
-                println!("{} ", buf[i]);
+                print!("{} ", buf[i]);
             }
         }
+        println!();
     }
     Ok(())
 }
