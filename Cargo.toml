@@ -14,3 +14,15 @@ opt-level = 0
 debug-assertions = true
 inherits = "release"
 lto = true
+
+# [profile.debug]
+# lto = "fat"
+
+[profile.test]
+lto = "fat"
+
+[profile.dev]
+lto = "fat"
+
+[profile.release]
+lto = "fat"

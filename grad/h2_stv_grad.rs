@@ -6,7 +6,7 @@ use librint::cint1e::cint1e_ovlp_cart;
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
-#[autodiff(df, Forward, Dual, Dual)]
+#[autodiff(df, Reverse, Duplicate, Constant, Constant, Constant, Constant, Constant, Constant, Duplicate)]
 fn f(mut out: &mut [f64], shls: &mut [i32], atm: &mut [i32],
     natm: i32, bas: &mut [i32], nbas: i32, mut env: &mut [f64]) -> i32 {
     return cint1e_ovlp_cart(&mut out, shls, atm, natm, bas, nbas, env);

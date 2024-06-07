@@ -235,6 +235,4 @@ fn main() {
 
     let Etot: f64 = RHF(natm, nbas, nelec, &mut atm, &mut bas, &mut env, imax, conv);
     println!("Etot: {}", Etot);
-
-    // Ok(());
 }
