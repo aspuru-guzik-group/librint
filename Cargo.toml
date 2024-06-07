@@ -8,21 +8,35 @@ edition = "2021"
 [dependencies]
 libc = "0.2.155"
 
-[profile.release-lto]
+[profile.dev]
 debug = true
 opt-level = 0
 debug-assertions = true
-inherits = "release"
-lto = true
-
-# [profile.debug]
-# lto = "fat"
-
-[profile.test]
-lto = "fat"
-
-[profile.dev]
 lto = "fat"
 
 [profile.release]
 lto = "fat"
+
+[[bin]]
+name = "h2_stv"
+path = "grad/h2_stv.rs"
+
+[[bin]]
+name = "h2_stv_grad"
+path = "grad/h2_stv_grad.rs"
+
+[[bin]]
+name = "scf"
+path = "grad/scf.rs"
+
+[[bin]]
+name = "reverse"
+path = "ad/reverse.rs"
+
+[[bin]]
+name = "forward"
+path = "ad/forward.rs"
+
+[[bin]]
+name = "backward"
+path = "ad/backward.rs"
