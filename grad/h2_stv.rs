@@ -1,7 +1,10 @@
+extern crate librint;
+
 use std::io;
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
+use librint::cint1e::cint1e_nuc_cart;
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -29,8 +32,14 @@ fn main() -> io::Result<()> {
             let dj = CINTcgto_cart(j, &bas_arr);
 
             buf = vec![0.0; (di * dj) as usize];
-
             cint1e_ovlp_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
+
+            for i in 0..((di*dj) as usize) {
+                print!("{} ", buf[i]);
+            }
+
+            buf = vec![0.0; (di * dj) as usize];
+            cint1e_nuc_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
 
             for i in 0..((di*dj) as usize) {
                 print!("{} ", buf[i]);

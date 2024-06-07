@@ -1,3 +1,5 @@
+#![feature(autodiff)]
+
 use std::io;
 
 use librint::cint_bas::CINTcgto_cart;
@@ -6,10 +8,10 @@ use librint::cint1e::cint1e_ovlp_cart;
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
-#[autodiff(df, Reverse, Duplicate, Constant, Constant, Constant, Constant, Constant, Constant, Duplicate)]
+#[autodiff(df, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
 fn f(mut out: &mut [f64], shls: &mut [i32], atm: &mut [i32],
-    natm: i32, bas: &mut [i32], nbas: i32, mut env: &mut [f64]) -> i32 {
-    return cint1e_ovlp_cart(&mut out, shls, atm, natm, bas, nbas, env);
+    natm: i32, bas: &mut [i32], nbas: i32, env: &mut [f64]) {
+    cint1e_ovlp_cart(&mut out, shls, atm, natm, bas, nbas, env);
 }
 
 fn main() -> io::Result<()> {
