@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 libc = "0.2.155"
+faer = "0.19.0"
 
 [profile.dev]
 debug = true
@@ -16,6 +17,10 @@ lto = "fat"
 
 [profile.release]
 lto = "fat"
+
+[[bin]]
+name = "eigen"
+path = "faer/eigen.rs"
 
 [[bin]]
 name = "h2_stv"
@@ -43,4 +48,4 @@ path = "ad/forward.rs"
 
 [[bin]]
 name = "backward"
-path = "ad/backward.rs"
+path = "ad/backward.rs
