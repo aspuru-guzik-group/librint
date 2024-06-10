@@ -26,6 +26,10 @@ name = "h2_stv_grad"
 path = "grad/h2_stv_grad.rs"
 
 [[bin]]
+name = "h2_rep"
+path = "grad/h2_rep.rs"
+
+[[bin]]
 name = "scf"
 path = "grad/scf.rs"
 
