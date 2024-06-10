@@ -7,53 +7,6 @@ use crate::rys_roots::CINTsr_rys_roots;
 
 use crate::cint::CINTEnvVars;
 
-extern "C" {
-    pub type _IO_wide_data;
-    pub type _IO_codecvt;
-    pub type _IO_marker;
-    static mut stderr: *mut FILE;
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
-    fn sqrt(_: f64) -> f64;
-}
-pub type size_t = libc::c_ulong;
-pub type __off_t = libc::c_long;
-pub type __off64_t = libc::c_long;
-
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct _IO_FILE {
-    pub _flags: i32,
-    pub _IO_read_ptr: *mut libc::c_char,
-    pub _IO_read_end: *mut libc::c_char,
-    pub _IO_read_base: *mut libc::c_char,
-    pub _IO_write_base: *mut libc::c_char,
-    pub _IO_write_ptr: *mut libc::c_char,
-    pub _IO_write_end: *mut libc::c_char,
-    pub _IO_buf_base: *mut libc::c_char,
-    pub _IO_buf_end: *mut libc::c_char,
-    pub _IO_save_base: *mut libc::c_char,
-    pub _IO_backup_base: *mut libc::c_char,
-    pub _IO_save_end: *mut libc::c_char,
-    pub _markers: *mut _IO_marker,
-    pub _chain: *mut _IO_FILE,
-    pub _fileno: i32,
-    pub _flags2: i32,
-    pub _old_offset: __off_t,
-    pub _cur_column: libc::c_ushort,
-    pub _vtable_offset: libc::c_schar,
-    pub _shortbuf: [libc::c_char; 1],
-    pub _lock: *mut libc::c_void,
-    pub _offset: __off64_t,
-    pub _codecvt: *mut _IO_codecvt,
-    pub _wide_data: *mut _IO_wide_data,
-    pub _freeres_list: *mut _IO_FILE,
-    pub _freeres_buf: *mut libc::c_void,
-    pub __pad5: size_t,
-    pub _mode: i32,
-    pub _unused2: [libc::c_char; 20],
-}
-pub type _IO_lock_t = ();
-pub type FILE = _IO_FILE;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -578,18 +531,14 @@ pub unsafe extern "C" fn CINTg2e_index_xyz(
                                 ) = ofkz + di * i_nz[i as usize];
                             n += 3 as i32;
                             i += 1;
-                            i;
                         }
                     }
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -625,7 +574,6 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
         *gx.offset(i as isize) = 1 as i32 as f64;
         *gy.offset(i as isize) = 1 as i32 as f64;
         i += 1;
-        i;
     }
     let mut s0x: f64 = 0.;
     let mut s1x: f64 = 0.;
@@ -687,7 +635,6 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
                 s1y = s2y;
                 s1z = s2z;
                 n += 1;
-                n;
             }
         }
         if mmax > 0 as i32 {
@@ -715,7 +662,6 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
                 s1y = s2y;
                 s1z = s2z;
                 m += 1;
-                m;
             }
             if nmax > 0 as i32 {
                 s0x = *gx.offset((i + dn) as isize);
@@ -745,7 +691,6 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
                     s1y = s2y;
                     s1z = s2z;
                     m += 1;
-                    m;
                 }
             }
         }
@@ -777,13 +722,10 @@ pub unsafe extern "C" fn CINTg0_2e_2d(
                 s1y = s2y;
                 s1z = s2z;
                 n += 1;
-                n;
             }
             m += 1;
-            m;
         }
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -856,16 +798,12 @@ pub unsafe extern "C" fn CINTg0_lj2d_4d(
                             n as isize,
                         ) = rz * *p1z.offset(n as isize) + *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 l += 1;
-                l;
             }
             j += 1;
-            j;
         }
         i += 1;
-        i;
     }
     rx = *rkrl.offset(0 as i32 as isize);
     ry = *rkrl.offset(1 as i32 as isize);
@@ -898,16 +836,12 @@ pub unsafe extern "C" fn CINTg0_lj2d_4d(
                             n as isize,
                         ) = rz * *p1z.offset(n as isize) + *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 l += 1;
-                l;
             }
             k += 1;
-            k;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -980,16 +914,12 @@ pub unsafe extern "C" fn CINTg0_kj2d_4d(
                             n as isize,
                         ) = rz * *p1z.offset(n as isize) + *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 k += 1;
-                k;
             }
             j += 1;
-            j;
         }
         i += 1;
-        i;
     }
     rx = *rkrl.offset(0 as i32 as isize);
     ry = *rkrl.offset(1 as i32 as isize);
@@ -1022,16 +952,12 @@ pub unsafe extern "C" fn CINTg0_kj2d_4d(
                             n as isize,
                         ) = rz * *p1z.offset(n as isize) + *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -1104,16 +1030,12 @@ pub unsafe extern "C" fn CINTg0_il2d_4d(
                             n as isize,
                         ) = rz * *p1z.offset(n as isize) + *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 i += 1;
-                i;
             }
             l += 1;
-            l;
         }
         k += 1;
-        k;
     }
     rx = *rirj.offset(0 as i32 as isize);
     ry = *rirj.offset(1 as i32 as isize);
@@ -1146,16 +1068,12 @@ pub unsafe extern "C" fn CINTg0_il2d_4d(
                             n as isize,
                         ) = rz * *p1z.offset(n as isize) + *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -1228,16 +1146,12 @@ pub unsafe extern "C" fn CINTg0_ik2d_4d(
                             n as isize,
                         ) = rz * *p1z.offset(n as isize) + *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 i += 1;
-                i;
             }
             k += 1;
-            k;
         }
         l += 1;
-        l;
     }
     rx = *rirj.offset(0 as i32 as isize);
     ry = *rirj.offset(1 as i32 as isize);
@@ -1270,16 +1184,12 @@ pub unsafe extern "C" fn CINTg0_ik2d_4d(
                             n as isize,
                         ) = rz * *p1z.offset(n as isize) + *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[inline]
@@ -5575,15 +5485,16 @@ pub unsafe extern "C" fn CINTg0_2e_2d4d_unrolled(
         }
         _ => {}
     }
-    fprintf(
-        stderr,
-        b"Dimension error for CINTg0_2e_lj2d4d: iklj = %d %d %d %d\0" as *const u8
-            as *const libc::c_char,
-        (*envs).li_ceil,
-        (*envs).lk_ceil,
-        (*envs).ll_ceil,
-        (*envs).lj_ceil,
-    );
+    eprintln!("Dimension error for CINTg0_2e_lj2d4d: iklj = {} {} {} {}", (*envs).li_ceil, (*envs).lk_ceil, (*envs).ll_ceil, (*envs).lj_ceil);
+    // fprintf(
+    //     stderr,
+    //     b"Dimension error for CINTg0_2e_lj2d4d: iklj = %d %d %d %d\0" as *const u8
+    //         as *const libc::c_char,
+    //     (*envs).li_ceil,
+    //     (*envs).lk_ceil,
+    //     (*envs).ll_ceil,
+    //     (*envs).lj_ceil,
+    // );
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0000(
@@ -13630,15 +13541,16 @@ pub unsafe extern "C" fn CINTsrg0_2e_2d4d_unrolled(
         }
         _ => {}
     }
-    fprintf(
-        stderr,
-        b"Dimension error for CINTg0_2e_lj2d4d: iklj = %d %d %d %d\0" as *const u8
-            as *const libc::c_char,
-        (*envs).li_ceil,
-        (*envs).lk_ceil,
-        (*envs).ll_ceil,
-        (*envs).lj_ceil,
-    );
+    eprintln!("Dimension error for CINTg0_2e_lj2d4d: iklj = {} {} {} {}", (*envs).li_ceil, (*envs).lk_ceil, (*envs).ll_ceil, (*envs).lj_ceil);
+    // fprintf(
+    //     stderr,
+    //     b"Dimension error for CINTg0_2e_lj2d4d: iklj = %d %d %d %d\0" as *const u8
+    //         as *const libc::c_char,
+    //     (*envs).li_ceil,
+    //     (*envs).lk_ceil,
+    //     (*envs).ll_ceil,
+    //     (*envs).lj_ceil,
+    // );
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTg0_2e_lj2d4d(
@@ -13706,7 +13618,7 @@ pub unsafe extern "C" fn CINTg0_2e(
     let mut rr: f64 = xij_kl * xij_kl + yij_kl * yij_kl + zij_kl * zij_kl;
     a1 = aij * akl;
     a0 = a1 / (aij + akl);
-    fac1 = sqrt(a0 / (a1 * a1 * a1)) * (*envs).fac[0 as i32 as usize];
+    fac1 = (a0 / (a1 * a1 * a1)).sqrt() * (*envs).fac[0 as i32 as usize];
     x = a0 * rr;
     let omega: f64 = *((*envs).env).offset(8 as i32 as isize);
     let mut theta: f64 = 0 as i32 as f64;
@@ -13719,9 +13631,9 @@ pub unsafe extern "C" fn CINTg0_2e(
         }
         let mut rorder: i32 = (*envs).rys_order;
         if rorder == nroots {
-            CINTsr_rys_roots(nroots, x, sqrt(theta), u.as_mut_ptr(), w);
+            CINTsr_rys_roots(nroots, x, (theta).sqrt(), u.as_mut_ptr(), w);
         } else {
-            let mut sqrt_theta: f64 = -sqrt(theta);
+            let mut sqrt_theta: f64 = -(theta.sqrt());
             CINTrys_roots(rorder, x, u.as_mut_ptr(), w);
             CINTrys_roots(
                 rorder,
@@ -13756,20 +13668,18 @@ pub unsafe extern "C" fn CINTg0_2e(
                 u[irys as usize] = ut / (u[irys as usize] + 1.0f64 - ut);
                 *w.offset(irys as isize) *= sqrt_theta;
                 irys += 1;
-                irys;
             }
         }
     } else {
         theta = omega * omega / (omega * omega + a0);
         x *= theta;
-        fac1 *= sqrt(theta);
+        fac1 *= theta.sqrt();
         CINTrys_roots(nroots, x, u.as_mut_ptr(), w);
         irys = 0 as i32;
         while irys < nroots {
             let mut ut_0: f64 = u[irys as usize] * theta;
             u[irys as usize] = ut_0 / (u[irys as usize] + 1.0f64 - ut_0);
             irys += 1;
-            irys;
         }
     }
     if (*envs).g_size == 1 as i32 {
@@ -13835,7 +13745,6 @@ pub unsafe extern "C" fn CINTg0_2e(
         *c0pz.offset(irys as isize) = rklrz + tmp3 * zij_kl;
         *w.offset(irys as isize) *= fac1;
         irys += 1;
-        irys;
     }
     ::core::mem::transmute::<
         _,
@@ -13896,7 +13805,6 @@ pub unsafe extern "C" fn CINTnabla1i_2e(
                     *fy.offset(n as isize) = ai2 * *p2y.offset(n as isize);
                     *fz.offset(n as isize) = ai2 * *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 ptr += di;
                 i = 1 as i32;
@@ -13919,20 +13827,15 @@ pub unsafe extern "C" fn CINTnabla1i_2e(
                             ) = i as f64 * *p1z.offset(n as isize)
                             + ai2 * *p2z.offset(n as isize);
                         n += 1;
-                        n;
                     }
                     ptr += di;
                     i += 1;
-                    i;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -13985,17 +13888,13 @@ pub unsafe extern "C" fn CINTnabla1j_2e(
                     *fy.offset(n as isize) = aj2 * *p2y.offset(n as isize);
                     *fz.offset(n as isize) = aj2 * *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 ptr += di;
                 i += 1;
-                i;
             }
             k += 1;
-            k;
         }
         l += 1;
-        l;
     }
     j = 1 as i32;
     while j <= lj {
@@ -14024,20 +13923,15 @@ pub unsafe extern "C" fn CINTnabla1j_2e(
                             ) = j as f64 * *p1z.offset(n as isize)
                             + aj2 * *p2z.offset(n as isize);
                         n += 1;
-                        n;
                     }
                     ptr += di;
                     i += 1;
-                    i;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -14090,11 +13984,9 @@ pub unsafe extern "C" fn CINTnabla1k_2e(
                     *fy.offset(n as isize) = ak2 * *p2y.offset(n as isize);
                     *fz.offset(n as isize) = ak2 * *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 ptr += di;
                 i += 1;
-                i;
             }
             k = 1 as i32;
             while k <= lk {
@@ -14119,20 +14011,15 @@ pub unsafe extern "C" fn CINTnabla1k_2e(
                             ) = k as f64 * *p1z.offset(n as isize)
                             + ak2 * *p2z.offset(n as isize);
                         n += 1;
-                        n;
                     }
                     ptr += di;
                     i += 1;
-                    i;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -14185,14 +14072,11 @@ pub unsafe extern "C" fn CINTnabla1l_2e(
                     *fy.offset(n as isize) = al2 * *p2y.offset(n as isize);
                     *fz.offset(n as isize) = al2 * *p2z.offset(n as isize);
                     n += 1;
-                    n;
                 }
                 ptr += di;
                 i += 1;
-                i;
             }
             k += 1;
-            k;
         }
         l = 1 as i32;
         while l <= ll {
@@ -14219,20 +14103,15 @@ pub unsafe extern "C" fn CINTnabla1l_2e(
                             ) = l as f64 * *p1z.offset(n as isize)
                             + al2 * *p2z.offset(n as isize);
                         n += 1;
-                        n;
                     }
                     i += 1;
-                    i;
                     ptr += di;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -14298,20 +14177,15 @@ pub unsafe extern "C" fn CINTx1i_2e(
                             + *ri.offset(2 as i32 as isize)
                                 * *gz.offset(n as isize);
                         n += 1;
-                        n;
                     }
                     ptr += di;
                     i += 1;
-                    i;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -14377,20 +14251,15 @@ pub unsafe extern "C" fn CINTx1j_2e(
                             + *rj.offset(2 as i32 as isize)
                                 * *gz.offset(n as isize);
                         n += 1;
-                        n;
                     }
                     ptr += di;
                     i += 1;
-                    i;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -14456,20 +14325,15 @@ pub unsafe extern "C" fn CINTx1k_2e(
                             + *rk.offset(2 as i32 as isize)
                                 * *gz.offset(n as isize);
                         n += 1;
-                        n;
                     }
                     ptr += di;
                     i += 1;
-                    i;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -14535,19 +14399,14 @@ pub unsafe extern "C" fn CINTx1l_2e(
                             + *rl.offset(2 as i32 as isize)
                                 * *gz.offset(n as isize);
                         n += 1;
-                        n;
                     }
                     ptr += di;
                     i += 1;
-                    i;
                 }
                 k += 1;
-                k;
             }
             l += 1;
-            l;
         }
         j += 1;
-        j;
     }
 }

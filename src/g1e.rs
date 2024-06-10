@@ -189,10 +189,8 @@ pub unsafe extern "C" fn CINTg1e_index_xyz(
             *idx.offset((n + 2 as i32) as isize) = ofjz + di * i_nz[i as usize];
             n += 3 as i32;
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -283,7 +281,6 @@ pub unsafe extern "C" fn CINTg1e_ovlp(
             * *gz.offset(((i - 1 as i32) * di) as isize)
             + rijrx[2 as i32 as usize] * *gz.offset((i * di) as isize);
         i += 1;
-        i;
     }
     j = 1 as i32;
     while j <= lj {
@@ -310,11 +307,9 @@ pub unsafe extern "C" fn CINTg1e_ovlp(
                 + *rirj.offset(2 as i32 as isize)
                     * *gz.offset((n - dj) as isize);
             i += 1;
-            i;
             n += di;
         }
         j += 1;
-        j;
     }
     return 1 as i32;
 }
@@ -416,7 +411,6 @@ pub unsafe extern "C" fn CINTg1e_nuc(
         *gy.offset(i as isize) = 1 as i32 as f64;
         *gz.offset(i as isize) *= fac1;
         i += 1;
-        i;
     }
     let mut nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
     if nmax == 0 as i32 {
@@ -493,10 +487,8 @@ pub unsafe extern "C" fn CINTg1e_nuc(
                 ) = i as f64 * rt * *p1z.offset((n + i * di) as isize)
                 + r2 * *gz.offset((n + i * di) as isize);
             i += 1;
-            i;
         }
         n += 1;
-        n;
     }
     let mut rirjx: f64 = (*envs).rirj[0 as i32 as usize];
     let mut rirjy: f64 = (*envs).rirj[1 as i32 as usize];
@@ -532,13 +524,10 @@ pub unsafe extern "C" fn CINTg1e_nuc(
                     ) = *p2z.offset((n + i * di) as isize)
                     + rirjz * *p1z.offset((n + i * di) as isize);
                 n += 1;
-                n;
             }
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
     return 1 as i32;
 }
@@ -605,13 +594,10 @@ pub unsafe extern "C" fn CINTnabla1i_1e(
                     * *gz.offset((ptr + i - 1 as i32) as isize)
                     + ai2 * *gz.offset((ptr + i + 1 as i32) as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -648,7 +634,6 @@ pub unsafe extern "C" fn CINTnabla1j_1e(
             *fy.offset(i as isize) = aj2 * *gy.offset((i + dj) as isize);
             *fz.offset(i as isize) = aj2 * *gz.offset((i + dj) as isize);
             i += 1;
-            i;
         }
         j = 1 as i32;
         while j <= lj {
@@ -671,13 +656,10 @@ pub unsafe extern "C" fn CINTnabla1j_1e(
                     ) = j as f64 * *gz.offset((i - dj) as isize)
                     + aj2 * *gz.offset((i + dj) as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -714,10 +696,8 @@ pub unsafe extern "C" fn CINTnabla1k_1e(
             *fy.offset(i as isize) = ak2 * *gy.offset((i + dk) as isize);
             *fz.offset(i as isize) = ak2 * *gz.offset((i + dk) as isize);
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
     k = 1 as i32;
     while k <= lk {
@@ -742,13 +722,10 @@ pub unsafe extern "C" fn CINTnabla1k_1e(
                     ) = k as f64 * *gz.offset((i - dk) as isize)
                     + ak2 * *gz.offset((i + dk) as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -798,13 +775,10 @@ pub unsafe extern "C" fn CINTx1i_1e(
                     ) = *gz.offset((i + 1 as i32) as isize)
                     + *ri.offset(2 as i32 as isize) * *gz.offset(i as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -854,13 +828,10 @@ pub unsafe extern "C" fn CINTx1j_1e(
                     ) = *gz.offset((i + dj) as isize)
                     + *rj.offset(2 as i32 as isize) * *gz.offset(i as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -910,13 +881,10 @@ pub unsafe extern "C" fn CINTx1k_1e(
                     ) = *gz.offset((i + dk) as isize)
                     + *rk.offset(2 as i32 as isize) * *gz.offset(i as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -944,15 +912,12 @@ pub unsafe extern "C" fn CINTprim_to_ctr(
                 while k < nf {
                     *pgc.offset(k as isize) += c * *gp.offset((k * inc + i) as isize);
                     k += 1;
-                    k;
                 }
             }
             pgc = pgc.offset(nf as isize);
             n += 1;
-            n;
         }
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -979,10 +944,8 @@ pub unsafe extern "C" fn CINTprim_to_ctr_0(
                     nf.wrapping_mul(i as libc::c_ulong).wrapping_add(n) as isize,
                 ) = c0 * *gp.offset(n as isize);
             n = n.wrapping_add(1);
-            n;
         }
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -1009,10 +972,8 @@ pub unsafe extern "C" fn CINTprim_to_ctr_1(
             *gc.offset(nf.wrapping_mul(j as libc::c_ulong).wrapping_add(n) as isize)
                 += c0 * *gp.offset(n as isize);
             n = n.wrapping_add(1);
-            n;
         }
         i += 1;
-        i;
     }
 }
 #[no_mangle]

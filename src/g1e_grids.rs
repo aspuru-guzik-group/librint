@@ -140,10 +140,8 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                     (ig + 104 as i32 * i) as isize,
                 ) = 1 as i32 as f64;
             ig += 1;
-            ig;
         }
         i += 1;
-        i;
     }
     ig = 0 as i32;
     while ig < bgrids {
@@ -163,7 +161,6 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
             ) = *gridsT.offset((ig + 104 as i32 * 2 as i32) as isize)
             - *rij.offset(2 as i32 as isize);
         ig += 1;
-        ig;
     }
     let mut omega: f64 = *((*envs).env).offset(8 as i32 as isize);
     let mut zeta: f64 = *((*envs).env).offset(7 as i32 as isize);
@@ -205,10 +202,8 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                         (ig + 104 as i32 * i) as isize,
                     ) = wbuf[i as usize] * fac1;
                 i += 1;
-                i;
             }
             ig += 1;
-            ig;
         }
     } else if omega < 0.0f64 {
         a0 = aij;
@@ -265,7 +260,6 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                             (ig + 104 as i32 * i) as isize,
                         ) = 0 as i32 as f64;
                     i += 1;
-                    i;
                 }
             } else if rorder == nroots {
                 CINTsr_rys_roots(
@@ -287,7 +281,6 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                             (ig + 104 as i32 * i) as isize,
                         ) = wbuf[i as usize] * fac1;
                     i += 1;
-                    i;
                 }
             } else {
                 tau_theta = tau2 * theta;
@@ -321,11 +314,9 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                             (ig + 104 as i32 * (i + rorder)) as isize,
                         ) = wbuf[(i + rorder) as usize] * fac_theta;
                     i += 1;
-                    i;
                 }
             }
             ig += 1;
-            ig;
         }
     } else {
         a0 = aij;
@@ -376,10 +367,8 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                         (ig + 104 as i32 * i) as isize,
                     ) = wbuf[i as usize] * fac1;
                 i += 1;
-                i;
             }
             ig += 1;
-            ig;
         }
     }
     let mut nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
@@ -477,7 +466,6 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                     ig as isize,
                 ) = *rirgz.offset(ig as isize) * *p0z.offset(ig as isize);
             ig += 1;
-            ig;
         }
         if nmax > 0 as i32 {
             ig = 0 as i32;
@@ -489,7 +477,6 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                     * (1 as i32 as f64
                         - *u.offset((ig + 104 as i32 * n) as isize));
                 ig += 1;
-                ig;
             }
         }
         i = 1 as i32;
@@ -524,13 +511,10 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                     * *p2z.offset(ig as isize)
                     + *rirgz.offset(ig as isize) * *p0z.offset(ig as isize);
                 ig += 1;
-                ig;
             }
             i += 1;
-            i;
         }
         n += 1;
-        n;
     }
     j = 1 as i32;
     while j <= lj {
@@ -568,16 +552,12 @@ pub unsafe extern "C" fn CINTg0_1e_grids(
                         + *rirj.offset(2 as i32 as isize)
                             * *p1z.offset((ig + 104 as i32 * n) as isize);
                     ig += 1;
-                    ig;
                 }
                 n += 1;
-                n;
             }
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
     return 1 as i32;
 }
@@ -616,7 +596,6 @@ pub unsafe extern "C" fn CINTgout1e_grids(
             while ig < bgrids {
                 s[ig as usize] = 0 as i32 as f64;
                 ig += 1;
-                ig;
             }
             i = 0 as i32;
             while i < nroots {
@@ -627,19 +606,15 @@ pub unsafe extern "C" fn CINTgout1e_grids(
                             * *gy.offset((ig + 104 as i32 * i) as isize)
                             * *gz.offset((ig + 104 as i32 * i) as isize);
                     ig += 1;
-                    ig;
                 }
                 i += 1;
-                i;
             }
             ig = 0 as i32;
             while ig < bgrids {
                 *gout.offset((ig + bgrids * n) as isize) = s[ig as usize];
                 ig += 1;
-                ig;
             }
             n += 1;
-            n;
             idx = idx.offset(3 as i32 as isize);
         }
     } else {
@@ -652,7 +627,6 @@ pub unsafe extern "C" fn CINTgout1e_grids(
             while ig < bgrids {
                 s[ig as usize] = 0 as i32 as f64;
                 ig += 1;
-                ig;
             }
             i = 0 as i32;
             while i < nroots {
@@ -663,19 +637,15 @@ pub unsafe extern "C" fn CINTgout1e_grids(
                             * *gy.offset((ig + 104 as i32 * i) as isize)
                             * *gz.offset((ig + 104 as i32 * i) as isize);
                     ig += 1;
-                    ig;
                 }
                 i += 1;
-                i;
             }
             ig = 0 as i32;
             while ig < bgrids {
                 *gout.offset((ig + bgrids * n) as isize) += s[ig as usize];
                 ig += 1;
-                ig;
             }
             n += 1;
-            n;
             idx = idx.offset(3 as i32 as isize);
         }
     };
@@ -725,10 +695,8 @@ pub unsafe extern "C" fn CINTnabla1i_grids(
                 *fy.offset(ig as isize) = ai2 * *gy.offset((ig + di) as isize);
                 *fz.offset(ig as isize) = ai2 * *gz.offset((ig + di) as isize);
                 ig += 1;
-                ig;
             }
             n += 1;
-            n;
         }
         i = 1 as i32;
         while i <= li {
@@ -753,16 +721,12 @@ pub unsafe extern "C" fn CINTnabla1i_grids(
                         ) = i as f64 * *gz.offset((ig - di) as isize)
                         + ai2 * *gz.offset((ig + di) as isize);
                     ig += 1;
-                    ig;
                 }
                 n += 1;
-                n;
             }
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -810,13 +774,10 @@ pub unsafe extern "C" fn CINTnabla1j_grids(
                 *fy.offset(ig as isize) = aj2 * *gy.offset((ig + dj) as isize);
                 *fz.offset(ig as isize) = aj2 * *gz.offset((ig + dj) as isize);
                 ig += 1;
-                ig;
             }
             n += 1;
-            n;
         }
         i += 1;
-        i;
     }
     j = 1 as i32;
     while j <= lj {
@@ -843,16 +804,12 @@ pub unsafe extern "C" fn CINTnabla1j_grids(
                         ) = j as f64 * *gz.offset((ig - dj) as isize)
                         + aj2 * *gz.offset((ig + dj) as isize);
                     ig += 1;
-                    ig;
                 }
                 n += 1;
-                n;
             }
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -916,16 +873,12 @@ pub unsafe extern "C" fn CINTx1i_grids(
                         + *ri.offset(2 as i32 as isize)
                             * *gz.offset(ig as isize);
                     ig += 1;
-                    ig;
                 }
                 n += 1;
-                n;
             }
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -989,15 +942,11 @@ pub unsafe extern "C" fn CINTx1j_grids(
                         + *rj.offset(2 as i32 as isize)
                             * *gz.offset(ig as isize);
                     ig += 1;
-                    ig;
                 }
                 n += 1;
-                n;
             }
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }

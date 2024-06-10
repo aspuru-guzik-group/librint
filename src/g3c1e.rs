@@ -200,13 +200,10 @@ pub unsafe extern "C" fn CINTg3c1e_index_xyz(
                 *idx.offset((n + 2 as i32) as isize) = ofjz + i_nz[i as usize];
                 n += 3 as i32;
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -303,7 +300,6 @@ pub unsafe extern "C" fn CINTg3c1e_ovlp(
             * *gz.offset(((j - 1 as i32) * dj) as isize)
             - rjrijk[2 as i32 as usize] * *gz.offset((j * dj) as isize);
         j += 1;
-        j;
     }
     i = 1 as i32;
     while i <= li {
@@ -331,10 +327,8 @@ pub unsafe extern "C" fn CINTg3c1e_ovlp(
                 - *rirj.offset(2 as i32 as isize)
                     * *gz.offset((i - 1 as i32 + j * dj) as isize);
             j += 1;
-            j;
         }
         i += 1;
-        i;
     }
     dj = (*envs).g_stride_j;
     k = 1 as i32;
@@ -360,13 +354,10 @@ pub unsafe extern "C" fn CINTg3c1e_ovlp(
                     ) = *gz.offset((i + dj - dk) as isize)
                     + rjrk[2 as i32 as usize] * *gz.offset((i - dk) as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -473,7 +464,6 @@ pub unsafe extern "C" fn CINTg3c1e_nuc(
             * *gz.offset(((j - 1 as i32) * dj) as isize)
             - rjr0[2 as i32 as usize] * *gz.offset((j * dj) as isize);
         j += 1;
-        j;
     }
     i = 1 as i32;
     while i <= li {
@@ -501,10 +491,8 @@ pub unsafe extern "C" fn CINTg3c1e_nuc(
                 - *rirj.offset(2 as i32 as isize)
                     * *gz.offset((i - 1 as i32 + j * dj) as isize);
             j += 1;
-            j;
         }
         i += 1;
-        i;
     }
     dj = (*envs).g_stride_j;
     k = 1 as i32;
@@ -530,13 +518,10 @@ pub unsafe extern "C" fn CINTg3c1e_nuc(
                     ) = *gz.offset((i + dj - dk) as isize)
                     + rjrk[2 as i32 as usize] * *gz.offset((i - dk) as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -602,13 +587,10 @@ pub unsafe extern "C" fn CINTnabla1i_3c1e(
                     * *gz.offset((ptr + i - 1 as i32) as isize)
                     + ai2 * *gz.offset((ptr + i + 1 as i32) as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -645,7 +627,6 @@ pub unsafe extern "C" fn CINTnabla1j_3c1e(
             *fy.offset(i as isize) = aj2 * *gy.offset((i + dj) as isize);
             *fz.offset(i as isize) = aj2 * *gz.offset((i + dj) as isize);
             i += 1;
-            i;
         }
         j = 1 as i32;
         while j <= lj {
@@ -668,13 +649,10 @@ pub unsafe extern "C" fn CINTnabla1j_3c1e(
                     ) = j as f64 * *gz.offset((i - dj) as isize)
                     + aj2 * *gz.offset((i + dj) as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -711,10 +689,8 @@ pub unsafe extern "C" fn CINTnabla1k_3c1e(
             *fy.offset(i as isize) = ak2 * *gy.offset((i + dk) as isize);
             *fz.offset(i as isize) = ak2 * *gz.offset((i + dk) as isize);
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
     k = 1 as i32;
     while k <= lk {
@@ -739,13 +715,10 @@ pub unsafe extern "C" fn CINTnabla1k_3c1e(
                     ) = k as f64 * *gz.offset((i - dk) as isize)
                     + ak2 * *gz.offset((i + dk) as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -795,13 +768,10 @@ pub unsafe extern "C" fn CINTx1i_3c1e(
                     ) = *gz.offset((i + 1 as i32) as isize)
                     + *ri.offset(2 as i32 as isize) * *gz.offset(i as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -851,13 +821,10 @@ pub unsafe extern "C" fn CINTx1j_3c1e(
                     ) = *gz.offset((i + dj) as isize)
                     + *rj.offset(2 as i32 as isize) * *gz.offset(i as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }
 #[no_mangle]
@@ -907,12 +874,9 @@ pub unsafe extern "C" fn CINTx1k_3c1e(
                     ) = *gz.offset((i + dk) as isize)
                     + *rk.offset(2 as i32 as isize) * *gz.offset(i as isize);
                 i += 1;
-                i;
             }
             j += 1;
-            j;
         }
         k += 1;
-        k;
     }
 }

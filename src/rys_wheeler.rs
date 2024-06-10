@@ -5,11 +5,11 @@ use crate::fmt::fmt_erfc_like;
 use crate::eigh::_CINTdiagonalize;
 
 extern "C" {
-    pub type _IO_wide_data;
-    pub type _IO_codecvt;
-    pub type _IO_marker;
-    static mut stderr: *mut FILE;
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
+    // pub type _IO_wide_data;
+    // pub type _IO_codecvt;
+    // pub type _IO_marker;
+    // static mut stderr: *mut FILE;
+    // fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
     fn expl(_: f64) -> f64;
     fn exp(_: f64) -> f64;
     fn sqrtl(_: f64) -> f64;
@@ -19,44 +19,44 @@ extern "C" {
     fn erfcl(_: f64) -> f64;
     fn erfc(_: f64) -> f64;
 }
-pub type size_t = libc::c_ulong;
-pub type __off_t = libc::c_long;
-pub type __off64_t = libc::c_long;
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct _IO_FILE {
-    pub _flags: i32,
-    pub _IO_read_ptr: *mut libc::c_char,
-    pub _IO_read_end: *mut libc::c_char,
-    pub _IO_read_base: *mut libc::c_char,
-    pub _IO_write_base: *mut libc::c_char,
-    pub _IO_write_ptr: *mut libc::c_char,
-    pub _IO_write_end: *mut libc::c_char,
-    pub _IO_buf_base: *mut libc::c_char,
-    pub _IO_buf_end: *mut libc::c_char,
-    pub _IO_save_base: *mut libc::c_char,
-    pub _IO_backup_base: *mut libc::c_char,
-    pub _IO_save_end: *mut libc::c_char,
-    pub _markers: *mut _IO_marker,
-    pub _chain: *mut _IO_FILE,
-    pub _fileno: i32,
-    pub _flags2: i32,
-    pub _old_offset: __off_t,
-    pub _cur_column: libc::c_ushort,
-    pub _vtable_offset: libc::c_schar,
-    pub _shortbuf: [libc::c_char; 1],
-    pub _lock: *mut libc::c_void,
-    pub _offset: __off64_t,
-    pub _codecvt: *mut _IO_codecvt,
-    pub _wide_data: *mut _IO_wide_data,
-    pub _freeres_list: *mut _IO_FILE,
-    pub _freeres_buf: *mut libc::c_void,
-    pub __pad5: size_t,
-    pub _mode: i32,
-    pub _unused2: [libc::c_char; 20],
-}
-pub type _IO_lock_t = ();
-pub type FILE = _IO_FILE;
+// pub type size_t = libc::c_ulong;
+// pub type __off_t = libc::c_long;
+// pub type __off64_t = libc::c_long;
+// #[derive(Copy, Clone)]
+// #[repr(C)]
+// pub struct _IO_FILE {
+//     pub _flags: i32,
+//     pub _IO_read_ptr: *mut libc::c_char,
+//     pub _IO_read_end: *mut libc::c_char,
+//     pub _IO_read_base: *mut libc::c_char,
+//     pub _IO_write_base: *mut libc::c_char,
+//     pub _IO_write_ptr: *mut libc::c_char,
+//     pub _IO_write_end: *mut libc::c_char,
+//     pub _IO_buf_base: *mut libc::c_char,
+//     pub _IO_buf_end: *mut libc::c_char,
+//     pub _IO_save_base: *mut libc::c_char,
+//     pub _IO_backup_base: *mut libc::c_char,
+//     pub _IO_save_end: *mut libc::c_char,
+//     pub _markers: *mut _IO_marker,
+//     pub _chain: *mut _IO_FILE,
+//     pub _fileno: i32,
+//     pub _flags2: i32,
+//     pub _old_offset: __off_t,
+//     pub _cur_column: libc::c_ushort,
+//     pub _vtable_offset: libc::c_schar,
+//     pub _shortbuf: [libc::c_char; 1],
+//     pub _lock: *mut libc::c_void,
+//     pub _offset: __off64_t,
+//     pub _codecvt: *mut _IO_codecvt,
+//     pub _wide_data: *mut _IO_wide_data,
+//     pub _freeres_list: *mut _IO_FILE,
+//     pub _freeres_buf: *mut libc::c_void,
+//     pub __pad5: size_t,
+//     pub _mode: i32,
+//     pub _unused2: [libc::c_char; 20],
+// }
+// pub type _IO_lock_t = ();
+// pub type FILE = _IO_FILE;
 static mut JACOBI_ALPHA: [f64; 48] = [
     0.333333333333333333333333333333333333f64,
     0.523809523809523809523809523809523810f64,
@@ -5101,7 +5101,6 @@ unsafe extern "C" fn laguerre_moments(
             l01 = l02;
             *moments.offset((i + 1 as i32) as isize) = -l01 * e0;
             i += 1;
-            i;
         }
     } else {
         let mut lower2: f64 = lower * lower;
@@ -5137,7 +5136,6 @@ unsafe extern "C" fn laguerre_moments(
             l01 = l02;
             *moments.offset((i + 1 as i32) as isize) = l11 * et - l01 * e0;
             i += 1;
-            i;
         }
     };
 }
@@ -5169,11 +5167,9 @@ unsafe extern "C" fn naive_jacobi_moments(
             k = *order.offset(j as isize);
             s += *coef.offset(k as isize) * fmt[k as usize];
             j += 1;
-            j;
         }
         *mus.offset(i as isize) = s;
         i += 1;
-        i;
     }
 }
 unsafe extern "C" fn flocke_jacobi_moments(
@@ -5198,7 +5194,6 @@ unsafe extern "C" fn flocke_jacobi_moments(
         mu2 = mu1;
         mu1 = mu0;
         i -= 1;
-        i;
     }
     while i >= 0 as i32 {
         rn = (2 as i32 * i + 3 as i32) as f64 * t_inv
@@ -5208,7 +5203,6 @@ unsafe extern "C" fn flocke_jacobi_moments(
         mu2 = mu1;
         mu1 = mu0;
         i -= 1;
-        i;
     }
     let mut tt: f64 = sqrt(t);
     let mut norm: f64 = 0.8862269254527580136490837416705725913987747280611935641069038949264f64
@@ -5217,7 +5211,6 @@ unsafe extern "C" fn flocke_jacobi_moments(
     while i < n {
         *mus.offset(i as isize) *= norm;
         i += 1;
-        i;
     }
 }
 unsafe extern "C" fn wheeler_recursion(
@@ -5250,7 +5243,6 @@ unsafe extern "C" fn wheeler_recursion(
     while i < n * 2 as i32 {
         *sm.offset(i as isize) = 0.0f64;
         i += 1;
-        i;
     }
     i = 1 as i32;
     while i < n {
@@ -5266,7 +5258,6 @@ unsafe extern "C" fn wheeler_recursion(
                 - b0 * *sm.offset((2 as i32 + j) as isize)
                 + *beta.offset((i + j) as isize) * *s0.offset(j as isize);
             j += 1;
-            j;
         }
         a1 = *alpha.offset(i as isize)
             - *s0.offset(1 as i32 as isize)
@@ -5284,7 +5275,6 @@ unsafe extern "C" fn wheeler_recursion(
         s0 = sk;
         sk = swap;
         i += 1;
-        i;
     }
 }
 unsafe extern "C" fn rys_wheeler_partial(
@@ -5306,20 +5296,20 @@ unsafe extern "C" fn rys_wheeler_partial(
     while i < n {
         if *b.offset(i as isize) < 1e-14f64 {
             if first_seen == 0 || *b.offset(i as isize) < 0.0f64 {
-                fprintf(
-                    stderr,
-                    b"libcint rys_wheeler singular value n=%d i=%d b=%g\n\0" as *const u8
-                        as *const libc::c_char,
-                    n,
-                    i,
-                    *b.offset(i as isize),
-                );
+                eprintln!("libcint rys_wheeler singular value n={} i={} b={}", n, i, *b.offset(i as isize));
+                // fprintf(
+                //     stderr,
+                //     b"libcint rys_wheeler singular value n=%d i=%d b=%g\n\0" as *const u8
+                //         as *const libc::c_char,
+                //     n,
+                //     i,
+                //     *b.offset(i as isize),
+                // );
                 i = 0 as i32;
                 while i < n {
                     *roots.offset(i as isize) = 0 as i32 as f64;
                     *weights.offset(i as isize) = 0 as i32 as f64;
                     i += 1;
-                    i;
                 }
                 return i;
             }
@@ -5327,7 +5317,6 @@ unsafe extern "C" fn rys_wheeler_partial(
         }
         *b.offset(i as isize) = sqrt(*b.offset(i as isize));
         i += 1;
-        i;
     }
     let mut error: i32 = _CINTdiagonalize(
         n,
@@ -5348,7 +5337,6 @@ unsafe extern "C" fn rys_wheeler_partial(
                 i as isize,
             ) = *c0.offset((i * n) as isize) * *c0.offset((i * n) as isize) * mu0;
         i += 1;
-        i;
     }
     return error;
 }
@@ -5398,7 +5386,6 @@ unsafe extern "C" fn llaguerre_moments(
             l01 = l02;
             *moments.offset((i + 1 as i32) as isize) = -l01 * e0;
             i += 1;
-            i;
         }
     } else {
         let mut lower2: f64 = lower * lower;
@@ -5435,7 +5422,6 @@ unsafe extern "C" fn llaguerre_moments(
             l01 = l02;
             *moments.offset((i + 1 as i32) as isize) = l11 * et - l01 * e0;
             i += 1;
-            i;
         }
     };
 }
@@ -5472,11 +5458,9 @@ unsafe extern "C" fn lnaive_jacobi_moments(
             k = *order.offset(j as isize);
             s += *coef.offset(k as isize) * fmt[k as usize];
             j += 1;
-            j;
         }
         *mus.offset(i as isize) = s;
         i += 1;
-        i;
     }
 }
 unsafe extern "C" fn lflocke_jacobi_moments(
@@ -5501,7 +5485,6 @@ unsafe extern "C" fn lflocke_jacobi_moments(
         mu2 = mu1;
         mu1 = mu0;
         i -= 1;
-        i;
     }
     while i >= 0 as i32 {
         rn = (2 as i32 * i + 3 as i32) as f64 * t_inv
@@ -5511,7 +5494,6 @@ unsafe extern "C" fn lflocke_jacobi_moments(
         mu2 = mu1;
         mu1 = mu0;
         i -= 1;
-        i;
     }
     let mut tt: f64 = sqrtl(t);
     let mut norm: f64 = 
@@ -5520,7 +5502,6 @@ unsafe extern "C" fn lflocke_jacobi_moments(
     while i < n {
         *mus.offset(i as isize) *= norm;
         i += 1;
-        i;
     }
 }
 unsafe extern "C" fn lwheeler_recursion(
@@ -5553,7 +5534,6 @@ unsafe extern "C" fn lwheeler_recursion(
     while i < n * 2 as i32 {
         *sm.offset(i as isize) = 0.0f64;
         i += 1;
-        i;
     }
     i = 1 as i32;
     while i < n {
@@ -5569,7 +5549,6 @@ unsafe extern "C" fn lwheeler_recursion(
                 - b0 * *sm.offset((2 as i32 + j) as isize)
                 + *beta.offset((i + j) as isize) * *s0.offset(j as isize);
             j += 1;
-            j;
         }
         a1 = *alpha.offset(i as isize)
             - *s0.offset(1 as i32 as isize)
@@ -5587,7 +5566,6 @@ unsafe extern "C" fn lwheeler_recursion(
         s0 = sk;
         sk = swap;
         i += 1;
-        i;
     }
 }
 unsafe extern "C" fn lrys_wheeler_partial(
@@ -5603,40 +5581,37 @@ unsafe extern "C" fn lrys_wheeler_partial(
     let mut da: [f64; 1088] = [0.; 1088];
     let mut db: *mut f64 = da.as_mut_ptr().offset(n as isize);
     let mut c0: *mut f64 = db.offset(n as isize);
-    let mut mu0: f64 = (*moments.offset(0 as i32 as isize));
-        // .to_f64()
-        // .unwrap();
+    let mut mu0: f64 = *moments.offset(0 as i32 as isize); // .to_f64().unwrap();
     let mut first_seen: i32 = 1 as i32;
     let mut i: i32 = 0;
     lwheeler_recursion(n, alpha, beta, moments, a.as_mut_ptr(), b);
-    da[0 as i32 as usize] = (a[0 as i32 as usize]); //.to_f64().unwrap();
+    da[0 as i32 as usize] = a[0 as i32 as usize]; //.to_f64().unwrap();
     i = 1 as i32;
     while i < n {
         if *b.offset(i as isize) < 1e-19f64 {
             if first_seen == 0 || *b.offset(i as isize) < 0.0f64 {
-                fprintf(
-                    stderr,
-                    b"libcint lrys_wheeler singular value n=%d i=%d b=%g\n\0"
-                        as *const u8 as *const libc::c_char,
-                    n,
-                    i,
-                    (*b.offset(i as isize)) //.to_f64().unwrap(),
-                );
+                eprintln!("libcint lrys_wheeler singular value n={} i={} b={}", n, i, (*b.offset(i as isize))); //.to_f64().unwrap());
+                // fprintf(
+                //     stderr,
+                //     b"libcint lrys_wheeler singular value n=%d i=%d b=%g\n\0"
+                //         as *const u8 as *const libc::c_char,
+                //     n,
+                //     i,
+                //     (*b.offset(i as isize)) //.to_f64().unwrap(),
+                // );
                 i = 0 as i32;
                 while i < n {
                     *roots.offset(i as isize) = 0 as i32 as f64;
                     *weights.offset(i as isize) = 0 as i32 as f64;
                     i += 1;
-                    i;
                 }
                 return i;
             }
             first_seen = 0 as i32;
         }
-        da[i as usize] = (a[i as usize]); //.to_f64().unwrap();
-        *db.offset(i as isize) = (sqrtl(*b.offset(i as isize))); //.to_f64().unwrap();
+        da[i as usize] = a[i as usize]; //.to_f64().unwrap();
+        *db.offset(i as isize) = sqrtl(*b.offset(i as isize)); //.to_f64().unwrap();
         i += 1;
-        i;
     }
     let mut error: i32 = _CINTdiagonalize(
         n,
@@ -5657,7 +5632,6 @@ unsafe extern "C" fn lrys_wheeler_partial(
                 i as isize,
             ) = *c0.offset((i * n) as isize) * *c0.offset((i * n) as isize) * mu0;
         i += 1;
-        i;
     }
     return error;
 }

@@ -91,7 +91,6 @@ pub unsafe extern "C" fn CINTtot_pgto_spheric(
                 * 2 as i32 + 1 as i32)
                 * *bas.offset((8 as i32 * i + 2 as i32) as isize);
         i += 1;
-        i;
     }
     return s;
 }
@@ -108,7 +107,6 @@ pub unsafe extern "C" fn CINTtot_pgto_spinor(
             += CINTlen_spinor(i, bas)
                 * *bas.offset((8 as i32 * i + 2 as i32) as isize);
         i += 1;
-        i;
     }
     return s;
 }
@@ -130,7 +128,6 @@ unsafe extern "C" fn tot_cgto_accum(
                     .expect("non-null function pointer"),
             )(i, bas);
         i += 1;
-        i;
     }
     return s;
 }
@@ -229,7 +226,6 @@ unsafe extern "C" fn shells_cgto_offset(
                     .expect("non-null function pointer"),
             )(i - 1 as i32, bas);
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -331,11 +327,8 @@ pub unsafe extern "C" fn CINTcart_comp(
             *ny.offset(inc as isize) = ly;
             *nz.offset(inc as isize) = lz;
             inc += 1;
-            inc;
             ly -= 1;
-            ly;
         }
         lx -= 1;
-        lx;
     }
 }

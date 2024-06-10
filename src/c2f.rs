@@ -26,14 +26,14 @@ pub unsafe extern "C" fn cintlen_spinor_(
     return CINTlen_spinor(*bas_id, bas);
 }
 #[no_mangle]
-pub unsafe extern "C" fn cintcgtos_cart_(
+pub unsafe fn cintcgtos_cart_(
     mut bas_id: &usize,
     mut bas: &[i32],
 ) -> i32 {
     return CINTcgto_cart(*bas_id, bas);
 }
 #[no_mangle]
-pub unsafe extern "C" fn cintcgto_cart_(
+pub unsafe fn cintcgto_cart_(
     mut bas_id: &usize,
     mut bas: &[i32],
 ) -> i32 {

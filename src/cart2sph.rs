@@ -88450,7 +88450,6 @@ unsafe extern "C" fn s_ket_cart2spheric_copy(
     while i < nbra {
         *gsph.offset(i as isize) = *gcart.offset(i as isize);
         i += 1;
-        i;
     }
     return gsph;
 }
@@ -88494,7 +88493,6 @@ unsafe extern "C" fn p_ket_cart2spheric_copy(
                 (2 as i32 * lds + i) as isize,
             ) = *gcart.offset((2 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     return gsph;
 }
@@ -88543,7 +88541,6 @@ unsafe extern "C" fn d_bra_cart2spheric(
         gsph = gsph.offset(5 as i32 as isize);
         gcart = gcart.offset(6 as i32 as isize);
         i += 1;
-        i;
     }
     return pgsph;
 }
@@ -88565,7 +88562,6 @@ unsafe extern "C" fn d_ket_cart2spheric(
             ) = *coeff_c2s.offset(1 as i32 as isize)
             * *gcart.offset((1 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88575,7 +88571,6 @@ unsafe extern "C" fn d_ket_cart2spheric(
             ) = *coeff_c2s.offset(10 as i32 as isize)
             * *gcart.offset((4 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88589,7 +88584,6 @@ unsafe extern "C" fn d_ket_cart2spheric(
             + *coeff_c2s.offset(17 as i32 as isize)
                 * *gcart.offset((5 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88599,7 +88593,6 @@ unsafe extern "C" fn d_ket_cart2spheric(
             ) = *coeff_c2s.offset(20 as i32 as isize)
             * *gcart.offset((2 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88611,7 +88604,6 @@ unsafe extern "C" fn d_ket_cart2spheric(
             + *coeff_c2s.offset(27 as i32 as isize)
                 * *gcart.offset((3 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     return pgsph;
 }
@@ -88682,7 +88674,6 @@ unsafe extern "C" fn f_bra_cart2spheric(
         gsph = gsph.offset(7 as i32 as isize);
         gcart = gcart.offset(10 as i32 as isize);
         i += 1;
-        i;
     }
     return pgsph;
 }
@@ -88706,7 +88697,6 @@ unsafe extern "C" fn f_ket_cart2spheric(
             + *coeff_c2s.offset(6 as i32 as isize)
                 * *gcart.offset((6 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88716,7 +88706,6 @@ unsafe extern "C" fn f_ket_cart2spheric(
             ) = *coeff_c2s.offset(14 as i32 as isize)
             * *gcart.offset((4 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88730,7 +88719,6 @@ unsafe extern "C" fn f_ket_cart2spheric(
             + *coeff_c2s.offset(28 as i32 as isize)
                 * *gcart.offset((8 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88744,7 +88732,6 @@ unsafe extern "C" fn f_ket_cart2spheric(
             + *coeff_c2s.offset(39 as i32 as isize)
                 * *gcart.offset((9 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88758,7 +88745,6 @@ unsafe extern "C" fn f_ket_cart2spheric(
             + *coeff_c2s.offset(45 as i32 as isize)
                 * *gcart.offset((5 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88770,7 +88756,6 @@ unsafe extern "C" fn f_ket_cart2spheric(
             + *coeff_c2s.offset(57 as i32 as isize)
                 * *gcart.offset((7 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88782,7 +88767,6 @@ unsafe extern "C" fn f_ket_cart2spheric(
             + *coeff_c2s.offset(63 as i32 as isize)
                 * *gcart.offset((3 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     return pgsph;
 }
@@ -88883,7 +88867,6 @@ unsafe extern "C" fn g_bra_cart2spheric(
         gsph = gsph.offset(9 as i32 as isize);
         gcart = gcart.offset(15 as i32 as isize);
         i += 1;
-        i;
     }
     return pgsph;
 }
@@ -88907,7 +88890,6 @@ unsafe extern "C" fn g_ket_cart2spheric(
             + *coeff_c2s.offset(6 as i32 as isize)
                 * *gcart.offset((6 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88919,7 +88901,6 @@ unsafe extern "C" fn g_ket_cart2spheric(
             + *coeff_c2s.offset(26 as i32 as isize)
                 * *gcart.offset((11 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88933,7 +88914,6 @@ unsafe extern "C" fn g_ket_cart2spheric(
             + *coeff_c2s.offset(38 as i32 as isize)
                 * *gcart.offset((8 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88947,7 +88927,6 @@ unsafe extern "C" fn g_ket_cart2spheric(
             + *coeff_c2s.offset(58 as i32 as isize)
                 * *gcart.offset((13 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88967,7 +88946,6 @@ unsafe extern "C" fn g_ket_cart2spheric(
             + *coeff_c2s.offset(74 as i32 as isize)
                 * *gcart.offset((14 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88981,7 +88959,6 @@ unsafe extern "C" fn g_ket_cart2spheric(
             + *coeff_c2s.offset(84 as i32 as isize)
                 * *gcart.offset((9 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -88997,7 +88974,6 @@ unsafe extern "C" fn g_ket_cart2spheric(
             + *coeff_c2s.offset(102 as i32 as isize)
                 * *gcart.offset((12 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -89009,7 +88985,6 @@ unsafe extern "C" fn g_ket_cart2spheric(
             + *coeff_c2s.offset(112 as i32 as isize)
                 * *gcart.offset((7 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nbra {
@@ -89023,7 +88998,6 @@ unsafe extern "C" fn g_ket_cart2spheric(
             + *coeff_c2s.offset(130 as i32 as isize)
                 * *gcart.offset((10 as i32 * nbra + i) as isize);
         i += 1;
-        i;
     }
     return pgsph;
 }
@@ -89780,17 +89754,14 @@ unsafe extern "C" fn a_bra_cart2spinor_si(
                 sbR += cbR * v1 - cbI * vz + caR * vy + caI * vx;
                 sbI += -cbI * v1 - cbR * vz - caI * vy + caR * vx;
                 n += 1;
-                n;
             }
             *gspaR.offset((j * nd + i) as isize) = saR;
             *gspaI.offset((j * nd + i) as isize) = saI;
             *gspbR.offset((j * nd + i) as isize) = sbR;
             *gspbI.offset((j * nd + i) as isize) = sbI;
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 unsafe extern "C" fn a_bra_cart2spinor_sf(
@@ -89851,17 +89822,14 @@ unsafe extern "C" fn a_bra_cart2spinor_sf(
                 sbR += cbR * v1;
                 sbI += -cbI * v1;
                 n += 1;
-                n;
             }
             *gspaR.offset((j * nd + i) as isize) = saR;
             *gspaI.offset((j * nd + i) as isize) = saI;
             *gspbR.offset((j * nd + i) as isize) = sbR;
             *gspbI.offset((j * nd + i) as isize) = sbI;
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 unsafe extern "C" fn a_bra1_cart2spinor_si(
@@ -89913,7 +89881,6 @@ unsafe extern "C" fn a_bra1_cart2spinor_si(
             *gspbR.offset((j * ndg + i) as isize) = 0 as i32 as f64;
             *gspbI.offset((j * ndg + i) as isize) = 0 as i32 as f64;
             i += 1;
-            i;
         }
         i = 0 as i32;
         while i < nd {
@@ -89938,16 +89905,12 @@ unsafe extern "C" fn a_bra1_cart2spinor_si(
                     *gspbI.offset(((j * nd + i) * ngrids + m) as isize)
                         += -cbI * v1 - cbR * vz - caI * vy + caR * vx;
                     m += 1;
-                    m;
                 }
                 n += 1;
-                n;
             }
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 unsafe extern "C" fn a_bra1_cart2spinor_sf(
@@ -89996,7 +89959,6 @@ unsafe extern "C" fn a_bra1_cart2spinor_sf(
             *gspbR.offset((j * ndg + i) as isize) = 0 as i32 as f64;
             *gspbI.offset((j * ndg + i) as isize) = 0 as i32 as f64;
             i += 1;
-            i;
         }
         i = 0 as i32;
         while i < nd {
@@ -90014,16 +89976,12 @@ unsafe extern "C" fn a_bra1_cart2spinor_sf(
                     *gspbR.offset(((j * nd + i) * ngrids + m) as isize) += cbR * v1;
                     *gspbI.offset(((j * nd + i) * ngrids + m) as isize) += -cbI * v1;
                     m += 1;
-                    m;
                 }
                 n += 1;
-                n;
             }
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 unsafe extern "C" fn a_bra1_cart2spinor_zi(
@@ -90095,7 +90053,6 @@ unsafe extern "C" fn a_bra1_cart2spinor_zi(
             *gspbR.offset((j * ndg + i) as isize) = 0 as i32 as f64;
             *gspbI.offset((j * ndg + i) as isize) = 0 as i32 as f64;
             i += 1;
-            i;
         }
         i = 0 as i32;
         while i < nd {
@@ -90132,16 +90089,12 @@ unsafe extern "C" fn a_bra1_cart2spinor_zi(
                     *gspbI.offset(((j * nd + i) * ngrids + m) as isize)
                         += caR * v12I - caI * v12R + cbR * v22I - cbI * v22R;
                     m += 1;
-                    m;
                 }
                 n += 1;
-                n;
             }
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 unsafe extern "C" fn a_bra1_cart2spinor_zf(
@@ -90193,7 +90146,6 @@ unsafe extern "C" fn a_bra1_cart2spinor_zf(
             *gspbR.offset((j * ndg + i) as isize) = 0 as i32 as f64;
             *gspbI.offset((j * ndg + i) as isize) = 0 as i32 as f64;
             i += 1;
-            i;
         }
         i = 0 as i32;
         while i < nd {
@@ -90216,16 +90168,12 @@ unsafe extern "C" fn a_bra1_cart2spinor_zf(
                     *gspbI.offset(((j * nd + i) * ngrids + m) as isize)
                         += cbR * v1I - cbI * v1R;
                     m += 1;
-                    m;
                 }
                 n += 1;
-                n;
             }
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 unsafe extern "C" fn a_ket_cart2spinor(
@@ -90263,7 +90211,6 @@ unsafe extern "C" fn a_ket_cart2spinor(
             *gspR.offset((j + i * nbra) as isize) = 0 as i32 as f64;
             *gspI.offset((j + i * nbra) as isize) = 0 as i32 as f64;
             j += 1;
-            j;
         }
         n = 0 as i32;
         while n < nf2 {
@@ -90278,7 +90225,6 @@ unsafe extern "C" fn a_ket_cart2spinor(
                         *gspR.offset((j + i * nbra) as isize) += cR * gR - cI * gI;
                         *gspI.offset((j + i * nbra) as isize) += cI * gR + cR * gI;
                         j += 1;
-                        j;
                     }
                 } else {
                     j = 0 as i32;
@@ -90288,7 +90234,6 @@ unsafe extern "C" fn a_ket_cart2spinor(
                         *gspR.offset((j + i * nbra) as isize) += cR * gR;
                         *gspI.offset((j + i * nbra) as isize) += cR * gI;
                         j += 1;
-                        j;
                     }
                 }
             } else if cI != 0 as i32 as f64 {
@@ -90299,14 +90244,11 @@ unsafe extern "C" fn a_ket_cart2spinor(
                     *gspR.offset((j + i * nbra) as isize) += -cI * gI;
                     *gspI.offset((j + i * nbra) as isize) += cI * gR;
                     j += 1;
-                    j;
                 }
             }
             n += 1;
-            n;
         }
         i += 1;
-        i;
     }
 }
 unsafe extern "C" fn a_iket_cart2spinor(
@@ -90325,7 +90267,6 @@ unsafe extern "C" fn a_iket_cart2spinor(
     while i < size {
         *gspR.offset(i as isize) = -*gspR.offset(i as isize);
         i += 1;
-        i;
     }
 }
 unsafe extern "C" fn a_ket1_cart2spinor(
@@ -90383,10 +90324,8 @@ unsafe extern "C" fn a_ket1_cart2spinor(
                         (k * nds + j + i * nbra) as isize,
                     ) = 0 as i32 as f64;
                 j += 1;
-                j;
             }
             k += 1;
-            k;
         }
         n = 0 as i32;
         while n < nf {
@@ -90407,16 +90346,12 @@ unsafe extern "C" fn a_ket1_cart2spinor(
                     *gspI.offset((k * nds + j + i * nbra) as isize)
                         += caR * gaI + caI * gaR + cbR * gbI + cbI * gbR;
                     j += 1;
-                    j;
                 }
                 k += 1;
-                k;
             }
             n += 1;
-            n;
         }
         i += 1;
-        i;
     }
 }
 unsafe extern "C" fn a_iket1_cart2spinor(
@@ -90436,7 +90371,6 @@ unsafe extern "C" fn a_iket1_cart2spinor(
     while i < size {
         *gspR.offset(i as isize) = -*gspR.offset(i as isize);
         i += 1;
-        i;
     }
 }
 unsafe extern "C" fn dcopy_ij(
@@ -90455,10 +90389,8 @@ unsafe extern "C" fn dcopy_ij(
         while i < mi {
             *out.offset((j * ni + i) as isize) = *gctr.offset((j * mi + i) as isize);
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 unsafe extern "C" fn dcopy_grids_ij(
@@ -90487,15 +90419,12 @@ unsafe extern "C" fn dcopy_grids_ij(
                         (i * ngrids + m) as isize,
                     ) = *gctr.offset((i * mgrids + m) as isize);
                 m += 1;
-                m;
             }
             i += 1;
-            i;
         }
         out = out.offset(ngi as isize);
         gctr = gctr.offset(mgi as isize);
         j += 1;
-        j;
     }
 }
 unsafe extern "C" fn dcopy_iklj(
@@ -90537,15 +90466,12 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(mikl.wrapping_mul(j as libc::c_ulong) as isize);
                         j += 1;
-                        j;
                     }
                     k += 1;
-                    k;
                 }
                 fijkl = fijkl.offset(nijk as isize);
                 gctr = gctr.offset(mik as isize);
                 l += 1;
-                l;
             }
         }
         3 => {
@@ -90586,15 +90512,12 @@ unsafe extern "C" fn dcopy_iklj(
                                     .wrapping_add(2 as i32 as libc::c_ulong) as isize,
                             );
                         j += 1;
-                        j;
                     }
                     k += 1;
-                    k;
                 }
                 fijkl = fijkl.offset(nijk as isize);
                 gctr = gctr.offset(mik as isize);
                 l += 1;
-                l;
             }
         }
         5 => {
@@ -90653,15 +90576,12 @@ unsafe extern "C" fn dcopy_iklj(
                                     .wrapping_add(4 as i32 as libc::c_ulong) as isize,
                             );
                         j += 1;
-                        j;
                     }
                     k += 1;
-                    k;
                 }
                 fijkl = fijkl.offset(nijk as isize);
                 gctr = gctr.offset(mik as isize);
                 l += 1;
-                l;
             }
         }
         6 => {
@@ -90729,15 +90649,12 @@ unsafe extern "C" fn dcopy_iklj(
                                     .wrapping_add(5 as i32 as libc::c_ulong) as isize,
                             );
                         j += 1;
-                        j;
                     }
                     k += 1;
-                    k;
                 }
                 fijkl = fijkl.offset(nijk as isize);
                 gctr = gctr.offset(mik as isize);
                 l += 1;
-                l;
             }
         }
         7 => {
@@ -90814,15 +90731,12 @@ unsafe extern "C" fn dcopy_iklj(
                                     .wrapping_add(6 as i32 as libc::c_ulong) as isize,
                             );
                         j += 1;
-                        j;
                     }
                     k += 1;
-                    k;
                 }
                 fijkl = fijkl.offset(nijk as isize);
                 gctr = gctr.offset(mik as isize);
                 l += 1;
-                l;
             }
         }
         _ => {
@@ -90847,18 +90761,14 @@ unsafe extern "C" fn dcopy_iklj(
                                         .wrapping_add(i as libc::c_ulong) as isize,
                                 );
                             i += 1;
-                            i;
                         }
                         j += 1;
-                        j;
                     }
                     k += 1;
-                    k;
                 }
                 fijkl = fijkl.offset(nijk as isize);
                 gctr = gctr.offset(mik as isize);
                 l += 1;
-                l;
             }
         }
     };
@@ -90886,7 +90796,6 @@ pub unsafe extern "C" fn c2s_dset0(
         {
             *out.offset(i as isize) = 0 as i32 as f64;
             i += 1;
-            i;
         }
         return;
     }
@@ -90909,17 +90818,13 @@ pub unsafe extern "C" fn c2s_dset0(
                             (j * ni + i) as isize,
                         ) = 0 as i32 as f64;
                     i += 1;
-                    i;
                 }
                 j += 1;
-                j;
             }
             k += 1;
-            k;
         }
         out = out.offset(nijk as isize);
         l += 1;
-        l;
     }
 }
 #[no_mangle]
@@ -90965,7 +90870,6 @@ unsafe extern "C" fn sph2e_inner(
                     l,
                 );
                 n += 1;
-                n;
             }
         }
         3 => {
@@ -90979,7 +90883,6 @@ unsafe extern "C" fn sph2e_inner(
                     l,
                 );
                 n += 1;
-                n;
             }
         }
         4 => {
@@ -90993,7 +90896,6 @@ unsafe extern "C" fn sph2e_inner(
                     l,
                 );
                 n += 1;
-                n;
             }
         }
         _ => {
@@ -91007,7 +90909,6 @@ unsafe extern "C" fn sph2e_inner(
                     l,
                 );
                 n += 1;
-                n;
             }
         }
     }
@@ -91063,10 +90964,8 @@ pub unsafe extern "C" fn c2s_sph_1e(
             dcopy_ij(pij, tmp1, ni, nj, di, dj);
             gctr = gctr.offset(nf as isize);
             ic += 1;
-            ic;
         }
         jc += 1;
-        jc;
     }
 }
 #[no_mangle]
@@ -91135,10 +91034,8 @@ pub unsafe extern "C" fn c2s_sph_1e_grids(
                 dcopy_grids_ij(pij, tmp1, Ng as i32, ni, nj, bgrids, di, dj);
                 gctr = gctr.offset((bgrids * nf) as isize);
                 ic += 1;
-                ic;
             }
             jc += 1;
-            jc;
         }
         grids_offset += 104 as i32;
     }
@@ -91185,10 +91082,8 @@ pub unsafe extern "C" fn c2s_cart_1e_grids(
                 dcopy_grids_ij(pij, gctr, Ng as i32, ni, nj, bgrids, nfi, nfj);
                 gctr = gctr.offset((bgrids * nf) as isize);
                 ic += 1;
-                ic;
             }
             jc += 1;
-            jc;
         }
         grids_offset += 104 as i32;
     }
@@ -91270,16 +91165,12 @@ pub unsafe extern "C" fn c2s_sph_2e1(
                     dcopy_iklj(pout, tmp1, ni, nj, nk, nl, di, dj, dk, dl);
                     gctr = gctr.offset(nf as isize);
                     ic += 1;
-                    ic;
                 }
                 jc += 1;
-                jc;
             }
             kc += 1;
-            kc;
         }
         lc += 1;
-        lc;
     }
 }
 #[no_mangle]
@@ -91343,7 +91234,6 @@ pub unsafe extern "C" fn c2s_sf_2e1(
         gctr = gctr.offset(nf as isize);
         opij = opij.offset((no * 2 as i32) as isize);
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -91407,7 +91297,6 @@ pub unsafe extern "C" fn c2s_sf_2e1i(
         gctr = gctr.offset(nf as isize);
         opij = opij.offset((no * 2 as i32) as isize);
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -91473,7 +91362,6 @@ pub unsafe extern "C" fn c2s_si_2e1(
         gc_1 = gc_1.offset(nf as isize);
         opij = opij.offset((no * 2 as i32) as isize);
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -91539,7 +91427,6 @@ pub unsafe extern "C" fn c2s_si_2e1i(
         gc_1 = gc_1.offset(nf as isize);
         opij = opij.offset((no * 2 as i32) as isize);
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -91569,10 +91456,8 @@ pub unsafe extern "C" fn c2s_cart_1e(
             dcopy_ij(popij, gctr, ni, nj, nfi, nfj);
             gctr = gctr.offset(nf as isize);
             ic += 1;
-            ic;
         }
         jc += 1;
-        jc;
     }
 }
 #[no_mangle]
@@ -91620,16 +91505,12 @@ pub unsafe extern "C" fn c2s_cart_2e1(
                     dcopy_iklj(pfijkl, gctr, ni, nj, nk, nl, nfi, nfj, nfk, nfl);
                     gctr = gctr.offset(nf as isize);
                     ic += 1;
-                    ic;
                 }
                 jc += 1;
-                jc;
             }
             kc += 1;
-            kc;
         }
         lc += 1;
-        lc;
     }
 }
 #[no_mangle]
@@ -91706,13 +91587,10 @@ pub unsafe extern "C" fn c2s_sph_3c2e1(
                 );
                 gctr = gctr.offset(nf as isize);
                 ic += 1;
-                ic;
             }
             jc += 1;
-            jc;
         }
         kc += 1;
-        kc;
     }
 }
 #[no_mangle]
@@ -91763,13 +91641,10 @@ pub unsafe extern "C" fn c2s_cart_3c2e1(
                 );
                 gctr = gctr.offset(nf as isize);
                 ic += 1;
-                ic;
             }
             jc += 1;
-            jc;
         }
         kc += 1;
-        kc;
     }
 }
 #[no_mangle]
@@ -91844,13 +91719,10 @@ pub unsafe extern "C" fn c2s_sph_3c2e1_ssc(
                 );
                 gctr = gctr.offset(nf as isize);
                 ic += 1;
-                ic;
             }
             jc += 1;
-            jc;
         }
         kc += 1;
-        kc;
     }
 }
 #[no_mangle]

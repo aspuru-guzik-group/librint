@@ -1,54 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 
-extern "C" {
-    pub type _IO_wide_data;
-    pub type _IO_codecvt;
-    pub type _IO_marker;
-    static mut stderr: *mut FILE;
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
-    fn sqrt(_: f64) -> f64;
-    fn fabs(_: f64) -> f64;
-}
-
-pub type size_t = libc::c_ulong;
-pub type __off_t = libc::c_long;
-pub type __off64_t = libc::c_long;
-
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct _IO_FILE {
-    pub _flags: i32,
-    pub _IO_read_ptr: *mut libc::c_char,
-    pub _IO_read_end: *mut libc::c_char,
-    pub _IO_read_base: *mut libc::c_char,
-    pub _IO_write_base: *mut libc::c_char,
-    pub _IO_write_ptr: *mut libc::c_char,
-    pub _IO_write_end: *mut libc::c_char,
-    pub _IO_buf_base: *mut libc::c_char,
-    pub _IO_buf_end: *mut libc::c_char,
-    pub _IO_save_base: *mut libc::c_char,
-    pub _IO_backup_base: *mut libc::c_char,
-    pub _IO_save_end: *mut libc::c_char,
-    pub _markers: *mut _IO_marker,
-    pub _chain: *mut _IO_FILE,
-    pub _fileno: i32,
-    pub _flags2: i32,
-    pub _old_offset: __off_t,
-    pub _cur_column: libc::c_ushort,
-    pub _vtable_offset: libc::c_schar,
-    pub _shortbuf: [libc::c_char; 1],
-    pub _lock: *mut libc::c_void,
-    pub _offset: __off64_t,
-    pub _codecvt: *mut _IO_codecvt,
-    pub _wide_data: *mut _IO_wide_data,
-    pub _freeres_list: *mut _IO_FILE,
-    pub _freeres_buf: *mut libc::c_void,
-    pub __pad5: size_t,
-    pub _mode: i32,
-    pub _unused2: [libc::c_char; 20],
-}
-pub type _IO_lock_t = ();
-pub type FILE = _IO_FILE;
 unsafe extern "C" fn _dlarrk(
     mut n: i32,
     mut iw: i32,
@@ -72,17 +23,17 @@ unsafe extern "C" fn _dlarrk(
     if n <= 0 as i32 {
         return 0 as i32;
     }
-    tnorm = if fabs(gl) > fabs(gu) { fabs(gl) } else { fabs(gu) };
+    tnorm = if gl.abs() > gu.abs() { gl.abs() } else { gu.abs() };
     info = -(1 as i32);
     left = gl - tnorm * 2.0f64 * 2.2204460492503131e-16f64 * n as f64;
     right = gu + tnorm * 2.0f64 * 2.2204460492503131e-16f64 * n as f64;
     it = 0 as i32;
     while it < 1000 as i32 {
-        tmp1 = fabs(right - left);
+        tmp1 = (right - left).abs();
         if tmp1 <= 0 as i32 as f64
             || tmp1
                 < reltol
-                    * (if fabs(right) > fabs(left) { fabs(right) } else { fabs(left) })
+                    * (if right.abs() > left.abs() { right.abs() } else { left.abs() })
         {
             info = 0 as i32;
             break;
@@ -92,7 +43,6 @@ unsafe extern "C" fn _dlarrk(
             tmp1 = *diag.offset(0 as i32 as isize) - mid;
             if tmp1 <= 0.0f64 {
                 negcnt += 1;
-                negcnt;
             }
             i = 1 as i32;
             while i < n {
@@ -100,10 +50,8 @@ unsafe extern "C" fn _dlarrk(
                     - *e2.offset((i - 1 as i32) as isize) / tmp1 - mid;
                 if tmp1 <= 0.0f64 {
                     negcnt += 1;
-                    negcnt;
                 }
                 i += 1;
-                i;
             }
             if negcnt >= iw {
                 right = mid;
@@ -111,11 +59,10 @@ unsafe extern "C" fn _dlarrk(
                 left = mid;
             }
             it += 1;
-            it;
         }
     }
     *w = (left + right) * 0.5f64;
-    *werr = fabs(right - left) * 0.5f64;
+    *werr = (right - left).abs() * 0.5f64;
     return info;
 }
 unsafe extern "C" fn _dlarrc(
@@ -137,11 +84,9 @@ unsafe extern "C" fn _dlarrc(
     rpivot = *diag.offset(0 as i32 as isize) - vu;
     if lpivot <= 0.0f64 {
         left_count += 1;
-        left_count;
     }
     if rpivot <= 0.0f64 {
         right_count += 1;
-        right_count;
     }
     i = 0 as i32;
     while i < n - 1 as i32 {
@@ -150,14 +95,11 @@ unsafe extern "C" fn _dlarrc(
         rpivot = *diag.offset((i + 1 as i32) as isize) - vu - tmp / rpivot;
         if lpivot <= 0.0f64 {
             left_count += 1;
-            left_count;
         }
         if rpivot <= 0.0f64 {
             right_count += 1;
-            right_count;
         }
         i += 1;
-        i;
     }
     *lcnt = left_count;
     *rcnt = right_count;
@@ -188,14 +130,12 @@ unsafe extern "C" fn _dlasq4(
             if *dmin.offset(1 as i32 as isize)
                 == *dn.offset(1 as i32 as isize)
             {
-                b1 = sqrt(
-                    *qvecp.offset((n0 - 1 as i32) as isize)
-                        * *evecp.offset((n0 - 2 as i32) as isize),
-                );
-                b2 = sqrt(
-                    *qvecp.offset((n0 - 2 as i32) as isize)
-                        * *evecp.offset((n0 - 3 as i32) as isize),
-                );
+                b1 = (*qvecp.offset((n0 - 1 as i32) as isize)
+                        * *evecp.offset((n0 - 2 as i32) as isize)
+                ).sqrt();
+                b2 = (*qvecp.offset((n0 - 2 as i32) as isize)
+                        * *evecp.offset((n0 - 3 as i32) as isize)
+                ).sqrt();
                 a2 = *qvecp.offset((n0 - 2 as i32) as isize)
                     + *evecp.offset((n0 - 2 as i32) as isize);
                 gap2 = *dmin.offset(2 as i32 as isize) - a2
@@ -248,11 +188,10 @@ unsafe extern "C" fn _dlasq4(
                         break;
                     }
                     i -= 1;
-                    i;
                 }
                 a2 *= 1.05f64;
                 if a2 < 0.563f64 {
-                    s = *dn.offset(0 as i32 as isize) * (1.0f64 - sqrt(a2))
+                    s = *dn.offset(0 as i32 as isize) * (1.0f64 - a2.sqrt())
                         / (a2 + 1.0f64);
                 } else {
                     s = *dmin.offset(0 as i32 as isize) * 0.25f64;
@@ -288,11 +227,10 @@ unsafe extern "C" fn _dlasq4(
                     break;
                 }
                 i -= 1;
-                i;
             }
             a2 *= 1.05f64;
             if a2 < 0.563f64 {
-                s = *dn.offset(1 as i32 as isize) * (1.0f64 - sqrt(a2))
+                s = *dn.offset(1 as i32 as isize) * (1.0f64 - a2.sqrt())
                     / (a2 + 1.0f64);
             } else {
                 s = *dmin.offset(0 as i32 as isize) * 0.25f64;
@@ -327,12 +265,11 @@ unsafe extern "C" fn _dlasq4(
                         break;
                     }
                     i -= 1;
-                    i;
                 }
                 a2 *= 1.05f64;
             }
             if a2 < 0.563f64 {
-                s = *dn.offset(2 as i32 as isize) * (1.0f64 - sqrt(a2))
+                s = *dn.offset(2 as i32 as isize) * (1.0f64 - a2.sqrt())
                     / (a2 + 1.0f64);
             } else {
                 s = *dmin.offset(0 as i32 as isize) * 0.25f64;
@@ -368,11 +305,10 @@ unsafe extern "C" fn _dlasq4(
                         break;
                     }
                     i -= 1;
-                    i;
                 }
             }
             a2 = *dmin.offset(1 as i32 as isize) / (b2 * 1.05f64 + 1.0f64);
-            b2 = sqrt(b2 * 1.05f64);
+            b2 = (b2 * 1.05f64).sqrt();
             gap2 = *dmin.offset(2 as i32 as isize) * 0.5f64 - a2;
             if gap2 > 0.0f64 && gap2 > b2 * a2 {
                 s = if s > a2 * (1.0f64 - a2 * 1.01f64 * (b2 / gap2) * b2) {
@@ -424,18 +360,16 @@ unsafe extern "C" fn _dlasq4(
                         break;
                     }
                     i -= 1;
-                    i;
                 }
             }
             s = *dmin.offset(2 as i32 as isize) * 0.333f64;
             a2 = *dmin.offset(2 as i32 as isize) / (b2 * 1.05f64 + 1.0f64);
-            b2 = sqrt(b2 * 1.05f64);
+            b2 = (b2 * 1.05f64).sqrt();
             gap2 = *qvecp.offset((n0 - 2 as i32) as isize)
                 + *evecp.offset((n0 - 3 as i32) as isize)
-                - sqrt(
-                    *qvecp.offset((n0 - 3 as i32) as isize)
-                        * *evecp.offset((n0 - 3 as i32) as isize),
-                ) - a2;
+                - (*qvecp.offset((n0 - 3 as i32) as isize)
+                        * *evecp.offset((n0 - 3 as i32) as isize)
+                ).sqrt() - a2;
             if gap2 > 0.0f64 && gap2 > b2 * a2 {
                 s = if s > a2 * (1.0f64 - a2 * 1.01f64 * (b2 / gap2) * b2) {
                     s
@@ -486,7 +420,6 @@ unsafe extern "C" fn _dlasq5(
         diag_min = if diag_min < diag { diag_min } else { diag };
         *evec1p.offset(j as isize) = *evecp.offset(j as isize) * temp;
         j += 1;
-        j;
     }
     *dn.offset(2 as i32 as isize) = diag;
     j = n0 - 3 as i32;
@@ -569,7 +502,7 @@ unsafe extern "C" fn _dlasq2(
     i = 0 as i32;
     j = n - 1 as i32;
     while i < n - 1 as i32 {
-        temp = fabs(*diag.offset(i as isize));
+        temp = (*diag.offset(i as isize)).abs();
         *qvec1.offset(i as isize) = 0.0f64;
         *evec1.offset(i as isize) = 0.0f64;
         *evec
@@ -578,14 +511,12 @@ unsafe extern "C" fn _dlasq2(
             ) = *diag_off.offset(i as isize) * *diag_off.offset(i as isize) * temp;
         *qvec.offset(j as isize) = temp;
         i += 1;
-        i;
         j -= 1;
-        j;
     }
     *qvec
         .offset(
             0 as i32 as isize,
-        ) = fabs(*diag.offset((n - 1 as i32) as isize));
+        ) = (*diag.offset((n - 1 as i32) as isize)).abs();
     *qvec1.offset((n - 1 as i32) as isize) = 0.0f64;
     *evec.offset((n - 1 as i32) as isize) = 0.0f64;
     *evec1.offset((n - 1 as i32) as isize) = 0.0f64;
@@ -602,9 +533,7 @@ unsafe extern "C" fn _dlasq2(
             *evec.offset(i as isize) = *evec.offset((j - 1 as i32) as isize);
             *evec.offset((j - 1 as i32) as isize) = temp;
             i += 1;
-            i;
             j -= 1;
-            j;
         }
     }
     diag_sum = *qvec.offset(0 as i32 as isize);
@@ -619,7 +548,6 @@ unsafe extern "C" fn _dlasq2(
             * (*evec.offset(i as isize) / temp);
         diag_sum = *qvec.offset((i + 1 as i32) as isize) * (diag_sum / temp);
         i += 1;
-        i;
     }
     *qvec1.offset((n - 1 as i32) as isize) = diag_sum;
     diag_sum = *qvec1.offset(0 as i32 as isize);
@@ -634,7 +562,6 @@ unsafe extern "C" fn _dlasq2(
             * (*evec1.offset(i as isize) / temp);
         diag_sum = *qvec1.offset((i + 1 as i32) as isize) * (diag_sum / temp);
         i += 1;
-        i;
     }
     *qvec.offset((n - 1 as i32) as isize) = diag_sum;
     n0 = n;
@@ -668,7 +595,6 @@ unsafe extern "C" fn _dlasq2(
                 };
             }
             i -= 1;
-            i;
         }
         i0 = i;
         qvecp = qvec;
@@ -678,17 +604,18 @@ unsafe extern "C" fn _dlasq2(
         if qmin < 0 as i32 as f64
             || emax < 0 as i32 as f64
         {
-            fprintf(
-                stderr,
-                b"dlasq2: qmin < 0 or emax < 0\0" as *const u8 as *const libc::c_char,
-            );
+            eprintln!("dlasq2: qmin < 0 or emax < 0");
+            // fprintf(
+            //     stderr,
+            //     b"dlasq2: qmin < 0 or emax < 0\0" as *const u8 as *const libc::c_char,
+            // );
             return 1 as i32;
         }
         dmin[0 as i32
-            as usize] = -if 0.0f64 > qmin - 2.0f64 * sqrt(qmin * emax) {
+            as usize] = -if 0.0f64 > qmin - 2.0f64 * (qmin * emax).sqrt() {
             0.0f64
         } else {
-            qmin - 2.0f64 * sqrt(qmin * emax)
+            qmin - 2.0f64 * (qmin * emax).sqrt()
         };
         nbig = (n0 - i0) * 10 as i32;
         iwhilb = 0 as i32;
@@ -706,7 +633,6 @@ unsafe extern "C" fn _dlasq2(
                 {
                     *qvec.offset(n1 as isize) = *qvecp.offset(n1 as isize) + sigma;
                     n0 -= 1;
-                    n0;
                 } else {
                     if !(n2 == i0
                         || *evecp.offset((n1 - 2 as i32) as isize) < tol2 * sigma
@@ -728,7 +654,7 @@ unsafe extern "C" fn _dlasq2(
                         s = *qvecp.offset(n1 as isize)
                             * (*evecp.offset(n2 as isize) / t);
                         s = *qvecp.offset(n1 as isize)
-                            * (*evecp.offset(n2 as isize) / (t + sqrt(t * (t + s))));
+                            * (*evecp.offset(n2 as isize) / (t + (t * (t + s)).sqrt()));
                         t = *qvecp.offset(n2 as isize)
                             + (s + *evecp.offset(n2 as isize));
                         *qvecp.offset(n1 as isize) *= *qvecp.offset(n2 as isize) / t;
@@ -782,7 +708,6 @@ unsafe extern "C" fn _dlasq2(
                     tau *= 0.25f64;
                 }
                 iter += 1;
-                iter;
             }
             if dmin[0 as i32 as usize] < 0 as i32 as f64 {
                 tau = 0.0f64;
@@ -807,18 +732,17 @@ unsafe extern "C" fn _dlasq2(
             evecp = evec1p;
             evec1p = swap;
             iwhilb += 1;
-            iwhilb;
         }
         if iwhilb == nbig {
-            fprintf(
-                stderr,
-                b"dlasq2: Maximum number of iterations exceeded\0" as *const u8
-                    as *const libc::c_char,
-            );
+            eprintln!("dlasq2: Maximum number of iterations exceeded");
+            // fprintf(
+            //     stderr,
+            //     b"dlasq2: Maximum number of iterations exceeded\0" as *const u8
+            //         as *const libc::c_char,
+            // );
             return 2 as i32;
         }
         itry += 1;
-        itry;
     }
     return 0 as i32;
 }
@@ -876,7 +800,7 @@ unsafe extern "C" fn _compute_eigenvalues(
     while i < n {
         *werr.offset(i as isize) = 0.0f64;
         *wgap.offset(i as isize) = 0.0f64;
-        eabs = fabs(*diag_off1.offset(i as isize));
+        eabs = (*diag_off1.offset(i as isize)).abs();
         tmp1 = eabs + eold;
         gl = if gl < *diag.offset(i as isize) - tmp1 {
             gl
@@ -890,7 +814,6 @@ unsafe extern "C" fn _compute_eigenvalues(
         };
         eold = eabs;
         i += 1;
-        i;
     }
     spectral_diameter = gu - gl;
     *diag_off1.offset((n - 1 as i32) as isize) = 0.0f64;
@@ -909,25 +832,24 @@ unsafe extern "C" fn _compute_eigenvalues(
                 i as isize,
             ) = *diag_off1.offset(i as isize) * *diag_off1.offset(i as isize);
         i += 1;
-        i;
     }
     iinfo = _dlarrk(n, 1 as i32, gl, gu, diag, e2, rtl, &mut tmp, &mut tmp1);
     if iinfo != 0 as i32 {
         return -(1 as i32);
     }
-    isleft = if gl > tmp - tmp1 - eps * 100.0f64 * fabs(tmp - tmp1) {
+    isleft = if gl > tmp - tmp1 - eps * 100.0f64 * (tmp - tmp1).abs() {
         gl
     } else {
-        tmp - tmp1 - eps * 100.0f64 * fabs(tmp - tmp1)
+        tmp - tmp1 - eps * 100.0f64 * (tmp - tmp1).abs()
     };
     iinfo = _dlarrk(n, n, gl, gu, diag, e2, rtl, &mut tmp, &mut tmp1);
     if iinfo != 0 as i32 {
         return -(1 as i32);
     }
-    isrght = if gu < tmp + tmp1 + eps * 100.0f64 * fabs(tmp + tmp1) {
+    isrght = if gu < tmp + tmp1 + eps * 100.0f64 * (tmp + tmp1).abs() {
         gu
     } else {
-        tmp + tmp1 + eps * 100.0f64 * fabs(tmp + tmp1)
+        tmp + tmp1 + eps * 100.0f64 * (tmp + tmp1).abs()
     };
     spectral_diameter = isrght - isleft;
     if n > 1 as i32 {
@@ -951,16 +873,16 @@ unsafe extern "C" fn _compute_eigenvalues(
         sigma = if isrght < gu { isrght } else { gu };
         sgndef = -1.0f64;
     }
-    tau = (if spectral_diameter * n as f64 > 2.0f64 * fabs(sigma) {
+    tau = (if spectral_diameter * n as f64 > 2.0f64 * sigma.abs() {
         spectral_diameter * n as f64
     } else {
-        2.0f64 * fabs(sigma)
+        2.0f64 * sigma.abs()
     }) * eps;
     idum = 0 as i32;
     while idum < 6 as i32 {
         dpivot = *diag.offset(0 as i32 as isize) - sigma;
         *work.offset(0 as i32 as isize) = dpivot;
-        dmax = fabs(*work.offset(0 as i32 as isize));
+        dmax = (*work.offset(0 as i32 as isize)).abs();
         i = 0 as i32;
         while i < n - 1 as i32 {
             *work
@@ -973,9 +895,8 @@ unsafe extern "C" fn _compute_eigenvalues(
             dpivot = *diag.offset((i + 1 as i32) as isize) - sigma
                 - tmp * *diag_off1.offset(i as isize);
             *work.offset((i + 1 as i32) as isize) = dpivot;
-            dmax = if dmax > fabs(dpivot) { dmax } else { fabs(dpivot) };
+            dmax = if dmax > (dpivot).abs() { dmax } else { (dpivot).abs() };
             i += 1;
-            i;
         }
         norep = (dmax > spectral_diameter * 64.0f64) as i32;
         if norep == 0 {
@@ -987,7 +908,6 @@ unsafe extern "C" fn _compute_eigenvalues(
                     break;
                 } else {
                     i += 1;
-                    i;
                 }
             }
         }
@@ -1007,20 +927,17 @@ unsafe extern "C" fn _compute_eigenvalues(
             tau *= 2.0f64;
         }
         idum += 1;
-        idum;
     }
     *diag_off1.offset((n - 1 as i32) as isize) = sigma;
     ip = 0 as i32;
     while ip < n {
         *diag.offset(ip as isize) = *work.offset(ip as isize);
         ip += 1;
-        ip;
     }
     ip = 0 as i32;
     while ip < n - 1 as i32 {
         *diag_off1.offset(ip as isize) = *work.offset((n + ip) as isize);
         ip += 1;
-        ip;
     }
     iinfo = _dlasq2(n, work, diag, diag_off1);
     if iinfo != 0 as i32 {
@@ -1029,15 +946,15 @@ unsafe extern "C" fn _compute_eigenvalues(
         i = 0 as i32;
         while i < n {
             if *work.offset(i as isize) < 0.0f64 {
-                fprintf(
-                    stderr,
-                    b"dlarre: negative eigenvalues\n\0" as *const u8
-                        as *const libc::c_char,
-                );
+                eprintln!("dlarre: negative eigenvalues");
+                // fprintf(
+                //     stderr,
+                //     b"dlarre: negative eigenvalues\n\0" as *const u8
+                //         as *const libc::c_char,
+                // );
                 return -(6 as i32);
             }
             i += 1;
-            i;
         }
     }
     if sgndef > 0.0f64 {
@@ -1045,21 +962,18 @@ unsafe extern "C" fn _compute_eigenvalues(
         while i < n {
             *w.offset(i as isize) = *work.offset((n - 1 as i32 - i) as isize);
             i += 1;
-            i;
         }
     } else {
         i = 0 as i32;
         while i < n {
             *w.offset(i as isize) = -*work.offset(i as isize);
             i += 1;
-            i;
         }
     }
     i = 0 as i32;
     while i < n {
-        *werr.offset(i as isize) = rtol * fabs(*w.offset(i as isize));
+        *werr.offset(i as isize) = rtol * (*w.offset(i as isize)).abs();
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < n - 1 as i32 {
@@ -1078,7 +992,6 @@ unsafe extern "C" fn _compute_eigenvalues(
                 - (*w.offset(i as isize) + *werr.offset(i as isize))
         };
         i += 1;
-        i;
     }
     *wgap
         .offset(
@@ -1130,7 +1043,7 @@ unsafe extern "C" fn _dlarrf(
     let mut growthbound: f64 = 0.;
     let mut lsigma: f64 = 0.;
     lsigma = *w.offset(clstrt as isize) - *werr.offset(clstrt as isize);
-    lsigma -= fabs(lsigma) * 4.0f64 * 2.2204460492503131e-16f64;
+    lsigma -= lsigma.abs() * 4.0f64 * 2.2204460492503131e-16f64;
     growthbound = *diag.offset(0 as i32 as isize) * 8.0f64;
     ktry = 0 as i32;
     while ktry < 2 as i32 {
@@ -1139,7 +1052,7 @@ unsafe extern "C" fn _dlarrf(
             .offset(
                 0 as i32 as isize,
             ) = *diag.offset(0 as i32 as isize) + s;
-        max1 = fabs(*dplus.offset(0 as i32 as isize));
+        max1 = (*dplus.offset(0 as i32 as isize)).abs();
         i = 0 as i32;
         while i < n - 1 as i32 {
             tmp = *ld.offset(i as isize) / *dplus.offset(i as isize);
@@ -1149,13 +1062,12 @@ unsafe extern "C" fn _dlarrf(
                 .offset(
                     (i + 1 as i32) as isize,
                 ) = *diag.offset((i + 1 as i32) as isize) + s;
-            max1 = if max1 > fabs(*dplus.offset((i + 1 as i32) as isize)) {
+            max1 = if max1 > (*dplus.offset((i + 1 as i32) as isize)).abs() {
                 max1
             } else {
-                fabs(*dplus.offset((i + 1 as i32) as isize))
+                (*dplus.offset((i + 1 as i32) as isize)).abs()
             };
             i += 1;
-            i;
         }
         *sigma = lsigma;
         if max1 <= growthbound {
@@ -1168,10 +1080,10 @@ unsafe extern "C" fn _dlarrf(
                 *wgap.offset(clstrt as isize)
             });
         ktry += 1;
-        ktry;
     }
     if max1 > 1e16f64 {
-        fprintf(stderr, b"dlarrf max1 = %g\0" as *const u8 as *const libc::c_char, max1);
+        eprintln!("dlarrf max1 = {}", max1);
+        // fprintf(stderr, b"dlarrf max1 = %g\0" as *const u8 as *const libc::c_char, max1);
         return 1 as i32;
     }
     return 0 as i32;
@@ -1196,11 +1108,9 @@ unsafe extern "C" fn _dlaneg(
         dplus = *diag.offset(j as isize) + t;
         if dplus < 0.0f64 {
             negcnt += 1;
-            negcnt;
         }
         t = t / dplus * *lld.offset(j as isize) - sigma;
         j += 1;
-        j;
     }
     p = *diag.offset((n - 1 as i32) as isize) - sigma;
     j = n - 2 as i32;
@@ -1208,15 +1118,12 @@ unsafe extern "C" fn _dlaneg(
         dminus = *lld.offset(j as isize) + p;
         if dminus < 0.0f64 {
             negcnt += 1;
-            negcnt;
         }
         p = p / dminus * *diag.offset(j as isize) - sigma;
         j -= 1;
-        j;
     }
     if t + sigma + p < 0.0f64 {
         negcnt += 1;
-        negcnt;
     }
     return negcnt;
 }
@@ -1243,23 +1150,23 @@ unsafe extern "C" fn _dlarrb(
     let mut width: f64 = 0.;
     let mut cvrgd: f64 = if rtol1 * *wgap.offset(ifirst as isize)
         > rtol2
-            * (if fabs(*w.offset(ifirst as isize))
-                > fabs(*w.offset((ilast - 1 as i32) as isize))
+            * (if (*w.offset(ifirst as isize)).abs()
+                > (*w.offset((ilast - 1 as i32) as isize)).abs()
             {
-                fabs(*w.offset(ifirst as isize))
+                (*w.offset(ifirst as isize)).abs()
             } else {
-                fabs(*w.offset((ilast - 1 as i32) as isize))
+                (*w.offset((ilast - 1 as i32) as isize)).abs()
             })
     {
         rtol1 * *wgap.offset(ifirst as isize)
     } else {
         rtol2
-            * (if fabs(*w.offset(ifirst as isize))
-                > fabs(*w.offset((ilast - 1 as i32) as isize))
+            * (if (*w.offset(ifirst as isize)).abs()
+                > (*w.offset((ilast - 1 as i32) as isize)).abs()
             {
-                fabs(*w.offset(ifirst as isize))
+                (*w.offset(ifirst as isize)).abs()
             } else {
-                fabs(*w.offset((ilast - 1 as i32) as isize))
+                (*w.offset((ilast - 1 as i32) as isize)).abs()
             })
     };
     i = ifirst;
@@ -1295,13 +1202,11 @@ unsafe extern "C" fn _dlarrb(
                     right = mid;
                 }
                 iter += 1;
-                iter;
             }
             *w.offset(i as isize) = mid;
             *werr.offset(i as isize) = width;
         }
         i += 1;
-        i;
     }
     i = ifirst;
     while i < ilast - 1 as i32 {
@@ -1320,7 +1225,6 @@ unsafe extern "C" fn _dlarrb(
                 - *werr.offset(i as isize)
         };
         i += 1;
-        i;
     }
     return 0 as i32;
 }
@@ -1369,14 +1273,12 @@ unsafe extern "C" fn _dlar1v(
         dminus = *lld.offset(i as isize) + s;
         if dminus < 0.0f64 {
             neg2 += 1;
-            neg2;
         }
         tmp = *diag.offset(i as isize) / dminus;
         *uminus.offset(i as isize) = *diag_off1.offset(i as isize) * tmp;
         s = s * tmp - lambda;
         *work_p.offset(i as isize) = s;
         i -= 1;
-        i;
     }
     neg1 = 0 as i32;
     s = -lambda;
@@ -1385,17 +1287,14 @@ unsafe extern "C" fn _dlar1v(
         dplus = *diag.offset(i as isize) + s;
         if dplus < 0.0f64 {
             neg1 += 1;
-            neg1;
         }
         *lplus.offset(i as isize) = *ld.offset(i as isize) / dplus;
         s = s * *lplus.offset(i as isize) * *diag_off1.offset(i as isize) - lambda;
         i += 1;
-        i;
     }
     mingma = s + lambda + *work_p.offset(r1 as isize);
     if mingma < 0.0f64 {
         neg1 += 1;
-        neg1;
     }
     *negcnt = neg1 + neg2;
     i = r1;
@@ -1405,12 +1304,11 @@ unsafe extern "C" fn _dlar1v(
         tmp = s * *lplus.offset(i as isize) * *diag_off1.offset(i as isize);
         s = tmp - lambda;
         tmp = tmp + *work_p.offset((i + 1 as i32) as isize);
-        if fabs(tmp) <= fabs(mingma) {
+        if tmp.abs() <= mingma.abs() {
             mingma = tmp;
             *twist_index = i + 1 as i32;
         }
         i += 1;
-        i;
     }
     *vec.offset(*twist_index as isize) = 1.0f64;
     let mut ztz: f64 = 1.0f64;
@@ -1421,7 +1319,6 @@ unsafe extern "C" fn _dlar1v(
         ztz += tmp * tmp;
         *vec.offset(i as isize) = tmp;
         i -= 1;
-        i;
     }
     i = *twist_index;
     while i < n - 1 as i32 {
@@ -1429,17 +1326,15 @@ unsafe extern "C" fn _dlar1v(
         ztz += tmp * tmp;
         *vec.offset((i + 1 as i32) as isize) = tmp;
         i += 1;
-        i;
     }
     tmp = 1.0f64 / ztz;
-    nrminv = sqrt(tmp);
+    nrminv = (tmp).sqrt();
     i = 0 as i32;
     while i < n {
         *vec.offset(i as isize) *= nrminv;
         i += 1;
-        i;
     }
-    *resid = fabs(mingma) * nrminv;
+    *resid = mingma.abs() * nrminv;
     *rqcorr = mingma * tmp;
 }
 unsafe extern "C" fn _compute_eigenvectors(
@@ -1507,14 +1402,12 @@ unsafe extern "C" fn _compute_eigenvectors(
     while i < n * 6 as i32 {
         *work.offset(i as isize) = 0.0f64;
         i += 1;
-        i;
     }
     twist_indices = iwork;
     i = 0 as i32;
     while i < n {
         *twist_indices.offset(i as isize) = 0 as i32;
         i += 1;
-        i;
     }
     old_cluster_range = iwork.offset(n as isize);
     new_cluster_range = iwork.offset((n * 3 as i32) as isize);
@@ -1532,7 +1425,6 @@ unsafe extern "C" fn _compute_eigenvectors(
         *buf_w.offset(i as isize) = *w.offset(i as isize);
         *w.offset(i as isize) += sigma;
         i += 1;
-        i;
     }
     ncluster = 1 as i32;
     *old_cluster_range.offset(0 as i32 as isize) = 0 as i32;
@@ -1555,7 +1447,6 @@ unsafe extern "C" fn _compute_eigenvectors(
                 while i < n {
                     *diag.offset(i as isize) = *vec.offset((oldfst * n + i) as isize);
                     i += 1;
-                    i;
                 }
                 i = 0 as i32;
                 while i < n - 1 as i32 {
@@ -1564,7 +1455,6 @@ unsafe extern "C" fn _compute_eigenvectors(
                             i as isize,
                         ) = *vec.offset(((oldfst + 1 as i32) * n + i) as isize);
                     i += 1;
-                    i;
                 }
                 sigma = *vec
                     .offset(
@@ -1577,7 +1467,6 @@ unsafe extern "C" fn _compute_eigenvectors(
                 *buf_ld.offset(j as isize) = tmp;
                 *buf_lld.offset(j as isize) = tmp * *diag_off1.offset(j as isize);
                 j += 1;
-                j;
             }
             newfst = oldfst;
             newlst = oldfst + 1 as i32;
@@ -1585,7 +1474,7 @@ unsafe extern "C" fn _compute_eigenvectors(
                 if !(newlst < oldlst
                     && *wgap.offset((newlst - 1 as i32) as isize)
                         < 0.001f64
-                            * fabs(*buf_w.offset((newlst - 1 as i32) as isize)))
+                            * (*buf_w.offset((newlst - 1 as i32) as isize)).abs())
                 {
                     if newlst - newfst > 1 as i32 {
                         _dlarrb(
@@ -1638,12 +1527,11 @@ unsafe extern "C" fn _compute_eigenvectors(
                             ) = sigma + tau;
                         k = newfst;
                         while k < newlst {
-                            fudge = eps * 3.0f64 * fabs(*buf_w.offset(k as isize));
+                            fudge = eps * 3.0f64 * (*buf_w.offset(k as isize)).abs();
                             *buf_w.offset(k as isize) -= tau;
-                            fudge += eps * 4.0f64 * fabs(*buf_w.offset(k as isize));
+                            fudge += eps * 4.0f64 * (*buf_w.offset(k as isize)).abs();
                             *werr.offset(k as isize) += fudge;
                             k += 1;
-                            k;
                         }
                         *new_cluster_range
                             .offset((ncluster * 2 as i32) as isize) = newfst;
@@ -1652,7 +1540,6 @@ unsafe extern "C" fn _compute_eigenvectors(
                                 (ncluster * 2 as i32 + 1 as i32) as isize,
                             ) = newlst;
                         ncluster += 1;
-                        ncluster;
                     } else {
                         lambda = *buf_w.offset(newfst as isize);
                         left = lambda - *werr.offset(newfst as isize);
@@ -1665,7 +1552,7 @@ unsafe extern "C" fn _compute_eigenvectors(
                         }
                         savgap = gap;
                         resid_tol = tol * gap;
-                        rqcorr_tol = rqtol * fabs(lambda);
+                        rqcorr_tol = rqtol * lambda.abs();
                         needbs = 0 as i32;
                         bstres = 1e307f64;
                         bstw = 0 as i32 as f64;
@@ -1691,7 +1578,7 @@ unsafe extern "C" fn _compute_eigenvectors(
                                 bstres = resid;
                                 bstw = lambda;
                             }
-                            if resid < resid_tol || fabs(rqcorr) < rqcorr_tol {
+                            if resid < resid_tol || rqcorr.abs() < rqcorr_tol {
                                 break;
                             }
                             if lambda + rqcorr > right || lambda + rqcorr < left {
@@ -1736,7 +1623,6 @@ unsafe extern "C" fn _compute_eigenvectors(
                                     break;
                                 } else {
                                     iter += 1;
-                                    iter;
                                 }
                             }
                         }
@@ -1806,21 +1692,17 @@ unsafe extern "C" fn _compute_eigenvectors(
                             };
                         }
                         idone += 1;
-                        idone;
                     }
                     newfst = newlst;
                 }
                 newlst += 1;
-                newlst;
             }
             icls += 1;
-            icls;
         }
         swap = old_cluster_range;
         old_cluster_range = new_cluster_range;
         new_cluster_range = swap;
         ndepth += 1;
-        ndepth;
     }
     if idone < n {
         return -(2 as i32);
@@ -1853,7 +1735,7 @@ unsafe extern "C" fn _dlaev2(
     sm = a + c;
     df = a - c;
     tb = b + b;
-    rt = sqrt(tb * tb + df * df);
+    rt = (tb * tb + df * df).sqrt();
     if sm > 0.0f64 {
         rt1 = (sm + rt) * 0.5f64;
         sgn1 = 1 as i32;
@@ -1874,16 +1756,16 @@ unsafe extern "C" fn _dlaev2(
         cs = df - rt;
         sgn2 = -(1 as i32);
     }
-    if fabs(cs) > fabs(tb) {
+    if cs.abs() > tb.abs() {
         ct = -tb / cs;
-        sn1 = 1.0f64 / sqrt(ct * ct + 1.0f64);
+        sn1 = 1.0f64 / (ct * ct + 1.0f64).sqrt();
         cs1 = ct * sn1;
     } else if b == 0.0f64 {
         cs1 = 1.0f64;
         sn1 = 0.0f64;
     } else {
         tn = -cs / tb;
-        cs1 = 1.0f64 / sqrt(tn * tn + 1.0f64);
+        cs1 = 1.0f64 / (tn * tn + 1.0f64).sqrt();
         sn1 = tn * cs1;
     }
     if sgn1 == sgn2 {

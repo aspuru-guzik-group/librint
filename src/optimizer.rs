@@ -106,6 +106,7 @@ pub unsafe extern "C" fn CINTno_optimizer(
     mut env: *mut f64,
 ) {
     *opt = 0 as *mut CINTOpt;
+    unimplemented!("this function does nothing");
 }
 unsafe extern "C" fn _make_fakebas(
     mut fakebas: *mut i32,
@@ -125,20 +126,17 @@ unsafe extern "C" fn _make_fakebas(
             *bas.offset((8 as i32 * i + 1 as i32) as isize)
         };
         i += 1;
-        i;
     }
     let mut fakenbas: i32 = max_l + 1 as i32;
     i = 0 as i32;
     while i < 8 as i32 * fakenbas {
         *fakebas.offset(i as isize) = 0 as i32;
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i <= max_l {
         *fakebas.offset((8 as i32 * i + 1 as i32) as isize) = i;
         i += 1;
-        i;
     }
     return max_l;
 }
@@ -160,7 +158,6 @@ unsafe extern "C" fn _allocate_index_xyz(
         cc = (cc as libc::c_ulong).wrapping_mul(cumcart as libc::c_ulong) as size_t
             as size_t;
         i += 1;
-        i;
     }
     let mut buf: *mut i32 = malloc(
         (::core::mem::size_of::<i32>() as libc::c_ulong)
@@ -177,7 +174,6 @@ unsafe extern "C" fn _allocate_index_xyz(
         let ref mut fresh1 = *ppbuf.offset(i as isize);
         *fresh1 = 0 as *mut i32;
         i += 1;
-        i;
     }
     (*opt).index_xyz_array = ppbuf;
     return buf;
@@ -242,10 +238,8 @@ unsafe extern "C" fn gen_idx(
                 )(buf, &mut envs);
                 buf = buf.offset((envs.nf * 3 as i32) as isize);
                 j += 1;
-                j;
             }
             i += 1;
-            i;
         }
     } else if order == 3 as i32 {
         i = 0 as i32;
@@ -286,13 +280,10 @@ unsafe extern "C" fn gen_idx(
                     )(buf, &mut envs);
                     buf = buf.offset((envs.nf * 3 as i32) as isize);
                     k += 1;
-                    k;
                 }
                 j += 1;
-                j;
             }
             i += 1;
-            i;
         }
     } else {
         i = 0 as i32;
@@ -339,16 +330,12 @@ unsafe extern "C" fn gen_idx(
                         )(buf, &mut envs);
                         buf = buf.offset((envs.nf * 3 as i32) as isize);
                         l += 1;
-                        l;
                     }
                     k += 1;
-                    k;
                 }
                 j += 1;
-                j;
             }
             i += 1;
-            i;
         }
     };
 }
@@ -751,11 +738,9 @@ pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
                 fabs(*coeff.offset((i * nprim + ip) as isize))
             };
             i += 1;
-            i;
         }
         *log_maxc.offset(ip as isize) = log(maxc);
         ip += 1;
-        ip;
     }
 }
 #[no_mangle]
@@ -780,7 +765,6 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
                     as libc::c_ulong,
             ) as size_t as size_t;
         i += 1;
-        i;
     }
     if tot_prim == 0 as i32 as libc::c_ulong {
         return;
@@ -812,7 +796,6 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
         CINTOpt_log_max_pgto_coeff(plog_maxc, ci, iprim, ictr);
         plog_maxc = plog_maxc.offset(iprim as isize);
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -898,12 +881,9 @@ pub unsafe extern "C" fn CINTset_pairdata(
                 (*pdata).eij = 0 as i32 as f64;
             }
             ip += 1;
-            ip;
             n += 1;
-            n;
         }
         jp += 1;
-        jp;
     }
     return empty;
 }
@@ -956,7 +936,6 @@ pub unsafe extern "C" fn CINTOpt_setij(
                     as libc::c_ulong,
             ) as size_t as size_t;
         i += 1;
-        i;
     }
     if tot_prim == 0 as i32 as libc::c_ulong
         || tot_prim > 2048 as i32 as libc::c_ulong
@@ -1086,12 +1065,9 @@ pub unsafe extern "C" fn CINTOpt_setij(
                                 ::core::mem::size_of::<PairData>() as libc::c_ulong,
                             );
                             jp += 1;
-                            jp;
                             pdata = pdata.offset(1);
-                            pdata;
                         }
                         ip += 1;
-                        ip;
                     }
                 }
             } else {
@@ -1103,10 +1079,8 @@ pub unsafe extern "C" fn CINTOpt_setij(
                     as *mut PairData;
             }
             j += 1;
-            j;
         }
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -1144,26 +1118,21 @@ pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
             {
                 *sortedidx.offset(k as isize) = j;
                 k += 1;
-                k;
             } else {
                 *zeroidx.as_mut_ptr().offset(kp as isize) = j;
                 kp += 1;
-                kp;
             }
             j += 1;
-            j;
         }
         j = 0 as i32;
         while j < kp {
             *sortedidx
                 .offset((k + j) as isize) = *zeroidx.as_mut_ptr().offset(j as isize);
             j += 1;
-            j;
         }
         *non0ctr.offset(ip as isize) = k;
         sortedidx = sortedidx.offset(ictr as isize);
         ip += 1;
-        ip;
     }
 }
 #[no_mangle]
@@ -1195,7 +1164,6 @@ pub unsafe extern "C" fn CINTOpt_set_non0coeff(
                     as libc::c_ulong,
             ) as size_t as size_t;
         i += 1;
-        i;
     }
     if tot_prim == 0 as i32 as libc::c_ulong {
         return;
@@ -1243,6 +1211,5 @@ pub unsafe extern "C" fn CINTOpt_set_non0coeff(
         pnon0ctr = pnon0ctr.offset(iprim as isize);
         psortedidx = psortedidx.offset((iprim * ictr) as isize);
         i += 1;
-        i;
     }
 }

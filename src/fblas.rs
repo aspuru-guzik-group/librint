@@ -6,7 +6,6 @@ pub unsafe extern "C" fn CINTdset0(mut n: i32, mut x: *mut f64) {
     while i < n {
         *x.offset(i as isize) = 0 as i32 as f64;
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -22,7 +21,6 @@ pub unsafe extern "C" fn CINTdaxpy2v(
     while i < n {
         *v.offset(i as isize) = a * *x.offset(i as isize) + *y.offset(i as isize);
         i += 1;
-        i;
     }
 }
 #[no_mangle]
@@ -56,7 +54,6 @@ pub unsafe extern "C" fn CINTdmat_transpose(
                     ((j + 3 as i32) * m + i) as isize,
                 ) = *a.offset((i * n + j + 3 as i32) as isize);
             i += 1;
-            i;
         }
         j += 4 as i32;
     }
@@ -66,7 +63,6 @@ pub unsafe extern "C" fn CINTdmat_transpose(
             while i < m {
                 *a_t.offset((j * m + i) as isize) = *a.offset((i * n + j) as isize);
                 i += 1;
-                i;
             }
         }
         2 => {
@@ -81,7 +77,6 @@ pub unsafe extern "C" fn CINTdmat_transpose(
                         ((j + 1 as i32) * m + i) as isize,
                     ) = *a.offset((i * n + j + 1 as i32) as isize);
                 i += 1;
-                i;
             }
         }
         3 => {
@@ -100,7 +95,6 @@ pub unsafe extern "C" fn CINTdmat_transpose(
                         ((j + 2 as i32) * m + i) as isize,
                     ) = *a.offset((i * n + j + 2 as i32) as isize);
                 i += 1;
-                i;
             }
         }
         _ => {}
@@ -129,7 +123,6 @@ pub unsafe extern "C" fn CINTdplus_transpose(
             *a_t.offset(((j + 3 as i32) * m + i) as isize)
                 += *a.offset((i * n + j + 3 as i32) as isize);
             i += 1;
-            i;
         }
         j += 4 as i32;
     }
@@ -139,7 +132,6 @@ pub unsafe extern "C" fn CINTdplus_transpose(
             while i < m {
                 *a_t.offset((j * m + i) as isize) += *a.offset((i * n + j) as isize);
                 i += 1;
-                i;
             }
         }
         2 => {
@@ -150,7 +142,6 @@ pub unsafe extern "C" fn CINTdplus_transpose(
                 *a_t.offset(((j + 1 as i32) * m + i) as isize)
                     += *a.offset((i * n + j + 1 as i32) as isize);
                 i += 1;
-                i;
             }
         }
         3 => {
@@ -163,7 +154,6 @@ pub unsafe extern "C" fn CINTdplus_transpose(
                 *a_t.offset(((j + 2 as i32) * m + i) as isize)
                     += *a.offset((i * n + j + 2 as i32) as isize);
                 i += 1;
-                i;
             }
         }
         _ => {}
@@ -189,7 +179,6 @@ pub unsafe extern "C" fn CINTdgemm_NN1(
         while i < m {
             *c.offset((i + ldc * j) as isize) = 0 as i32 as f64;
             i += 1;
-            i;
         }
         kp = 0 as i32;
         while kp < k {
@@ -199,13 +188,10 @@ pub unsafe extern "C" fn CINTdgemm_NN1(
                 *c.offset((i + ldc * j) as isize)
                     += *a.offset((i + m * kp) as isize) * bi;
                 i += 1;
-                i;
             }
             kp += 1;
-            kp;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -243,14 +229,11 @@ pub unsafe extern "C" fn CINTdgemm_TN(
                     += *a.offset((kp + k * i) as isize)
                         * *b.offset((kp + k * j) as isize);
                 kp += 1;
-                kp;
             }
             *c.offset((i + m * j) as isize) = ci;
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]
@@ -272,7 +255,6 @@ pub unsafe extern "C" fn CINTdgemm_NT(
         while i < m {
             *c.offset((i + m * j) as isize) = 0 as i32 as f64;
             i += 1;
-            i;
         }
         kp = 0 as i32;
         while kp < k {
@@ -281,12 +263,9 @@ pub unsafe extern "C" fn CINTdgemm_NT(
             while i < m {
                 *c.offset((i + m * j) as isize) += *a.offset((i + m * kp) as isize) * bi;
                 i += 1;
-                i;
             }
             kp += 1;
-            kp;
         }
         j += 1;
-        j;
     }
 }

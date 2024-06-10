@@ -239,9 +239,7 @@ pub unsafe extern "C" fn CINT1e_loop(
                 *iempty = 0 as i32;
             }
             ip += 1;
-            ip;
             pdata_ij = pdata_ij.offset(1);
-            pdata_ij;
         }
         if *iempty == 0 {
             if j_ctr > 1 as i32 {
@@ -272,7 +270,6 @@ pub unsafe extern "C" fn CINT1e_loop(
             *jempty = 0 as i32;
         }
         jp += 1;
-        jp;
     }
     if n_comp > 1 as i32 && *jempty == 0 {
         CINTdmat_transpose(gctr, gctrj, (*envs).nf * nc, n_comp);
@@ -434,14 +431,12 @@ pub unsafe extern "C" fn CINT1e_drv(
                 cache,
             );
             n += 1;
-            n;
         }
     } else {
         n = 0 as i32;
         while n < n_comp {
             c2s_dset0(out.offset((nout * n) as isize), dims, counts.as_mut_ptr());
             n += 1;
-            n;
         }
     }
     if !stack.is_null() {
@@ -497,7 +492,6 @@ unsafe extern "C" fn make_g1e_gout(
                     (empty != 0 && ia == 0 as i32) as i32,
                 );
                 ia += 1;
-                ia;
             }
         }
         _ => {}
@@ -528,7 +522,6 @@ pub unsafe extern "C" fn CINTgout1e(
                 ) = *g.offset(ix as isize) * *g.offset(iy as isize)
                 * *g.offset(iz as isize);
             n += 1;
-            n;
         }
     } else {
         n = 0 as i32;
@@ -540,7 +533,6 @@ pub unsafe extern "C" fn CINTgout1e(
                 += *g.offset(ix as isize) * *g.offset(iy as isize)
                     * *g.offset(iz as isize);
             n += 1;
-            n;
         }
     };
 }
@@ -585,11 +577,9 @@ pub unsafe extern "C" fn CINTgout1e_nuc(
                     += *gx.offset(i as isize) * *gy.offset(i as isize)
                         * *gz.offset(i as isize);
                 i += 1;
-                i;
             }
             *gout.offset(n as isize) = s;
             n += 1;
-            n;
         }
     } else {
         n = 0 as i32;
@@ -616,11 +606,9 @@ pub unsafe extern "C" fn CINTgout1e_nuc(
                     += *gx.offset(i as isize) * *gy.offset(i as isize)
                         * *gz.offset(i as isize);
                 i += 1;
-                i;
             }
             *gout.offset(n as isize) += s;
             n += 1;
-            n;
         }
     };
 }
@@ -765,6 +753,7 @@ pub unsafe fn int1e_ovlp_cart(
         0 as i32,
     );
 }
+// this function does nothing
 #[no_mangle]
 pub unsafe extern "C" fn int1e_ovlp_optimizer(
     mut opt: *mut *mut CINTOpt,

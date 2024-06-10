@@ -109,7 +109,6 @@ pub unsafe extern "C" fn CINTgout1e_int1e_kin(
                     - s[8 as i32 as usize];
         }
         n += 1;
-        n;
     }
 }
 #[no_mangle]
@@ -134,16 +133,16 @@ pub unsafe extern "C" fn int1e_kin_optimizer(
     CINTall_1e_optimizer(opt, ng.as_mut_ptr(), atm, natm, bas, nbas, env);
 }
 #[no_mangle]
-pub unsafe extern "C" fn int1e_kin_cart(
-    mut out: &mut [f64],
-    mut dims: &mut [i32],
-    mut shls: &mut [i32],
-    mut atm: &mut [i32],
-    mut natm: i32,
-    mut bas: &mut [i32],
-    mut nbas: i32,
-    mut env: &mut [f64],
-    mut cache: &mut [f64],
+pub unsafe fn int1e_kin_cart(
+    out: &mut [f64],
+    dims: &mut [i32],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    natm: i32,
+    bas: &mut [i32],
+    nbas: i32,
+    env: &mut [f64],
+    cache: &mut [f64],
 ) -> i32 {
     let mut ng: [i32; 8] = [0, 2, 0, 0, 2, 1, 1, 1];
     let mut envs: CINTEnvVars = CINTEnvVars::new();

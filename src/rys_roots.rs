@@ -1,5 +1,7 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 
+use std::process::exit;
+
 use crate::find_roots::_CINT_polynomial_roots;
 use crate::fmt::fmt_erfc_like;
 use crate::fmt::fmt_lerfc_like;
@@ -10,55 +12,55 @@ use crate::rys_wheeler::CINTrys_jacobi;
 use crate::rys_wheeler::CINTlrys_jacobi;
 
 extern "C" {
-    pub type _IO_wide_data;
-    pub type _IO_codecvt;
-    pub type _IO_marker;
-    static mut stderr: *mut FILE;
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
-    fn exit(_: i32) -> !;
+    // pub type _IO_wide_data;
+    // pub type _IO_codecvt;
+    // pub type _IO_marker;
+    // static mut stderr: *mut FILE;
+    // fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
+    // fn exit(_: i32) -> !;
     fn exp(_: f64) -> f64;
-    fn pow(_: f64, _: f64) -> f64;
+    // fn pow(_: f64, _: f64) -> f64;
     fn sqrtl(_: f64) -> f64;
     fn sqrt(_: f64) -> f64;
 }
-pub type size_t = libc::c_ulong;
-pub type __off_t = libc::c_long;
-pub type __off64_t = libc::c_long;
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct _IO_FILE {
-    pub _flags: i32,
-    pub _IO_read_ptr: *mut libc::c_char,
-    pub _IO_read_end: *mut libc::c_char,
-    pub _IO_read_base: *mut libc::c_char,
-    pub _IO_write_base: *mut libc::c_char,
-    pub _IO_write_ptr: *mut libc::c_char,
-    pub _IO_write_end: *mut libc::c_char,
-    pub _IO_buf_base: *mut libc::c_char,
-    pub _IO_buf_end: *mut libc::c_char,
-    pub _IO_save_base: *mut libc::c_char,
-    pub _IO_backup_base: *mut libc::c_char,
-    pub _IO_save_end: *mut libc::c_char,
-    pub _markers: *mut _IO_marker,
-    pub _chain: *mut _IO_FILE,
-    pub _fileno: i32,
-    pub _flags2: i32,
-    pub _old_offset: __off_t,
-    pub _cur_column: libc::c_ushort,
-    pub _vtable_offset: libc::c_schar,
-    pub _shortbuf: [libc::c_char; 1],
-    pub _lock: *mut libc::c_void,
-    pub _offset: __off64_t,
-    pub _codecvt: *mut _IO_codecvt,
-    pub _wide_data: *mut _IO_wide_data,
-    pub _freeres_list: *mut _IO_FILE,
-    pub _freeres_buf: *mut libc::c_void,
-    pub __pad5: size_t,
-    pub _mode: i32,
-    pub _unused2: [libc::c_char; 20],
-}
-pub type _IO_lock_t = ();
-pub type FILE = _IO_FILE;
+// pub type size_t = libc::c_ulong;
+// pub type __off_t = libc::c_long;
+// pub type __off64_t = libc::c_long;
+// #[derive(Copy, Clone)]
+// #[repr(C)]
+// pub struct _IO_FILE {
+//     pub _flags: i32,
+//     pub _IO_read_ptr: *mut libc::c_char,
+//     pub _IO_read_end: *mut libc::c_char,
+//     pub _IO_read_base: *mut libc::c_char,
+//     pub _IO_write_base: *mut libc::c_char,
+//     pub _IO_write_ptr: *mut libc::c_char,
+//     pub _IO_write_end: *mut libc::c_char,
+//     pub _IO_buf_base: *mut libc::c_char,
+//     pub _IO_buf_end: *mut libc::c_char,
+//     pub _IO_save_base: *mut libc::c_char,
+//     pub _IO_backup_base: *mut libc::c_char,
+//     pub _IO_save_end: *mut libc::c_char,
+//     pub _markers: *mut _IO_marker,
+//     pub _chain: *mut _IO_FILE,
+//     pub _fileno: i32,
+//     pub _flags2: i32,
+//     pub _old_offset: __off_t,
+//     pub _cur_column: libc::c_ushort,
+//     pub _vtable_offset: libc::c_schar,
+//     pub _shortbuf: [libc::c_char; 1],
+//     pub _lock: *mut libc::c_void,
+//     pub _offset: __off64_t,
+//     pub _codecvt: *mut _IO_codecvt,
+//     pub _wide_data: *mut _IO_wide_data,
+//     pub _freeres_list: *mut _IO_FILE,
+//     pub _freeres_buf: *mut libc::c_void,
+//     pub __pad5: size_t,
+//     pub _mode: i32,
+//     pub _unused2: [libc::c_char; 20],
+// }
+// pub type _IO_lock_t = ();
+// pub type FILE = _IO_FILE;
 pub type QuadratureFunction = unsafe extern "C" fn(
     i32,
     f64,
@@ -3099,7 +3101,6 @@ pub unsafe extern "C" fn CINTrys_roots(
                 ) = POLY_SMALLX_W0[(off + i) as usize]
                 + POLY_SMALLX_W1[(off + i) as usize] * x;
             i += 1;
-            i;
         }
         return;
     } else if x >= (35 as i32 + nroots * 5 as i32) as f64 {
@@ -3114,7 +3115,6 @@ pub unsafe extern "C" fn CINTrys_roots(
             *u.offset(i_0 as isize) = rt / (x - rt);
             *w.offset(i_0 as isize) = POLY_LARGEX_WW[(off_0 + i_0) as usize] * t;
             i_0 += 1;
-            i_0;
         }
         return;
     }
@@ -3317,12 +3317,13 @@ pub unsafe extern "C" fn CINTrys_roots(
         }
     }
     if err != 0 {
-        fprintf(
-            stderr,
-            b"rys_roots fails: nroots=%d x=%g\n\0" as *const u8 as *const libc::c_char,
-            nroots,
-            x,
-        );
+        eprintln!("rys_roots fails: nroots={} x={}", nroots, x);
+        // fprintf(
+        //     stderr,
+        //     b"rys_roots fails: nroots=%d x=%g\n\0" as *const u8 as *const libc::c_char,
+        //     nroots,
+        //     x,
+        // );
         exit(err);
     }
 }
@@ -3995,24 +3996,26 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
             );
         }
         _ => {
-            fprintf(
-                stderr,
-                b"libcint SR-rys_roots does not support nroots=%d\n\0" as *const u8
-                    as *const libc::c_char,
-                nroots,
-            );
-            exit(1 as i32);
+            eprintln!("libcint SR-rys_roots does not support nroots={}", nroots);
+            // fprintf(
+            //     stderr,
+            //     b"libcint SR-rys_roots does not support nroots=%d\n\0" as *const u8
+            //         as *const libc::c_char,
+            //     nroots,
+            // );
+            exit(1);
         }
     }
     if err != 0 {
-        fprintf(
-            stderr,
-            b"sr_rys_roots fails: nroots=%d x=%.15g lower=%.15g\n\0" as *const u8
-                as *const libc::c_char,
-            nroots,
-            x,
-            lower,
-        );
+        eprintln!("sr_rys_roots fails: nroots={} x={:.15} lower={:.15}", nroots, x, lower);
+        // fprintf(
+        //     stderr,
+        //     b"sr_rys_roots fails: nroots=%d x=%.15g lower=%.15g\n\0" as *const u8
+        //         as *const libc::c_char,
+        //     nroots,
+        //     x,
+        //     lower,
+        // );
         exit(err);
     }
 }
@@ -4876,7 +4879,7 @@ unsafe extern "C" fn rys_root4(
             - 6.0156581186481E-05f64) * E + WW1 - WW2 - WW3 - WW4;
     } else if X <= 53 as i32 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
-        E = exp(-X) * pow(X, 4 as i32 as f64);
+        E = exp(-X) * X.powf(4 as f64);
         RT4 = ((-2.19135070169653E-03f64 * X - 1.19108256987623E-01f64) * X
             - 7.50238795695573E-01f64) * E + R44 / (X - R44);
         RT3 = ((-9.65842534508637E-04f64 * X - 4.49822013469279E-02f64) * X
@@ -5458,22 +5461,21 @@ unsafe extern "C" fn R_dsmit(
     tmp = *fmt_ints.offset(2 as i32 as isize)
         + fac * *fmt_ints.offset(1 as i32 as isize);
     if tmp <= 0 as i32 as f64 {
-        fprintf(
-            stderr,
-            b"libcint::rys_roots negative value in sqrt for roots %d (j=1)\n\0"
-                as *const u8 as *const libc::c_char,
-            n - 1 as i32,
-        );
+        eprintln!("libcint::rys_roots negative value in sqrt for roots {} (j=1)", n - 1);
+        // fprintf(
+        //     stderr,
+        //     b"libcint::rys_roots negative value in sqrt for roots %d (j=1)\n\0"
+        //         as *const u8 as *const libc::c_char,
+        //     n - 1 as i32,
+        // );
         k = 1 as i32;
         while k < n {
             i = 0 as i32;
             while i < n {
                 *cs.offset((i + k * n) as isize) = 0 as i32 as f64;
                 i += 1;
-                i;
             }
             k += 1;
-            k;
         }
         return 1 as i32;
     }
@@ -5491,7 +5493,6 @@ unsafe extern "C" fn R_dsmit(
         while k < j {
             v[k as usize] = 0 as i32 as f64;
             k += 1;
-            k;
         }
         fac = *fmt_ints.offset((j + j) as isize);
         k = 0 as i32;
@@ -5503,17 +5504,14 @@ unsafe extern "C" fn R_dsmit(
                     += *cs.offset((i + k * n) as isize)
                         * *fmt_ints.offset((i + j) as isize);
                 i += 1;
-                i;
             }
             i = 0 as i32;
             while i <= k {
                 v[i as usize] -= dot * *cs.offset((i + k * n) as isize);
                 i += 1;
-                i;
             }
             fac -= dot * dot;
             k += 1;
-            k;
         }
         if fac <= 0 as i32 as f64 {
             k = j;
@@ -5525,21 +5523,20 @@ unsafe extern "C" fn R_dsmit(
                             (i + k * n) as isize,
                         ) = 0 as i32 as f64;
                     i += 1;
-                    i;
                 }
                 k += 1;
-                k;
             }
             if fac == 0 as i32 as f64 {
                 return 0 as i32;
             }
-            fprintf(
-                stderr,
-                b"libcint::rys_roots negative value in sqrt for roots %d (j=%d)\n\0"
-                    as *const u8 as *const libc::c_char,
-                n - 1 as i32,
-                j,
-            );
+            eprintln!("libcint::rys_roots negative value in sqrt for roots {} (j={})", n - 1, j);
+            // fprintf(
+            //     stderr,
+            //     b"libcint::rys_roots negative value in sqrt for roots %d (j=%d)\n\0"
+            //         as *const u8 as *const libc::c_char,
+            //     n - 1 as i32,
+            //     j,
+            // );
             return j;
         }
         fac = 1 as i32 as f64 / sqrt(fac);
@@ -5548,10 +5545,8 @@ unsafe extern "C" fn R_dsmit(
         while k < j {
             *cs.offset((k + j * n) as isize) = fac * v[k as usize];
             k += 1;
-            k;
         }
         j += 1;
-        j;
     }
     return 0 as i32;
 }
@@ -5579,7 +5574,6 @@ unsafe extern "C" fn _rdk_rys_roots(
             *roots.offset(k as isize) = 0 as i32 as f64;
             *weights.offset(k as isize) = 0 as i32 as f64;
             k += 1;
-            k;
         }
         return 0 as i32;
     }
@@ -5622,18 +5616,15 @@ unsafe extern "C" fn _rdk_rys_roots(
                 while i <= order {
                     poly = poly * root + *a.offset((order - i) as isize);
                     i += 1;
-                    i;
                 }
                 dum += poly * poly;
                 j += 1;
-                j;
             }
             *roots
                 .offset(k as isize) = root / (1 as i32 as f64 - root);
             *weights.offset(k as isize) = 1 as i32 as f64 / dum;
         }
         k += 1;
-        k;
     }
     return 0 as i32;
 }
@@ -5670,22 +5661,21 @@ unsafe extern "C" fn R_lsmit(
     tmp = *fmt_ints.offset(2 as i32 as isize)
         + fac * *fmt_ints.offset(1 as i32 as isize);
     if tmp <= 0.0f64 {
-        fprintf(
-            stderr,
-            b"libcint::rys_roots negative value in sqrtl for roots %d (j=1)\n\0"
-                as *const u8 as *const libc::c_char,
-            n - 1 as i32,
-        );
+        eprintln!("libcint::rys_roots negative value in sqrtl for roots {} (j=1)", n - 1);
+        // fprintf(
+        //     stderr,
+        //     b"libcint::rys_roots negative value in sqrtl for roots %d (j=1)\n\0"
+        //         as *const u8 as *const libc::c_char,
+        //     n - 1 as i32,
+        // );
         k = 1 as i32;
         while k < n {
             i = 0 as i32;
             while i < n {
                 *cs.offset((i + k * n) as isize) = 0.0f64;
                 i += 1;
-                i;
             }
             k += 1;
-            k;
         }
         return 1 as i32;
     }
@@ -5703,7 +5693,6 @@ unsafe extern "C" fn R_lsmit(
         while k < j {
             v[k as usize] = 0.0f64;
             k += 1;
-            k;
         }
         fac = *fmt_ints.offset((j + j) as isize);
         k = 0 as i32;
@@ -5715,17 +5704,14 @@ unsafe extern "C" fn R_lsmit(
                     += *cs.offset((i + k * n) as isize)
                         * *fmt_ints.offset((i + j) as isize);
                 i += 1;
-                i;
             }
             i = 0 as i32;
             while i <= k {
                 v[i as usize] -= dot * *cs.offset((i + k * n) as isize);
                 i += 1;
-                i;
             }
             fac -= dot * dot;
             k += 1;
-            k;
         }
         if fac <= 0.0f64 {
             k = j;
@@ -5734,21 +5720,20 @@ unsafe extern "C" fn R_lsmit(
                 while i < n {
                     *cs.offset((i + k * n) as isize) = 0.0f64;
                     i += 1;
-                    i;
                 }
                 k += 1;
-                k;
             }
             if fac == 0.0f64 {
                 return 0 as i32;
             }
-            fprintf(
-                stderr,
-                b"libcint::rys_roots negative value in sqrtl for roots %d (j=%d)\n\0"
-                    as *const u8 as *const libc::c_char,
-                n - 1 as i32,
-                j,
-            );
+            eprintln!("libcint::rys_roots negative value in sqrtl for roots {} (j={})", n - 1, j);
+            // fprintf(
+            //     stderr,
+            //     b"libcint::rys_roots negative value in sqrtl for roots %d (j=%d)\n\0"
+            //         as *const u8 as *const libc::c_char,
+            //     n - 1 as i32,
+            //     j,
+            // );
             return j;
         }
         fac = 1.0f64 / sqrtl(fac);
@@ -5757,10 +5742,8 @@ unsafe extern "C" fn R_lsmit(
         while k < j {
             *cs.offset((k + j * n) as isize) = fac * v[k as usize];
             k += 1;
-            k;
         }
         j += 1;
-        j;
     }
     return 0 as i32;
 }
@@ -5809,16 +5792,11 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
             *roots.offset(k as isize) = 0 as i32 as f64;
             *weights.offset(k as isize) = 0 as i32 as f64;
             k += 1;
-            k;
         }
         return 0 as i32;
     }
     if nroots == 1 as i32 {
-        rt[0 as i32
-            as usize] = (fmt_ints[1 as i32 as usize]
-            / fmt_ints[0 as i32 as usize]);
-            // .to_f64()
-            // .unwrap();
+        rt[0] = fmt_ints[1 as i32 as usize] / fmt_ints[0 as i32 as usize]; // .to_f64().unwrap();
     } else {
         error = R_lsmit(qcs, fmt_ints.as_mut_ptr(), nroots1);
         if error != 0 {
@@ -5831,21 +5809,17 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
                 *cs
                     .offset(
                         (k * nroots1 + i) as isize,
-                    ) = (*qcs.offset((k * nroots1 + i) as isize)); //.to_f64().unwrap();
+                    ) = *qcs.offset((k * nroots1 + i) as isize); //.to_f64().unwrap();
                 i += 1;
-                i;
             }
             k += 1;
-            k;
         }
         error = _CINT_polynomial_roots(rt.as_mut_ptr(), cs, nroots);
         if error != 0 {
             return error;
         }
     }
-    dum0 = (1.0f64 / fmt_ints[0 as i32 as usize]);
-        // .to_f64()
-        // .unwrap();
+    dum0 = 1.0f64 / fmt_ints[0 as i32 as usize]; //.to_f64().unwrap();
     k = 0 as i32;
     while k < nroots {
         root = rt[k as usize];
@@ -5863,18 +5837,15 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
                 while i <= order {
                     poly = poly * root + *a.offset((order - i) as isize);
                     i += 1;
-                    i;
                 }
                 dum += poly * poly;
                 j += 1;
-                j;
             }
             *roots
                 .offset(k as isize) = root / (1 as i32 as f64 - root);
             *weights.offset(k as isize) = 1 as i32 as f64 / dum;
         }
         k += 1;
-        k;
     }
     return 0 as i32;
 }

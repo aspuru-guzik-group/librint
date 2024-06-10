@@ -77,7 +77,6 @@ unsafe extern "C" fn fmt1_gamma_inc_like(
         b -= 1.0f64;
         *f.offset((i - 1 as i32) as isize) = (e + t * *f.offset(i as isize)) / b;
         i -= 1;
-        i;
     }
 }
 #[no_mangle]
@@ -108,7 +107,6 @@ pub unsafe extern "C" fn gamma_inc_like(
                     * ((2 as i32 * i - 1 as i32) as f64
                         * *f.offset((i - 1 as i32) as isize) - e);
                 i += 1;
-                i;
             }
         }
     };
@@ -137,7 +135,6 @@ unsafe extern "C" fn fmt1_lgamma_inc_like(
         b -= 1 as f64;
         *f.offset((i - 1 as i32) as isize) = (e + t * *f.offset(i as isize)) / b;
         i -= 1;
-        i;
     }
 }
 #[no_mangle]
@@ -169,7 +166,6 @@ pub unsafe extern "C" fn lgamma_inc_like(
                     * ((2 as i32 * i - 1 as i32) as f64
                         * *f.offset((i - 1 as i32) as isize) - e);
                 i += 1;
-                i;
             }
         }
     };
@@ -245,7 +241,6 @@ pub unsafe extern "C" fn fmt1_erfc_like(
         val = (e - e1 + t * val) / b;
         *f.offset((i - 1 as i32) as isize) = val;
         i -= 1;
-        i;
     }
 }
 #[no_mangle]
@@ -265,7 +260,6 @@ pub unsafe extern "C" fn fmt_erfc_like(
         while i <= m {
             *f.offset(i as isize) = 0 as i32 as f64;
             i += 1;
-            i;
         }
         return;
     }
@@ -288,7 +282,6 @@ pub unsafe extern "C" fn fmt_erfc_like(
                 e1 *= lower2;
                 *f.offset((i + 1 as i32) as isize) = val;
                 i += 1;
-                i;
             }
         }
     };
@@ -310,7 +303,6 @@ pub unsafe extern "C" fn fmt_lerfc_like(
         while i <= m {
             *f.offset(i as isize) = 0.0f64;
             i += 1;
-            i;
         }
         return;
     }
@@ -334,7 +326,6 @@ pub unsafe extern "C" fn fmt_lerfc_like(
                 e1 *= lower2;
                 *f.offset((i + 1 as i32) as isize) = val;
                 i += 1;
-                i;
             }
         }
     };
@@ -376,6 +367,5 @@ pub unsafe extern "C" fn fmt1_lerfc_like(
         val = (e - e1 + t * val) / b;
         *f.offset((i - 1 as i32) as isize) = val;
         i -= 1;
-        i;
     }
 }

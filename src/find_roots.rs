@@ -1,52 +1,53 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 
-extern "C" {
-    pub type _IO_wide_data;
-    pub type _IO_codecvt;
-    pub type _IO_marker;
-    static mut stderr: *mut FILE;
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
-    fn sqrt(_: f64) -> f64;
-    fn fabs(_: f64) -> f64;
-}
-pub type size_t = libc::c_ulong;
-pub type __off_t = libc::c_long;
-pub type __off64_t = libc::c_long;
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct _IO_FILE {
-    pub _flags: i32,
-    pub _IO_read_ptr: *mut libc::c_char,
-    pub _IO_read_end: *mut libc::c_char,
-    pub _IO_read_base: *mut libc::c_char,
-    pub _IO_write_base: *mut libc::c_char,
-    pub _IO_write_ptr: *mut libc::c_char,
-    pub _IO_write_end: *mut libc::c_char,
-    pub _IO_buf_base: *mut libc::c_char,
-    pub _IO_buf_end: *mut libc::c_char,
-    pub _IO_save_base: *mut libc::c_char,
-    pub _IO_backup_base: *mut libc::c_char,
-    pub _IO_save_end: *mut libc::c_char,
-    pub _markers: *mut _IO_marker,
-    pub _chain: *mut _IO_FILE,
-    pub _fileno: i32,
-    pub _flags2: i32,
-    pub _old_offset: __off_t,
-    pub _cur_column: libc::c_ushort,
-    pub _vtable_offset: libc::c_schar,
-    pub _shortbuf: [libc::c_char; 1],
-    pub _lock: *mut libc::c_void,
-    pub _offset: __off64_t,
-    pub _codecvt: *mut _IO_codecvt,
-    pub _wide_data: *mut _IO_wide_data,
-    pub _freeres_list: *mut _IO_FILE,
-    pub _freeres_buf: *mut libc::c_void,
-    pub __pad5: size_t,
-    pub _mode: i32,
-    pub _unused2: [libc::c_char; 20],
-}
-pub type _IO_lock_t = ();
-pub type FILE = _IO_FILE;
+// extern "C" {
+    // pub type _IO_wide_data;
+    // pub type _IO_codecvt;
+    // pub type _IO_marker;
+    // static mut stderr: *mut FILE;
+    // fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
+    // fn sqrt(_: f64) -> f64;
+    // fn fabs(_: f64) -> f64;
+// }
+// pub type size_t = libc::c_ulong;
+// pub type __off_t = libc::c_long;
+// pub type __off64_t = libc::c_long;
+
+// #[derive(Copy, Clone)]
+// #[repr(C)]
+// pub struct _IO_FILE {
+//     pub _flags: i32,
+//     pub _IO_read_ptr: *mut libc::c_char,
+//     pub _IO_read_end: *mut libc::c_char,
+//     pub _IO_read_base: *mut libc::c_char,
+//     pub _IO_write_base: *mut libc::c_char,
+//     pub _IO_write_ptr: *mut libc::c_char,
+//     pub _IO_write_end: *mut libc::c_char,
+//     pub _IO_buf_base: *mut libc::c_char,
+//     pub _IO_buf_end: *mut libc::c_char,
+//     pub _IO_save_base: *mut libc::c_char,
+//     pub _IO_backup_base: *mut libc::c_char,
+//     pub _IO_save_end: *mut libc::c_char,
+//     pub _markers: *mut _IO_marker,
+//     pub _chain: *mut _IO_FILE,
+//     pub _fileno: i32,
+//     pub _flags2: i32,
+//     pub _old_offset: __off_t,
+//     pub _cur_column: libc::c_ushort,
+//     pub _vtable_offset: libc::c_schar,
+//     pub _shortbuf: [libc::c_char; 1],
+//     pub _lock: *mut libc::c_void,
+//     pub _offset: __off64_t,
+//     pub _codecvt: *mut _IO_codecvt,
+//     pub _wide_data: *mut _IO_wide_data,
+//     pub _freeres_list: *mut _IO_FILE,
+//     pub _freeres_buf: *mut libc::c_void,
+//     pub __pad5: size_t,
+//     pub _mode: i32,
+//     pub _unused2: [libc::c_char; 20],
+// }
+// pub type _IO_lock_t = ();
+// pub type FILE = _IO_FILE;
 unsafe extern "C" fn R_dnode(
     mut a: *mut f64,
     mut roots: *mut f64,
@@ -76,17 +77,17 @@ unsafe extern "C" fn R_dnode(
         while i <= order {
             p1init = p1init * x1init + *a.offset((order - i) as isize);
             i += 1;
-            i;
         }
         if !(p1init == 0 as i32 as f64) {
             if p0 * p1init > 0 as i32 as f64 {
-                fprintf(
-                    stderr,
-                    b"ROOT NUMBER %d WAS NOT FOUND FOR POLYNOMIAL OF ORDER %d\n\0"
-                        as *const u8 as *const libc::c_char,
-                    m,
-                    order,
-                );
+                eprintln!("ROOT NUMBER {} WAS NOT FOUND FOR POLYNOMIAL OF ORDER {}", m, order);
+                // fprintf(
+                //     stderr,
+                //     b"ROOT NUMBER %d WAS NOT FOUND FOR POLYNOMIAL OF ORDER %d\n\0"
+                //         as *const u8 as *const libc::c_char,
+                //     m,
+                //     order,
+                // );
                 return 1 as i32;
             }
             if x0 <= x1init {
@@ -105,15 +106,15 @@ unsafe extern "C" fn R_dnode(
             } else {
                 xi = x0 + (x0 - x1) / (p1 - p0) * p0;
                 n = 0 as i32;
-                while fabs(x1 - x0) > x1 * accrt {
+                while (x1 - x0).abs() > x1 * accrt {
                     n += 1;
-                    n;
                     if n > 200 as i32 {
-                        fprintf(
-                            stderr,
-                            b"libcint::rys_roots NO CONV. IN R_dnode\n\0" as *const u8
-                                as *const libc::c_char,
-                        );
+                        eprintln!("libcint::rys_roots NO CONV. IN R_dnode");
+                        // fprintf(
+                        //     stderr,
+                        //     b"libcint::rys_roots NO CONV. IN R_dnode\n\0" as *const u8
+                        //         as *const libc::c_char,
+                        // );
                         return 1 as i32;
                     }
                     pi = *a.offset(order as isize);
@@ -121,7 +122,6 @@ unsafe extern "C" fn R_dnode(
                     while i <= order {
                         pi = pi * xi + *a.offset((order - i) as isize);
                         i += 1;
-                        i;
                     }
                     if pi == 0 as i32 as f64 {
                         break;
@@ -140,7 +140,6 @@ unsafe extern "C" fn R_dnode(
                     while i <= order {
                         pi = pi * xi + *a.offset((order - i) as isize);
                         i += 1;
-                        i;
                     }
                     if pi == 0 as i32 as f64 {
                         break;
@@ -158,7 +157,6 @@ unsafe extern "C" fn R_dnode(
             }
         }
         m += 1;
-        m;
     }
     return 0 as i32;
 }
@@ -177,7 +175,7 @@ unsafe extern "C" fn _qr_step(
     let mut j2: i32 = 0;
     let mut c: f64 = *A.offset((n0 * nroots + n0) as isize) - shift;
     let mut s: f64 = *A.offset((m1 * nroots + n0) as isize);
-    let mut v: f64 = sqrt(c * c + s * s);
+    let mut v: f64 = (c * c + s * s).sqrt();
     let mut x: f64 = 0.;
     let mut y: f64 = 0.;
     if v == 0 as i32 as f64 {
@@ -195,7 +193,6 @@ unsafe extern "C" fn _qr_step(
         *A.offset((n0 * nroots + k) as isize) = c * x + s * y;
         *A.offset((m1 * nroots + k) as isize) = c * y - s * x;
         k += 1;
-        k;
     }
     m3 = if n1 < n0 + 3 as i32 { n1 } else { n0 + 3 as i32 };
     k = 0 as i32;
@@ -205,7 +202,6 @@ unsafe extern "C" fn _qr_step(
         *A.offset((k * nroots + n0) as isize) = c * x + s * y;
         *A.offset((k * nroots + m1) as isize) = c * y - s * x;
         k += 1;
-        k;
     }
     j = n0;
     while j < n1 - 2 as i32 {
@@ -213,7 +209,7 @@ unsafe extern "C" fn _qr_step(
         j2 = j + 2 as i32;
         c = *A.offset((j1 * nroots + j) as isize);
         s = *A.offset((j2 * nroots + j) as isize);
-        v = sqrt(c * c + s * s);
+        v = (c * c + s * s).sqrt();
         *A.offset((j1 * nroots + j) as isize) = v;
         *A.offset((j2 * nroots + j) as isize) = 0 as i32 as f64;
         if v == 0 as i32 as f64 {
@@ -231,7 +227,6 @@ unsafe extern "C" fn _qr_step(
             *A.offset((j1 * nroots + k) as isize) = c * x + s * y;
             *A.offset((j2 * nroots + k) as isize) = c * y - s * x;
             k += 1;
-            k;
         }
         m3 = if n1 < j + 4 as i32 { n1 } else { j + 4 as i32 };
         k = 0 as i32;
@@ -241,10 +236,8 @@ unsafe extern "C" fn _qr_step(
             *A.offset((k * nroots + j1) as isize) = c * x + s * y;
             *A.offset((k * nroots + j2) as isize) = c * y - s * x;
             k += 1;
-            k;
         }
         j += 1;
-        j;
     }
 }
 unsafe extern "C" fn _hessenberg_qr(
@@ -263,15 +256,15 @@ unsafe extern "C" fn _hessenberg_qr(
     while ic < nroots * maxits {
         k = n0;
         while (k + 1 as i32) < n1 {
-            let mut s: f64 = fabs(*A.offset((k * nroots + k) as isize))
-                + fabs(
+            let mut s: f64 = (*A.offset((k * nroots + k) as isize)).abs()
+                + (
                     *A
                         .offset(
                             ((k + 1 as i32) * nroots + k + 1 as i32)
                                 as isize,
-                        ),
-                );
-            if fabs(*A.offset(((k + 1 as i32) * nroots + k) as isize)) < eps * s
+                        )
+                ).abs();
+            if (*A.offset(((k + 1 as i32) * nroots + k) as isize)).abs() < eps * s
             {
                 break;
             }
@@ -302,21 +295,22 @@ unsafe extern "C" fn _hessenberg_qr(
                     * *A.offset((m1 * nroots + m2) as isize)
                     * *A.offset((m2 * nroots + m1) as isize);
             if s_0 > 0 as i32 as f64 {
-                s_0 = sqrt(s_0);
+                s_0 = s_0.sqrt();
                 let mut a: f64 = (t + s_0) * 0.5f64;
                 let mut b: f64 = (t - s_0) * 0.5f64;
-                if fabs(a11 - a) > fabs(a11 - b) {
+                if (a11 - a).abs() > (a11 - b).abs() {
                     shift = b;
                 } else {
                     shift = a;
                 }
             } else {
                 if n1 == 2 as i32 {
-                    fprintf(
-                        stderr,
-                        b"hessenberg_qr: failed to find real roots\n\0" as *const u8
-                            as *const libc::c_char,
-                    );
+                    eprintln!("hessenberg_qr: failed to find real roots");
+                    // fprintf(
+                    //     stderr,
+                    //     b"hessenberg_qr: failed to find real roots\n\0" as *const u8
+                    //         as *const libc::c_char,
+                    // );
                     return 1 as i32;
                 }
                 shift = t * 0.5f64;
@@ -324,19 +318,20 @@ unsafe extern "C" fn _hessenberg_qr(
             its += 1 as i32;
             _qr_step(A, nroots, n0, n1, shift);
             if its > maxits {
-                fprintf(
-                    stderr,
-                    b"hessenberg_qr: failed to converge after %d steps\n\0" as *const u8
-                        as *const libc::c_char,
-                    its,
-                );
+                eprintln!("hessenberg_qr: failed to converge after {} steps", its);
+                // fprintf(
+                //     stderr,
+                //     b"hessenberg_qr: failed to converge after %d steps\n\0" as *const u8
+                //         as *const libc::c_char,
+                //     its,
+                // );
                 return 1 as i32;
             }
         }
         ic += 1;
-        ic;
     }
-    fprintf(stderr, b"hessenberg_qr failed\n\0" as *const u8 as *const libc::c_char);
+    eprintln!("hessenberg_qr failed");
+    // fprintf(stderr, b"hessenberg_qr failed\n\0" as *const u8 as *const libc::c_char);
     return 1 as i32;
 }
 #[no_mangle]
@@ -353,7 +348,7 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
             / *cs.offset(3 as i32 as isize);
         return 0 as i32;
     } else if nroots == 2 as i32 {
-        let mut dum: f64 = sqrt(
+        let mut dum: f64 = (
             *cs.offset((2 as i32 * 3 as i32 + 1 as i32) as isize)
                 * *cs
                     .offset(
@@ -369,8 +364,8 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
                         .offset(
                             (2 as i32 * 3 as i32 + 2 as i32)
                                 as isize,
-                        ),
-        );
+                        )
+        ).sqrt();
         *roots
             .offset(
                 0 as i32 as isize,
@@ -403,19 +398,16 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
         A[(nroots - 1 as i32 - i)
             as usize] = *cs.offset((nroots * nroots1 + i) as isize) * fac;
         i += 1;
-        i;
     }
     i = nroots;
     while i < nroots * nroots {
         A[i as usize] = 0 as i32 as f64;
         i += 1;
-        i;
     }
     i = 0 as i32;
     while i < nroots - 1 as i32 {
         A[((i + 1 as i32) * nroots + i) as usize] = 1.0f64;
         i += 1;
-        i;
     }
     let mut err: i32 = _hessenberg_qr(A.as_mut_ptr(), nroots);
     if err == 0 as i32 {
@@ -426,21 +418,20 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
                     (nroots - 1 as i32 - i) as isize,
                 ) = A[(i * nroots + i) as usize];
             i += 1;
-            i;
         }
     } else {
         let mut k: i32 = 0;
         let mut order: i32 = 0;
         let mut a: *mut f64 = 0 as *mut f64;
-        let mut dum_0: f64 = sqrt(
+        let mut dum_0: f64 = (
             *cs.offset((2 as i32 * nroots1 + 1 as i32) as isize)
                 * *cs.offset((2 as i32 * nroots1 + 1 as i32) as isize)
                 - 4 as i32 as f64
                     * *cs
                         .offset((2 as i32 * nroots1 + 0 as i32) as isize)
                     * *cs
-                        .offset((2 as i32 * nroots1 + 2 as i32) as isize),
-        );
+                        .offset((2 as i32 * nroots1 + 2 as i32) as isize)
+        ).sqrt();
         *roots
             .offset(
                 0 as i32 as isize,
@@ -459,7 +450,6 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
         while i < nroots {
             *roots.offset(i as isize) = 1 as i32 as f64;
             i += 1;
-            i;
         }
         k = 2 as i32;
         while k < nroots {
@@ -470,7 +460,6 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
                 break;
             }
             k += 1;
-            k;
         }
     }
     return err;
