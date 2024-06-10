@@ -1,7 +1,5 @@
 #![feature(autodiff)]
 
-use std::io;
-
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
 
@@ -14,7 +12,7 @@ fn f(mut out: &mut [f64], shls: &mut [i32], atm: &mut [i32],
     cint1e_ovlp_cart(&mut out, shls, atm, natm, bas, nbas, env);
 }
 
-fn main() -> io::Result<()> {
+fn main() {
     const natm: usize = 2;
     const nbas: usize = 2;
     
@@ -51,5 +49,4 @@ fn main() -> io::Result<()> {
         }
         println!();
     }
-    Ok(())
 }

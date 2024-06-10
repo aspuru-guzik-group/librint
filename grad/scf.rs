@@ -1,13 +1,43 @@
-use std::io;
+#![allow(non_snake_case)]
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
+use librint::cint1e::cint1e_nuc_cart;
+use librint::intor1::cint1e_kin_cart;
 use librint::cint2e::cint2e_cart;
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
 pub const N_STO: i32 = 3;
+
+fn matmult(
+    n: usize,
+    A: &mut [f64],
+    B: &mut [f64],
+    C: &mut [f64],
+) {
+    // cij = aik bkj
+    for i in 0..n {
+        for j in 0..n {
+            for k in 0..n {
+                C[i * n + j] += A[i * n + k] * B[k * n + j];
+            }
+        }
+    }
+}
+
+fn transpose(
+    n: usize,
+    C: &mut [f64],
+    Ct: &mut [f64],
+) {
+    for i in 0..n {
+        for j in 0..n {
+            Ct[i * n + j] = C[j * n + i]
+        }
+    }
+}
 
 fn integrals(
     natm: usize,
@@ -37,10 +67,10 @@ fn integrals(
             cint1e_ovlp_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
             S[i*nbas + j] = buf[0];
 
-            // cint1e_kin_cart(&mut buf, &mut shls, atm, natm, bas, nbas, env);
+            cint1e_kin_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
             T[i*nbas + j] = buf[0];
 
-            // cint1e_nuc_cart(&mut buf, &mut shls, atm, natm, bas, nbas, env);
+            cint1e_nuc_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
             V[i*nbas + j] = buf[0];
 
             H[i*nbas + j] = T[i*nbas + j] + V[i*nbas + j];
@@ -103,20 +133,60 @@ fn calc_F(
 }
 
 fn calc_Fprime(
+    nbas: usize,
     F: &mut [f64],
     X: &mut [f64],
     Xdag: &mut [f64],
     Fprime: &mut [f64],
 ) {
-
+    let mut inter = vec![0.0; nbas * nbas];
+    matmult(nbas, Xdag, F, &mut inter);
+    matmult(nbas, &mut inter, X, Fprime);
 }
 
-fn diag_F() {}
+fn diag_F(
+    nbas: usize,
+    Fprime: &mut [f64],
+    X: &mut [f64],
+    C: &mut [f64],
+    epsilon: &mut [f64],
+) {
+    // diagonalize Fprime
+    let nbas = 0;
+    let mut U = vec![0.0; nbas * nbas];
 
-fn calc_P() {}
+    transpose(nbas, X, C);
+}
 
-fn f_delta() {}
+fn calc_P(
+    nbas: usize,
+    nelec: usize,
+    C: &mut [f64],
+    P: &mut [f64],
+) {
+    for mu in 0..nbas {
+        for nu in 0..nbas {
+            for i in 0..(nelec/2) {
+                P[mu * nbas + nu] += 2.0 * C[mu * nbas + i] * C[nu * nbas + i];
+            }
+        }
+    }
+}
 
+fn f_delta(
+    nbas: usize,
+    P: &mut [f64],
+    Pold: &mut [f64],
+) -> f64 {
+    let mut delta: f64 = 0.0;
+    for mu in 0..nbas {
+        for nu in 0..nbas {
+            delta += (P[mu * nbas + nu] - Pold[mu * nbas + nu]).powf(2.0);
+        }
+    }
+    delta = delta.powf(0.5) / 2.0;
+    return delta;
+}
 
 fn norm(
     atm: &mut [i32],
@@ -169,7 +239,7 @@ fn RHF(
     let mut i: i32 = 0;
     let mut delta: f64 = 1.0;
 
-    let mut Pold = vec![0.0; nbas * nbas];
+    let mut Pold;
     let mut G = vec![0.0; nbas * nbas];
     let mut F = vec![0.0; nbas * nbas];
     let mut Fprime = vec![0.0; nbas * nbas];
@@ -179,11 +249,12 @@ fn RHF(
     while delta > conv && i < imax {
         Pold = P.clone();
 
-        // calc_F();
-        // calc_Fprime();
-        // diag_F();
+        calc_F(nbas, &mut P, &mut two, &mut H, &mut G, &mut F);
+        calc_Fprime(nbas, &mut F, &mut X, &mut Xdag, &mut Fprime);
+        diag_F(nbas, &mut Fprime, &mut X, &mut C, &mut epsilon);
 
-        // P = calc_P();
+        calc_P(nbas, nelec, &mut C, &mut P);
+        delta = f_delta(nbas, &mut P, &mut Pold);
         i += 1;
     }
 
