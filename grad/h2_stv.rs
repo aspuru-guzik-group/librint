@@ -21,7 +21,7 @@ fn main() {
 
     let mut buf;
 
-	println!("buf");
+	println!("ovlp");
     for i in 0..nbas {
         for j in 0..nbas {
             shls_arr[0] = i as i32;
@@ -40,26 +40,7 @@ fn main() {
         println!();
     }
 
-    println!("buf");
-    for i in 0..nbas {
-        for j in 0..nbas {
-            shls_arr[0] = i as i32;
-            shls_arr[1] = j as i32;
-            
-            let di = CINTcgto_cart(i, &bas_arr);
-            let dj = CINTcgto_cart(j, &bas_arr);
-
-            buf = vec![0.0; (di * dj) as usize];
-            cint1e_nuc_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
-
-            for i in 0..((di*dj) as usize) {
-                print!("{} ", buf[i]);
-            }
-        }
-        println!();
-    }
-
-    println!("buf");
+    println!("kin");
     for i in 0..nbas {
         for j in 0..nbas {
             shls_arr[0] = i as i32;
@@ -70,6 +51,25 @@ fn main() {
 
             buf = vec![0.0; (di * dj) as usize];
             cint1e_kin_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
+
+            for i in 0..((di*dj) as usize) {
+                print!("{} ", buf[i]);
+            }
+        }
+        println!();
+    }
+
+    println!("nuc");
+    for i in 0..nbas {
+        for j in 0..nbas {
+            shls_arr[0] = i as i32;
+            shls_arr[1] = j as i32;
+            
+            let di = CINTcgto_cart(i, &bas_arr);
+            let dj = CINTcgto_cart(j, &bas_arr);
+
+            buf = vec![0.0; (di * dj) as usize];
+            cint1e_nuc_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
 
             for i in 0..((di*dj) as usize) {
                 print!("{} ", buf[i]);
