@@ -35,8 +35,16 @@ name = "h2_rep"
 path = "grad/h2_rep.rs"
 
 [[bin]]
+name = "h2_rep_grad"
+path = "grad/h2_rep_grad.rs"
+
+[[bin]]
 name = "scf"
 path = "grad/scf.rs"
+
+[[bin]]
+name = "scf_grad"
+path = "grad/scf_grad.rs"
 
 [[bin]]
 name = "reverse"
@@ -48,4 +56,4 @@ path = "ad/forward.rs"
 
 [[bin]]
 name = "backward"
-path = "ad/backward.rs
+path = "ad/backward.rs"
