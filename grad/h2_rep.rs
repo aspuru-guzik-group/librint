@@ -1,12 +1,10 @@
-use std::io;
-
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint2e::cint2e_cart;
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
-fn main() -> io::Result<()> {
+fn main() {
     const natm: usize = 2;
     const nbas: usize = 2;
     
@@ -48,5 +46,4 @@ fn main() -> io::Result<()> {
         }
         println!();
     }
-    Ok(())
 }

@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![feature(autodiff)]
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
@@ -294,7 +295,7 @@ fn RHF(
     env: &mut [f64],
     imax: i32,
     conv: f64,
-) -> f64 {
+) -> Vec<f64> {
     let mut S = vec![0.0; nbas * nbas];
     let mut T = vec![0.0; nbas * nbas];
     let mut V = vec![0.0; nbas * nbas];
@@ -347,8 +348,31 @@ fn RHF(
 
     if delta > conv && i == imax {
         println!("did not converge");
-        return 0.0;
     }
+
+    return P;
+}
+
+#[autodiff(denergy, Reverse, Duplicated, Const, Const, Const, Const, Duplicated, Const)]
+fn energy(
+    E: &mut f64,
+    natm: usize,
+    nbas: usize,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
+    P: &mut [f64],
+) {
+    let mut S = vec![0.0; nbas * nbas];
+    let mut T = vec![0.0; nbas * nbas];
+    let mut V = vec![0.0; nbas * nbas];
+    let mut H = vec![0.0; nbas * nbas];
+    let mut two = vec![0.0; nbas * nbas * nbas * nbas];
+    integrals(natm, nbas, atm, bas, env, &mut S, &mut T, &mut V, &mut H, &mut two);
+
+    let mut G = vec![0.0; nbas * nbas];
+    let mut F = vec![0.0; nbas * nbas];
+    calc_F(nbas, P, &mut two, &mut H, &mut G, &mut F);
 
     let mut E0: f64 = 0.0;
     for mu in 0..nbas {
@@ -366,7 +390,7 @@ fn RHF(
         }
     }
 
-    return Enuc + E0;
+    *E = Enuc + E0;
 }
 
 fn main() {
@@ -379,10 +403,20 @@ fn main() {
     let mut bas: [i32; nbas * BAS_SLOTS] = [0, 0, 3, 1, 0, 28, 31, 0, 1, 0, 3, 1, 0, 28, 31, 0];
     let mut env: [f64; 34] = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
         -1.5117809, 0., 0., 0., 1.5117809, 0., 3.42525091, 0.62391373, 0.1688554, 0.98170675, 0.94946401, 0.29590645];
+    let mut denv: [f64; 34] = [0.0; 34];
 
     const imax: i32 = 2;
     const conv: f64 = 0.000001;
 
-    let Etot: f64 = RHF(natm, nbas, nelec, &mut atm, &mut bas, &mut env, imax, conv);
+    let mut P = RHF(natm, nbas, nelec, &mut atm, &mut bas, &mut env, imax, conv);
+
+    let mut Etot: f64 = 0.0;
+    let mut dEtot: f64 = 1.0;
+    denergy(&mut Etot, &mut dEtot, natm, nbas, &mut atm, &mut bas, &mut env, &mut denv, &mut P);
     println!("Etot: {}", Etot);
+
+    println!("denv:");
+    for i in 28..36 {
+        print!("{} ", denv[i]);
+    }
 }
