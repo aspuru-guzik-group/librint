@@ -6,10 +6,17 @@ use librint::cint1e::cint1e_ovlp_cart;
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
-#[autodiff(df, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
-fn f(mut out: &mut [f64], shls: &mut [i32], atm: &mut [i32],
-    natm: i32, bas: &mut [i32], nbas: i32, env: &mut [f64]) {
-    cint1e_ovlp_cart(&mut out, shls, atm, natm, bas, nbas, env);
+#[autodiff(cint_diff, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
+fn cint_wrap(
+    out: &mut [f64], 
+    shls: &mut [i32], 
+    atm: &mut [i32],
+    natm: i32, 
+    bas: &mut [i32], 
+    nbas: i32, 
+    env: &mut [f64]
+) {
+    cint1e_ovlp_cart(out, shls, atm, natm, bas, nbas, env);
 }
 
 fn main() {
@@ -41,7 +48,7 @@ fn main() {
             dbuf[0] = 1.0;
 
             // cint1e_ovlp_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
-            df(&mut buf, &mut dbuf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr, &mut denv_arr);
+            cint_diff(&mut buf, &mut dbuf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr, &mut denv_arr);
 
             for i in 28..36 {
                 print!("{} ", denv_arr[i]);
