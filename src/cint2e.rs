@@ -21,9 +21,6 @@ use crate::cint::CINTEnvVars;
 extern "C" {
     fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
     fn free(__ptr: *mut libc::c_void);
-    // fn exp(_: f64) -> f64;
-    // fn log(_: f64) -> f64;
-    // fn sqrt(_: f64) -> f64;
 }
 
 pub type size_t = libc::c_ulong;
@@ -3011,8 +3008,7 @@ pub unsafe extern "C" fn CINT2e_drv(
         .wrapping_mul(*x_ctr.offset(1 as i32 as isize) as libc::c_ulong)
         .wrapping_mul(*x_ctr.offset(2 as i32 as isize) as libc::c_ulong)
         .wrapping_mul(*x_ctr.offset(3 as i32 as isize) as libc::c_ulong);
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2
-        * (*envs).ncomp_tensor;
+    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor; // cannot handle (reverse) unknown intrinsic
     if out.is_null() {
         let mut bas: *mut i32 = (*envs).bas;
         let mut shls: *mut i32 = (*envs).shls;

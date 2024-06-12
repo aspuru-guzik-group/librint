@@ -61,7 +61,7 @@ pub unsafe extern "C" fn CINT1e_loop(
         .offset(
             *bas.offset((8 as i32 * j_sh + 6 as i32) as isize) as isize,
         );
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
+    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor; // cannot handle (augmented) unknown intrinsic
     let mut expcutoff: f64 = (*envs).expcutoff;
     let mut log_maxci: *mut f64 = 0 as *mut f64;
     let mut log_maxcj: *mut f64 = 0 as *mut f64;

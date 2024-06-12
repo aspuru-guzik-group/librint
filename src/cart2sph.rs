@@ -90926,8 +90926,8 @@ pub unsafe extern "C" fn c2s_sph_1e(
     let mut j_l: i32 = (*envs).j_l;
     let mut i_ctr: i32 = (*envs).x_ctr[0 as i32 as usize];
     let mut j_ctr: i32 = (*envs).x_ctr[1 as i32 as usize];
-    let mut di: i32 = i_l * 2 as i32 + 1 as i32;
-    let mut dj: i32 = j_l * 2 as i32 + 1 as i32;
+    let mut di: i32 = i_l * 2 as i32 + 1 as i32; // cannot handle (augmented) unknown intrinsic
+    let mut dj: i32 = j_l * 2 as i32 + 1 as i32; // cannot handle (augmented) unknown intrinsic
     let mut ni: i32 = *dims.offset(0 as i32 as isize);
     let mut nj: i32 = *dims.offset(1 as i32 as isize);
     let mut ofj: i32 = ni * dj;
