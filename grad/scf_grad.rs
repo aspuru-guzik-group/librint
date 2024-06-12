@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-#![feature(autodiff)]
+// #![feature(autodiff)]
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
@@ -353,7 +353,7 @@ fn RHF(
     return P;
 }
 
-#[autodiff(denergy, Reverse, Duplicated, Const, Const, Const, Const, Duplicated, Const)]
+// #[autodiff(denergy, Reverse, Duplicated, Const, Const, Const, Const, Duplicated, Const)]
 fn energy(
     E: &mut f64,
     natm: usize,
@@ -412,7 +412,7 @@ fn main() {
 
     let mut Etot: f64 = 0.0;
     let mut dEtot: f64 = 1.0;
-    denergy(&mut Etot, &mut dEtot, natm, nbas, &mut atm, &mut bas, &mut env, &mut denv, &mut P);
+    // denergy(&mut Etot, &mut dEtot, natm, nbas, &mut atm, &mut bas, &mut env, &mut denv, &mut P);
     println!("Etot: {}", Etot);
 
     println!("denv:");

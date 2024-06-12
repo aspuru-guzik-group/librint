@@ -1,4 +1,4 @@
-#![feature(autodiff)]
+// #![feature(autodiff)]
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
@@ -6,7 +6,7 @@ use librint::cint1e::cint1e_ovlp_cart;
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
-#[autodiff(cint_diff, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
+// #[autodiff(cint_diff, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
 fn cint_wrap(
     out: &mut [f64], 
     shls: &mut [i32], 
@@ -23,11 +23,11 @@ fn main() {
     const natm: usize = 2;
     const nbas: usize = 2;
     
-    let mut atm_arr: [i32; natm * ATM_SLOTS] = [1, 20, 1, 23, 0, 0, 1, 24, 1, 27, 0, 0];
-    let mut bas_arr: [i32; nbas * BAS_SLOTS] = [0, 0, 3, 1, 0, 28, 31, 0, 1, 0, 3, 1, 0, 28, 31, 0];
-    let mut env_arr: [f64; 34] = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
+    let atm_arr: [i32; natm * ATM_SLOTS] = [1, 20, 1, 23, 0, 0, 1, 24, 1, 27, 0, 0];
+    let bas_arr: [i32; nbas * BAS_SLOTS] = [0, 0, 3, 1, 0, 28, 31, 0, 1, 0, 3, 1, 0, 28, 31, 0];
+    let env_arr: [f64; 34] = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
         -1.5117809, 0., 0., 0., 1.5117809, 0., 3.42525091, 0.62391373, 0.1688554, 0.98170675, 0.94946401, 0.29590645];
-    let mut denv_arr: [f64; 34] = [0.0; 34];
+    let denv_arr: [f64; 34] = [0.0; 34];
 
     let mut shls_arr: [i32; 4] = [0, 0, 0, 0];
 
@@ -48,7 +48,7 @@ fn main() {
             dbuf[0] = 1.0;
 
             // cint1e_ovlp_cart(&mut buf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr);
-            cint_diff(&mut buf, &mut dbuf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr, &mut denv_arr);
+            // cint_diff(&mut buf, &mut dbuf, &mut shls_arr, &mut atm_arr, natm as i32, &mut bas_arr, nbas as i32, &mut env_arr, &mut denv_arr);
 
             for i in 28..36 {
                 print!("{} ", denv_arr[i]);

@@ -1,10 +1,15 @@
 #![allow(non_snake_case)]
 
 use librint::cint_bas::CINTcgto_cart;
+use librint::cint_bas::CINTcgto_spheric;
 use librint::cint1e::cint1e_ovlp_cart;
+use librint::cint1e::cint1e_ovlp_sph;
 use librint::cint1e::cint1e_nuc_cart;
+use librint::cint1e::cint1e_nuc_sph;
 use librint::intor1::cint1e_kin_cart;
+use librint::intor1::cint1e_kin_sph;
 use librint::cint2e::cint2e_cart;
+use librint::cint2e::cint2e_sph;
 
 use faer::mat;
 use faer::linalg::solvers::Eigendecomposition;
@@ -94,18 +99,24 @@ fn integrals(
         for j in 0..nbas {
             shls[0] = i as i32;
             shls[1] = j as i32;
+
+            let di = CINTcgto_spheric(i as usize, &bas);
+            let dj = CINTcgto_spheric(j as usize, &bas);
             
-            let di = CINTcgto_cart(i as usize, &bas);
-            let dj = CINTcgto_cart(j as usize, &bas);
+            // let di = CINTcgto_cart(i as usize, &bas);
+            // let dj = CINTcgto_cart(j as usize, &bas);
 
             buf = vec![0.0; (di * dj) as usize];
-            cint1e_ovlp_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            // cint1e_ovlp_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            cint1e_ovlp_sph(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
             S[i*nbas + j] = buf[0];
 
-            cint1e_kin_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            // cint1e_kin_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            cint1e_kin_sph(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
             T[i*nbas + j] = buf[0];
 
-            cint1e_nuc_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            // cint1e_nuc_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            cint1e_nuc_sph(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
             V[i*nbas + j] = buf[0];
 
             H[i*nbas + j] = T[i*nbas + j] + V[i*nbas + j];
@@ -115,11 +126,15 @@ fn integrals(
                     shls[2] = k as i32;
                     shls[3] = l as i32;
         
-                    let dk = CINTcgto_cart(k as usize, &bas);
-                    let dl = CINTcgto_cart(l as usize, &bas);
+                    // let dk = CINTcgto_cart(k as usize, &bas);
+                    // let dl = CINTcgto_cart(l as usize, &bas);
+
+                    let dk = CINTcgto_spheric(k as usize, &bas);
+                    let dl = CINTcgto_spheric(l as usize, &bas);
 
                     buf = vec![0.0; (di * dj * dk * dl) as usize];
-                    cint2e_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+                    // cint2e_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+                    cint2e_sph(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
                     two[i*nbas.pow(3) + j*nbas.pow(2) + k*nbas.pow(1) + l] = buf[0];
                 }
             }
