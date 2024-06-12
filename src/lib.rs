@@ -1,4 +1,4 @@
-// #![feature(autodiff)]
+#![feature(autodiff)]
 // #![feature(f128)]
 
 pub mod cint;

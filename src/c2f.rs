@@ -41,15 +41,15 @@ pub unsafe fn cintcgto_cart_(
 }
 #[no_mangle]
 pub unsafe extern "C" fn cintcgtos_spheric_(
-    mut bas_id: &usize,
-    mut bas: &[i32],
+    mut bas_id: *const i32,
+    mut bas: *const i32,
 ) -> i32 {
     return CINTcgto_spheric(*bas_id, bas);
 }
 #[no_mangle]
 pub unsafe extern "C" fn cintcgto_spheric_(
-    mut bas_id: &usize,
-    mut bas: &[i32],
+    mut bas_id: *const i32,
+    mut bas: *const i32,
 ) -> i32 {
     return CINTcgto_spheric(*bas_id, bas);
 }

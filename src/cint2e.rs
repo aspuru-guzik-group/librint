@@ -3713,15 +3713,16 @@ pub unsafe extern "C" fn CINTgout2e(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int2e_sph(
-    mut out: &mut [f64],
-    mut dims: &mut [i32],
-    mut shls: &mut [i32],
-    mut atm: &mut [i32],
+    mut out: *mut f64,
+    mut dims: *mut i32,
+    mut shls: *mut i32,
+    mut atm: *mut i32,
     mut natm: i32,
-    mut bas: &mut [i32],
+    mut bas: *mut i32,
     mut nbas: i32,
-    mut env: &mut [f64],
-    mut cache: &mut [f64],
+    mut env: *mut f64,
+    mut opt: *mut CINTOpt,
+    mut cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
         0 as i32,
@@ -3734,7 +3735,7 @@ pub unsafe extern "C" fn int2e_sph(
         1 as i32,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
-    CINTinit_int2e_EnvVars(&mut envs as *mut CINTEnvVars, ng.as_mut_ptr(), shls.as_mut_ptr(), atm.as_mut_ptr(), natm, bas.as_mut_ptr(), nbas, env.as_mut_ptr());
+    CINTinit_int2e_EnvVars(&mut envs, ng.as_mut_ptr(), shls, atm, natm, bas, nbas, env);
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
@@ -3759,35 +3760,37 @@ pub unsafe extern "C" fn int2e_sph(
                 ) -> (),
         ),
     );
-    return CINT2e_drv(
-        out.as_mut_ptr(),
-        dims.as_mut_ptr(),
-        &mut envs as *mut CINTEnvVars,
-        cache.as_mut_ptr(),
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(
-                    *mut f64,
-                    *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
-                    *mut f64,
-                ) -> (),
-            >,
-            Option::<unsafe extern "C" fn() -> ()>,
-        >(
-            Some(
-                c2s_sph_2e1
-                    as unsafe extern "C" fn(
-                        *mut f64,
-                        *mut f64,
-                        *mut i32,
-                        *mut CINTEnvVars,
-                        *mut f64,
-                    ) -> (),
-            ),
-        ),
-    );
+    todo!();
+    // return CINT2e_drv(
+    //     out,
+    //     dims,
+    //     &mut envs,
+    //     opt,
+    //     cache,
+    //     ::core::mem::transmute::<
+    //         Option::<
+    //             unsafe extern "C" fn(
+    //                 *mut f64,
+    //                 *mut f64,
+    //                 *mut i32,
+    //                 *mut CINTEnvVars,
+    //                 *mut f64,
+    //             ) -> (),
+    //         >,
+    //         Option::<unsafe extern "C" fn() -> ()>,
+    //     >(
+    //         Some(
+    //             c2s_sph_2e1
+    //                 as unsafe extern "C" fn(
+    //                     *mut f64,
+    //                     *mut f64,
+    //                     *mut i32,
+    //                     *mut CINTEnvVars,
+    //                     *mut f64,
+    //                 ) -> (),
+    //         ),
+    //     ),
+    // );
 }
 #[no_mangle]
 pub unsafe extern "C" fn int2e_optimizer(
@@ -3889,30 +3892,28 @@ pub unsafe fn int2e_cart(
     );
 }
 #[no_mangle]
-pub fn cint2e_sph(
-    mut out: &mut [f64],
-    mut shls: &mut [i32],
-    mut atm: &mut [i32],
+pub unsafe extern "C" fn cint2e_sph(
+    mut out: *mut f64,
+    mut shls: *mut i32,
+    mut atm: *mut i32,
     mut natm: i32,
-    mut bas: &mut [i32],
+    mut bas: *mut i32,
     mut nbas: i32,
-    mut env: &mut [f64],
+    mut env: *mut f64,
+    mut opt: *mut CINTOpt,
 ) -> i32 {
-    let mut dims = [0;0];
-    let mut cache = [0.0;0];
-    unsafe {
-        return int2e_sph(
-            out,
-            &mut dims,
-            shls,
-            atm,
-            natm,
-            bas,
-            nbas,
-            env,
-            &mut cache,
-        );
-    }
+    return int2e_sph(
+        out,
+        0 as *mut i32,
+        shls,
+        atm,
+        natm,
+        bas,
+        nbas,
+        env,
+        opt,
+        0 as *mut f64,
+    );
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_optimizer(
@@ -3985,19 +3986,18 @@ pub unsafe extern "C" fn cint2e_sph_(
     mut optptr_as_integer8: size_t,
 ) -> i32 {
     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    return 0;
-    // return int2e_sph(
-    //     out,
-    //     0 as *mut i32,
-    //     shls,
-    //     atm,
-    //     *natm,
-    //     bas,
-    //     *nbas,
-    //     env,
-    //     *opt,
-    //     0 as *mut f64,
-    // );
+    return int2e_sph(
+        out,
+        0 as *mut i32,
+        shls,
+        atm,
+        *natm,
+        bas,
+        *nbas,
+        env,
+        *opt,
+        0 as *mut f64,
+    );
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_sph_optimizer_(

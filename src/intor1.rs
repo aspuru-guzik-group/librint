@@ -205,15 +205,16 @@ pub unsafe fn int1e_kin_cart(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_sph(
-    out: &mut [f64],
-    dims: &mut [i32],
-    shls: &mut [i32],
-    atm: &mut [i32],
-    natm: i32,
-    bas: &mut [i32],
-    nbas: i32,
-    env: &mut [f64],
-    cache: &mut [f64],
+    mut out: *mut f64,
+    mut dims: *mut i32,
+    mut shls: *mut i32,
+    mut atm: *mut i32,
+    mut natm: i32,
+    mut bas: *mut i32,
+    mut nbas: i32,
+    mut env: *mut f64,
+    mut opt: *mut CINTOpt,
+    mut cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
         0 as i32,
@@ -226,7 +227,7 @@ pub unsafe extern "C" fn int1e_kin_sph(
         1 as i32,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
-    CINTinit_int1e_EnvVars(&mut envs as *mut CINTEnvVars, ng.as_mut_ptr(), shls.as_mut_ptr(), atm.as_mut_ptr(), natm, bas.as_mut_ptr(), nbas, env.as_mut_ptr());
+    CINTinit_int1e_EnvVars(&mut envs, ng.as_mut_ptr(), shls, atm, natm, bas, nbas, env);
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
@@ -253,10 +254,10 @@ pub unsafe extern "C" fn int1e_kin_sph(
     );
     envs.common_factor *= 0.5f64;
     return CINT1e_drv(
-        out.as_mut_ptr(),
-        dims.as_mut_ptr(),
-        &mut envs as *mut CINTEnvVars,
-        cache.as_mut_ptr(),
+        out,
+        dims,
+        &mut envs,
+        cache,
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
@@ -351,33 +352,6 @@ pub fn cint1e_kin_cart(
     let mut cache = [0.0;0];
     unsafe {
         return int1e_kin_cart(
-            out,
-            &mut dims,
-            shls,
-            atm,
-            natm,
-            bas,
-            nbas,
-            env,
-            &mut cache,
-        );
-    }
-}
-
-#[no_mangle]
-pub fn cint1e_kin_sph(
-    out: &mut [f64],
-    shls: &mut [i32],
-    atm: &mut [i32],
-    natm: i32,
-    bas: &mut [i32],
-    nbas: i32,
-    env: &mut [f64],
-) -> i32 {
-    let mut dims = [0;0];
-    let mut cache = [0.0;0];
-    unsafe {
-        return int1e_kin_sph(
             out,
             &mut dims,
             shls,
