@@ -53,13 +53,11 @@ pub unsafe extern "C" fn CINTcgtos_spheric(
         * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize);
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTcgto_spheric(
-    bas_id: i32,
-    mut bas: *const i32,
+pub fn CINTcgto_spheric(
+    bas_id: usize,
+    mut bas: &[i32],
 ) -> i32 {
-    return (*bas.offset((8 as i32 * bas_id + 1 as i32) as isize)
-        * 2 as i32 + 1 as i32)
-        * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize);
+    return (bas[8 * bas_id + 1] * 2 + 1) * bas[8 * bas_id + 3];
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTcgtos_spinor(
@@ -139,16 +137,12 @@ pub unsafe extern "C" fn CINTtot_cgto_spheric(
     return tot_cgto_accum(
         ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(i32, *const i32) -> i32,
+                fn(usize, &[i32]) -> i32,
             >,
             Option::<unsafe extern "C" fn() -> i32>,
         >(
             Some(
                 CINTcgto_spheric
-                    as unsafe extern "C" fn(
-                        i32,
-                        *const i32,
-                    ) -> i32,
             ),
         ),
         bas,
@@ -264,16 +258,12 @@ pub unsafe extern "C" fn CINTshells_spheric_offset(
     shells_cgto_offset(
         ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(i32, *const i32) -> i32,
+                fn(usize, &[i32]) -> i32,
             >,
             Option::<unsafe extern "C" fn() -> i32>,
         >(
             Some(
                 CINTcgto_spheric
-                    as unsafe extern "C" fn(
-                        i32,
-                        *const i32,
-                    ) -> i32,
             ),
         ),
         ao_loc,
