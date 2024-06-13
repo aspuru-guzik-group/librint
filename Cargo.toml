@@ -18,33 +18,50 @@ lto = "fat"
 [profile.release]
 lto = "fat"
 
+
+
+# FAER
+
 [[bin]]
 name = "eigen"
 path = "faer/eigen.rs"
 
+
+# CHEM
+
 [[bin]]
 name = "h2_stv"
-path = "grad/h2_stv.rs"
+path = "grad/h2/h2_stv.rs"
 
 [[bin]]
 name = "h2_stv_grad"
-path = "grad/h2_stv_grad.rs"
+path = "grad/h2/h2_stv_grad.rs"
 
 [[bin]]
 name = "h2_rep"
-path = "grad/h2_rep.rs"
+path = "grad/h2/h2_rep.rs"
 
 [[bin]]
 name = "h2_rep_grad"
-path = "grad/h2_rep_grad.rs"
+path = "grad/h2/h2_rep_grad.rs"
 
 [[bin]]
-name = "scf"
-path = "grad/scf.rs"
+name = "h2_scf"
+path = "grad/h2/scf.rs"
 
 [[bin]]
-name = "scf_grad"
-path = "grad/scf_grad.rs"
+name = "h2_scf_grad"
+path = "grad/h2/scf_grad.rs"
+
+[[bin]]
+name = "h2o_stv_sto3g"
+path = "grad/h2o/sto3g/h2o_stv.rs"
+
+[[bin]]
+name = "h2o_stv_def2svp"
+path = "grad/h2o/def2svp/h2o_stv.rs"
+
+# AUTODIFF
 
 [[bin]]
 name = "reverse"
