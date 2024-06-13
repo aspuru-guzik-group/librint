@@ -36,8 +36,8 @@ fn int(
 
             // Add the buf in the correct place
             let mut c: usize = 0;
-            for mui in mu..(mu + di) {
-                for nui in nu..(nu + dj) {
+            for nui in nu..(nu + dj) {
+                for mui in mu..(mu + di) {
                     S[mui * nshells + nui] = buf[c];
                     c += 1;
                 }
