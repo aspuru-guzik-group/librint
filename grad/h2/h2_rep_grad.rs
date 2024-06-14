@@ -1,3 +1,4 @@
+#![allow(non_snake_case, non_upper_case_globals)]
 #![feature(autodiff)]
 
 use librint::cint_bas::CINTcgto_cart;
