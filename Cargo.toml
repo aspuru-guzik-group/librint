@@ -58,12 +58,8 @@ name = "h2o_stv"
 path = "grad/h2o/h2o_stv.rs"
 
 [[bin]]
-name = "h2o_stv_sto3g"
-path = "grad/h2o/sto3g/h2o_stv.rs"
-
-[[bin]]
-name = "h2o_stv_def2svp"
-path = "grad/h2o/def2svp/h2o_stv.rs"
+name = "h2o_scf"
+path = "grad/h2o/scf.rs"
 
 # AUTODIFF
 

@@ -89,7 +89,7 @@ pub fn print_arr(
     a: &mut [f64],
 ) {
     for i in 0..(n.pow(size as u32)) {
-        print!("{:.5} ", a[i]);
+        print!("{:.6} ", a[i]);
         for p in 1..size {
             if (i + 1) % n.pow(p as u32) == 0 {
                 println!();

@@ -39,7 +39,7 @@ fn one(
 ) {
     let mut buf = vec![0.0; di * dj];
 
-    cint1e_ovlp_sph(&mut buf, shls, atm, natm as i32, bas, nbas as i32, env);
+    cint1e_ovlp_cart(&mut buf, shls, atm, natm as i32, bas, nbas as i32, env);
     let mut c: usize = 0;
     for nuj in nu..(nu + dj) {
         for mui in mu..(mu + di) {
@@ -48,7 +48,7 @@ fn one(
         }
     }
 
-    cint1e_kin_sph(&mut buf, shls, atm, natm as i32, bas, nbas as i32, env);
+    cint1e_kin_cart(&mut buf, shls, atm, natm as i32, bas, nbas as i32, env);
     let mut c: usize = 0;
     for nuj in nu..(nu + dj) {
         for mui in mu..(mu + di) {
@@ -57,7 +57,7 @@ fn one(
         }
     }
 
-    cint1e_nuc_sph(&mut buf, shls, atm, natm as i32, bas, nbas as i32, env);
+    cint1e_nuc_cart(&mut buf, shls, atm, natm as i32, bas, nbas as i32, env);
     let mut c: usize = 0;
     for nuj in nu..(nu + dj) {
         for mui in mu..(mu + di) {
@@ -87,7 +87,7 @@ fn two(
 ) {
     let mut buf = vec![0.0; di * dj * dk * dl];
         
-    cint2e_sph(&mut buf, shls, atm, natm as i32, bas, nbas as i32, env);
+    cint2e_cart(&mut buf, shls, atm, natm as i32, bas, nbas as i32, env);
     let mut c: usize = 0;
     for sigi in sig..(sig + dl) {
         for lami in lam..(lam + dk) {
@@ -136,8 +136,8 @@ fn int(
             shls[0] = i as i32;
             shls[1] = j as i32;
 
-            di = CINTcgto_spheric(i, &bas) as usize;
-            dj = CINTcgto_spheric(j, &bas) as usize;
+            di = CINTcgto_cart(i, &bas) as usize;
+            dj = CINTcgto_cart(j, &bas) as usize;
 
             one(natm, nbas, nshells, atm, bas, env, &mut shls, mu, nu, di, dj, &mut S, &mut T, &mut V);
 
@@ -147,8 +147,8 @@ fn int(
                     shls[2] = k as i32;
                     shls[3] = l as i32;
 
-                    dl = CINTcgto_spheric(l, &bas) as usize;
-                    dk = CINTcgto_spheric(k, &bas) as usize;
+                    dl = CINTcgto_cart(l, &bas) as usize;
+                    dk = CINTcgto_cart(k, &bas) as usize;
                     
                     two(natm, nbas, nshells, atm, bas, env, &mut shls, mu, nu, sig, lam, di, dj, dk, dl, &mut rep);
 
@@ -166,8 +166,8 @@ fn int(
 
 fn main() -> io::Result<()> {
 	const natm: usize = 3;
-	const nbas: usize = 12;
-    const nshells: usize = 24;
+	const nbas: usize = 5;
+    const nshells: usize = 7;
 
     let mut atm: Vec<i32> = vec![0; natm * ATM_SLOTS];
     let mut bas: Vec<i32> = vec![0; nbas * BAS_SLOTS];
@@ -183,11 +183,11 @@ fn main() -> io::Result<()> {
     println!("ovlp");
     print_arr(nshells, 2, &mut stv.0);
 
-    // println!("kin");
-    // print_arr(nshells, 2, &mut stv.1);
+    println!("kin");
+    print_arr(nshells, 2, &mut stv.1);
 
-    // println!("nuc");
-    // print_arr(nshells, 2, &mut stv.2);
+    println!("nuc");
+    print_arr(nshells, 2, &mut stv.2);
 
     // println!("rep");
     // print_arr(nshells, 4, &mut stv.3);
