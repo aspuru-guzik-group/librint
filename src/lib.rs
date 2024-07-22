@@ -1,7 +1,9 @@
-#![feature(autodiff)]
+// #![feature(autodiff)]
 // #![feature(f128)]
 
 pub mod cint;
+
+// pub mod scf;
 
 pub mod c2f;
 pub mod cint1e;
@@ -25,3 +27,5 @@ pub mod g3c2e;
 pub mod intor1;
 
 pub mod utils;
+
+// pub mod gen;
