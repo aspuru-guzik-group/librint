@@ -1,9 +1,12 @@
 // #![feature(autodiff)]
 // #![feature(f128)]
 
-pub mod cint;
+pub mod scf;
+pub mod bind;
+pub mod utils;
+pub mod gen;
 
-// pub mod scf;
+pub mod cint;
 
 pub mod c2f;
 pub mod cint1e;
@@ -25,7 +28,3 @@ pub mod g1e_grids;
 pub mod g2c2e;
 pub mod g3c2e;
 pub mod intor1;
-
-pub mod utils;
-
-// pub mod gen;
