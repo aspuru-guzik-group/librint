@@ -604,7 +604,7 @@ unsafe extern "C" fn _dlasq2(
         if qmin < 0 as i32 as f64
             || emax < 0 as i32 as f64
         {
-            eprintln!("dlasq2: qmin < 0 or emax < 0");
+            println!("dlasq2: qmin < 0 or emax < 0");
             // fprintf(
             //     stderr,
             //     b"dlasq2: qmin < 0 or emax < 0\0" as *const u8 as *const libc::c_char,
@@ -734,7 +734,7 @@ unsafe extern "C" fn _dlasq2(
             iwhilb += 1;
         }
         if iwhilb == nbig {
-            eprintln!("dlasq2: Maximum number of iterations exceeded");
+            println!("dlasq2: Maximum number of iterations exceeded");
             // fprintf(
             //     stderr,
             //     b"dlasq2: Maximum number of iterations exceeded\0" as *const u8
@@ -946,7 +946,7 @@ unsafe extern "C" fn _compute_eigenvalues(
         i = 0 as i32;
         while i < n {
             if *work.offset(i as isize) < 0.0f64 {
-                eprintln!("dlarre: negative eigenvalues");
+                println!("dlarre: negative eigenvalues");
                 // fprintf(
                 //     stderr,
                 //     b"dlarre: negative eigenvalues\n\0" as *const u8
@@ -1082,7 +1082,7 @@ unsafe extern "C" fn _dlarrf(
         ktry += 1;
     }
     if max1 > 1e16f64 {
-        eprintln!("dlarrf max1 = {}", max1);
+        println!("dlarrf max1 = {}", max1);
         // fprintf(stderr, b"dlarrf max1 = %g\0" as *const u8 as *const libc::c_char, max1);
         return 1 as i32;
     }

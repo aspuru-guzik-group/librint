@@ -80,7 +80,7 @@ unsafe extern "C" fn R_dnode(
         }
         if !(p1init == 0 as i32 as f64) {
             if p0 * p1init > 0 as i32 as f64 {
-                eprintln!("ROOT NUMBER {} WAS NOT FOUND FOR POLYNOMIAL OF ORDER {}", m, order);
+                println!("ROOT NUMBER {} WAS NOT FOUND FOR POLYNOMIAL OF ORDER {}", m, order);
                 // fprintf(
                 //     stderr,
                 //     b"ROOT NUMBER %d WAS NOT FOUND FOR POLYNOMIAL OF ORDER %d\n\0"
@@ -109,7 +109,7 @@ unsafe extern "C" fn R_dnode(
                 while (x1 - x0).abs() > x1 * accrt {
                     n += 1;
                     if n > 200 as i32 {
-                        eprintln!("libcint::rys_roots NO CONV. IN R_dnode");
+                        println!("libcint::rys_roots NO CONV. IN R_dnode");
                         // fprintf(
                         //     stderr,
                         //     b"libcint::rys_roots NO CONV. IN R_dnode\n\0" as *const u8
@@ -305,7 +305,7 @@ unsafe extern "C" fn _hessenberg_qr(
                 }
             } else {
                 if n1 == 2 as i32 {
-                    eprintln!("hessenberg_qr: failed to find real roots");
+                    println!("hessenberg_qr: failed to find real roots");
                     // fprintf(
                     //     stderr,
                     //     b"hessenberg_qr: failed to find real roots\n\0" as *const u8
@@ -318,7 +318,7 @@ unsafe extern "C" fn _hessenberg_qr(
             its += 1 as i32;
             _qr_step(A, nroots, n0, n1, shift);
             if its > maxits {
-                eprintln!("hessenberg_qr: failed to converge after {} steps", its);
+                println!("hessenberg_qr: failed to converge after {} steps", its);
                 // fprintf(
                 //     stderr,
                 //     b"hessenberg_qr: failed to converge after %d steps\n\0" as *const u8
@@ -330,7 +330,7 @@ unsafe extern "C" fn _hessenberg_qr(
         }
         ic += 1;
     }
-    eprintln!("hessenberg_qr failed");
+    println!("hessenberg_qr failed");
     // fprintf(stderr, b"hessenberg_qr failed\n\0" as *const u8 as *const libc::c_char);
     return 1 as i32;
 }

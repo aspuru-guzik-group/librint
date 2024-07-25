@@ -3066,7 +3066,7 @@ pub unsafe extern "C" fn CINT2e_drv(
                 .wrapping_add(nf.wrapping_mul(4 as i32 as libc::c_ulong))
         };
         if cache_size >= 2147483647 as i32 as libc::c_ulong {
-            eprintln!("CINT2e_drv cache_size overflow: cache_size {} > {}, nf {}, nc {}, n_comp {}\n", 
+            println!("CINT2e_drv cache_size overflow: cache_size {} > {}, nf {}, nc {}, n_comp {}\n", 
                 cache_size, 2147483647, nf, nc, n_comp);
             // fprintf(
             //     stderr,

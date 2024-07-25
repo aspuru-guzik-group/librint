@@ -5485,7 +5485,7 @@ pub unsafe extern "C" fn CINTg0_2e_2d4d_unrolled(
         }
         _ => {}
     }
-    eprintln!("Dimension error for CINTg0_2e_lj2d4d: iklj = {} {} {} {}", (*envs).li_ceil, (*envs).lk_ceil, (*envs).ll_ceil, (*envs).lj_ceil);
+    println!("Dimension error for CINTg0_2e_lj2d4d: iklj = {} {} {} {}", (*envs).li_ceil, (*envs).lk_ceil, (*envs).ll_ceil, (*envs).lj_ceil);
     // fprintf(
     //     stderr,
     //     b"Dimension error for CINTg0_2e_lj2d4d: iklj = %d %d %d %d\0" as *const u8
@@ -13541,7 +13541,7 @@ pub unsafe extern "C" fn CINTsrg0_2e_2d4d_unrolled(
         }
         _ => {}
     }
-    eprintln!("Dimension error for CINTg0_2e_lj2d4d: iklj = {} {} {} {}", (*envs).li_ceil, (*envs).lk_ceil, (*envs).ll_ceil, (*envs).lj_ceil);
+    println!("Dimension error for CINTg0_2e_lj2d4d: iklj = {} {} {} {}", (*envs).li_ceil, (*envs).lk_ceil, (*envs).ll_ceil, (*envs).lj_ceil);
     // fprintf(
     //     stderr,
     //     b"Dimension error for CINTg0_2e_lj2d4d: iklj = %d %d %d %d\0" as *const u8

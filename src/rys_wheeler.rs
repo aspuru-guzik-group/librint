@@ -5296,7 +5296,7 @@ unsafe extern "C" fn rys_wheeler_partial(
     while i < n {
         if *b.offset(i as isize) < 1e-14f64 {
             if first_seen == 0 || *b.offset(i as isize) < 0.0f64 {
-                eprintln!("libcint rys_wheeler singular value n={} i={} b={}", n, i, *b.offset(i as isize));
+                println!("libcint rys_wheeler singular value n={} i={} b={}", n, i, *b.offset(i as isize));
                 // fprintf(
                 //     stderr,
                 //     b"libcint rys_wheeler singular value n=%d i=%d b=%g\n\0" as *const u8
@@ -5590,7 +5590,7 @@ unsafe extern "C" fn lrys_wheeler_partial(
     while i < n {
         if *b.offset(i as isize) < 1e-19f64 {
             if first_seen == 0 || *b.offset(i as isize) < 0.0f64 {
-                eprintln!("libcint lrys_wheeler singular value n={} i={} b={}", n, i, (*b.offset(i as isize))); //.to_f64().unwrap());
+                println!("libcint lrys_wheeler singular value n={} i={} b={}", n, i, (*b.offset(i as isize))); //.to_f64().unwrap());
                 // fprintf(
                 //     stderr,
                 //     b"libcint lrys_wheeler singular value n=%d i=%d b=%g\n\0"

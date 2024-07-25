@@ -3317,7 +3317,7 @@ pub unsafe extern "C" fn CINTrys_roots(
         }
     }
     if err != 0 {
-        eprintln!("rys_roots fails: nroots={} x={}", nroots, x);
+        println!("rys_roots fails: nroots={} x={}", nroots, x);
         // fprintf(
         //     stderr,
         //     b"rys_roots fails: nroots=%d x=%g\n\0" as *const u8 as *const libc::c_char,
@@ -3996,7 +3996,7 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
             );
         }
         _ => {
-            eprintln!("libcint SR-rys_roots does not support nroots={}", nroots);
+            println!("libcint SR-rys_roots does not support nroots={}", nroots);
             // fprintf(
             //     stderr,
             //     b"libcint SR-rys_roots does not support nroots=%d\n\0" as *const u8
@@ -4007,7 +4007,7 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
         }
     }
     if err != 0 {
-        eprintln!("sr_rys_roots fails: nroots={} x={:.15} lower={:.15}", nroots, x, lower);
+        println!("sr_rys_roots fails: nroots={} x={:.15} lower={:.15}", nroots, x, lower);
         // fprintf(
         //     stderr,
         //     b"sr_rys_roots fails: nroots=%d x=%.15g lower=%.15g\n\0" as *const u8
@@ -5461,7 +5461,7 @@ unsafe extern "C" fn R_dsmit(
     tmp = *fmt_ints.offset(2 as i32 as isize)
         + fac * *fmt_ints.offset(1 as i32 as isize);
     if tmp <= 0 as i32 as f64 {
-        eprintln!("libcint::rys_roots negative value in sqrt for roots {} (j=1)", n - 1);
+        println!("libcint::rys_roots negative value in sqrt for roots {} (j=1)", n - 1);
         // fprintf(
         //     stderr,
         //     b"libcint::rys_roots negative value in sqrt for roots %d (j=1)\n\0"
@@ -5529,7 +5529,7 @@ unsafe extern "C" fn R_dsmit(
             if fac == 0 as i32 as f64 {
                 return 0 as i32;
             }
-            eprintln!("libcint::rys_roots negative value in sqrt for roots {} (j={})", n - 1, j);
+            println!("libcint::rys_roots negative value in sqrt for roots {} (j={})", n - 1, j);
             // fprintf(
             //     stderr,
             //     b"libcint::rys_roots negative value in sqrt for roots %d (j=%d)\n\0"
@@ -5661,7 +5661,7 @@ unsafe extern "C" fn R_lsmit(
     tmp = *fmt_ints.offset(2 as i32 as isize)
         + fac * *fmt_ints.offset(1 as i32 as isize);
     if tmp <= 0.0f64 {
-        eprintln!("libcint::rys_roots negative value in sqrtl for roots {} (j=1)", n - 1);
+        println!("libcint::rys_roots negative value in sqrtl for roots {} (j=1)", n - 1);
         // fprintf(
         //     stderr,
         //     b"libcint::rys_roots negative value in sqrtl for roots %d (j=1)\n\0"
@@ -5726,7 +5726,7 @@ unsafe extern "C" fn R_lsmit(
             if fac == 0.0f64 {
                 return 0 as i32;
             }
-            eprintln!("libcint::rys_roots negative value in sqrtl for roots {} (j={})", n - 1, j);
+            println!("libcint::rys_roots negative value in sqrtl for roots {} (j={})", n - 1, j);
             // fprintf(
             //     stderr,
             //     b"libcint::rys_roots negative value in sqrtl for roots %d (j=%d)\n\0"
