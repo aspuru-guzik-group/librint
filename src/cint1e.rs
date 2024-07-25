@@ -211,71 +211,70 @@ pub unsafe extern "C" fn CINT1e_loop(
                 }
                 (*envs).fac[0 as i32 as usize] = fac1i;
                 make_g1e_gout(gout, g, idx, envs, *gempty, int1e_type);
-                // if i_ctr > 1 as i32 {
-                //     if *iempty != 0 {
-                //         CINTprim_to_ctr_0(
-                //             gctri,
-                //             gout,
-                //             ci.offset(ip as isize),
-                //             ((*envs).nf * n_comp) as size_t,
-                //             i_prim,
-                //             i_ctr,
-                //             *non0ctri.offset(ip as isize),
-                //             non0idxi.offset((ip * i_ctr) as isize),
-                //         );
-                //     } else {
-                //         CINTprim_to_ctr_1(
-                //             gctri,
-                //             gout,
-                //             ci.offset(ip as isize),
-                //             ((*envs).nf * n_comp) as size_t,
-                //             i_prim,
-                //             i_ctr,
-                //             *non0ctri.offset(ip as isize),
-                //             non0idxi.offset((ip * i_ctr) as isize),
-                //         );
-                //     }
-                // }
+                if i_ctr > 1 as i32 {
+                    if *iempty != 0 {
+                        CINTprim_to_ctr_0(
+                            gctri,
+                            gout,
+                            ci.offset(ip as isize),
+                            ((*envs).nf * n_comp) as size_t,
+                            i_prim,
+                            i_ctr,
+                            *non0ctri.offset(ip as isize),
+                            non0idxi.offset((ip * i_ctr) as isize),
+                        );
+                    } else {
+                        CINTprim_to_ctr_1(
+                            gctri,
+                            gout,
+                            ci.offset(ip as isize),
+                            ((*envs).nf * n_comp) as size_t,
+                            i_prim,
+                            i_ctr,
+                            *non0ctri.offset(ip as isize),
+                            non0idxi.offset((ip * i_ctr) as isize),
+                        );
+                    }
+                }
                 *iempty = 0 as i32;
             }
             ip += 1;
             pdata_ij = pdata_ij.offset(1);
         }
-        // if *iempty == 0 {
-        //     if j_ctr > 1 as i32 {
-        //         if *jempty != 0 {
-        //             CINTprim_to_ctr_0(
-        //                 gctrj,
-        //                 gctri,
-        //                 cj.offset(jp as isize),
-        //                 ((*envs).nf * i_ctr * n_comp) as size_t,
-        //                 j_prim,
-        //                 j_ctr,
-        //                 *non0ctrj.offset(jp as isize),
-        //                 non0idxj.offset((jp * j_ctr) as isize),
-        //             );
-        //         } else {
-        //             CINTprim_to_ctr_1(
-        //                 gctrj,
-        //                 gctri,
-        //                 cj.offset(jp as isize),
-        //                 ((*envs).nf * i_ctr * n_comp) as size_t,
-        //                 j_prim,
-        //                 j_ctr,
-        //                 *non0ctrj.offset(jp as isize),
-        //                 non0idxj.offset((jp * j_ctr) as isize),
-        //             );
-        //         }
-        //     }
-        //     *jempty = 0 as i32;
-        // }
+        if *iempty == 0 {
+            if j_ctr > 1 as i32 {
+                if *jempty != 0 {
+                    CINTprim_to_ctr_0(
+                        gctrj,
+                        gctri,
+                        cj.offset(jp as isize),
+                        ((*envs).nf * i_ctr * n_comp) as size_t,
+                        j_prim,
+                        j_ctr,
+                        *non0ctrj.offset(jp as isize),
+                        non0idxj.offset((jp * j_ctr) as isize),
+                    );
+                } else {
+                    CINTprim_to_ctr_1(
+                        gctrj,
+                        gctri,
+                        cj.offset(jp as isize),
+                        ((*envs).nf * i_ctr * n_comp) as size_t,
+                        j_prim,
+                        j_ctr,
+                        *non0ctrj.offset(jp as isize),
+                        non0idxj.offset((jp * j_ctr) as isize),
+                    );
+                }
+            }
+            *jempty = 0 as i32;
+        }
         jp += 1;
     }
-    // if n_comp > 1 as i32 && *jempty == 0 {
-    //     CINTdmat_transpose(gctr, gctrj, (*envs).nf * nc, n_comp);
-    // }
-    // return (*jempty == 0) as i32;
-    return 0;
+    if n_comp > 1 as i32 && *jempty == 0 {
+        CINTdmat_transpose(gctr, gctrj, (*envs).nf * nc, n_comp);
+    }
+    return (*jempty == 0) as i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_cache_size(mut envs: *mut CINTEnvVars) -> i32 {
@@ -345,106 +344,105 @@ pub unsafe extern "C" fn CINT1e_drv(
         as *mut f64;
     cache = gctr.offset((nc * n_comp) as isize);
     let mut has_value: i32 = CINT1e_loop(gctr, envs, cache, int1e_type);
-    // let mut counts: [i32; 4] = [0; 4];
-    // // if dims.is_null() {
-    // dims = counts.as_mut_ptr();
-    // // }
-    // if f_c2s
-    //     == ::core::mem::transmute::<
-    //         Option::<
-    //             unsafe extern "C" fn(
-    //                 *mut f64,
-    //                 *mut f64,
-    //                 *mut i32,
-    //                 *mut CINTEnvVars,
-    //                 *mut f64,
-    //             ) -> (),
-    //         >,
-    //         Option::<unsafe extern "C" fn() -> ()>,
-    //     >(
-    //         Some(
-    //             c2s_sph_1e
-    //                 as unsafe extern "C" fn(
-    //                     *mut f64,
-    //                     *mut f64,
-    //                     *mut i32,
-    //                     *mut CINTEnvVars,
-    //                     *mut f64,
-    //                 ) -> (),
-    //         ),
-    //     )
-    // {
-    //     counts[0 as i32
-    //         as usize] = ((*envs).i_l * 2 as i32 + 1 as i32)
-    //         * *x_ctr.offset(0 as i32 as isize);
-    //     counts[1 as i32
-    //         as usize] = ((*envs).j_l * 2 as i32 + 1 as i32)
-    //         * *x_ctr.offset(1 as i32 as isize);
-    // } else if f_c2s
-    //     == ::core::mem::transmute::<
-    //         Option::<
-    //             unsafe extern "C" fn(
-    //                 *mut f64,
-    //                 *mut f64,
-    //                 *mut i32,
-    //                 *mut CINTEnvVars,
-    //                 *mut f64,
-    //             ) -> (),
-    //         >,
-    //         Option::<unsafe extern "C" fn() -> ()>,
-    //     >(
-    //         Some(
-    //             c2s_cart_1e
-    //                 as unsafe extern "C" fn(
-    //                     *mut f64,
-    //                     *mut f64,
-    //                     *mut i32,
-    //                     *mut CINTEnvVars,
-    //                     *mut f64,
-    //                 ) -> (),
-    //         ),
-    //     )
-    // {
-    //     counts[0 as i32
-    //         as usize] = (*envs).nfi * *x_ctr.offset(0 as i32 as isize);
-    //     counts[1 as i32
-    //         as usize] = (*envs).nfj * *x_ctr.offset(1 as i32 as isize);
+    let mut counts: [i32; 4] = [0; 4];
+    // if dims.is_null() {
+    dims = counts.as_mut_ptr();
     // }
-    // counts[2 as i32 as usize] = 1 as i32;
-    // counts[3 as i32 as usize] = 1 as i32;
-    // let mut nout: i32 = *dims.offset(0 as i32 as isize)
-    //     * *dims.offset(1 as i32 as isize);
-    // let mut n: i32 = 0;
-    // if has_value != 0 {
-    //     n = 0 as i32;
-    //     while n < n_comp {
-    //         ::core::mem::transmute::<
-    //             _,
-    //             fn(_, _, _, _, _),
-    //         >(
-    //             (Some(f_c2s.expect("non-null function pointer")))
-    //                 .expect("non-null function pointer"),
-    //         )(
-    //             out.offset((nout * n) as isize),
-    //             gctr.offset((nc * n) as isize),
-    //             dims,
-    //             envs,
-    //             cache,
-    //         );
-    //         n += 1;
-    //     }
-    // } else {
-    //     n = 0 as i32;
-    //     while n < n_comp {
-    //         c2s_dset0(out.offset((nout * n) as isize), dims, counts.as_mut_ptr());
-    //         n += 1;
-    //     }
-    // }
-    // if !stack.is_null() {
-    //     free(stack as *mut libc::c_void);
-    // }
-    // return has_value;
-    return 0;
+    if f_c2s
+        == ::core::mem::transmute::<
+            Option::<
+                unsafe extern "C" fn(
+                    *mut f64,
+                    *mut f64,
+                    *mut i32,
+                    *mut CINTEnvVars,
+                    *mut f64,
+                ) -> (),
+            >,
+            Option::<unsafe extern "C" fn() -> ()>,
+        >(
+            Some(
+                c2s_sph_1e
+                    as unsafe extern "C" fn(
+                        *mut f64,
+                        *mut f64,
+                        *mut i32,
+                        *mut CINTEnvVars,
+                        *mut f64,
+                    ) -> (),
+            ),
+        )
+    {
+        counts[0 as i32
+            as usize] = ((*envs).i_l * 2 as i32 + 1 as i32)
+            * *x_ctr.offset(0 as i32 as isize);
+        counts[1 as i32
+            as usize] = ((*envs).j_l * 2 as i32 + 1 as i32)
+            * *x_ctr.offset(1 as i32 as isize);
+    } else if f_c2s
+        == ::core::mem::transmute::<
+            Option::<
+                unsafe extern "C" fn(
+                    *mut f64,
+                    *mut f64,
+                    *mut i32,
+                    *mut CINTEnvVars,
+                    *mut f64,
+                ) -> (),
+            >,
+            Option::<unsafe extern "C" fn() -> ()>,
+        >(
+            Some(
+                c2s_cart_1e
+                    as unsafe extern "C" fn(
+                        *mut f64,
+                        *mut f64,
+                        *mut i32,
+                        *mut CINTEnvVars,
+                        *mut f64,
+                    ) -> (),
+            ),
+        )
+    {
+        counts[0 as i32
+            as usize] = (*envs).nfi * *x_ctr.offset(0 as i32 as isize);
+        counts[1 as i32
+            as usize] = (*envs).nfj * *x_ctr.offset(1 as i32 as isize);
+    }
+    counts[2 as i32 as usize] = 1 as i32;
+    counts[3 as i32 as usize] = 1 as i32;
+    let mut nout: i32 = *dims.offset(0 as i32 as isize)
+        * *dims.offset(1 as i32 as isize);
+    let mut n: i32 = 0;
+    if has_value != 0 {
+        n = 0 as i32;
+        while n < n_comp {
+            ::core::mem::transmute::<
+                _,
+                fn(_, _, _, _, _),
+            >(
+                (Some(f_c2s.expect("non-null function pointer")))
+                    .expect("non-null function pointer"),
+            )(
+                out.offset((nout * n) as isize),
+                gctr.offset((nc * n) as isize),
+                dims,
+                envs,
+                cache,
+            );
+            n += 1;
+        }
+    } else {
+        n = 0 as i32;
+        while n < n_comp {
+            c2s_dset0(out.offset((nout * n) as isize), dims, counts.as_mut_ptr());
+            n += 1;
+        }
+    }
+    if !stack.is_null() {
+        free(stack as *mut libc::c_void);
+    }
+    return has_value;
 }
 unsafe extern "C" fn make_g1e_gout(
     mut gout: *mut f64,
@@ -468,34 +466,34 @@ unsafe extern "C" fn make_g1e_gout(
         }
         1 => {
             CINTg1e_nuc(g, envs, -(1 as i32));
-            // ::core::mem::transmute::<
-            //     _,
-            //     fn(_, _, _, _, _),
-            // >(
-            //     (Some(((*envs).f_gout).expect("non-null function pointer")))
-            //         .expect("non-null function pointer"),
-            // )(gout, g, idx, envs, empty);
+            ::core::mem::transmute::<
+                _,
+                fn(_, _, _, _, _),
+            >(
+                (Some(((*envs).f_gout).expect("non-null function pointer")))
+                    .expect("non-null function pointer"),
+            )(gout, g, idx, envs, empty);
         }
-        // 2 => {
-        //     ia = 0 as i32;
-        //     while ia < (*envs).natm {
-        //         CINTg1e_nuc(g, envs, ia);
-        //         ::core::mem::transmute::<
-        //             _,
-        //             fn(_, _, _, _, _),
-        //         >(
-        //             (Some(((*envs).f_gout).expect("non-null function pointer")))
-        //                 .expect("non-null function pointer"),
-        //         )(
-        //             gout,
-        //             g,
-        //             idx,
-        //             envs,
-        //             (empty != 0 && ia == 0 as i32) as i32,
-        //         );
-        //         ia += 1;
-        //     }
-        // }
+        2 => {
+            ia = 0 as i32;
+            while ia < (*envs).natm {
+                CINTg1e_nuc(g, envs, ia);
+                ::core::mem::transmute::<
+                    _,
+                    fn(_, _, _, _, _),
+                >(
+                    (Some(((*envs).f_gout).expect("non-null function pointer")))
+                        .expect("non-null function pointer"),
+                )(
+                    gout,
+                    g,
+                    idx,
+                    envs,
+                    (empty != 0 && ia == 0 as i32) as i32,
+                );
+                ia += 1;
+            }
+        }
         _ => {}
     };
 }
