@@ -59,11 +59,16 @@ fn main() {
             //     print!("{} ", buf[i as usize]);
             // }
 
+            // zero out denv
+            for k in 0..34 {
+                denv[k] = 0.0;
+            }
+
             cint_diff(&mut buf, &mut dbuf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env, &mut denv);
             for i in 28..34 {
-                print!("{} ", denv[i]);
+                print!("{:.6} ", denv[i]);
             }
+            println!();
         }
-        println!();
     }
 }
