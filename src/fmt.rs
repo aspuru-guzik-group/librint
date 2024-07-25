@@ -363,7 +363,7 @@ pub unsafe extern "C" fn fmt1_lerfc_like(
     i = m;
     while i > 0 as i32 {
         b -= 1.0f64;
-        e1 /= lower2;
+        // e1 /= lower2;
         val = (e - e1 + t * val) / b;
         *f.offset((i - 1 as i32) as isize) = val;
         i -= 1;
