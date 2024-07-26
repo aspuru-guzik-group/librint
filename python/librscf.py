@@ -52,7 +52,7 @@ def RHF(natm: int, nbas: int, nelec: int, nshells: int, atm: np.ndarray, bas: np
     bas_r = bas.flatten().tolist()
     env_r = env.flatten().tolist()
 
-    P_c = librint.RHF(natm, nbas, nelec, nshells, atm_r, bas_r, env_r, imax, conv)
+    P_c = librint.RHFp(natm, nbas, nelec, nshells, atm_r, bas_r, env_r, imax, conv)
     P = np.array(P_c).reshape((nshells, nshells))
     return P
 
@@ -61,7 +61,18 @@ def energy(natm: int, nbas: int, nshells: int, atm: np.ndarray, bas: np.ndarray,
     bas_r = bas.flatten().tolist()
     env_r = env.flatten().tolist()
     P_r = P.flatten().tolist()
-    return librint.energy(natm, nbas, nshells, atm_r, bas_r, env_r, P_r)
+    return librint.energyp(natm, nbas, nshells, atm_r, bas_r, env_r, P_r)
+
+def grad(natm: int, nbas: int, nshells: int, atm: np.ndarray, bas: np.ndarray, env: np.ndarray, P: np.ndarray) -> np.ndarray:
+    atm_r = atm.flatten().tolist()
+    bas_r = bas.flatten().tolist()
+    env_r = env.flatten().tolist()
+    denv_r = [0.0 for i in range(len(env_r))]
+
+    P_r = P.flatten().tolist()
+    librint.grad(natm, nbas, nshells, atm_r, bas_r, env_r, denv_r, P_r, 1.0)
+
+    return denv_r
 
 
 if __name__ == '__main__':
