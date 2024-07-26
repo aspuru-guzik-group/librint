@@ -1,5 +1,4 @@
-// #![feature(autodiff)]
-// #![feature(f128)]
+#![feature(autodiff)]
 
 pub mod scf;
 pub mod bind;

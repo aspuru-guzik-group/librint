@@ -10,7 +10,8 @@ fn librint(py: Python, m: &PyModule) -> PyResult<()> {
 
     m.add_function(wrap_pyfunction!(scf::integral1e, m)?)?;
     m.add_function(wrap_pyfunction!(scf::integral2e, m)?)?;
-    m.add_function(wrap_pyfunction!(scf::RHF, m)?)?;
-    m.add_function(wrap_pyfunction!(scf::energy, m)?)?;
+    m.add_function(wrap_pyfunction!(scf::RHFp, m)?)?;
+    m.add_function(wrap_pyfunction!(scf::energyp, m)?)?;
+    m.add_function(wrap_pyfunction!(scf::grad, m)?)?;
     Ok(())
 }

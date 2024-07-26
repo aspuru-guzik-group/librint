@@ -1,8 +1,7 @@
 #![allow(non_snake_case, non_upper_case_globals)]
 
 use pyo3::prelude::*;
-
-use crate::utils::print_arr;
+use pyo3::types::PyList;
 
 use crate::cint_bas::CINTcgto_cart;
 use crate::cint1e::cint1e_ovlp_cart;
@@ -99,12 +98,16 @@ pub fn integral1e(
     natm: usize,
     nbas: usize,
     nshells: usize,
-    mut atm: Vec<i32>,
-    mut bas: Vec<i32>,
-    mut env: Vec<f64>,
+    atml: &PyList,
+    basl: &PyList,
+    envl: &PyList,
     coord: i32,
     typec: i32,
-) -> Vec<f64> {
+) -> PyResult<Vec<f64>> {
+    let mut atm: Vec<i32> = atml.extract()?;
+    let mut bas: Vec<i32> = basl.extract()?;
+    let mut env: Vec<f64> = envl.extract()?;
+
     let mut R = vec![0.0; nshells * nshells];
 
     let mut buf: Vec<f64>;
@@ -172,7 +175,7 @@ pub fn integral1e(
         mu += di;
     }
     
-    return R;
+    Ok(R)
 }
 
 #[no_mangle]
@@ -181,11 +184,15 @@ pub fn integral2e(
     natm: usize,
     nbas: usize,
     nshells: usize,
-    mut atm: Vec<i32>,
-    mut bas: Vec<i32>,
-    mut env: Vec<f64>,
+    atml: &PyList,
+    basl: &PyList,
+    envl: &PyList,
     coord: i32,
-) -> Vec<f64> {
+) -> PyResult<Vec<f64>> {
+    let mut atm: Vec<i32> = atml.extract()?;
+    let mut bas: Vec<i32> = basl.extract()?;
+    let mut env: Vec<f64> = envl.extract()?;
+
     let mut R = vec![0.0; nshells * nshells * nshells * nshells];
 
     let mut buf: Vec<f64>;
@@ -256,7 +263,7 @@ pub fn integral2e(
         mu += di;
     }
 
-    return R;    
+    Ok(R)    
 }
 
 fn int_cart(
@@ -542,22 +549,21 @@ fn norm(
 }
 
 #[no_mangle]
-#[pyfunction]
-pub fn RHF(
+fn RHF(
     natm: usize,
     nbas: usize,
     nelec: usize,
     nshells: usize,
-    mut atm: Vec<i32>,
-    mut bas: Vec<i32>,
-    mut env: Vec<f64>,
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
     imax: i32,
     conv: f64,
 ) -> Vec<f64> {
     let mut S = vec![0.0; nshells * nshells];
     let mut H = vec![0.0; nshells * nshells];
     let mut two = vec![0.0; nshells * nshells * nshells * nshells];
-    int_cart(natm, nbas, nshells, &mut atm, &mut bas, &mut env, &mut S, &mut H, &mut two);
+    int_cart(natm, nbas, nshells, atm, bas, env, &mut S, &mut H, &mut two);
 
     let mut X = vec![0.0; nshells * nshells];
     let mut Xdag = vec![0.0; nshells * nshells];
@@ -594,9 +600,6 @@ pub fn RHF(
         i += 1;
     }
 
-    // println!("Conv P: ({}/{})", i, imax);
-    // print_arr(nshells, 2, &mut P);
-
     if delta > conv && i == imax {
         println!("did not converge");
         for i in 0..nshells {
@@ -610,24 +613,24 @@ pub fn RHF(
 }
 
 #[no_mangle]
-#[pyfunction]
-pub fn energy(
+#[autodiff(denergy, Reverse, Const, Const, Const, Const, Const, Duplicated, Const, Active)]
+fn energy(
     natm: usize,
     nbas: usize,
     nshells: usize,
-    mut atm: Vec<i32>,
-    mut bas: Vec<i32>,
-    mut env: Vec<f64>,
-    mut P: Vec<f64>,
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    P: &mut Vec<f64>,
 ) -> f64 {
     let mut S = vec![0.0; nshells * nshells];
     let mut H = vec![0.0; nshells * nshells];
     let mut two = vec![0.0; nshells * nshells * nshells * nshells];
-    int_cart(natm, nbas, nshells, &mut atm, &mut bas, &mut env, &mut S, &mut H, &mut two);
+    int_cart(natm, nbas, nshells, atm, bas, env, &mut S, &mut H, &mut two);
 
     let mut G = vec![0.0; nshells * nshells];
     let mut F = vec![0.0; nshells * nshells];
-    calc_F(nshells, &mut P, &mut two, &mut H, &mut G, &mut F);
+    calc_F(nshells, P, &mut two, &mut H, &mut G, &mut F);
 
     let mut E0: f64 = 0.0;
     for mu in 0..nshells {
@@ -640,7 +643,7 @@ pub fn energy(
     for i in 0..natm {
         for j in 0..natm {
             if i > j {
-                Enuc += (atm[i*6 + 0] * atm[j*6 + 0]) as f64 / (norm(&mut atm, &mut env, i, j));
+                Enuc += (atm[i*6 + 0] * atm[j*6 + 0]) as f64 / (norm(atm, env, i, j));
             }
         }
     }
@@ -648,17 +651,68 @@ pub fn energy(
     return E0 + Enuc;
 }
 
-// #[no_mangle]
-// // #[autodiff(cint_diff, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
-// pub fn grad(
-//     natm: usize,
-//     nbas: usize,
-//     nshells: usize,
-//     atm: &mut [i32],
-//     bas: &mut [i32],
-//     env: &mut [f64],
-//     mut P: Vec<f64>,
-// ) -> Vec<f64>{
-//     return vec![0.0; env.len()];
-//     // return energy(natm, nbas, nshells, atm, bas, env, P);
-// }
+#[no_mangle]
+#[pyfunction]
+pub fn RHFp(
+    natm: usize,
+    nbas: usize,
+    nelec: usize,
+    nshells: usize,
+    patm: &PyList,
+    pbas: &PyList,
+    penv: &PyList,
+    imax: i32,
+    conv: f64,
+) -> PyResult<Vec<f64>> {
+    let mut atm: Vec<i32> = patm.extract()?;
+    let mut bas: Vec<i32> = pbas.extract()?;
+    let mut env: Vec<f64> = penv.extract()?;
+
+    let P: Vec<f64> = RHF(natm, nbas, nelec, nshells, &mut atm, &mut bas, &mut env, imax, conv);
+
+    Ok(P)
+}
+
+#[no_mangle]
+#[pyfunction]
+pub fn energyp(
+    natm: usize,
+    nbas: usize,
+    nshells: usize,
+    patm: &PyList,
+    pbas: &PyList,
+    penv: &PyList,
+    Pl: &PyList,
+) -> PyResult<f64> {
+    let mut atm: Vec<i32> = patm.extract()?;
+    let mut bas: Vec<i32> = pbas.extract()?;
+    let mut env: Vec<f64> = penv.extract()?;
+    let mut P: Vec<f64> = Pl.extract()?;
+
+    let E: f64 = energy(natm, nbas, nshells, &mut atm, &mut bas, &mut env, &mut P);
+
+    Ok(E)
+}
+
+#[no_mangle]
+#[pyfunction]
+pub fn grad(
+    natm: usize,
+    nbas: usize,
+    nshells: usize,
+    atml: &PyList,
+    basl: &PyList,
+    envl: &PyList,
+    Pl: &PyList,
+) -> PyResult<Vec<f64>> {
+    let mut atm: Vec<i32> = atml.extract()?;
+    let mut bas: Vec<i32> = basl.extract()?;
+    let mut env: Vec<f64> = envl.extract()?;
+    let mut P: Vec<f64> = Pl.extract()?;
+
+    let mut denv: Vec<f64> = vec![0.0; 1000];
+
+    let _ = denergy(natm, nbas, nshells, &mut atm, &mut bas, &mut env, &mut denv, &mut P, 1.0);
+
+    Ok(denv)
+}
