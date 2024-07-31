@@ -22,6 +22,8 @@ use faer::mat;
 use faer::linalg::solvers::Eigendecomposition;
 use faer::complex_native::c64;
 
+use std::time::Instant;
+
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
@@ -648,17 +650,17 @@ pub fn energy(
 }
 
 fn main() -> io::Result<()> {
-    const natm: usize = 3;
-    const nelec: usize = 10;
+    const natm: usize = 2;
+    const nelec: usize = 2;
 
-    const nbas: usize = 5;
-    const nshells: usize = 7;
+    const nbas: usize = 2;
+    const nshells: usize = 2;
 
     let mut atm = vec![0; natm * ATM_SLOTS];
     let mut bas = vec![0; nbas * BAS_SLOTS];
     let mut env = vec![0.0; 1000];
 
-    let path = "/u/jpmedina/libcint/molecules/h2o/sto3g.txt";
+    let path = "/u/jpmedina/libcint/molecules/h2/sto3g.txt";
     read_basis(path, &mut atm, &mut bas, &mut env)?;
 
     const imax: i32 = 20;
@@ -668,18 +670,36 @@ fn main() -> io::Result<()> {
     println!("P: ");
     print_arr(nshells, 2, &mut P);
 
+    // let now = Instant::now();
     let Etot: f64 = energy(natm, nbas, nshells, &mut atm, &mut bas, &mut env, &mut P);
-    println!("Etot: {}", Etot);
+    // let elapsed_time = now.elapsed();
+    println!("E: {}", Etot);
 
-    let mut denv = vec![0.0; 1000];
+    for _i in 0..100 {
+        let mut denv = vec![0.0; 1000];
+        let _dEtot: f64 = grad(natm, nbas, nshells, &mut atm, &mut bas, &mut env, &mut denv, &mut P, 1.0);
 
-    let dEtot: f64 = grad(natm, nbas, nshells, &mut atm, &mut bas, &mut env, &mut denv, &mut P, 1.0);
-
-    println!("denv:");
-    for k in 32..56 {
-        print!("{:.6} ", denv[k]);
+        println!("denv:");
+        for k in 28..34 {
+            print!("{:.6} ", denv[k]);
+        }
+        println!();
     }
-    println!();
+
+    // let mut denv = vec![0.0; 1000];
+
+    // // let dnow = Instant::now();
+    // let _dEtot: f64 = grad(natm, nbas, nshells, &mut atm, &mut bas, &mut env, &mut denv, &mut P, 1.0);
+    // // let delapsed_time = dnow.elapsed();
+
+    // println!("denv:");
+    // for k in 28..34 {
+    //     print!("{:.6} ", denv[k]);
+    // }
+    // println!();
+
+    // println!("E time: {}", elapsed_time.as_micros());
+    // println!("dE time: {}", delapsed_time.as_micros());
 
     Ok(())
 }

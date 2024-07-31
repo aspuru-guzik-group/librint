@@ -63,6 +63,10 @@ path = "grad/h2o/h2o_stv.rs"
 name = "h2o_scf"
 path = "grad/h2o/scf.rs"
 
+[[bin]]
+name = "scf"
+path = "scf/scf.rs"
+
 # AUTODIFF
 
 [[bin]]
