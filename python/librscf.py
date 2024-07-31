@@ -25,8 +25,7 @@ def int1e(natm: int, nbas: int, nshells: int, atm: np.ndarray, bas: np.ndarray, 
         print("coordinate type does not exist: cart, sph")
         return None
 
-    
-    R_c = librint.integral1e(natm, nbas, nshells, atm_r, bas_r, env_r, c, flag)
+    R_c = librint.integral1ep(natm, nbas, nshells, atm_r, bas_r, env_r, c, flag)
     R = np.array(R_c).reshape(nshells, nshells)
     return R
 
@@ -43,7 +42,7 @@ def int2e(natm: int, nbas: int, nshells: int, atm: np.ndarray, bas: np.ndarray, 
         print("coordinate type does not exist: cart, sph")
         return None
     
-    R_c = librint.integral2e(natm, nbas, nshells, atm_r, bas_r, env_r, c)
+    R_c = librint.integral2ep(natm, nbas, nshells, atm_r, bas_r, env_r, c)
     R = np.array(R_c).reshape(nshells, nshells)
     return R
 
