@@ -1,8 +1,5 @@
 #![allow(non_snake_case, non_upper_case_globals)]
 
-use pyo3::prelude::*;
-use pyo3::types::PyList;
-
 use crate::cint_bas::CINTcgto_cart;
 use crate::cint1e::cint1e_ovlp_cart;
 use crate::cint1e::cint1e_nuc_cart;
@@ -93,21 +90,16 @@ fn sort(
 }
 
 #[no_mangle]
-#[pyfunction]
 pub fn integral1e(
     natm: usize,
     nbas: usize,
     nshells: usize,
-    atml: &PyList,
-    basl: &PyList,
-    envl: &PyList,
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
     coord: i32,
     typec: i32,
-) -> PyResult<Vec<f64>> {
-    let mut atm: Vec<i32> = atml.extract()?;
-    let mut bas: Vec<i32> = basl.extract()?;
-    let mut env: Vec<f64> = envl.extract()?;
-
+) -> Vec<f64> {
     let mut R = vec![0.0; nshells * nshells];
 
     let mut buf: Vec<f64>;
@@ -161,7 +153,7 @@ pub fn integral1e(
 
             buf = vec![0.0; di * dj];
 
-            func(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
+            func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -175,24 +167,19 @@ pub fn integral1e(
         mu += di;
     }
     
-    Ok(R)
+    return R;
 }
 
 #[no_mangle]
-#[pyfunction]
 pub fn integral2e(
     natm: usize,
     nbas: usize,
     nshells: usize,
-    atml: &PyList,
-    basl: &PyList,
-    envl: &PyList,
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
     coord: i32,
-) -> PyResult<Vec<f64>> {
-    let mut atm: Vec<i32> = atml.extract()?;
-    let mut bas: Vec<i32> = basl.extract()?;
-    let mut env: Vec<f64> = envl.extract()?;
-
+) -> Vec<f64> {
     let mut R = vec![0.0; nshells * nshells * nshells * nshells];
 
     let mut buf: Vec<f64>;
@@ -241,7 +228,7 @@ pub fn integral2e(
                     
                     buf = vec![0.0; di * dj * dk * dl];
         
-                    func(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
+                    func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
                     let mut c: usize = 0;
                     for laml in lam..(lam + dl) {
                         for sigk in sig..(sig + dk) {
@@ -263,7 +250,7 @@ pub fn integral2e(
         mu += di;
     }
 
-    Ok(R)    
+    return R;
 }
 
 fn int_cart(
@@ -549,7 +536,7 @@ fn norm(
 }
 
 #[no_mangle]
-fn RHF(
+pub fn RHF(
     natm: usize,
     nbas: usize,
     nelec: usize,
@@ -614,7 +601,7 @@ fn RHF(
 
 #[no_mangle]
 #[autodiff(denergy, Reverse, Const, Const, Const, Const, Const, Duplicated, Const, Active)]
-fn energy(
+pub fn energy(
     natm: usize,
     nbas: usize,
     nshells: usize,
@@ -649,70 +636,4 @@ fn energy(
     }
 
     return E0 + Enuc;
-}
-
-#[no_mangle]
-#[pyfunction]
-pub fn RHFp(
-    natm: usize,
-    nbas: usize,
-    nelec: usize,
-    nshells: usize,
-    patm: &PyList,
-    pbas: &PyList,
-    penv: &PyList,
-    imax: i32,
-    conv: f64,
-) -> PyResult<Vec<f64>> {
-    let mut atm: Vec<i32> = patm.extract()?;
-    let mut bas: Vec<i32> = pbas.extract()?;
-    let mut env: Vec<f64> = penv.extract()?;
-
-    let P: Vec<f64> = RHF(natm, nbas, nelec, nshells, &mut atm, &mut bas, &mut env, imax, conv);
-
-    Ok(P)
-}
-
-#[no_mangle]
-#[pyfunction]
-pub fn energyp(
-    natm: usize,
-    nbas: usize,
-    nshells: usize,
-    patm: &PyList,
-    pbas: &PyList,
-    penv: &PyList,
-    Pl: &PyList,
-) -> PyResult<f64> {
-    let mut atm: Vec<i32> = patm.extract()?;
-    let mut bas: Vec<i32> = pbas.extract()?;
-    let mut env: Vec<f64> = penv.extract()?;
-    let mut P: Vec<f64> = Pl.extract()?;
-
-    let E: f64 = energy(natm, nbas, nshells, &mut atm, &mut bas, &mut env, &mut P);
-
-    Ok(E)
-}
-
-#[no_mangle]
-#[pyfunction]
-pub fn grad(
-    natm: usize,
-    nbas: usize,
-    nshells: usize,
-    atml: &PyList,
-    basl: &PyList,
-    envl: &PyList,
-    Pl: &PyList,
-) -> PyResult<Vec<f64>> {
-    let mut atm: Vec<i32> = atml.extract()?;
-    let mut bas: Vec<i32> = basl.extract()?;
-    let mut env: Vec<f64> = envl.extract()?;
-    let mut P: Vec<f64> = Pl.extract()?;
-
-    let mut denv: Vec<f64> = vec![0.0; 1000];
-
-    let _ = denergy(natm, nbas, nshells, &mut atm, &mut bas, &mut env, &mut denv, &mut P, 1.0);
-
-    Ok(denv)
 }
