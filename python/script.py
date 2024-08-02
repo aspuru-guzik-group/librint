@@ -3,12 +3,12 @@ import pyscf
 
 COMP = 'C'
 
+import utils
+
 if COMP == 'R':
     import librscf as libscf
-    from librscf import pmat
 elif COMP == 'C':
     import libcscf as libscf
-    from libcscf import pmat
 
 mol = pyscf.gto.M(atom='''
                     H 0 0 -0.8
@@ -19,57 +19,57 @@ atm = np.asarray(mol._atm, dtype=np.int32, order='C')
 bas = np.asarray(mol._bas, dtype=np.int32, order='C')
 env = np.asarray(mol._env, dtype=np.double, order='C')
 
-natm, nbas, nelec, nshells = 2, 2, 2, 2
+nelec = 2
 
 print("## H2 ##\n")
 
-P = libscf.RHF(natm, nbas, nelec, nshells, atm, bas, env)
+P = libscf.RHF(atm, bas, env, nelec)
 print("P:")
-pmat(P)
+utils.pmat(P)
 
-E = libscf.energy(natm, nbas, nshells, atm, bas, env, P)
+E = libscf.energy(atm, bas, env, P)
 print("E:\n", E)
 
-# S = libscf.int1e(natm, nbas, nshells, atm, bas, env, 'ovlp')
-# print("S:")
-# pmat(S)
+S = libscf.int1e(atm, bas, env, 'ovlp')
+print("S:")
+utils.pmat(S)
 
-# T = libscf.int1e(natm, nbas, nshells, atm, bas, env, 'kin')
-# print("T:")
-# pmat(T)
+T = libscf.int1e(atm, bas, env, 'kin')
+print("T:")
+utils.pmat(T)
 
-denv = libscf.grad(natm, nbas, nshells, atm, bas, env, P)
-print("d:\n", denv[28:34])
+denv = libscf.grad(atm, bas, env, P)
+print("d:\n", denv)
 print()
 
-print("## H2O ##\n")
+# print("## H2O ##\n")
 
-mol = pyscf.gto.M(atom='''
-                    O   -0.0000000   -0.1113512    0.0000000
-                    H    0.0000000    0.4454047   -0.7830363
-                    H   -0.0000000    0.4454047    0.7830363''',
-                    basis='sto-3g')
+# mol = pyscf.gto.M(atom='''
+#                     O   -0.0000000   -0.1113512    0.0000000
+#                     H    0.0000000    0.4454047   -0.7830363
+#                     H   -0.0000000    0.4454047    0.7830363''',
+#                     basis='sto-3g')
 
-atm = np.asarray(mol._atm, dtype=np.int32, order='C')
-bas = np.asarray(mol._bas, dtype=np.int32, order='C')
-env = np.asarray(mol._env, dtype=np.double, order='C')
+# atm = np.asarray(mol._atm, dtype=np.int32, order='C')
+# bas = np.asarray(mol._bas, dtype=np.int32, order='C')
+# env = np.asarray(mol._env, dtype=np.double, order='C')
 
-natm, nbas, nelec, nshells = 3, 5, 10, 7
+# nelec = 10
 
-P = libscf.RHF(natm, nbas, nelec, nshells, atm, bas, env)
-print("P:")
-pmat(P)
+# P = libscf.RHF(atm, bas, env, nelec)
+# print("P:")
+# utils.pmat(P)
 
-E = libscf.energy(natm, nbas, nshells, atm, bas, env, P)
-print("E:\n", E)
+# E = libscf.energy(atm, bas, env, P)
+# print("E:\n", E)
 
-# S = libscf.int1e(natm, nbas, nshells, atm, bas, env, 'ovlp')
+# S = libscf.int1e(atm, bas, env, 'ovlp')
 # print("S:")
-# pmat(S)
+# utils.pmat(S)
 
-# T = libscf.int1e(natm, nbas, nshells, atm, bas, env, 'kin')
+# T = libscf.int1e(atm, bas, env, 'kin')
 # print("T:")
-# pmat(T)
+# utils.pmat(T)
 
-denv = libscf.grad(natm, nbas, nshells, atm, bas, env, P)
-print("d:\n", denv[32:56])
+# denv = libscf.grad(atm, bas, env, P)
+# print("d:\n", denv)
