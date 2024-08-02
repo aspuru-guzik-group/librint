@@ -1,9 +1,9 @@
 #![feature(autodiff)]
 
 // pub mod gen;
+// pub mod p2r; // pyo3 bindings
 
 pub mod p2c; // bindings with C interface
-// pub mod p2r; // pyo3 bindings
 
 pub mod scf;
 pub mod utils;

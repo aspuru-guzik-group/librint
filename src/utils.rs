@@ -10,11 +10,77 @@ pub const BAS_SLOTS: usize = 8;
 enum Token {
     Int(i32),
     Float(f64),
+    Delimiter,
     Invalid,
 }
 
+pub fn read_basis_fix(
+    path: &str,
+    atm: &mut Vec<i32>, 
+    bas: &mut Vec<i32>, 
+    env: &mut Vec<f64>
+) -> io::Result<()> {
+    let file = File::open(path)?;
+    let mut reader = BufReader::new(file);
+    let mut contents = String::new();
+    reader.read_to_string(&mut contents)?;
+
+    let mut tokens = contents.split_whitespace().map(|s| {
+        if s == "|" {
+            Token::Delimiter
+        } else if let Ok(int_val) = s.parse::<i32>() {
+            Token::Int(int_val)
+        } else if let Ok(float_val) = s.parse::<f64>() {
+            Token::Float(float_val)
+        } else {
+            Token::Invalid
+        }
+    });
+
+    while let Some(token) = tokens.next() {
+        match token {
+            Token::Int(value) => {
+                atm.push(value);
+            }
+            Token::Delimiter => {
+                break;
+            }
+            Token::Float(_) | Token::Invalid => {
+                println!("Error: Expected int in file.");
+            }
+        }
+    }
+
+    while let Some(token) = tokens.next() {
+        match token {
+            Token::Int(value) => {
+                bas.push(value);
+            }
+            Token::Delimiter => {
+                break;
+            }
+            Token::Float(_) | Token::Invalid => {
+                println!("Error: Expected int in file.");
+            }
+        }
+    }
+
+    while let Some(token) = tokens.next() {
+        match token {
+            Token::Float(value) => {
+                env.push(value);
+            }
+            Token::Delimiter => (),
+            Token::Int(_) | Token::Invalid => {
+                println!("Error: Expected float in file.");
+            }
+        }
+    }
+    Ok(())
+}
+
 pub fn read_basis(
-    path: &str, 
+    path: &str,
     atm: &mut Vec<i32>, 
     bas: &mut Vec<i32>, 
     env: &mut Vec<f64>
@@ -59,6 +125,7 @@ pub fn read_basis(
                 env[index] = value;
                 index += 1;
             }
+            Token::Delimiter => (),
             Token::Int(_) | Token::Invalid => {
                 println!("Error: Expected float in file.");
             }
