@@ -24,15 +24,14 @@ fn cint_wrap(
 }
 
 fn main() {
-    const natm: usize = 1;
-    const nbas: usize = 3;
-
-    let mut atm = vec![0; natm * ATM_SLOTS];
-    let mut bas = vec![0; nbas * BAS_SLOTS];
-    let mut env = vec![0.0; 1000];
+    let mut atm = Vec::new();
+    let mut bas = Vec::new();
+    let mut env = Vec::new();
 
     let path = "/u/jpmedina/libcint/molecules/O/sto3g.txt";
-    read_basis(path, &mut atm, &mut bas, &mut env);
+    read_basis_fix(path, &mut atm, &mut bas, &mut env);
+
+    let (natm, nbas, _, _) = nparams(&mut atm, &mut bas);
 
     let mut shls: [i32; 4] = [0, 0, 0, 0];
 

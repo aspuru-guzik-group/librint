@@ -1,7 +1,7 @@
 #![allow(non_snake_case, non_upper_case_globals)]
 #![feature(autodiff)]
 
-use librint::utils::read_basis;
+use librint::utils::read_basis_fix;
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
@@ -24,15 +24,14 @@ fn cint_wrap(
 }
 
 fn main() {
-    const natm: usize = 2;
-    const nbas: usize = 2;
-
-    let mut atm = vec![0; natm * ATM_SLOTS];
-    let mut bas = vec![0; nbas * BAS_SLOTS];
-    let mut env = vec![0.0; 1000];
+    let mut atm = Vec::new();
+    let mut bas = Vec::new();
+    let mut env = Vec::new();
 
     let path = "/u/jpmedina/libcint/molecules/h2/sto3g.txt";
-    read_basis(path, &mut atm, &mut bas, &mut env);
+    read_basis_fix(path, &mut atm, &mut bas, &mut env);
+
+    let (natm, nbas, _, _) = nparams(&mut atm, &mut bas);
 
     let mut denv: [f64; 34] = [0.0; 34];
 
