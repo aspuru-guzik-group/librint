@@ -34,13 +34,13 @@ nelec = 2
 a, b = utils.split(bas)
 print(a, b)
 
-S = libcscf.int1e(atm, bas, env, 'ovlp')
-print("S: ")
-utils.pmat(S)
+# S = libcscf.int1e(atm, bas, env, 'ovlp')
+# print("S: ")
+# utils.pmat(S)
 
-alpha = 1e-3
+alpha = 1e-4
 max_i = 10000
-epsilon = 1e-3
+epsilon = 1e-4
 delta = 1
 i = 0
 
@@ -56,6 +56,14 @@ while not (delta < epsilon or i == max_i):
     P = libcscf.RHF(atm, bas, env, nelec)
     E = libcscf.energy(atm, bas, env, P)
     denv = libcscf.grad(atm, bas, env, P)
+
+    dH = libcscf.dHcoref(atm, bas, env, P)
+    dR = 0.25 * libcscf.dRf(atm, bas, env, P)
+    dS = - 0.5 * libcscf.dSf(atm, bas, env, P)
+
+    grad = dH + dR + dS
+
+    full = denv + dS
 
     fd = np.zeros(b-a)
     for j in range(a, b):
@@ -79,10 +87,13 @@ while not (delta < epsilon or i == max_i):
     print(i)
     print("E: ", E)
     print("delta: ", delta)
-    if (np.linalg.norm(denv - fd) > 1e-4):
-        print("grad and fd diff i: {0}".format(i))
-        print("{0}".format(denv)) 
-        print("{0}".format(fd))
+    print("fd:           ", fd)
+    print("ad E + dovlp: ", full)
+    print("analytical:   ", grad)
+    # if (np.linalg.norm(grad - fd) > 1e-4):
+    #     print("grad and fd diff i: {0}".format(i))
+    #     print("{0}".format(grad)) 
+    #     print("{0}".format(fd))
     
     exit(1)
 
@@ -96,11 +107,11 @@ else:
 print("env:   ", env[a:b])
 # print("P:   ", P)
 print("E:   ", E)
-print("grad:", denv)
+# print("grad:", grad)
 
-S = libcscf.int1e(atm, bas, env, 'ovlp')
-print("S:")
-utils.pmat(S)
+# S = libcscf.int1e(atm, bas, env, 'ovlp')
+# print("S:")
+# utils.pmat(S)
 
 if SAVE == True:
     from datetime import datetime
