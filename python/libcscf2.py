@@ -4,11 +4,11 @@ import numpy as np
 
 import utils
 
-path = '/u/jpmedina/libcint/librint/python/librint.so'
+path = '/u/jpmedina/libcint/librint/python/librint2.so'
 
 libc = ctypes.CDLL(path)
 
-libc.int1e_c.argtypes = (
+libc.int1e_C.argtypes = (
     ctypes.POINTER(ctypes.c_int),
     ctypes.c_size_t,
     ctypes.POINTER(ctypes.c_int),
@@ -18,9 +18,9 @@ libc.int1e_c.argtypes = (
     ctypes.c_int,
     ctypes.c_int,
 )
-libc.int1e_c.restype = ctypes.POINTER(ctypes.c_double)
+libc.int1e_C.restype = ctypes.POINTER(ctypes.c_double)
 
-libc.int2e_c.argtypes = (
+libc.int2e_C.argtypes = (
     ctypes.POINTER(ctypes.c_int),
     ctypes.c_size_t,
     ctypes.POINTER(ctypes.c_int),
@@ -29,9 +29,9 @@ libc.int2e_c.argtypes = (
     ctypes.c_size_t,
     ctypes.c_int,
 )
-libc.int2e_c.restype = ctypes.POINTER(ctypes.c_double)
+libc.int2e_C.restype = ctypes.POINTER(ctypes.c_double)
 
-libc.RHF_c.argtypes = (
+libc.RHF_C.argtypes = (
     ctypes.POINTER(ctypes.c_int),
     ctypes.c_size_t,
     ctypes.POINTER(ctypes.c_int),
@@ -42,9 +42,9 @@ libc.RHF_c.argtypes = (
     ctypes.c_int,
     ctypes.c_double,
 )
-libc.RHF_c.restype = ctypes.POINTER(ctypes.c_double)
+libc.RHF_C.restype = ctypes.POINTER(ctypes.c_double)
 
-libc.energy_c.argtypes =(
+libc.energy_C.argtypes =(
     ctypes.POINTER(ctypes.c_int),
     ctypes.c_size_t,
     ctypes.POINTER(ctypes.c_int),
@@ -54,9 +54,9 @@ libc.energy_c.argtypes =(
     ctypes.POINTER(ctypes.c_double),
     ctypes.c_size_t,
 )
-libc.energy_c.restype = ctypes.c_double
+libc.energy_C.restype = ctypes.c_double
 
-libc.grad_c.argtypes =(
+libc.grad_C.argtypes =(
     ctypes.POINTER(ctypes.c_int),
     ctypes.c_size_t,
     ctypes.POINTER(ctypes.c_int),
@@ -66,9 +66,9 @@ libc.grad_c.argtypes =(
     ctypes.POINTER(ctypes.c_double),
     ctypes.c_size_t,
 )
-libc.grad_c.restype = ctypes.POINTER(ctypes.c_double)
+libc.grad_C.restype = ctypes.POINTER(ctypes.c_double)
 
-libc.dS_c.argtypes =(
+libc.getF.argtypes =(
     ctypes.POINTER(ctypes.c_int),
     ctypes.c_size_t,
     ctypes.POINTER(ctypes.c_int),
@@ -78,7 +78,20 @@ libc.dS_c.argtypes =(
     ctypes.POINTER(ctypes.c_double),
     ctypes.c_size_t,
 )
-libc.dS_c.restype = ctypes.POINTER(ctypes.c_double)
+libc.getF.restype = ctypes.POINTER(ctypes.c_double)
+
+
+libc.grad_dS_C.argtypes =(
+    ctypes.POINTER(ctypes.c_int),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_int),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_double),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_double),
+    ctypes.c_size_t,
+)
+libc.grad_dS_C.restype = ctypes.POINTER(ctypes.c_double)
 
 libc.dHcore_c.argtypes =(
     ctypes.POINTER(ctypes.c_int),
@@ -130,7 +143,7 @@ def int1e(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, typei: str = 'ovlp'
 
     nshells = utils.angl(bas)
 
-    R_c = libc.int1e_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), c, flag)
+    R_c = libc.int1e_C(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), c, flag)
     R = np.ctypeslib.as_array(R_c, shape=(nshells, nshells))
     return R
 
@@ -150,7 +163,7 @@ def int2e(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, coord: str = 'cart'
 
     nshells = utils.angl(bas)
 
-    R_c = libc.int2e_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), c)
+    R_c = libc.int2e_C(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), c)
     R = np.ctypeslib.as_array(R_c, shape=(nshells, nshells, nshells, nshells))
     return R
 
@@ -162,7 +175,7 @@ def RHF(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, nelec: int, imax: int
 
     nshells = utils.angl(bas)
 
-    P_c = libc.RHF_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), nelec, imax, conv)
+    P_c = libc.RHF_C(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), nelec, imax, conv)
     P = np.ctypeslib.as_array(P_c, shape=(nshells, nshells))
     return P
 
@@ -172,7 +185,7 @@ def energy(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, P: np.ndarray) -> 
     bas_ctypes = bas.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
     env_ctypes = env.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
     P_ctypes = P.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
-    return libc.energy_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), P_ctypes, len(P.flatten()))
+    return libc.energy_C(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), P_ctypes, len(P.flatten()))
 
 
 def grad(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, P: np.ndarray) -> np.ndarray:    
@@ -182,9 +195,21 @@ def grad(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, P: np.ndarray) -> np
     P_ctypes = P.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
     s1, s2 = utils.split(bas)
-    denv_c = libc.grad_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), P_ctypes, len(P.flatten()))
+    denv_c = libc.grad_C(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), P_ctypes, len(P.flatten()))
     denv = np.ctypeslib.as_array(denv_c, shape=(1, s2-s1))
     return denv.flatten()
+
+def calcF(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, P: np.ndarray) -> np.ndarray:    
+    atm_ctypes = atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+    bas_ctypes = bas.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+    env_ctypes = env.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+    P_ctypes = P.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+
+    nshells = utils.angl(bas)
+
+    F_c = libc.getF(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), P_ctypes, len(P.flatten()))
+    F = np.ctypeslib.as_array(F_c, shape=(nshells, nshells))
+    return F
 
 
 def dSf(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, P: np.ndarray) -> np.ndarray:    
