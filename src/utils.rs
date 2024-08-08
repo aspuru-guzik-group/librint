@@ -164,3 +164,22 @@ pub fn print_arr(
         }
     }
 }
+
+pub fn combine(
+    env1: &Vec<f64>,
+    env2: &Vec<f64>
+) -> Vec<f64> {
+    let mut env: Vec<f64> = vec![0.0; env1.len() + env2.len()];
+
+    let mut c = 0;
+    for i in 0..env1.len() {
+        env[c] = env1[i];
+        c += 1;
+    }
+    for j in 0..env2.len() {
+        env[c] = env2[j];
+        c += 1;
+    }
+
+    return env;
+}

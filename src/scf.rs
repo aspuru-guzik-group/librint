@@ -26,7 +26,7 @@ type inte = fn(buf: &mut [f64], shls: &mut [i32],
 
 type cgto = fn(bas_id: usize, bas: &[i32],) -> i32;
 
-fn matmult(
+pub fn matmult(
     n: usize,
     A: &[f64],
     B: &[f64],
@@ -454,7 +454,7 @@ fn find_X(
     return (X, Xdag);
 }
 
-fn calc_F(
+pub fn calc_F(
     n: usize,
     P: &[f64],
     two: &[f64],
@@ -496,7 +496,6 @@ fn diag_F(
     Fprime: &[f64],
     X: &[f64],
 ) -> Vec<f64> {
-    // diagonalize Fprime
     let fprime_mat = mat::from_column_major_slice::<f64>(&Fprime, n, n);
     let eig_decomp: Eigendecomposition<c64> = Eigendecomposition::new_from_real(fprime_mat);
     let eigenvalues = eig_decomp.s();
@@ -685,4 +684,23 @@ pub fn energywrap(
     }
 
     return energy(atm, bas, &mut env, P);
+}
+
+#[no_mangle]
+pub fn gradenergy(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    P: &mut Vec<f64>,
+) -> Vec<f64> {
+    let (s1, s2) = split(bas);
+
+    let mut env1: Vec<f64> = env[0..s1].to_vec();
+    let mut env2: Vec<f64> = env[s1..s2].to_vec();
+
+    let mut denv: Vec<f64> = vec![0.0; s2-s1];
+
+    let _ = denergy(atm, bas, &mut env1, &mut env2, &mut denv, P, 1.0);
+
+    return denv;
 }

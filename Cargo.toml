@@ -68,6 +68,26 @@ path = "grad/h2o/scf.rs"
 name = "scf"
 path = "scf/scf.rs"
 
+[[bin]]
+name = "timing"
+path = "scf/timing.rs"
+
+[[bin]]
+name = "dint"
+path = "scf/dint.rs"
+
+[[bin]]
+name = "dovlp"
+path = "scf/dovlp.rs"
+
+[[bin]]
+name = "dkin"
+path = "scf/dkin.rs"
+
+[[bin]]
+name = "dtwo"
+path = "scf/dtwo.rs"
+
 # AUTODIFF
 
 [[bin]]
