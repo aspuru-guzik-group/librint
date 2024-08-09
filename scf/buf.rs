@@ -28,7 +28,7 @@ fn main() {
     let mut bas: Vec<i32> = Vec::new();
     let mut env: Vec<f64> = Vec::new();
 
-    let path = "/u/jpmedina/libcint/molecules/h2o/sto3g.txt";
+    let path = "/u/jpmedina/libcint/librint/molecules/h2o/sto3g.txt";
     read_basis(path, &mut atm, &mut bas, &mut env);
 
     const natm: usize = 3;

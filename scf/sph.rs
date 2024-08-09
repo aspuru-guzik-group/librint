@@ -37,7 +37,7 @@ fn main() {
     let mut bas = Vec::new();
     let mut env = Vec::new();
 
-    let path = "/u/jpmedina/libcint/molecules/h2o/sto3g.txt";
+    let path = "/u/jpmedina/libcint/librint/molecules/h2o/sto3g.txt";
     read_basis(path, &mut atm, &mut bas, &mut env);
 
     let (natm, nbas, nshells) = nparams(&mut atm, &mut bas);
