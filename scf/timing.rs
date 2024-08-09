@@ -4,7 +4,7 @@
 use std::io;
 use std::time::Instant;
 
-use librint::utils::read_basis_fix;
+use librint::utils::read_basis;
 use librint::utils::print_arr;
 
 use librint::scf::{nparams, split, RHF, energy};
@@ -40,7 +40,7 @@ fn main() -> io::Result<()> {
     let mut env = Vec::new();
 
     let path = "/u/jpmedina/libcint/molecules/h2o/sto3g.txt";
-    read_basis_fix(path, &mut atm, &mut bas, &mut env)?;
+    read_basis(path, &mut atm, &mut bas, &mut env)?;
 
     let (_, _, nshells) = nparams(&mut atm, &mut bas);
 

@@ -29,7 +29,7 @@ fn main() {
     let mut env = Vec::new();
 
     let path = "/u/jpmedina/libcint/molecules/O/sto3g.txt";
-    read_basis_fix(path, &mut atm, &mut bas, &mut env);
+    read_basis(path, &mut atm, &mut bas, &mut env);
 
     let (natm, nbas, _, _) = nparams(&mut atm, &mut bas);
 

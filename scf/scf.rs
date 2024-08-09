@@ -3,7 +3,7 @@
 
 use std::io;
 
-use librint::utils::{read_basis_fix, print_arr};
+use librint::utils::{read_basis, print_arr};
 
 use librint::scf::{nparams, integral1e};
 
@@ -39,7 +39,7 @@ fn main() -> io::Result<()> {
     let mut env = Vec::new();
 
     let path = "/u/jpmedina/libcint/molecules/h2o/def2svp.txt";
-    read_basis_fix(path, &mut atm, &mut bas, &mut env)?;
+    read_basis(path, &mut atm, &mut bas, &mut env)?;
 
     let (natm, nbas, nshells) = nparams(&mut atm, &mut bas);
     println!("{} {} {}", natm, nbas, nshells);

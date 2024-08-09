@@ -478,18 +478,18 @@ fn energy(
 }
 
 fn main() {
+    let mut atm: Vec<i32> = Vec::new();
+    let mut bas: Vec<i32> = Vec::new();
+    let mut env: Vec<f64> = Vec::new();
+
+    let path = "/u/jpmedina/libcint/molecules/h2o/sto3g.txt";
+    read_basis(path, &mut atm, &mut bas, &mut env);
+
     const natm: usize = 3;
     const nelec: usize = 10;
 
     const nbas: usize = 5;
     const nshells: usize = 7;
-
-    let mut atm = vec![0; natm * ATM_SLOTS];
-    let mut bas = vec![0; nbas * BAS_SLOTS];
-    let mut env = vec![0.0; 1000];
-
-    let path = "/u/jpmedina/libcint/molecules/h2o/sto3g.txt";
-    read_basis(path, &mut atm, &mut bas, &mut env);
 
     const imax: i32 = 20;
     const conv: f64 = 0.000001;

@@ -165,17 +165,16 @@ fn int(
 }
 
 fn main() -> io::Result<()> {
+    let mut atm: Vec<i32> = Vec::new();
+    let mut bas: Vec<i32> = Vec::new();
+    let mut env: Vec<f64> = Vec::new();
+
+    let path = "/u/jpmedina/libcint/molecules/h2o/sto3g.txt";
+    read_basis(path, &mut atm, &mut bas, &mut env);
+
 	const natm: usize = 3;
 	const nbas: usize = 5;
     const nshells: usize = 7;
-
-    let mut atm: Vec<i32> = vec![0; natm * ATM_SLOTS];
-    let mut bas: Vec<i32> = vec![0; nbas * BAS_SLOTS];
-    let mut env: Vec<f64> = vec![0.0; 10000];
-
-    let file = "/u/jpmedina/libcint/molecules/h2o/sto3g.txt";
-
-    read_basis(file, &mut atm, &mut bas, &mut env)?;
 
     let mut stv = int(natm, nbas, nshells, &mut atm, &mut bas, &mut env);
     // let mut rep = rep(natm, nbas, n, &mut atm, &mut bas, &mut env);

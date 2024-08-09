@@ -4,7 +4,7 @@
 use std::io;
 use std::time::Instant;
 
-use librint::utils::read_basis_fix;
+use librint::utils::read_basis;
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint2e::cint2e_cart;
@@ -133,7 +133,7 @@ fn main() -> io::Result<()> {
     let mut env = Vec::new();
 
     let path = "/u/jpmedina/libcint/molecules/h2/sto3g.txt";
-    read_basis_fix(path, &mut atm, &mut bas, &mut env)?;
+    read_basis(path, &mut atm, &mut bas, &mut env)?;
 
     // f vs df time
     let (s1, s2) = split(&mut bas);

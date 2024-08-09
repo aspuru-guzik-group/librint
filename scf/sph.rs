@@ -1,7 +1,7 @@
 #![allow(non_snake_case, non_upper_case_globals)]
 #![feature(autodiff)]
 
-use librint::utils::read_basis_fix;
+use librint::utils::read_basis;
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
@@ -38,7 +38,7 @@ fn main() {
     let mut env = Vec::new();
 
     let path = "/u/jpmedina/libcint/molecules/h2o/sto3g.txt";
-    read_basis_fix(path, &mut atm, &mut bas, &mut env);
+    read_basis(path, &mut atm, &mut bas, &mut env);
 
     let (natm, nbas, nshells) = nparams(&mut atm, &mut bas);
 

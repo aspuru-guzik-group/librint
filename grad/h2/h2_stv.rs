@@ -13,16 +13,15 @@ pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
 fn main() -> io::Result<()>{
+    let mut atm: Vec<i32> = Vec::new();
+    let mut bas: Vec<i32> = Vec::new();
+    let mut env: Vec<f64> = Vec::new();
+
+    let path = "/u/jpmedina/libcint/molecules/h2o/sto3g.txt";
+    read_basis(path, &mut atm, &mut bas, &mut env);
+
     const natm: usize = 2;
     const nbas: usize = 2;
-
-    let mut atm: Vec<i32> = vec![0; natm * ATM_SLOTS];
-    let mut bas: Vec<i32> = vec![0; nbas * BAS_SLOTS];
-    let mut env: Vec<f64> = vec![0.0; 10000];
-
-    let file = "/u/jpmedina/libcint/molecules/h2/sto3g.txt";
-
-    read_basis(file, &mut atm, &mut bas, &mut env)?;
     
     let mut shls: [i32; 4] = [0, 0, 0, 0];
 
