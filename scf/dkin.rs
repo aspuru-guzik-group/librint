@@ -16,7 +16,8 @@ use librint::cint1e::cint1e_ovlp_sph;
 use librint::cint1e::cint1e_nuc_sph;
 use librint::intor1::cint1e_kin_sph;
 
-use librint::scf::{nparams, split, RHF};
+use librint::scf::{nmol, angl, RHF};
+use librint::utils::split;
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -42,7 +43,7 @@ fn kinw(
         c += 1;
     }
 
-    let (natm, nbas, _) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
 
     cint1e_kin_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
 }
@@ -68,7 +69,7 @@ fn nucw(
         c += 1;
     }
 
-    let (natm, nbas, _) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
 
     cint1e_nuc_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
 }
@@ -81,7 +82,8 @@ fn dTk(
     env2: &mut Vec<f64>,
     P: &Vec<f64>,
 ) -> Vec<f64> {
-    let (_, nbas, nshells) = nparams(atm, bas);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dS = vec![0.0; env2.len()];
 
@@ -134,7 +136,8 @@ pub fn dVk(
     env2: &mut Vec<f64>,
     P: &Vec<f64>,
 ) -> Vec<f64> {
-    let (_, nbas, nshells) = nparams(atm, bas);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dS = vec![0.0; env2.len()];
 

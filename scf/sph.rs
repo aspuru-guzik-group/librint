@@ -13,14 +13,14 @@ use librint::cint1e::cint1e_ovlp_sph;
 use librint::cint1e::cint1e_nuc_sph;
 use librint::intor1::cint1e_kin_sph;
 
-use librint::scf::nparams;
+use librint::scf::{nmol, angl};
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
 #[no_mangle]
-#[autodiff(cint_diff, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
-fn cint_wrap(
+#[autodiff(dsph, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
+fn sph(
     out: &mut [f64], 
     shls: &mut [i32], 
     atm: &mut [i32],
@@ -29,7 +29,21 @@ fn cint_wrap(
     nbas: i32, 
     env: &mut [f64]
 ) {
-    cint1e_kin_sph(out, shls, atm, natm, bas, nbas, env);
+    cint1e_ovlp_sph(out, shls, atm, natm, bas, nbas, env);
+}
+
+#[no_mangle]
+#[autodiff(dcart, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
+fn cart(
+    out: &mut [f64], 
+    shls: &mut [i32], 
+    atm: &mut [i32],
+    natm: i32, 
+    bas: &mut [i32], 
+    nbas: i32, 
+    env: &mut [f64]
+) {
+    cint1e_ovlp_cart(out, shls, atm, natm, bas, nbas, env);
 }
 
 fn main() {
@@ -40,7 +54,8 @@ fn main() {
     let path = "/u/jpmedina/libcint/librint/molecules/h2o/sto3g.txt";
     read_basis(path, &mut atm, &mut bas, &mut env);
 
-    let (natm, nbas, nshells) = nparams(&mut atm, &mut bas);
+    let (natm, nbas) = nmol(&atm, &bas);
+    let nshells = angl(&bas, 0);
 
     let mut shls: [i32; 4] = [0, 0, 0, 0];
 
@@ -63,7 +78,7 @@ fn main() {
         dbuf[k] = 1.0;
 
         let mut denv: [f64; 56] = [0.0; 56];
-        cint_diff(&mut buf, &mut dbuf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env, &mut denv);
+        dsph(&mut buf, &mut dbuf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env, &mut denv);
         for i in 49..50 {
             print!("{:.6} ", denv[i]);
         }
@@ -79,13 +94,13 @@ fn main() {
     println!("finite d:");
     for k in 49..50 {
         env[k] += h;
-        cint1e_kin_sph(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
+        cint1e_ovlp_sph(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
         for l in 0..(di * dj) as usize {
             b1[l] = buf[l];
         }
 
         env[k] -= 2.0*h;
-        cint1e_kin_sph(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
+        cint1e_ovlp_sph(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
         for l in 0..(di * dj) as usize {
             b2[l] = buf[l];
         }

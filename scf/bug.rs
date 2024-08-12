@@ -6,6 +6,8 @@ use librint::utils::read_basis;
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
 
+use librint::scf::nmol;
+
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
@@ -31,7 +33,7 @@ fn main() {
     let path = "/u/jpmedina/libcint/librint/molecules/O/sto3g.txt";
     read_basis(path, &mut atm, &mut bas, &mut env);
 
-    let (natm, nbas, _, _) = nparams(&mut atm, &mut bas);
+    let (natm, nbas) = nmol(&atm, &bas);
 
     let mut shls: [i32; 4] = [0, 0, 0, 0];
 

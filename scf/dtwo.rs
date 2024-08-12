@@ -9,10 +9,12 @@ use librint::utils::read_basis;
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint2e::cint2e_cart;
 
-use librint::scf::{nparams, split, matmult, RHF, calc_F};
+use librint::scf::{nmol, angl, RHF, calc_F};
 use librint::dscf::getF;
 
-use librint::utils::print_arr;
+use librint::linalg::matmult;
+
+use librint::utils::{print_arr, split};
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -38,7 +40,7 @@ fn twow(
         c += 1;
     }
 
-    let (natm, nbas, _) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
     cint2e_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
 }
 
@@ -50,7 +52,8 @@ pub fn dRcont(
     env2: &mut Vec<f64>,
     P: &Vec<f64>,
 ) -> Vec<f64> {
-    let (_, nbas, nshells) = nparams(atm, bas);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dR = vec![0.0; env2.len()];
 

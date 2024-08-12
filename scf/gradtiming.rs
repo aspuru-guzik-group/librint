@@ -4,12 +4,12 @@
 use std::io;
 use std::time::Instant;
 
-use librint::utils::read_basis;
-use librint::utils::print_arr;
-use librint::utils::combine;
+use librint::utils::{read_basis, split, print_arr, combine};
 
-use librint::scf::{nparams, matmult, split, calc_F, integral1e, integral2e, RHF, energy};
+use librint::scf::{nmol, angl, calc_F, integral1e, integral2e, RHF, energy};
 use librint::dscf::getF;
+
+use librint::linalg::matmult;
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
@@ -27,7 +27,7 @@ pub fn ovlpt(
     env1: &mut Vec<f64>,
     env2: &mut Vec<f64>,
 ) {
-    let (natm, nbas, _) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
     let mut env: Vec<f64> = combine(&env1, &env2);
     cint1e_ovlp_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
 }
@@ -43,7 +43,7 @@ fn kint(
     env1: &mut Vec<f64>,
     env2: &mut Vec<f64>,
 ) {
-    let (natm, nbas, _) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
     let mut env: Vec<f64> = combine(&env1, &env2);
     cint1e_kin_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
 }
@@ -58,7 +58,7 @@ fn nuct(
     env1: &mut Vec<f64>,
     env2: &mut Vec<f64>,
 ) {
-    let (natm, nbas, _) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
     let mut env: Vec<f64> = combine(&env1, &env2);
     cint1e_nuc_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
 }
@@ -73,7 +73,7 @@ fn twot(
     env1: &mut Vec<f64>,
     env2: &mut Vec<f64>,
 ) {
-    let (natm, nbas, _) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
     let mut env: Vec<f64> = combine(&env1, &env2);
     cint2e_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
 }
@@ -86,7 +86,8 @@ fn dSft(
     env2: &mut Vec<f64>,
     Q: &Vec<f64>,
 ) -> Vec<f64> {
-    let (_, nbas, nshells) = nparams(atm, bas);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dS = vec![0.0; env2.len()];
 
@@ -140,7 +141,8 @@ fn dTft(
     env2: &mut Vec<f64>,
     P: &Vec<f64>,
 ) -> Vec<f64> {
-    let (_, nbas, nshells) = nparams(atm, bas);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dT = vec![0.0; env2.len()];
 
@@ -193,7 +195,8 @@ fn dVft(
     env2: &mut Vec<f64>,
     P: &Vec<f64>,
 ) -> Vec<f64> {
-    let (_, nbas, nshells) = nparams(atm, bas);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dV = vec![0.0; env2.len()];
 
@@ -269,7 +272,7 @@ pub fn getFt(
     env: &mut Vec<f64>,
     P: &Vec<f64>,
 ) -> Vec<f64> {
-    let (_, _, nshells) = nparams(atm, bas);
+    let nshells = angl(bas, 0);
 
     let T = integral1e(atm, bas, env, 0, 1);
     let V = integral1e(atm, bas, env, 0, 2);
@@ -291,7 +294,7 @@ pub fn dSgt(
     env: &mut Vec<f64>,
     P: &Vec<f64>,
 ) -> Vec<f64> {
-    let (_, _, nshells) = nparams(atm, bas);
+    let nshells = angl(bas, 0);
 
     let F = getF(atm, bas, env, P);
 
@@ -316,7 +319,8 @@ pub fn dRft(
     env2: &mut Vec<f64>,
     P: &Vec<f64>,
 ) -> Vec<f64> {
-    let (_, nbas, nshells) = nparams(atm, bas);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dR = vec![0.0; env2.len()];
 
@@ -462,36 +466,13 @@ fn main() -> io::Result<()> {
     let path = "/u/jpmedina/libcint/librint/molecules/h2/sto3g.txt";
     read_basis(path, &mut atm, &mut bas, &mut env)?;
 
-    let (_, _, nshells) = nparams(&mut atm, &mut bas);
+    let nshells = angl(&bas, 0);
 
     const nelec: usize = 2;
 
     let mut P = RHF(&mut atm, &mut bas, &mut env, nelec, 20, 1e-6);
 
     let now = Instant::now();
-    let dgrad = dgradt(&mut atm, &mut bas, &mut env, &mut P);
-    let elapsed_time = now.elapsed();
-    println!("dH + dR + dS time: {}", elapsed_time.as_micros());
-
-    let now = Instant::now();
-    let grade = gradenergyt(&mut atm, &mut bas, &mut env, &mut P);
-    let elapsed_time = now.elapsed();
-    println!("ad energy time:    {}", elapsed_time.as_micros());
-
-    let mut total = vec![0.0; dgrad.len()];
-    let now = Instant::now();
-    let grade2 = gradenergyt(&mut atm, &mut bas, &mut env, &mut P);
-    let dS = dSgt(&mut atm, &mut bas, &mut env, &mut P);
-
-    for i in 0..total.len() {
-        total[i] = grade2[i] - 0.5 * dS[i];
-    }
-    let elapsed_time = now.elapsed();
-    println!("ad energy time:    {}", elapsed_time.as_micros());
-
-    println!("{:.5?}", dgrad);
-    println!("{:.5?}", grade);
-    println!("{:.5?}", total);
 
     Ok(())
 }
