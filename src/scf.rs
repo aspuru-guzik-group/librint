@@ -1,20 +1,13 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
 
-use crate::cint_bas::CINTcgto_cart;
-use crate::cint1e::cint1e_ovlp_cart;
-use crate::cint1e::cint1e_nuc_cart;
-use crate::intor1::cint1e_kin_cart;
-use crate::cint2e::cint2e_cart;
+use crate::cint_bas::{CINTcgto_cart, CINTcgto_spheric};
+use crate::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart, cint1e_ovlp_sph, cint1e_nuc_sph};
+use crate::intor1::{cint1e_kin_cart, cint1e_kin_sph};
+use crate::cint2e::{cint2e_cart, cint2e_sph};
 
-use crate::cint_bas::CINTcgto_spheric;
-use crate::cint1e::cint1e_ovlp_sph;
-use crate::cint1e::cint1e_nuc_sph;
-use crate::intor1::cint1e_kin_sph;
-use crate::cint2e::cint2e_sph;
+use crate::linalg::{matmult, dcopya, transpose, sort};
 
-use faer::mat;
-use faer::linalg::solvers::Eigendecomposition;
-use faer::complex_native::c64;
+use faer::{mat, linalg::solvers::Eigendecomposition, complex_native::c64};
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -26,114 +19,32 @@ type inte = fn(buf: &mut [f64], shls: &mut [i32],
 
 type cgto = fn(bas_id: usize, bas: &[i32],) -> i32;
 
-pub fn matmult(
-    n: usize,
-    A: &[f64],
-    B: &[f64],
-) -> Vec<f64> {
-    // cij = aik bkj
-    let mut C = vec![0.0; n * n];
-    for i in 0..n {
-        for j in 0..n {
-            for k in 0..n {
-                C[i * n + j] += A[i * n + k] * B[k * n + j];
-            }
-        }
-    }
-    return C;
-}
-
-fn transpose(
-    n: usize,
-    C: &[f64],
-) -> Vec<f64> {
-    let mut Ct = vec![0.0; n * n];
-    for i in 0..n {
-        for j in 0..n {
-            Ct[i * n + j] = C[j * n + i]
-        }
-    }
-    return Ct;
-}
-
-fn dcopy(
-    n: usize,
-    A: &[f64],
-) -> Vec<f64> {
-    let mut Ac = vec![0.0; n * n];
-    for i in 0..n {
-        for j in 0..n {
-            Ac[i * n + j] = A[i * n + j];
-        }
-    }
-    return Ac;
-}
-
-fn sort(
-    n: usize,
-    eig: &mut [f64],
-    U: &mut [f64],
-) {
-    for i in (0..n).rev() {
-        for j in 0..i {
-            if eig[j] > eig[j+1] {
-                let tmp = eig[j];
-                eig[j] = eig[j+1];
-                eig[j+1] = tmp;
-
-                for k in 0..n {
-                    let tmp = U[k*n + j];
-                    U[k*n + j] = U[k*n + j+1];
-                    U[k*n + j+1] = tmp;
-                }
-            }
-        }
-    }
-}
-
 #[no_mangle]
-pub fn nparams(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
+pub fn nmol(
+    atm: &Vec<i32>,
+    bas: &Vec<i32>,
 ) 
--> (usize, usize, usize) {
+-> (usize, usize) {
     let natm: usize = atm.len() / ATM_SLOTS;
     let nbas: usize = bas.len() / BAS_SLOTS;
-
-    let mut nshells: usize = 0;
-    for i in (1..bas.len()).step_by(BAS_SLOTS) {
-        nshells += (2*bas[i] + 1) as usize;
-    }
-
-    return (natm, nbas, nshells);
+    return (natm, nbas);
 }
 
 #[no_mangle]
-pub fn split(
-    bas: &mut Vec<i32>,
-) -> (usize, usize) {
-    let mut min = -1;
-    let mut max = -1;
-
-    for b in (0..bas.len()).step_by(BAS_SLOTS) {
-        let ngto = bas[b + 2];
-        let exp = bas[b + 5];
-        let cont = bas[b + 6];
-
-        if min == -1 {
-            min = exp;
-        } else if min > exp {
-            min = exp;
-        }
-
-        if max == -1 {
-            max = cont + ngto;
-        } else if max < cont {
-            max = cont + ngto;
+pub fn angl(
+    bas: &Vec<i32>,
+    coord: i32,
+) -> usize {
+    let mut nshells: usize = 0;
+    for i in (0..bas.len()).step_by(BAS_SLOTS) {
+        let l = bas[i + 1] as usize;
+        if coord == 0 {
+            nshells += (l + 1) * (l + 2) / 2;
+        } else if coord == 1 {
+            nshells += 2*l + 1;
         }
     }
-
-    return (min as usize, max as usize);
+    return nshells;
 }
 
 #[no_mangle]
@@ -144,7 +55,8 @@ pub fn integral1e(
     coord: i32,
     typec: i32,
 ) -> Vec<f64> {
-    let (natm, nbas, nshells) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, coord);
     
     let mut R = vec![0.0; nshells * nshells];
 
@@ -224,7 +136,8 @@ pub fn integral2e(
     env: &mut Vec<f64>,
     coord: i32,
 ) -> Vec<f64> {
-    let (natm, nbas, nshells) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, coord);
 
     let mut R = vec![0.0; nshells * nshells * nshells * nshells];
 
@@ -519,9 +432,9 @@ fn diag_F(
     let Udag = transpose(n, &U);
     let inter = matmult(n, &Udag, Fprime); 
     let f = matmult(n, &inter, &U);
-    let Cprime = dcopy(n, &U);
+    let Cprime = dcopya(n, &U);
 
-    let _epsilon = dcopy(n, &f);
+    let _epsilon = dcopya(n, &f);
     let C = matmult(n, X, &Cprime);
 
     return C;
@@ -558,7 +471,7 @@ fn f_delta(
     return delta;
 }
 
-fn norm(
+pub fn norm(
     atm: &mut [i32],
     env: &mut [f64],
     i: usize,
@@ -585,10 +498,10 @@ pub fn RHF(
     imax: i32,
     conv: f64,
 ) -> Vec<f64> {
-    let (natm, nbas, nshells) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let (S, H, two) = integrals(natm, nbas, nshells, atm, bas, env);
-
     let (X, Xdag) = find_X(nshells, &S);
 
     let mut P = vec![0.0; nshells * nshells];
@@ -609,7 +522,7 @@ pub fn RHF(
     let mut C;
 
     while delta > conv && i < imax {
-        Pold = dcopy(nshells, &P);
+        Pold = dcopya(nshells, &P);
 
         F = calc_F(nshells, &P, &two, &H);
         Fprime = calc_Fprime(nshells, &F, &X, &Xdag);
@@ -639,7 +552,8 @@ pub fn energy(
     env: &mut Vec<f64>,
     P: &mut Vec<f64>,
 ) -> f64 {
-    let (natm, nbas, nshells) = nparams(atm, bas);
+    let (natm, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let (_, H, two) = integrals(natm, nbas, nshells, atm, bas, env);
     let F = calc_F(nshells, P, &two, &H);
@@ -661,46 +575,4 @@ pub fn energy(
     }
 
     return E0 + Enuc;
-}
-
-#[no_mangle]
-#[autodiff(denergy, Reverse, Const, Const, Const, Duplicated, Const, Active)]
-pub fn energywrap(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    P: &mut Vec<f64>,
-) -> f64 {
-    let mut env: Vec<f64> = vec![0.0; env1.len() + env2.len()];
-    let mut c = 0;
-    for i in 0..env1.len() {
-        env[c] = env1[i];
-        c += 1;
-    }
-    for j in 0..env2.len() {
-        env[c] = env2[j];
-        c += 1;
-    }
-
-    return energy(atm, bas, &mut env, P);
-}
-
-#[no_mangle]
-pub fn gradenergy(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &mut Vec<f64>,
-) -> Vec<f64> {
-    let (s1, s2) = split(bas);
-
-    let mut env1: Vec<f64> = env[0..s1].to_vec();
-    let mut env2: Vec<f64> = env[s1..s2].to_vec();
-
-    let mut denv: Vec<f64> = vec![0.0; s2-s1];
-
-    let _ = denergy(atm, bas, &mut env1, &mut env2, &mut denv, P, 1.0);
-
-    return denv;
 }

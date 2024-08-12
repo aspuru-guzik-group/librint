@@ -1,7 +1,7 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
 
-use crate::scf::{integral1e, integral2e, RHF, energy, gradenergy};
-use crate::dscf::{dHcoreg, dSg, dRg};
+use crate::scf::{integral1e, integral2e, RHF, energy};
+use crate::dscf::{dHcoreg, dSg, dRg, gradenergy, danalyticalg, denergyg};
 
 #[no_mangle]
 fn c2r_arr(
@@ -189,6 +189,52 @@ pub extern "C" fn dR_c(
     let mut P: Vec<f64> = P_slice.to_vec();
 
     let mut dR = dRg(&mut atm, &mut bas, &mut env, &mut P);
+
+    let dR_ptr = dR.as_mut_ptr();
+    std::mem::forget(dR);
+    return dR_ptr;
+}
+
+#[no_mangle]
+pub extern "C" fn danalytical_c(
+    atm_p: *mut i32,
+    atm_l: usize,
+    bas_p: *mut i32,
+    bas_l: usize,
+    env_p: *mut f64,
+    env_l: usize,
+    P_p: *mut f64,
+    P_l: usize,
+) -> *mut f64 {
+    let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
+
+    let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
+    let mut P: Vec<f64> = P_slice.to_vec();
+
+    let mut dR = danalyticalg(&mut atm, &mut bas, &mut env, &mut P);
+
+    let dR_ptr = dR.as_mut_ptr();
+    std::mem::forget(dR);
+    return dR_ptr;
+}
+
+#[no_mangle]
+pub extern "C" fn denergy_c(
+    atm_p: *mut i32,
+    atm_l: usize,
+    bas_p: *mut i32,
+    bas_l: usize,
+    env_p: *mut f64,
+    env_l: usize,
+    P_p: *mut f64,
+    P_l: usize,
+) -> *mut f64 {
+    let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
+
+    let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
+    let mut P: Vec<f64> = P_slice.to_vec();
+
+    let mut dR = denergyg(&mut atm, &mut bas, &mut env, &mut P);
 
     let dR_ptr = dR.as_mut_ptr();
     std::mem::forget(dR);
