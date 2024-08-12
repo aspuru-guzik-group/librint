@@ -104,6 +104,30 @@ libc.dR_c.argtypes =(
 )
 libc.dR_c.restype = ctypes.POINTER(ctypes.c_double)
 
+libc.danalytical_c.argtypes =(
+    ctypes.POINTER(ctypes.c_int),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_int),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_double),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_double),
+    ctypes.c_size_t,
+)
+libc.danalytical_c.restype = ctypes.POINTER(ctypes.c_double)
+
+libc.denergy_c.argtypes =(
+    ctypes.POINTER(ctypes.c_int),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_int),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_double),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_double),
+    ctypes.c_size_t,
+)
+libc.denergy_c.restype = ctypes.POINTER(ctypes.c_double)
+
 
 def int1e(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, typei: str = 'ovlp', coord: str = 'cart') -> np.ndarray:
     atm_ctypes = atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
@@ -225,6 +249,32 @@ def dRf(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, P: np.ndarray) -> np.
     dR_c = libc.dR_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), P_ctypes, len(P.flatten()))
     dR = np.ctypeslib.as_array(dR_c, shape=(s2-s1, ))
     return dR # .reshape(2, 2, 2, 2, 6).transpose(4, 0, 1, 2, 3) #(4, 3, 2, 0, 1)
+
+def danalyticalf(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, P: np.ndarray) -> np.ndarray:    
+    atm_ctypes = atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+    bas_ctypes = bas.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+    env_ctypes = env.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+    P_ctypes = P.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+    
+    s1, s2 = utils.split(bas)
+    nshells = utils.angl(bas)
+
+    dR_c = libc.danalytical_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), P_ctypes, len(P.flatten()))
+    dR = np.ctypeslib.as_array(dR_c, shape=(s2-s1, ))
+    return dR
+
+def denergyf(atm: np.ndarray, bas: np.ndarray, env: np.ndarray, P: np.ndarray) -> np.ndarray:    
+    atm_ctypes = atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+    bas_ctypes = bas.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+    env_ctypes = env.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+    P_ctypes = P.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+    
+    s1, s2 = utils.split(bas)
+    nshells = utils.angl(bas)
+
+    dR_c = libc.denergy_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), P_ctypes, len(P.flatten()))
+    dR = np.ctypeslib.as_array(dR_c, shape=(s2-s1, ))
+    return dR
 
 if __name__ == '__main__':
     print("Hello world")
