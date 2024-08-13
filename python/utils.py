@@ -12,10 +12,13 @@ def pmat(A: np.ndarray):
                 print(" {:f} ".format(A[i,j]), end='')
         print()
 
-def angl(bas: np.ndarray) -> int:
+def angl(bas: np.ndarray, coord: int) -> int:
     nshells = 0
     for b in bas:
-        nshells += (2*b[1] + 1)
+        if coord == 0:
+            nshells += int((b[1] + 1) * (b[1] + 2) / 2)
+        elif coord == 1:
+            nshells += (2*b[1] + 1)
     return nshells
 
 def nparams(atm, bas):

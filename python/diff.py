@@ -153,3 +153,8 @@ print("finite diff:           ", fd)
 print("ad e - 0.5 dS:         ", denv - 0.5 * dS0)
 print("dH + 0.25 dR - 0.5 dS: ", dH0 + 0.25*dR0 - 0.5 * dS0)
 print()
+
+de = libcscf.denergyf(atm, bas, env, P)
+
+print()
+print("de                     ", de)
