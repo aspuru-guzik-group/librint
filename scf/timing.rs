@@ -7,7 +7,7 @@ use std::time::Instant;
 use librint::utils::read_basis;
 use librint::utils::print_arr;
 
-use librint::scf::{angl, RHF, energy};
+use librint::scf::{angl, density, energy, energycont};
 use librint::utils::split;
 
 // #[no_mangle]
@@ -50,9 +50,12 @@ fn main() -> io::Result<()> {
 
     const nelec: usize = 2;
 
-    let mut P = RHF(&mut atm, &mut bas, &mut env, nelec, imax, conv);
-    println!("P: ");
-    print_arr(nshells, 2, &mut P);
+    let mut P = density(&mut atm, &mut bas, &mut env, nelec, imax, conv);
+
+    let mut Etot = energy(&mut atm, &mut bas, &mut env, &mut P);
+    println!("energy: {}", Etot);
+    Etot = energycont(&mut atm, &mut bas, &mut env, &mut P);
+    println!("energy: {}", Etot);
 
     // let now = Instant::now();
     // let Etot: f64 = energy(&mut atm, &mut bas, &mut env, &mut P);

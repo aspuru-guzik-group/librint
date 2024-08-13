@@ -6,7 +6,7 @@ use std::time::Instant;
 
 use librint::utils::{read_basis, split, print_arr, combine};
 
-use librint::scf::{nmol, angl, calc_F, integral1e, integral2e, RHF, energy};
+use librint::scf::{nmol, angl, calc_F, integral1e, integral2e, density, energy, energyfast};
 use librint::dscf::getF;
 
 use librint::linalg::matmult;
@@ -458,6 +458,55 @@ pub fn gradenergyt(
     return denv;
 }
 
+#[no_mangle]
+#[autodiff(denergycontt, Reverse, Const, Const, Const, Duplicated, Const, Active)]
+pub fn energyct(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env1: &mut Vec<f64>,
+    env2: &mut Vec<f64>,
+    P: &mut Vec<f64>,
+) -> f64 {
+    let mut env: Vec<f64> = combine(&env1, &env2);
+    return energyfast(atm, bas, &mut env, P);
+}
+
+#[no_mangle]
+pub fn gradcontenergyt(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    P: &mut Vec<f64>,
+) -> Vec<f64> {
+    let (s1, s2) = split(bas);
+
+    let mut env1: Vec<f64> = env[0..s1].to_vec();
+    let mut env2: Vec<f64> = env[s1..s2].to_vec();
+
+    let mut denv: Vec<f64> = vec![0.0; s2-s1];
+    let _ = denergycontt(atm, bas, &mut env1, &mut env2, &mut denv, P, 1.0);
+
+    return denv;
+}
+
+#[no_mangle]
+pub fn denergycontgt(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    P: &mut Vec<f64>,
+) -> Vec<f64> {
+    let denergy = gradcontenergyt(atm, bas, env, P);
+    let dS = dSgt(atm, bas, env, P);
+
+    let mut dtotal = vec![0.0; denergy.len()];
+    for i in 0..dtotal.len() {
+        dtotal[i] = denergy[i] - 0.5 * dS[i];
+    }
+
+    return dtotal;
+}
+
 fn main() -> io::Result<()> {
     let mut atm = Vec::new();
     let mut bas = Vec::new();
@@ -468,11 +517,37 @@ fn main() -> io::Result<()> {
 
     let nshells = angl(&bas, 0);
 
+    let (s1, s2) = split(&mut bas);
+
     const nelec: usize = 2;
 
-    let mut P = RHF(&mut atm, &mut bas, &mut env, nelec, 20, 1e-6);
+    let mut P = density(&mut atm, &mut bas, &mut env, nelec, 20, 1e-6);
+
+    let mut dA = vec![0.0; s2-s1];
+    let now = Instant::now();
+    let dH = dHcoregt(&mut atm, &mut bas, &mut env, &mut P);
+    let dR = dRgt(&mut atm, &mut bas, &mut env, &mut P);
+    let dS = dSgt(&mut atm, &mut bas, &mut env, &mut P);
+    for i in 0..dH.len() {
+        dA[i] = dH[i] + dR[i] + dS[i];
+    }
+    let delapsed_time = now.elapsed();
+    println!("time: {}", delapsed_time.as_micros());
 
     let now = Instant::now();
+    let dG = dgradt(&mut atm, &mut bas, &mut env, &mut P);
+    let delapsed_time = now.elapsed();
+    println!("time: {}", delapsed_time.as_micros());
+
+    let now = Instant::now();
+    let dAD = gradenergyt(&mut atm, &mut bas, &mut env, &mut P);
+    let delapsed_time = now.elapsed();
+    println!("time: {}", delapsed_time.as_micros());
+
+    let now = Instant::now();
+    let dADOPT = denergycontgt(&mut atm, &mut bas, &mut env, &mut P);
+    let delapsed_time = now.elapsed();
+    println!("time: {}", delapsed_time.as_micros());
 
     Ok(())
 }

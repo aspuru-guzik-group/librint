@@ -16,7 +16,7 @@ use librint::cint1e::cint1e_ovlp_sph;
 use librint::cint1e::cint1e_nuc_sph;
 use librint::intor1::cint1e_kin_sph;
 
-use librint::scf::{nmol, angl, RHF};
+use librint::scf::{nmol, angl, density};
 use librint::dscf::getF;
 
 use librint::utils::{print_arr, split};
@@ -215,7 +215,7 @@ fn main() -> io::Result<()> {
 
     // full time
 
-    let P = RHF(&mut atm, &mut bas, &mut env, nelec, 20, 1e-6);
+    let P = density(&mut atm, &mut bas, &mut env, nelec, 20, 1e-6);
 
     let dnow = Instant::now();
     let mut dStenr = dStensor(&mut atm, &mut bas, &mut env1, &mut env2);

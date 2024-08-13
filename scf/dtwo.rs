@@ -9,7 +9,7 @@ use librint::utils::read_basis;
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint2e::cint2e_cart;
 
-use librint::scf::{nmol, angl, RHF, calc_F};
+use librint::scf::{nmol, angl, density, calc_F};
 use librint::dscf::getF;
 
 use librint::linalg::matmult;
@@ -177,7 +177,7 @@ fn main() -> io::Result<()> {
     // full time
     let nelec = 2;
 
-    let P = RHF(&mut atm, &mut bas, &mut env, nelec, 20, 1e-6);
+    let P = density(&mut atm, &mut bas, &mut env, nelec, 20, 1e-6);
 
     let (s1, s2) = split(&mut bas);
 

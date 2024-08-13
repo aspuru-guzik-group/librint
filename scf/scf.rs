@@ -5,7 +5,7 @@ use std::io;
 
 use librint::utils::{read_basis, print_arr, split};
 
-use librint::scf::{nmol, angl, RHF, norm, calc_F};
+use librint::scf::{nmol, angl, density, norm, calc_F};
 
 use librint::cint_bas::{CINTcgto_cart, CINTcgto_spheric};
 use librint::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart, cint1e_ovlp_sph, cint1e_nuc_sph};
@@ -271,7 +271,7 @@ fn main() -> io::Result<()> {
     // let mut S = integral1e(&mut atm, &mut bas, &mut env, 1, 0);
     // print_arr(nshells, 2, &mut S);
 
-    let mut P = RHF(&mut atm, &mut bas, &mut env, nelec, imax, conv);
+    let mut P = density(&mut atm, &mut bas, &mut env, nelec, imax, conv);
     print_arr(nshells, 2, &mut P);
 
     let Etot: f64 = energyw(&mut atm, &mut bas, &mut env, &mut P);
