@@ -490,7 +490,7 @@ pub fn norm(
 }
 
 #[no_mangle]
-pub fn RHF(
+pub fn density(
     atm: &mut Vec<i32>,
     bas: &mut Vec<i32>,
     env: &mut Vec<f64>,
@@ -575,4 +575,117 @@ pub fn energy(
     }
 
     return E0 + Enuc;
+}
+
+#[no_mangle]
+pub fn energyfast(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    P: &mut Vec<f64>,
+) -> f64 {
+    let (natm, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
+
+    let mut buf;
+    let mut shls = vec![0; 4];
+
+    let mut mu;
+    let mut nu;
+    let mut sig;
+    let mut lam;
+
+    let mut E0: f64 = 0.0;
+
+    mu = 0;
+    for i in 0..nbas {
+        shls[0] = i as i32; let di = CINTcgto_cart(i, &bas) as usize;
+        nu = 0;
+        for j in 0..nbas {
+            shls[1] = j as i32; let dj = CINTcgto_cart(j, &bas) as usize;
+
+            buf = vec![0.0; di * dj];
+
+            cint1e_kin_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            let mut c: usize = 0;
+            for nuj in nu..(nu + dj) {
+                for mui in mu..(mu + di) {
+                    E0 += P[mui*nshells + nuj] * buf[c];
+                    c += 1;
+                }
+            }
+
+            cint1e_nuc_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            let mut c: usize = 0;
+            for nuj in nu..(nu + dj) {
+                for mui in mu..(mu + di) {
+                    E0 += P[mui*nshells + nuj] * buf[c];
+                    c += 1;
+                }
+            }
+            nu += dj;
+        }
+        mu += di;
+    }
+
+    mu = 0;
+    for i in 0..nbas {
+        shls[0] = i as i32; let di = CINTcgto_cart(i, &bas) as usize;
+        nu = 0;
+        for j in 0..nbas {
+            shls[1] = j as i32; let dj = CINTcgto_cart(j, &bas) as usize;
+            sig = 0;
+            for k in 0..nbas {
+                shls[2] = k as i32; let dk = CINTcgto_cart(k, &bas) as usize;
+                lam = 0;
+                for l in 0..nbas {
+                    shls[3] = l as i32; let dl = CINTcgto_cart(l, &bas) as usize;
+
+                    buf = vec![0.0; di * dj * dk * dl];
+
+                    cint2e_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+                    let mut c: usize = 0;
+                    for laml in lam..(lam + dl) {
+                        for sigk in sig..(sig + dk) {
+                            for nuj in nu..(nu + dj) {
+                                for mui in mu..(mu + di) {
+                                    E0 += 0.5 * (P[mui*nshells + nuj] * P[sigk*nshells + laml] - 0.5 * P[mui*nshells + sigk] * P[nuj*nshells + laml]) * buf[c];
+                                    c += 1;
+                                }
+                            }
+                        }
+                    }
+                    lam += dl;
+                }
+                sig += dk;
+            }
+            nu += dj;
+        }
+        mu += di;
+    }
+
+    let mut Enuc: f64 = 0.0;
+    for i in 0..natm {
+        for j in 0..natm {
+            if i > j {
+                Enuc += (atm[i*6 + 0] * atm[j*6 + 0]) as f64 / (norm(atm, env, i, j));
+            }
+        }
+    }
+
+    return E0 + Enuc;
+}
+
+#[no_mangle]
+pub fn scf(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    nelec: usize,
+    imax: i32,
+    conv: f64,
+) -> f64 {
+    let mut P = density(atm, bas, env, nelec, imax, conv);
+    let Etot = energyfast(atm, bas, env, &mut P);
+    return Etot;
 }

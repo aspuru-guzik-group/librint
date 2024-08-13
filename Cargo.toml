@@ -73,8 +73,8 @@ name = "timing"
 path = "scf/timing.rs"
 
 [[bin]]
-name = "dint"
-path = "scf/dint.rs"
+name = "sph"
+path = "scf/sph.rs"
 
 [[bin]]
 name = "dovlp"
@@ -87,6 +87,10 @@ path = "scf/dkin.rs"
 [[bin]]
 name = "dtwo"
 path = "scf/dtwo.rs"
+
+[[bin]]
+name = "time"
+path = "scf/gradtiming.rs"
 
 # AUTODIFF
 

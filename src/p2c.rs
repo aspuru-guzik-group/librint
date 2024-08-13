@@ -1,7 +1,7 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
 
-use crate::scf::{integral1e, integral2e, RHF, energy};
-use crate::dscf::{dHcoreg, dSg, dRg, gradenergy, danalyticalg, denergyg};
+use crate::scf::{integral1e, integral2e, density, energyfast, scf};
+use crate::dscf::{dHcoreg, dSg, dRg, gradenergy, danalyticalg, denergyfast};
 
 #[no_mangle]
 fn c2r_arr(
@@ -63,7 +63,7 @@ pub extern "C" fn int2e_c(
 }
 
 #[no_mangle]
-pub extern "C" fn RHF_c(
+pub extern "C" fn density_c(
     atm_p: *mut i32,
     atm_l: usize,
     bas_p: *mut i32,
@@ -76,7 +76,7 @@ pub extern "C" fn RHF_c(
 ) -> *mut f64 {
     let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
 
-    let mut P: Vec<f64> = RHF(&mut atm, &mut bas, &mut env, nelec, imax, conv);
+    let mut P: Vec<f64> = density(&mut atm, &mut bas, &mut env, nelec, imax, conv);
     
     let P_ptr = P.as_mut_ptr();
     std::mem::forget(P);
@@ -99,7 +99,24 @@ pub extern "C" fn energy_c(
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
 
-    let E: f64 = energy(&mut atm, &mut bas, &mut env, &mut P);
+    let E: f64 = energyfast(&mut atm, &mut bas, &mut env, &mut P);
+    return E;
+}
+
+#[no_mangle]
+pub extern "C" fn scf_c(
+    atm_p: *mut i32,
+    atm_l: usize,
+    bas_p: *mut i32,
+    bas_l: usize,
+    env_p: *mut f64,
+    env_l: usize,
+    nelec: usize,
+    imax: i32,
+    conv: f64,
+) -> f64 {
+    let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
+    let E: f64 = scf(&mut atm, &mut bas, &mut env, nelec, imax, conv);
     return E;
 }
 
@@ -234,7 +251,7 @@ pub extern "C" fn denergy_c(
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
 
-    let mut dR = denergyg(&mut atm, &mut bas, &mut env, &mut P);
+    let mut dR = denergyfast(&mut atm, &mut bas, &mut env, &mut P);
 
     let dR_ptr = dR.as_mut_ptr();
     std::mem::forget(dR);

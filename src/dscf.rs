@@ -5,7 +5,7 @@ use crate::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart};
 use crate::intor1::cint1e_kin_cart;
 use crate::cint2e::cint2e_cart;
 
-use crate::scf::{nmol, angl, integral1e, integral2e, calc_F, energy};
+use crate::scf::{nmol, angl, integral1e, integral2e, calc_F, energy, energyfast};
 use crate::utils::{split, combine};
 use crate::linalg::matmult;
 
@@ -352,7 +352,7 @@ pub fn dRf(
                                     denv = vec![0.0; env2.len()];
                                     dtwo(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
                                     for l in 0..env2.len() {
-                                        dR[l] += P[nuj*nshells + mui] * denv[l] * P[laml*nshells + sigk];
+                                        dR[l] += 0.5 * (P[mui*nshells + nuj] * P[sigk*nshells + laml] - 0.5 * P[mui*nshells + sigk] * P[nuj*nshells + laml]) * denv[l];
                                     }
                                     
                                     dbuf[c] = 0.0;
@@ -402,7 +402,7 @@ pub fn danalyticalg(
 
     let mut dtotal = vec![0.0; dH.len()];
     for i in 0..dtotal.len() {
-        dtotal[i] = dH[i] + dR[i] + dS[i];
+        dtotal[i] = dH[i] + dR[i] - 0.5 * dS[i];
     }
 
     return dtotal;
@@ -447,6 +447,55 @@ pub fn denergyg(
     P: &mut Vec<f64>,
 ) -> Vec<f64> {
     let denergy = gradenergy(atm, bas, env, P);
+    let dS = dSg(atm, bas, env, P);
+
+    let mut dtotal = vec![0.0; denergy.len()];
+    for i in 0..dtotal.len() {
+        dtotal[i] = denergy[i] - 0.5 * dS[i];
+    }
+
+    return dtotal;
+}
+
+#[no_mangle]
+#[autodiff(denergyf, Reverse, Const, Const, Const, Duplicated, Const, Active)]
+pub fn energyf(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env1: &mut Vec<f64>,
+    env2: &mut Vec<f64>,
+    P: &mut Vec<f64>,
+) -> f64 {
+    let mut env: Vec<f64> = combine(&env1, &env2);
+    return energyfast(atm, bas, &mut env, P);
+}
+
+#[no_mangle]
+pub fn gradenergyfast(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    P: &mut Vec<f64>,
+) -> Vec<f64> {
+    let (s1, s2) = split(bas);
+
+    let mut env1: Vec<f64> = env[0..s1].to_vec();
+    let mut env2: Vec<f64> = env[s1..s2].to_vec();
+
+    let mut denv: Vec<f64> = vec![0.0; s2-s1];
+    let _ = denergyf(atm, bas, &mut env1, &mut env2, &mut denv, P, 1.0);
+
+    return denv;
+}
+
+#[no_mangle]
+pub fn denergyfast(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    P: &mut Vec<f64>,
+) -> Vec<f64> {
+    let denergy = gradenergyfast(atm, bas, env, P);
     let dS = dSg(atm, bas, env, P);
 
     let mut dtotal = vec![0.0; denergy.len()];
