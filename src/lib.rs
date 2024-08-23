@@ -12,7 +12,7 @@ pub mod linalg;
 
 pub mod cint;
 
-pub mod c2f;
+// pub mod c2f;
 pub mod cint1e;
 pub mod cint2e;
 pub mod cint_bas;
@@ -26,9 +26,9 @@ pub mod rys_wheeler;
 pub mod find_roots;
 pub mod fmt;
 pub mod eigh;
-pub mod misc;
-pub mod g3c1e;
-pub mod g1e_grids;
-pub mod g2c2e;
-pub mod g3c2e;
+// pub mod misc;
+// pub mod g3c1e;
+// pub mod g1e_grids;
+// pub mod g2c2e;
+// pub mod g3c2e;
 pub mod intor1;

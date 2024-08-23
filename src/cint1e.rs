@@ -16,7 +16,7 @@ use crate::cart2sph::c2s_cart_1e;
 use crate::cart2sph::c2s_dset0;
 
 use crate::cint::PairData;
-use crate::cint::CINTOpt;
+// use crate::cint::CINTOpt;
 use crate::cint::CINTEnvVars;
 
 pub type size_t = libc::c_ulong;
@@ -754,17 +754,17 @@ pub unsafe fn int1e_ovlp_cart(
     );
 }
 // this function does nothing
-#[no_mangle]
-pub unsafe extern "C" fn int1e_ovlp_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-) {
-    *opt = 0 as *mut CINTOpt;
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn int1e_ovlp_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut atm: *mut i32,
+//     mut natm: i32,
+//     mut bas: *mut i32,
+//     mut nbas: i32,
+//     mut env: *mut f64,
+// ) {
+//     *opt = 0 as *mut CINTOpt;
+// }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_nuc_sph(
     out: &mut [f64],
@@ -906,17 +906,17 @@ pub unsafe fn int1e_nuc_cart(
         2 as i32,
     );
 }
-#[no_mangle]
-pub unsafe extern "C" fn int1e_nuc_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-) {
-    *opt = 0 as *mut CINTOpt;
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn int1e_nuc_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut atm: *mut i32,
+//     mut natm: i32,
+//     mut bas: *mut i32,
+//     mut nbas: i32,
+//     mut env: *mut f64,
+// ) {
+//     *opt = 0 as *mut CINTOpt;
+// }
 #[no_mangle]
 pub fn cint1e_ovlp_cart(
     out: &mut [f64],
@@ -943,17 +943,17 @@ pub fn cint1e_ovlp_cart(
         );
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_ovlp_cart_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-) {
-    int1e_ovlp_optimizer(opt, atm, natm, bas, nbas, env);
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_ovlp_cart_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut atm: *mut i32,
+//     mut natm: i32,
+//     mut bas: *mut i32,
+//     mut nbas: i32,
+//     mut env: *mut f64,
+// ) {
+//     int1e_ovlp_optimizer(opt, atm, natm, bas, nbas, env);
+// }
 #[no_mangle]
 pub fn cint1e_ovlp_sph(
     out: &mut [f64],
@@ -981,28 +981,28 @@ pub fn cint1e_ovlp_sph(
         );
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_ovlp_sph_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-) {
-    int1e_ovlp_optimizer(opt, atm, natm, bas, nbas, env);
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_ovlp_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-) {
-    int1e_ovlp_optimizer(opt, atm, natm, bas, nbas, env);
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_ovlp_sph_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut atm: *mut i32,
+//     mut natm: i32,
+//     mut bas: *mut i32,
+//     mut nbas: i32,
+//     mut env: *mut f64,
+// ) {
+//     int1e_ovlp_optimizer(opt, atm, natm, bas, nbas, env);
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_ovlp_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut atm: *mut i32,
+//     mut natm: i32,
+//     mut bas: *mut i32,
+//     mut nbas: i32,
+//     mut env: *mut f64,
+// ) {
+//     int1e_ovlp_optimizer(opt, atm, natm, bas, nbas, env);
+// }
 #[no_mangle]
 pub fn cint1e_nuc_cart(
     mut out: &mut [f64],
@@ -1029,17 +1029,17 @@ pub fn cint1e_nuc_cart(
         );
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_nuc_cart_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-) {
-    int1e_nuc_optimizer(opt, atm, natm, bas, nbas, env);
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_nuc_cart_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut atm: *mut i32,
+//     mut natm: i32,
+//     mut bas: *mut i32,
+//     mut nbas: i32,
+//     mut env: *mut f64,
+// ) {
+//     int1e_nuc_optimizer(opt, atm, natm, bas, nbas, env);
+// }
 #[no_mangle]
 pub fn cint1e_nuc_sph(
     mut out: &mut [f64],
@@ -1067,41 +1067,41 @@ pub fn cint1e_nuc_sph(
         );
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_nuc_sph_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-) {
-    int1e_nuc_optimizer(opt, atm, natm, bas, nbas, env);
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_nuc_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-) {
-    int1e_nuc_optimizer(opt, atm, natm, bas, nbas, env);
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_ovlp_sph_(
-    mut out: *mut f64,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-    mut optptr_as_integer8: size_t,
-) -> i32 {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    todo!();
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_nuc_sph_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut atm: *mut i32,
+//     mut natm: i32,
+//     mut bas: *mut i32,
+//     mut nbas: i32,
+//     mut env: *mut f64,
+// ) {
+//     int1e_nuc_optimizer(opt, atm, natm, bas, nbas, env);
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_nuc_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut atm: *mut i32,
+//     mut natm: i32,
+//     mut bas: *mut i32,
+//     mut nbas: i32,
+//     mut env: *mut f64,
+// ) {
+//     int1e_nuc_optimizer(opt, atm, natm, bas, nbas, env);
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_ovlp_sph_(
+//     mut out: *mut f64,
+//     mut shls: *mut i32,
+//     mut atm: *mut i32,
+//     mut natm: *mut i32,
+//     mut bas: *mut i32,
+//     mut nbas: *mut i32,
+//     mut env: *mut f64,
+//     mut optptr_as_integer8: size_t,
+// ) -> i32 {
+//     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+//     todo!();
     // return int1e_ovlp_sph(
     //     out,
     //     0 as *mut i32,
@@ -1114,81 +1114,81 @@ pub unsafe extern "C" fn cint1e_ovlp_sph_(
     //     *opt,
     //     0 as *mut f64,
     // );
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_ovlp_sph_optimizer_(
-    mut optptr_as_integer8: size_t,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-) {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    int1e_ovlp_optimizer(opt, atm, *natm, bas, *nbas, env);
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_ovlp_cart_(
-    mut out: *mut f64,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-    mut optptr_as_integer8: size_t,
-) -> i32 {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    unimplemented!("why do we have the fn_name_ versions of fn_name functions?");
-    //return int1e_ovlp_cart(
-    //    out,
-    //    0 as *mut i32,
-    //    shls,
-    //    atm,
-    //    *natm,
-    //    bas,
-    //    *nbas,
-    //    env,
-    //    *opt,
-    //    0 as *mut f64,
-    //);
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_ovlp_cart_optimizer_(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-) {
-    int1e_ovlp_optimizer(opt, atm, *natm, bas, *nbas, env);
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_ovlp_optimizer_(
-    mut optptr_as_integer8: size_t,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-) {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    int1e_ovlp_optimizer(opt, atm, *natm, bas, *nbas, env);
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_nuc_sph_(
-    mut out: *mut f64,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-    mut optptr_as_integer8: size_t,
-) -> i32 {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    todo!();
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_ovlp_sph_optimizer_(
+//     mut optptr_as_integer8: size_t,
+//     mut atm: *mut i32,
+//     mut natm: *mut i32,
+//     mut bas: *mut i32,
+//     mut nbas: *mut i32,
+//     mut env: *mut f64,
+// ) {
+//     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+//     int1e_ovlp_optimizer(opt, atm, *natm, bas, *nbas, env);
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_ovlp_cart_(
+//     mut out: *mut f64,
+//     mut shls: *mut i32,
+//     mut atm: *mut i32,
+//     mut natm: *mut i32,
+//     mut bas: *mut i32,
+//     mut nbas: *mut i32,
+//     mut env: *mut f64,
+//     mut optptr_as_integer8: size_t,
+// ) -> i32 {
+//     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+//     unimplemented!("why do we have the fn_name_ versions of fn_name functions?");
+//     //return int1e_ovlp_cart(
+//     //    out,
+//     //    0 as *mut i32,
+//     //    shls,
+//     //    atm,
+//     //    *natm,
+//     //    bas,
+//     //    *nbas,
+//     //    env,
+//     //    *opt,
+//     //    0 as *mut f64,
+//     //);
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_ovlp_cart_optimizer_(
+//     mut opt: *mut *mut CINTOpt,
+//     mut atm: *mut i32,
+//     mut natm: *mut i32,
+//     mut bas: *mut i32,
+//     mut nbas: *mut i32,
+//     mut env: *mut f64,
+// ) {
+//     int1e_ovlp_optimizer(opt, atm, *natm, bas, *nbas, env);
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_ovlp_optimizer_(
+//     mut optptr_as_integer8: size_t,
+//     mut atm: *mut i32,
+//     mut natm: *mut i32,
+//     mut bas: *mut i32,
+//     mut nbas: *mut i32,
+//     mut env: *mut f64,
+// ) {
+//     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+//     int1e_ovlp_optimizer(opt, atm, *natm, bas, *nbas, env);
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_nuc_sph_(
+//     mut out: *mut f64,
+//     mut shls: *mut i32,
+//     mut atm: *mut i32,
+//     mut natm: *mut i32,
+//     mut bas: *mut i32,
+//     mut nbas: *mut i32,
+//     mut env: *mut f64,
+//     mut optptr_as_integer8: size_t,
+// ) -> i32 {
+//     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+//     todo!();
     // return int1e_nuc_sph(
     //     out,
     //     0 as *mut i32,
@@ -1201,32 +1201,32 @@ pub unsafe extern "C" fn cint1e_nuc_sph_(
     //     *opt,
     //     0 as *mut f64,
     // );
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_nuc_sph_optimizer_(
-    mut optptr_as_integer8: size_t,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-) {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    int1e_nuc_optimizer(opt, atm, *natm, bas, *nbas, env);
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_nuc_cart_(
-    mut out: *mut f64,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-    mut optptr_as_integer8: size_t,
-) -> i32 {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    todo!();
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_nuc_sph_optimizer_(
+//     mut optptr_as_integer8: size_t,
+//     mut atm: *mut i32,
+//     mut natm: *mut i32,
+//     mut bas: *mut i32,
+//     mut nbas: *mut i32,
+//     mut env: *mut f64,
+// ) {
+//     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+//     int1e_nuc_optimizer(opt, atm, *natm, bas, *nbas, env);
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_nuc_cart_(
+//     mut out: *mut f64,
+//     mut shls: *mut i32,
+//     mut atm: *mut i32,
+//     mut natm: *mut i32,
+//     mut bas: *mut i32,
+//     mut nbas: *mut i32,
+//     mut env: *mut f64,
+//     mut optptr_as_integer8: size_t,
+// ) -> i32 {
+//     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+//     todo!();
     // return int1e_nuc_cart(
     //     out,
     //     0 as *mut i32,
@@ -1239,27 +1239,27 @@ pub unsafe extern "C" fn cint1e_nuc_cart_(
     //     *opt,
     //     0 as *mut f64,
     // );
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_nuc_cart_optimizer_(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-) {
-    int1e_nuc_optimizer(opt, atm, *natm, bas, *nbas, env);
-}
-#[no_mangle]
-pub unsafe extern "C" fn cint1e_nuc_optimizer_(
-    mut optptr_as_integer8: size_t,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-) {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    int1e_nuc_optimizer(opt, atm, *natm, bas, *nbas, env);
-}
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_nuc_cart_optimizer_(
+//     mut opt: *mut *mut CINTOpt,
+//     mut atm: *mut i32,
+//     mut natm: *mut i32,
+//     mut bas: *mut i32,
+//     mut nbas: *mut i32,
+//     mut env: *mut f64,
+// ) {
+//     int1e_nuc_optimizer(opt, atm, *natm, bas, *nbas, env);
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn cint1e_nuc_optimizer_(
+//     mut optptr_as_integer8: size_t,
+//     mut atm: *mut i32,
+//     mut natm: *mut i32,
+//     mut bas: *mut i32,
+//     mut nbas: *mut i32,
+//     mut env: *mut f64,
+// ) {
+//     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+//     int1e_nuc_optimizer(opt, atm, *natm, bas, *nbas, env);
+// }

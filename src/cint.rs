@@ -8,16 +8,16 @@ pub struct PairData {
     pub cceij: f64,
 }
 
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct CINTOpt {
-    pub index_xyz_array: *mut *mut i32,
-    pub non0ctr: *mut *mut i32,
-    pub sortedidx: *mut *mut i32,
-    pub nbas: i32,
-    pub log_max_coeff: *mut *mut f64,
-    pub pairdata: *mut *mut PairData,
-}
+// #[derive(Copy, Clone)]
+// #[repr(C)]
+// pub struct CINTOpt {
+//     pub index_xyz_array: *mut *mut i32,
+//     pub non0ctr: *mut *mut i32,
+//     pub sortedidx: *mut *mut i32,
+//     pub nbas: i32,
+//     pub log_max_coeff: *mut *mut f64,
+//     pub pairdata: *mut *mut PairData,
+// }
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -68,7 +68,7 @@ pub struct CINTEnvVars {
     pub f_g0_2e: Option::<unsafe extern "C" fn() -> i32>,
     pub f_g0_2d4d: Option::<unsafe extern "C" fn() -> ()>,
     pub f_gout: Option::<unsafe extern "C" fn() -> ()>,
-    pub opt: *mut CINTOpt,
+    // pub opt: *mut CINTOpt,
     pub idx: *mut i32,
     pub ai: [f64; 1],
     pub aj: [f64; 1],
@@ -151,7 +151,7 @@ impl CINTEnvVars {
         f_g0_2e: None,
         f_g0_2d4d: None,
         f_gout: None,
-        opt: 0 as *mut CINTOpt,
+        // opt: 0 as *mut CINTOpt,
         idx: 0 as *mut i32,
         ai: [0.; 1],
         aj: [0.; 1],
