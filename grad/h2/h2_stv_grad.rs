@@ -28,8 +28,8 @@ fn main() {
     let mut bas: Vec<i32> = Vec::new();
     let mut env: Vec<f64> = Vec::new();
 
-    let path = "/u/jpmedina/libcint/librint/molecules/h2/sto3g.txt";
-    read_basis(path, &mut atm, &mut bas, &mut env);
+    let path = librint::get_path();
+    read_basis(&path, &mut atm, &mut bas, &mut env)?;
 
     const natm: usize = 2;
     const nbas: usize = 2;

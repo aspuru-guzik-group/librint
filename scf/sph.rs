@@ -51,8 +51,8 @@ fn main() {
     let mut bas = Vec::new();
     let mut env = Vec::new();
 
-    let path = "/u/jpmedina/libcint/librint/molecules/h2o/sto3g.txt";
-    read_basis(path, &mut atm, &mut bas, &mut env);
+    let path = librint::get_path();
+    read_basis(&path, &mut atm, &mut bas, &mut env)?;
 
     let (natm, nbas) = nmol(&atm, &bas);
     let nshells = angl(&bas, 0);

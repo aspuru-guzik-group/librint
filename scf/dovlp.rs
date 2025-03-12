@@ -176,8 +176,8 @@ fn main() -> io::Result<()> {
     let mut bas = Vec::new();
     let mut env = Vec::new();
 
-    let path = "/home/manuel/prog/libcint/librint/molecules/h2/sto3g.txt";
-    read_basis(path, &mut atm, &mut bas, &mut env)?;
+    let path = librint::get_path();
+    read_basis(&path, &mut atm, &mut bas, &mut env)?;
 
     let nelec = 2;
 
