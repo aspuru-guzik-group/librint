@@ -1,5 +1,5 @@
 #![feature(autodiff)]
-
+use std::autodiff::autodiff;
 #[autodiff(df, Reverse, Active, Active, Active)]
 fn f(x: f32, y: f32) -> f32 {
     x * x + 3.0 * y

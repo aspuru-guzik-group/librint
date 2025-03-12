@@ -1,6 +1,6 @@
 #![allow(non_snake_case, non_upper_case_globals)]
 #![feature(autodiff)]
-
+use std::autodiff::autodiff;
 use std::io;
 
 use librint::utils::{read_basis, print_arr, split};
@@ -261,9 +261,11 @@ fn main() -> io::Result<()> {
     let path = "/u/jpmedina/libcint/librint/molecules/h2o/sto3g.txt";
     read_basis(path, &mut atm, &mut bas, &mut env)?;
 
-    let (natm, nbas, nshells) = nmol(&atm, &bas);
+    let (nbas, nshells) = nmol(&atm, &bas);
+    //let (natm, nbas, nshells) = nmol(&atm, &bas);
     let nshells = angl(&bas, 0);
-    println!("{} {} {}", natm, nbas, nshells);
+    println!("{} {}", nbas, nshells);
+    //println!("{} {} {}", natm, nbas, nshells);
 
     const imax: i32 = 20;
     const conv: f64 = 0.000001;

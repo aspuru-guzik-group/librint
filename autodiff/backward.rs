@@ -1,5 +1,5 @@
 #![feature(autodiff)]
-
+use std::autodiff::autodiff;
 #[autodiff(df, Reverse, Duplicated, Duplicated)]
 fn f(x: &[f32; 2], y: &mut f32) {
     *y = x[0] * x[0] + x[1] * x[0];

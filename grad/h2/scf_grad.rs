@@ -1,5 +1,6 @@
 #![feature(autodiff)]
 
+use std::autodiff::autodiff;
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
 use librint::cint1e::cint1e_nuc_cart;

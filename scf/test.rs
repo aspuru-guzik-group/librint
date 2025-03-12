@@ -1,6 +1,6 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
 #![feature(autodiff)]
-
+use std::autodiff::autodiff;
 use std::io;
 
 use librint::utils::read_basis;

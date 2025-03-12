@@ -1,6 +1,6 @@
 #![allow(non_snake_case, non_upper_case_globals)]
 #![feature(autodiff)]
-
+use std::autodiff::autodiff;
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint2e::cint2e_cart;
 

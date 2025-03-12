@@ -4,7 +4,7 @@ import numpy as np
 
 import utils
 
-path = '/u/jpmedina/libcint/librint/python/librint.so'
+path = '/home/manuel/prog/libcint/librint/python/librint.so'
 
 libc = ctypes.CDLL(path)
 

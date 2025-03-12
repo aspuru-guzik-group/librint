@@ -1,5 +1,7 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
+#![feature(autodiff)]
 
+use std::autodiff::autodiff;
 use crate::cint_bas::CINTcgto_cart;
 use crate::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart};
 use crate::intor1::cint1e_kin_cart;

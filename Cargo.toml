@@ -1,3 +1,4 @@
+cargo-features = ["profile-rustflags"]
 [package]
 name = "librint"
 version = "0.1.0"
@@ -11,17 +12,20 @@ faer = "0.19.0"
 pyo3 = { version = "0.17", features = ["extension-module"] }
 
 [profile.dev]
-debug = true
+#debug = true
 opt-level = 0
 debug-assertions = true
 lto = "fat"
+debug = 0
 
 [profile.release]
 lto = "fat"
+debug = 0
+rustflags = ["-Z", "autodiff=Enable"]
 
-# ADD TO COMPILE LIBRARY TO .SO
-# [lib]
-# crate-type = ["cdylib"]
+#ADD TO COMPILE LIBRARY TO .SO
+[lib]
+crate-type = ["cdylib"]
 
 # FAER
 

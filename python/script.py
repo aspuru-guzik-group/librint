@@ -1,7 +1,7 @@
 import numpy as np
 import pyscf
 
-COMP = 'C'
+COMP = 'R'
 
 import utils
 
