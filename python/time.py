@@ -13,18 +13,18 @@ from pyscfad import gto, scf
 
 from basis_set_exchange import get_basis
 
-sto_2g = get_basis('sto-2g', fmt='nwchem')
-sto_3g = 'sto-3g'
+basis = "sto-3g"
+geo = "HF"
 
 MAX_ITER=4000
 
 jax.config.update("jax_platform_name", "cpu")
 
-def build_mol(atom, charge):
+def build_mol(atom, charge, basis):
     mol = gto.Mole()
     mol.atom = atom
     mol.unit = 'Angstrom'
-    mol.basis = 'sto-3g'
+    mol.basis = basis
     mol.charge = charge
     mol.verbose = 0
     mass = mol.atom_mass_list(isotope_avg=True)
@@ -80,8 +80,7 @@ geometries = {
     ],
 }
 
-basis = "sto-3g"
-geo = "HF"
+
 molecule = geometries[geo]
 
 atom = '\n'.join([f"{atom[0]} {0.529*atom[2][0]} {0.529*atom[2][1]} {0.529*atom[2][2]}" for atom in molecule])
@@ -97,7 +96,7 @@ mol_rpyscf = pyscf.gto.M(atom=atom,
 
 P = librpyscf.density(mol_rpyscf, nelec, imax=MAX_ITER)
 
-mol_jax = build_mol(atom, charge)  # Precomputed mol for JAX
+mol_jax = build_mol(atom, charge, basis)  # Precomputed mol for JAX
 
 # Define functions to time
 def test_librpyscf():
@@ -105,6 +104,7 @@ def test_librpyscf():
     return gradient
 
 def test_jax():
+    # mol_jax = build_mol(atom, charge, basis)
     E, grad = value_and_grad(hf_energy)(mol_jax)
     return grad.coords, grad.ctr_coeff, grad.exp
 
@@ -118,7 +118,7 @@ def test_grad():
 
 
 # Timing the functions
-n_runs = 3  # Number of runs for averaging
+n_runs = 10  # Number of runs for averaging
 
 time_librpyscf = timeit.timeit(test_librpyscf, number=n_runs)
 time_jax = timeit.timeit(test_jax, number=n_runs)
@@ -133,10 +133,17 @@ print(f"Average time for librpyscf.analytical: {time_analytical / n_runs:.6f} se
 print(f"Average time for librpyscf.grad: {time_grad / n_runs:.6f} seconds per run")
 
 
-if (basis == sto_2g):
-    bas = "sto-2g"
-else:
-    bas = "sto-3g"
+
+
+# hackie code for writing results to file
+
+# sto_2g = get_basis('sto-2g', fmt='nwchem')
+# sto_3g = 'sto-3g'
+
+# if (basis == sto_2g):
+#     bas = "sto-2g"
+# else:
+#     bas = "sto-3g"
 
 
 # file_path = "timing/test"

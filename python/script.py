@@ -23,7 +23,7 @@ nelec = 2
 
 print("## H2 ##\n")
 
-P = libscf.RHF(atm, bas, env, nelec)
+P = libscf.density(atm, bas, env, nelec)
 print("P:")
 utils.pmat(P)
 

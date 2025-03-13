@@ -1,7 +1,8 @@
 import numpy as np
 import pyscf
 
-import libcscf2
+# import libcscf2
+import libcscf as libcscf2
 import libcscf
 import utils
 
@@ -88,10 +89,10 @@ def derivatives(atm, bas, env):
 
 np.set_printoptions(precision=5)
 
-P = libcscf2.RHF(atm, bas, env, nelec)
+P = libcscf2.density(atm, bas, env, nelec)
 E = libcscf2.energy(atm, bas, env, P)
 
-# P0 = libcscf.RHF(atm, bas, env, nelec)
+# P0 = libcscf.density(atm, bas, env, nelec)
 # E0 = libcscf.energy(atm, bas, env, P)
 
 # print()
@@ -100,7 +101,17 @@ E = libcscf2.energy(atm, bas, env, P)
 # print("E-E:       ", E - E0)
 # print()
 
-F = libcscf2.calcF(atm, bas, env, P)
+def calcF(atm, bas, env, P):
+    H = libcscf2.int1e(atm, bas, env, 'kin') + libcscf2.int1e(atm, bas, env, 'nuc')
+    R = libcscf2.int2e(atm, bas, env)
+    # ls * mnsl - ls * mlsn
+    J = np.einsum('ijkl,lk->ij', R, P)
+    K = np.einsum('ilkj,lk->ij', R, P)
+
+    F = H + (J - 0.5*K)
+    return F
+
+F = calcF(atm, bas, env, P)
 
 dH, dR, dS = derivatives(atm, bas, env)
 
@@ -117,7 +128,7 @@ print("derivatives: dH, dR, dS")
 print("dH fd:    ", np.tensordot(dH, P))
 print("dH rust:  ", dH0)
 
-print("dR fd:    ", np.tensordot(np.tensordot(dR, P), P))
+print("dR fd:    ", 0.25 * np.tensordot(np.tensordot(dR, P), P))
 print("dR rust:  ", dR0)
 
 print("dS fd:    ", np.tensordot(dS, P @ F @ P))
@@ -129,7 +140,7 @@ denv = libcscf.grad(atm, bas, env, P)
 print()
 print("ad energy vs hcore + two")
 print("ad energy:      ", denv)
-print("dH + 0.25 * dR: ", dH0 + 0.25 * dR0)
+print("dH + 0.25 * dR: ", dH0 + dR0)
 print()
 
 h = 1e-6
@@ -137,10 +148,10 @@ h = 1e-6
 fd = np.zeros(b-a)
 for j in range(a, b):
     env[j] -= h
-    P1 = libcscf2.RHF(atm, bas, env, nelec)
+    P1 = libcscf2.density(atm, bas, env, nelec)
     E1 = libcscf2.energy(atm, bas, env, P1)
     env[j] += 2.0*h
-    P2 = libcscf2.RHF(atm, bas, env, nelec)
+    P2 = libcscf2.density(atm, bas, env, nelec)
     E2 = libcscf2.energy(atm, bas, env, P2)
 
     fd[j-a] = (E2 - E1)/(2.0*h)
@@ -151,10 +162,12 @@ print()
 print("gradients")
 print("finite diff:           ", fd)
 print("ad e - 0.5 dS:         ", denv - 0.5 * dS0)
-print("dH + 0.25 dR - 0.5 dS: ", dH0 + 0.25*dR0 - 0.5 * dS0)
+print("dH + dR - 0.5 dS:      ", dH0 + dR0 - 0.5 * dS0)
 print()
 
 de = libcscf.denergyf(atm, bas, env, P)
+# import librpyscf
+# de = librpyscf.denergyf(mol, P)
 
 print()
 print("de                     ", de)

@@ -9,6 +9,8 @@ from basis_set_exchange import get_basis
 sto_2g = get_basis('sto-2g', fmt='nwchem')
 sto_3g = 'sto-3g'
 
+geo = 'NH3'
+
 MAX_ITER=4000
 
 
@@ -20,7 +22,7 @@ jax.config.update("jax_platform_name", "cpu")
 
 basis = sto_2g
 
-def build_mol(atom, charge):
+def build_mol(atom, charge, basis):
     mol = gto.Mole()
     mol.atom = atom
     mol.unit = 'Angstrom'
@@ -79,7 +81,7 @@ geometries = {
     ],
 }
 
-molecule = geometries['NH3']
+molecule = geometries[geo]
 
 
 charge = 0
@@ -88,7 +90,7 @@ charge = 0
 atom = '\n'.join([f"{atom[0]} {0.529*atom[2][0]} {0.529*atom[2][1]} {0.529*atom[2][2]}" for atom in molecule])
 nelec = sum(atom[1] for atom in molecule)
 
-mol = build_mol(atom, charge)
+mol = build_mol(atom, charge, basis)
 E, grad = jax.value_and_grad(hf_energy)(mol)
 
 full_grad = np.concatenate((grad.ctr_coeff, grad.exp))
@@ -100,6 +102,7 @@ mol = pyscf.gto.M(atom=atom,
 
 P = librpyscf.density(mol, nelec, imax=MAX_ITER)
 gradient = librpyscf.denergyf(mol, P)
+# gradient = librpyscf.grad(mol, P)
 
 print("librscf:", np.sort(gradient))
 
