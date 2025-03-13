@@ -15,11 +15,12 @@ enum Token {
 }
 
 pub fn read_basis(
-    path: &str,
+    path: &std::path::PathBuf,
     atm: &mut Vec<i32>, 
     bas: &mut Vec<i32>, 
     env: &mut Vec<f64>
 ) -> io::Result<()> {
+    assert!(path.exists());
     let file = File::open(path)?;
     let mut reader = BufReader::new(file);
     let mut contents = String::new();

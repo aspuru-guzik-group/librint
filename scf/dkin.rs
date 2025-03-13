@@ -205,7 +205,7 @@ fn main() -> io::Result<()> {
     let mut env = Vec::new();
 
     let path = librint::get_path();
-    read_basis(&path, &mut atm, &mut bas, &mut env)?;
+    read_basis(&path, &mut atm, &mut bas, &mut env);
 
     // f vs df time
     let (s1, s2) = split(&mut bas);

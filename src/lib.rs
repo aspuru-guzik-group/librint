@@ -1,5 +1,5 @@
 #![feature(autodiff)]
-#![allow(unused_variables,improper_ctypes_definitions,static_mut_refs)]
+#![allow(unused_variables,improper_ctypes_definitions,static_mut_refs,non_snake_case)]
 
 use std::path::PathBuf;
 

@@ -24,8 +24,9 @@ debug = 0
 rustflags = ["-Z", "autodiff=Enable"]
 
 #ADD TO COMPILE LIBRARY TO .SO
-[lib]
-crate-type = ["cdylib"]
+#[lib]
+#crate-type = ["rlib"]
+#crate-type = ["cdylib", "rlib"]
 
 # FAER
 

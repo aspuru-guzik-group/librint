@@ -1,4 +1,4 @@
-#![allow(non_snake_case, non_upper_case_globals)]
+#![allow(non_snake_case, non_upper_case_globals,unused_variables,improper_ctypes_definitions,static_mut_refs)]
 
 use librint::utils::print_arr;
 use librint::utils::read_basis;
@@ -483,7 +483,7 @@ fn main() {
     let mut env: Vec<f64> = Vec::new();
 
     let path = librint::get_path();
-    read_basis(&path, &mut atm, &mut bas, &mut env)?;
+    read_basis(&path, &mut atm, &mut bas, &mut env);
 
     const natm: usize = 3;
     const nelec: usize = 10;
