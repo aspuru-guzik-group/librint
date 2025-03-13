@@ -1,4 +1,4 @@
-cargo-features = ["profile-rustflags"]
+#cargo-features = ["profile-rustflags"]
 [package]
 name = "librint"
 version = "0.1.0"
@@ -21,7 +21,7 @@ debug = 0
 [profile.release]
 lto = "fat"
 debug = 0
-rustflags = ["-Z", "autodiff=Enable"]
+#rustflags = ["-Z", "autodiff=Enable"]
 
 #ADD TO COMPILE LIBRARY TO .SO
 #[lib]
