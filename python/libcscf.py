@@ -4,9 +4,11 @@ import numpy as np
 
 import utils
 
-path = '/home/manuel/prog/libcint/librint/python/librint.so'
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-libc = ctypes.CDLL(path)
+so_path = os.path.join(current_dir, "librint.so")
+
+libc = ctypes.CDLL(so_path)
 
 libc.int1e_c.argtypes = (
     ctypes.POINTER(ctypes.c_int),
