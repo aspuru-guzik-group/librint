@@ -146,5 +146,5 @@ library.denergy_c.argtypes =(
 )
 library.denergy_c.restype = ctypes.POINTER(ctypes.c_double)
 
-# import librint.scf
-# import librint.dscf
+from . import scf
+from . import dscf
