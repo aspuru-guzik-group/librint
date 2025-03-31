@@ -62,27 +62,32 @@ fn main() {
     let mut buf;
     let mut dbuf;
 
-    let i = 2;
-    let j = 2;
+    let i = 5;
+    let j = 5;
 
-    shls[0] = i as i32; let di = CINTcgto_spheric(i, &bas);
-    shls[1] = j as i32; let dj = CINTcgto_spheric(j, &bas);
+    shls[0] = i as i32;
+    shls[1] = j as i32;
+
+    let di = CINTcgto_spheric(i, &bas);
+    let dj = CINTcgto_spheric(j, &bas);
 
     println!("ijdidj {}{}{}{}", i, j, di, dj);
 
     buf = vec![0.0; (di * dj) as usize];
     dbuf = vec![0.0; (di * dj) as usize];
 
-    println!("denv:");
+    println!("denv (sph):");
     for k in 0..((di * dj) as usize) {
         dbuf[k] = 1.0;
 
         let mut denv: [f64; 56] = [0.0; 56];
         dsph(&mut buf, &mut dbuf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env, &mut denv);
-        for i in 49..50 {
+        for i in 20..56 {
             print!("{:.6} ", denv[i]);
         }
         dbuf[k] = 0.0;
+        println!();
+        println!();
     }
     println!();
 
@@ -92,25 +97,46 @@ fn main() {
     let mut b2 = vec![0.0; (di * dj) as usize];
 
     println!("finite d:");
-    for k in 49..50 {
-        env[k] += h;
-        cint1e_ovlp_sph(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
-        for l in 0..(di * dj) as usize {
+    for l in 0..(di * dj) as usize {
+        for k in 20..56 {
+            env[k] += h;
+            cint1e_ovlp_sph(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
+            
             b1[l] = buf[l];
-        }
 
-        env[k] -= 2.0*h;
-        cint1e_ovlp_sph(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
-        for l in 0..(di * dj) as usize {
+            env[k] -= 2.0*h;
+            cint1e_ovlp_sph(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
             b2[l] = buf[l];
-        }
 
-        env[k] += h;
-
-        for l in 0..(di * dj) as usize {
+            env[k] += h;
+            
             let grad = (b1[l] - b2[l])/(2.0*h);
             print!("{:.6} ", grad);
         }
         println!();
+        println!();
     }
+
+    // for k in 20..56 {
+    //     env[k] += h;
+    //     cint1e_ovlp_sph(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
+    //     for l in 0..(di * dj) as usize {
+    //         b1[l] = buf[l];
+    //     }
+
+    //     env[k] -= 2.0*h;
+    //     cint1e_ovlp_sph(&mut buf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env);
+    //     for l in 0..(di * dj) as usize {
+    //         b2[l] = buf[l];
+    //     }
+
+    //     env[k] += h;
+
+    //     for l in 0..(di * dj) as usize {
+    //         let grad = (b1[l] - b2[l])/(2.0*h);
+    //         print!("{:.6} ", grad);
+    //     }
+    // }
+    
+    println!();
 }
