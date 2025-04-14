@@ -43,16 +43,17 @@ fn main() -> io::Result<()> {
 
     let mut opt_ptr: *mut CINTOpt = ptr::null_mut();
 
-    // unsafe {
-    //     cint2e_cart_optimizer(
-    //         &mut opt_ptr as *mut *mut CINTOpt,  // double pointer
-    //         atm_arr.as_mut_ptr(),
-    //         natm as i32,
-    //         bas_arr.as_mut_ptr(),
-    //         nbas as i32,
-    //         env_arr.as_mut_ptr(),
-    //     );
-    // }
+    // initializing the optimizer
+    unsafe {
+        cint2e_cart_optimizer(
+            &mut opt_ptr as *mut *mut CINTOpt,  // double pointer
+            atm_arr.as_mut_ptr(),
+            natm as i32,
+            bas_arr.as_mut_ptr(),
+            nbas as i32,
+            env_arr.as_mut_ptr(),
+        );
+    }
 
     // unsafe {
     //     if !opt_ptr.is_null() {
