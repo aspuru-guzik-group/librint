@@ -14,3 +14,15 @@ opt-level = 0
 debug-assertions = true
 inherits = "release"
 lto = true
+
+[[bin]]
+name = "h2_two"
+path = "grad/h2_two.rs"
+
+[[bin]]
+name = "h2o_sto"
+path = "grad/h2o_sto3g.rs"
+
+[[bin]]
+name = "h2o_def"
+path = "grad/h2o_def2svp.rs"
