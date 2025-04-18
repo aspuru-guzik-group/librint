@@ -7,3 +7,15 @@ edition = "2021"
 
 [dependencies]
 libc = "0.2.155"
+
+[[bin]]
+name = "h2"
+path = "grad/h2_stv.rs"
+
+[[bin]]
+name = "def2svp"
+path = "grad/h2o_def2svp.rs"
+
+[[bin]]
+name = "cache"
+path = "grad/cache.rs"

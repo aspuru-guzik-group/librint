@@ -1,5 +1,4 @@
 #![feature(extern_types)]
-#![feature(f128)]
 
 pub mod cint;
 
