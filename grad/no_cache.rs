@@ -10,55 +10,55 @@ use librint::cint::CINTOpt;
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
-fn max_cache_size(
-    nbas: usize,
-    atm: &mut [i32],
-    natm: usize,
-    bas: &mut [i32],
-    env: &mut [f64],
-) -> i32 {
-    let mut di;
-    let mut dj;
+// fn max_cache_size(
+//     nbas: usize,
+//     atm: &mut [i32],
+//     natm: usize,
+//     bas: &mut [i32],
+//     env: &mut [f64],
+// ) -> i32 {
+//     let mut di;
+//     let mut dj;
 
-    let mut shls: [i32; 4] = [0, 0, 0, 0];
+//     let mut shls: [i32; 4] = [0, 0, 0, 0];
 
-    let mut tmp;
+//     let mut tmp;
 
-    let mut cache_size = 0;
+//     let mut cache_size = 0;
 
-    for i in 0..nbas {
-        for j in 0..nbas {
-            shls[0] = i as i32;
-            shls[1] = j as i32;
+//     for i in 0..nbas {
+//         for j in 0..nbas {
+//             shls[0] = i as i32;
+//             shls[1] = j as i32;
             
-            di = CINTcgto_cart(i, &bas);
-            dj = CINTcgto_cart(j, &bas);
+//             di = CINTcgto_cart(i, &bas);
+//             dj = CINTcgto_cart(j, &bas);
 
-            tmp = unsafe {
-                int1e_nuc_cart(
-                    std::ptr::null_mut(),
-                    std::ptr::null_mut(),
-                    shls.as_mut_ptr(),
-                    atm.as_mut_ptr(),
-                    natm as i32,
-                    bas.as_mut_ptr(),
-                    nbas as i32,
-                    env.as_mut_ptr(),
-                    std::ptr::null_mut(),
-                    std::ptr::null_mut(),
-                )
-            };
+//             tmp = unsafe {
+//                 int1e_nuc_cart(
+//                     std::ptr::null_mut(),
+//                     std::ptr::null_mut(),
+//                     shls.as_mut_ptr(),
+//                     atm.as_mut_ptr(),
+//                     natm as i32,
+//                     bas.as_mut_ptr(),
+//                     nbas as i32,
+//                     env.as_mut_ptr(),
+//                     std::ptr::null_mut(),
+//                     std::ptr::null_mut(),
+//                 )
+//             };
 
-            if (tmp > cache_size) {
-                cache_size = tmp;
-                print!("{} ", cache_size);
-            }
-        }
-    }
-    println!();
+//             if (tmp > cache_size) {
+//                 cache_size = tmp;
+//                 print!("{} ", cache_size);
+//             }
+//         }
+//     }
+//     println!();
 
-    return cache_size;
-}
+//     return cache_size;
+// }
 
 fn main() -> io::Result<()> {
     // const natm: usize = 2;
@@ -178,9 +178,9 @@ fn main() -> io::Result<()> {
 
     let mut shls: [i32; 4] = [0, 0, 0, 0];
 
-    let cache_size = max_cache_size(nbas, &mut atm, natm, &mut bas, &mut env);
+    // let cache_size = max_cache_size(nbas, &mut atm, natm, &mut bas, &mut env);
 
-    let mut cache = vec![0.0f64; cache_size as usize];
+    // let mut cache = vec![0.0f64; cache_size as usize];
 
     let mut buf;
     let mut di;
@@ -213,24 +213,9 @@ fn main() -> io::Result<()> {
                         nbas as i32,
                         env.as_mut_ptr(),
                         std::ptr::null_mut(),
-                        cache.as_mut_ptr(),
+                        std::ptr::null_mut(),
                     );
                 }
-
-                // unsafe {
-                //     int1e_nuc_cart(
-                //         buf.as_mut_ptr(),
-                //         std::ptr::null_mut(),
-                //         shls.as_mut_ptr(),
-                //         atm.as_mut_ptr(),
-                //         natm as i32,
-                //         bas.as_mut_ptr(),
-                //         nbas as i32,
-                //         env.as_mut_ptr(),
-                //         std::ptr::null_mut(),
-                //         std::ptr::null_mut(),
-                //     );
-                // }
 
                 // for i in 0..(di * dj) {
                 //     println!("{} ", buf[i as usize]);

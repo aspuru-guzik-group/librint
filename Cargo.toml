@@ -19,3 +19,7 @@ path = "grad/h2o_def2svp.rs"
 [[bin]]
 name = "cache"
 path = "grad/cache.rs"
+
+[[bin]]
+name = "nocache"
+path = "grad/no_cache.rs"
