@@ -16,10 +16,24 @@ path = "grad/h2_stv.rs"
 name = "def2svp"
 path = "grad/h2o_def2svp.rs"
 
-[[bin]]
-name = "cache"
-path = "grad/cache.rs"
+
 
 [[bin]]
-name = "nocache"
-path = "grad/no_cache.rs"
+name = "none"
+path = "bench/none.rs"
+
+[[bin]]
+name = "cache"
+path = "bench/cache.rs"
+
+[[bin]]
+name = "opt"
+path = "bench/opt.rs"
+
+[[bin]]
+name = "cache_opt"
+path = "bench/cache_opt.rs"
+
+[[bin]]
+name = "single"
+path = "bench/single.rs"

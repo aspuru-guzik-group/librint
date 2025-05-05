@@ -21,3 +21,5 @@ pub mod g3c1e;
 pub mod g1e_grids;
 pub mod g2c2e;
 pub mod g3c2e;
+
+pub mod utils;
