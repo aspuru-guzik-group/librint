@@ -1,0 +1,45 @@
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+Error: Expected int in file.
+
+buf
+39ns
