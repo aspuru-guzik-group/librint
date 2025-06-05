@@ -8,6 +8,8 @@ use librint::cint1e::int1e_nuc_cart;
 use librint::cint::CINTOpt;
 use librint::utils::{nmol, read_basis};
 
+use librint::cint2e::cint2e_cart;
+
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
@@ -16,7 +18,7 @@ fn main() -> io::Result<()> {
     let mut bas: Vec<i32> = Vec::new();
     let mut env: Vec<f64> = Vec::new();
 
-    let path = "/h/332/jpmedina/librint/molecules/h2/sto3g.txt";
+    let path = "/h/332/jpmedina/libcint/molecules/c6h6/631g.txt";
     read_basis(&path, &mut atm, &mut bas, &mut env);
 
     let (natm, nbas) = nmol(&mut atm, &mut bas);
@@ -26,38 +28,63 @@ fn main() -> io::Result<()> {
     let mut buf;
     let mut di;
     let mut dj;
+    let mut dk;
+    let mut dl;
 
 	println!("buf");
+    let start_total = Instant::now();
 
     for i in 0..nbas {
         for j in 0..nbas {
-            shls[0] = i as i32;
-            shls[1] = j as i32;
-            
-            di = CINTcgto_cart(i, &bas);
-            dj = CINTcgto_cart(j, &bas);
+            for k in 0..nbas {
+                for l in 0..nbas {
+                    shls[0] = i as i32;
+                    shls[1] = j as i32;
+                    shls[2] = k as i32;
+                    shls[3] = l as i32;
+                    
+                    di = CINTcgto_cart(i, &bas);
+                    dj = CINTcgto_cart(j, &bas);
+                    dk = CINTcgto_cart(k, &bas);
+                    dl = CINTcgto_cart(l, &bas);
 
-            buf = vec![0.0; (di * dj) as usize];
+                    buf = vec![0.0; (di * dj * dk * dl) as usize];
 
-            let start = Instant::now();
-            unsafe {
-                int1e_nuc_cart(
-                    buf.as_mut_ptr(),
-                    std::ptr::null_mut(),
-                    shls.as_mut_ptr(),
-                    atm.as_mut_ptr(),
-                    natm as i32,
-                    bas.as_mut_ptr(),
-                    nbas as i32,
-                    env.as_mut_ptr(),
-                    std::ptr::null_mut(),
-                    std::ptr::null_mut(),
-                );
+                    // let start = Instant::now();
+                    unsafe {
+                        // int1e_nuc_cart(
+                        //     buf.as_mut_ptr(),
+                        //     std::ptr::null_mut(),
+                        //     shls.as_mut_ptr(),
+                        //     atm.as_mut_ptr(),
+                        //     natm as i32,
+                        //     bas.as_mut_ptr(),
+                        //     nbas as i32,
+                        //     env.as_mut_ptr(),
+                        //     std::ptr::null_mut(),
+                        //     std::ptr::null_mut(),
+                        // );
+
+                        cint2e_cart(
+                            buf.as_mut_ptr(),
+                            shls.as_mut_ptr(),
+                            atm.as_mut_ptr(),
+                            natm as i32,
+                            bas.as_mut_ptr(),
+                            nbas as i32,
+                            env.as_mut_ptr(),
+                            std::ptr::null_mut()
+                        );
+                    }
+                    // let duration = start.elapsed();
+                    // println!("{} {}: {:?}", i, j, duration);
+                }
             }
-            let duration = start.elapsed();
-            println!("{} {}: {:?}", i, j, duration);
         }
     }
+    
+    let duration_total = start_total.elapsed();
+    println!("{:?}", duration_total);
 
     Ok(())
 }
