@@ -1,31 +1,8 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-extern "C" {
-    fn CINTdgemm_TN(
-        m: libc::c_int,
-        n: libc::c_int,
-        k: libc::c_int,
-        a: *mut libc::c_double,
-        b: *mut libc::c_double,
-        c: *mut libc::c_double,
-    );
-    fn CINTdgemm_NN1(
-        m: libc::c_int,
-        n: libc::c_int,
-        k: libc::c_int,
-        a: *mut libc::c_double,
-        b: *mut libc::c_double,
-        c: *mut libc::c_double,
-        ldc: libc::c_int,
-    );
-    fn CINTdgemm_NT(
-        m: libc::c_int,
-        n: libc::c_int,
-        k: libc::c_int,
-        a: *mut libc::c_double,
-        b: *mut libc::c_double,
-        c: *mut libc::c_double,
-    );
-}
+
+use crate::fblas::CINTdgemm_TN;
+use crate::fblas::CINTdgemm_NN1;
+use crate::fblas::CINTdgemm_NT;
 
 use crate::cint::CINTEnvVars;
 

@@ -1,6 +1,13 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
-// use num_traits::ToPrimitive;
+
+use crate::fmt::fmt_lerfc_like;
+use crate::fmt::fmt_erfc_like;
+use crate::eigh::_CINTdiagonalize;
+
+pub type size_t = libc::c_ulong;
+pub type __off_t = libc::c_long;
+pub type __off64_t = libc::c_long;
+
 extern "C" {
     pub type _IO_wide_data;
     pub type _IO_codecvt;
@@ -15,29 +22,8 @@ extern "C" {
     fn erf(_: libc::c_double) -> libc::c_double;
     fn erfcl(_: f64) -> f64;
     fn erfc(_: libc::c_double) -> libc::c_double;
-    fn fmt_erfc_like(
-        f: *mut libc::c_double,
-        t: libc::c_double,
-        lower: libc::c_double,
-        m: libc::c_int,
-    );
-    fn fmt_lerfc_like(
-        f: *mut f64,
-        t: f64,
-        lower: f64,
-        m: libc::c_int,
-    );
-    fn _CINTdiagonalize(
-        n: libc::c_int,
-        diag: *mut libc::c_double,
-        diag_off1: *mut libc::c_double,
-        eig: *mut libc::c_double,
-        vec: *mut libc::c_double,
-    ) -> libc::c_int;
 }
-pub type size_t = libc::c_ulong;
-pub type __off_t = libc::c_long;
-pub type __off64_t = libc::c_long;
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _IO_FILE {

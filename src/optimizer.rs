@@ -1,4 +1,21 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+
+use crate::g1e::CINTg1e_index_xyz;
+use crate::g1e::CINTinit_int1e_EnvVars;
+use crate::g2e::CINTg2e_index_xyz;
+use crate::g2e::CINTinit_int2e_EnvVars;
+// use crate::g1e_grids::CINTinit_int1e_grids_EnvVars;
+// use crate::g2c2e::CINTinit_int2c2e_EnvVars;
+// use crate::g3c1e::CINTinit_int3c1e_EnvVars;
+// use crate::g3c1e::CINTg3c1e_index_xyz;
+// use crate::g3c2e::CINTinit_int3c2e_EnvVars;
+
+use crate::cint::PairData;
+use crate::cint::CINTOpt;
+use crate::cint::CINTEnvVars;
+
+pub type size_t = libc::c_ulong;
+
 extern "C" {
     fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
     fn free(__ptr: *mut libc::c_void);
@@ -11,76 +28,7 @@ extern "C" {
         _: *const libc::c_void,
         _: libc::c_ulong,
     ) -> *mut libc::c_void;
-    fn CINTinit_int1e_EnvVars(
-        envs: *mut CINTEnvVars,
-        ng: *mut libc::c_int,
-        shls: *mut libc::c_int,
-        atm: *mut libc::c_int,
-        natm: libc::c_int,
-        bas: *mut libc::c_int,
-        nbas: libc::c_int,
-        env: *mut libc::c_double,
-    );
-    fn CINTinit_int3c1e_EnvVars(
-        envs: *mut CINTEnvVars,
-        ng: *mut libc::c_int,
-        shls: *mut libc::c_int,
-        atm: *mut libc::c_int,
-        natm: libc::c_int,
-        bas: *mut libc::c_int,
-        nbas: libc::c_int,
-        env: *mut libc::c_double,
-    );
-    fn CINTg1e_index_xyz(idx: *mut libc::c_int, envs: *mut CINTEnvVars);
-    fn CINTinit_int1e_grids_EnvVars(
-        envs: *mut CINTEnvVars,
-        ng: *mut libc::c_int,
-        shls: *mut libc::c_int,
-        atm: *mut libc::c_int,
-        natm: libc::c_int,
-        bas: *mut libc::c_int,
-        nbas: libc::c_int,
-        env: *mut libc::c_double,
-    );
-    fn CINTg2e_index_xyz(idx: *mut libc::c_int, envs: *const CINTEnvVars);
-    fn CINTinit_int2e_EnvVars(
-        envs: *mut CINTEnvVars,
-        ng: *mut libc::c_int,
-        shls: *mut libc::c_int,
-        atm: *mut libc::c_int,
-        natm: libc::c_int,
-        bas: *mut libc::c_int,
-        nbas: libc::c_int,
-        env: *mut libc::c_double,
-    );
-    fn CINTinit_int3c2e_EnvVars(
-        envs: *mut CINTEnvVars,
-        ng: *mut libc::c_int,
-        shls: *mut libc::c_int,
-        atm: *mut libc::c_int,
-        natm: libc::c_int,
-        bas: *mut libc::c_int,
-        nbas: libc::c_int,
-        env: *mut libc::c_double,
-    );
-    fn CINTinit_int2c2e_EnvVars(
-        envs: *mut CINTEnvVars,
-        ng: *mut libc::c_int,
-        shls: *mut libc::c_int,
-        atm: *mut libc::c_int,
-        natm: libc::c_int,
-        bas: *mut libc::c_int,
-        nbas: libc::c_int,
-        env: *mut libc::c_double,
-    );
-    fn CINTg3c1e_index_xyz(idx: *mut libc::c_int, envs: *const CINTEnvVars);
 }
-
-use crate::cint::PairData;
-use crate::cint::CINTOpt;
-use crate::cint::CINTEnvVars;
-
-pub type size_t = libc::c_ulong;
 
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_2e_optimizer(
@@ -531,258 +479,258 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
         env,
     );
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTall_3c2e_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
-) {
-    CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
-    CINTOpt_setij(*opt, ng, atm, natm, bas, nbas, env);
-    CINTOpt_set_non0coeff(*opt, atm, natm, bas, nbas, env);
-    gen_idx(
-        *opt,
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(
-                    *mut CINTEnvVars,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_double,
-                ) -> (),
-            >,
-            Option::<unsafe extern "C" fn() -> ()>,
-        >(
-            Some(
-                CINTinit_int3c2e_EnvVars
-                    as unsafe extern "C" fn(
-                        *mut CINTEnvVars,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_double,
-                    ) -> (),
-            ),
-        ),
-        ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> ()>,
-            Option::<unsafe extern "C" fn() -> ()>,
-        >(
-            Some(
-                CINTg2e_index_xyz
-                    as unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> (),
-            ),
-        ),
-        3 as libc::c_int,
-        12 as libc::c_int,
-        ng,
-        atm,
-        natm,
-        bas,
-        nbas,
-        env,
-    );
-}
-#[no_mangle]
-pub unsafe extern "C" fn CINTall_2c2e_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
-) {
-    CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
-    CINTOpt_set_log_maxc(*opt, atm, natm, bas, nbas, env);
-    CINTOpt_set_non0coeff(*opt, atm, natm, bas, nbas, env);
-    gen_idx(
-        *opt,
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(
-                    *mut CINTEnvVars,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_double,
-                ) -> (),
-            >,
-            Option::<unsafe extern "C" fn() -> ()>,
-        >(
-            Some(
-                CINTinit_int2c2e_EnvVars
-                    as unsafe extern "C" fn(
-                        *mut CINTEnvVars,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_double,
-                    ) -> (),
-            ),
-        ),
-        ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> ()>,
-            Option::<unsafe extern "C" fn() -> ()>,
-        >(
-            Some(
-                CINTg1e_index_xyz
-                    as unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> (),
-            ),
-        ),
-        2 as libc::c_int,
-        15 as libc::c_int,
-        ng,
-        atm,
-        natm,
-        bas,
-        nbas,
-        env,
-    );
-}
-#[no_mangle]
-pub unsafe extern "C" fn CINTall_3c1e_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
-) {
-    CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
-    CINTOpt_setij(*opt, ng, atm, natm, bas, nbas, env);
-    CINTOpt_set_non0coeff(*opt, atm, natm, bas, nbas, env);
-    gen_idx(
-        *opt,
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(
-                    *mut CINTEnvVars,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_double,
-                ) -> (),
-            >,
-            Option::<unsafe extern "C" fn() -> ()>,
-        >(
-            Some(
-                CINTinit_int3c1e_EnvVars
-                    as unsafe extern "C" fn(
-                        *mut CINTEnvVars,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_double,
-                    ) -> (),
-            ),
-        ),
-        ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> ()>,
-            Option::<unsafe extern "C" fn() -> ()>,
-        >(
-            Some(
-                CINTg3c1e_index_xyz
-                    as unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> (),
-            ),
-        ),
-        3 as libc::c_int,
-        12 as libc::c_int,
-        ng,
-        atm,
-        natm,
-        bas,
-        nbas,
-        env,
-    );
-}
-#[no_mangle]
-pub unsafe extern "C" fn CINTall_1e_grids_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut ng: *mut libc::c_int,
-    mut atm: *mut libc::c_int,
-    mut natm: libc::c_int,
-    mut bas: *mut libc::c_int,
-    mut nbas: libc::c_int,
-    mut env: *mut libc::c_double,
-) {
-    CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
-    CINTOpt_set_log_maxc(*opt, atm, natm, bas, nbas, env);
-    CINTOpt_set_non0coeff(*opt, atm, natm, bas, nbas, env);
-    gen_idx(
-        *opt,
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(
-                    *mut CINTEnvVars,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_int,
-                    libc::c_int,
-                    *mut libc::c_double,
-                ) -> (),
-            >,
-            Option::<unsafe extern "C" fn() -> ()>,
-        >(
-            Some(
-                CINTinit_int1e_grids_EnvVars
-                    as unsafe extern "C" fn(
-                        *mut CINTEnvVars,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_int,
-                        libc::c_int,
-                        *mut libc::c_double,
-                    ) -> (),
-            ),
-        ),
-        ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> ()>,
-            Option::<unsafe extern "C" fn() -> ()>,
-        >(
-            Some(
-                CINTg1e_index_xyz
-                    as unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> (),
-            ),
-        ),
-        2 as libc::c_int,
-        15 as libc::c_int,
-        ng,
-        atm,
-        natm,
-        bas,
-        nbas,
-        env,
-    );
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn CINTall_3c2e_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut ng: *mut libc::c_int,
+//     mut atm: *mut libc::c_int,
+//     mut natm: libc::c_int,
+//     mut bas: *mut libc::c_int,
+//     mut nbas: libc::c_int,
+//     mut env: *mut libc::c_double,
+// ) {
+//     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
+//     CINTOpt_setij(*opt, ng, atm, natm, bas, nbas, env);
+//     CINTOpt_set_non0coeff(*opt, atm, natm, bas, nbas, env);
+//     gen_idx(
+//         *opt,
+//         ::core::mem::transmute::<
+//             Option::<
+//                 unsafe extern "C" fn(
+//                     *mut CINTEnvVars,
+//                     *mut libc::c_int,
+//                     *mut libc::c_int,
+//                     *mut libc::c_int,
+//                     libc::c_int,
+//                     *mut libc::c_int,
+//                     libc::c_int,
+//                     *mut libc::c_double,
+//                 ) -> (),
+//             >,
+//             Option::<unsafe extern "C" fn() -> ()>,
+//         >(
+//             Some(
+//                 CINTinit_int3c2e_EnvVars
+//                     as unsafe extern "C" fn(
+//                         *mut CINTEnvVars,
+//                         *mut libc::c_int,
+//                         *mut libc::c_int,
+//                         *mut libc::c_int,
+//                         libc::c_int,
+//                         *mut libc::c_int,
+//                         libc::c_int,
+//                         *mut libc::c_double,
+//                     ) -> (),
+//             ),
+//         ),
+//         ::core::mem::transmute::<
+//             Option::<unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> ()>,
+//             Option::<unsafe extern "C" fn() -> ()>,
+//         >(
+//             Some(
+//                 CINTg2e_index_xyz
+//                     as unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> (),
+//             ),
+//         ),
+//         3 as libc::c_int,
+//         12 as libc::c_int,
+//         ng,
+//         atm,
+//         natm,
+//         bas,
+//         nbas,
+//         env,
+//     );
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn CINTall_2c2e_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut ng: *mut libc::c_int,
+//     mut atm: *mut libc::c_int,
+//     mut natm: libc::c_int,
+//     mut bas: *mut libc::c_int,
+//     mut nbas: libc::c_int,
+//     mut env: *mut libc::c_double,
+// ) {
+//     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
+//     CINTOpt_set_log_maxc(*opt, atm, natm, bas, nbas, env);
+//     CINTOpt_set_non0coeff(*opt, atm, natm, bas, nbas, env);
+//     gen_idx(
+//         *opt,
+//         ::core::mem::transmute::<
+//             Option::<
+//                 unsafe extern "C" fn(
+//                     *mut CINTEnvVars,
+//                     *mut libc::c_int,
+//                     *mut libc::c_int,
+//                     *mut libc::c_int,
+//                     libc::c_int,
+//                     *mut libc::c_int,
+//                     libc::c_int,
+//                     *mut libc::c_double,
+//                 ) -> (),
+//             >,
+//             Option::<unsafe extern "C" fn() -> ()>,
+//         >(
+//             Some(
+//                 CINTinit_int2c2e_EnvVars
+//                     as unsafe extern "C" fn(
+//                         *mut CINTEnvVars,
+//                         *mut libc::c_int,
+//                         *mut libc::c_int,
+//                         *mut libc::c_int,
+//                         libc::c_int,
+//                         *mut libc::c_int,
+//                         libc::c_int,
+//                         *mut libc::c_double,
+//                     ) -> (),
+//             ),
+//         ),
+//         ::core::mem::transmute::<
+//             Option::<unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> ()>,
+//             Option::<unsafe extern "C" fn() -> ()>,
+//         >(
+//             Some(
+//                 CINTg1e_index_xyz
+//                     as unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> (),
+//             ),
+//         ),
+//         2 as libc::c_int,
+//         15 as libc::c_int,
+//         ng,
+//         atm,
+//         natm,
+//         bas,
+//         nbas,
+//         env,
+//     );
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn CINTall_3c1e_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut ng: *mut libc::c_int,
+//     mut atm: *mut libc::c_int,
+//     mut natm: libc::c_int,
+//     mut bas: *mut libc::c_int,
+//     mut nbas: libc::c_int,
+//     mut env: *mut libc::c_double,
+// ) {
+//     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
+//     CINTOpt_setij(*opt, ng, atm, natm, bas, nbas, env);
+//     CINTOpt_set_non0coeff(*opt, atm, natm, bas, nbas, env);
+//     gen_idx(
+//         *opt,
+//         ::core::mem::transmute::<
+//             Option::<
+//                 unsafe extern "C" fn(
+//                     *mut CINTEnvVars,
+//                     *mut libc::c_int,
+//                     *mut libc::c_int,
+//                     *mut libc::c_int,
+//                     libc::c_int,
+//                     *mut libc::c_int,
+//                     libc::c_int,
+//                     *mut libc::c_double,
+//                 ) -> (),
+//             >,
+//             Option::<unsafe extern "C" fn() -> ()>,
+//         >(
+//             Some(
+//                 CINTinit_int3c1e_EnvVars
+//                     as unsafe extern "C" fn(
+//                         *mut CINTEnvVars,
+//                         *mut libc::c_int,
+//                         *mut libc::c_int,
+//                         *mut libc::c_int,
+//                         libc::c_int,
+//                         *mut libc::c_int,
+//                         libc::c_int,
+//                         *mut libc::c_double,
+//                     ) -> (),
+//             ),
+//         ),
+//         ::core::mem::transmute::<
+//             Option::<unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> ()>,
+//             Option::<unsafe extern "C" fn() -> ()>,
+//         >(
+//             Some(
+//                 CINTg3c1e_index_xyz
+//                     as unsafe extern "C" fn(*mut libc::c_int, *const CINTEnvVars) -> (),
+//             ),
+//         ),
+//         3 as libc::c_int,
+//         12 as libc::c_int,
+//         ng,
+//         atm,
+//         natm,
+//         bas,
+//         nbas,
+//         env,
+//     );
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn CINTall_1e_grids_optimizer(
+//     mut opt: *mut *mut CINTOpt,
+//     mut ng: *mut libc::c_int,
+//     mut atm: *mut libc::c_int,
+//     mut natm: libc::c_int,
+//     mut bas: *mut libc::c_int,
+//     mut nbas: libc::c_int,
+//     mut env: *mut libc::c_double,
+// ) {
+//     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
+//     CINTOpt_set_log_maxc(*opt, atm, natm, bas, nbas, env);
+//     CINTOpt_set_non0coeff(*opt, atm, natm, bas, nbas, env);
+//     gen_idx(
+//         *opt,
+//         ::core::mem::transmute::<
+//             Option::<
+//                 unsafe extern "C" fn(
+//                     *mut CINTEnvVars,
+//                     *mut libc::c_int,
+//                     *mut libc::c_int,
+//                     *mut libc::c_int,
+//                     libc::c_int,
+//                     *mut libc::c_int,
+//                     libc::c_int,
+//                     *mut libc::c_double,
+//                 ) -> (),
+//             >,
+//             Option::<unsafe extern "C" fn() -> ()>,
+//         >(
+//             Some(
+//                 CINTinit_int1e_grids_EnvVars
+//                     as unsafe extern "C" fn(
+//                         *mut CINTEnvVars,
+//                         *mut libc::c_int,
+//                         *mut libc::c_int,
+//                         *mut libc::c_int,
+//                         libc::c_int,
+//                         *mut libc::c_int,
+//                         libc::c_int,
+//                         *mut libc::c_double,
+//                     ) -> (),
+//             ),
+//         ),
+//         ::core::mem::transmute::<
+//             Option::<unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> ()>,
+//             Option::<unsafe extern "C" fn() -> ()>,
+//         >(
+//             Some(
+//                 CINTg1e_index_xyz
+//                     as unsafe extern "C" fn(*mut libc::c_int, *mut CINTEnvVars) -> (),
+//             ),
+//         ),
+//         2 as libc::c_int,
+//         15 as libc::c_int,
+//         ng,
+//         atm,
+//         natm,
+//         bas,
+//         nbas,
+//         env,
+//     );
+// }
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
     mut log_maxc: *mut libc::c_double,

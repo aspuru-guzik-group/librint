@@ -1,6 +1,18 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
-// use num_traits::ToPrimitive;
+
+use crate::find_roots::_CINT_polynomial_roots;
+use crate::fmt::fmt_erfc_like;
+use crate::fmt::fmt_lerfc_like;
+use crate::fmt::gamma_inc_like;
+use crate::fmt::lgamma_inc_like;
+use crate::rys_wheeler::CINTlrys_laguerre;
+use crate::rys_wheeler::CINTrys_jacobi;
+use crate::rys_wheeler::CINTlrys_jacobi;
+
+pub type size_t = libc::c_ulong;
+pub type __off_t = libc::c_long;
+pub type __off64_t = libc::c_long;
+
 extern "C" {
     pub type _IO_wide_data;
     pub type _IO_codecvt;
@@ -12,50 +24,8 @@ extern "C" {
     fn pow(_: libc::c_double, _: libc::c_double) -> libc::c_double;
     fn sqrtl(_: f64) -> f64;
     fn sqrt(_: libc::c_double) -> libc::c_double;
-    fn CINTlrys_laguerre(
-        n: libc::c_int,
-        x: libc::c_double,
-        lower: libc::c_double,
-        roots: *mut libc::c_double,
-        weights: *mut libc::c_double,
-    ) -> libc::c_int;
-    fn CINTrys_jacobi(
-        n: libc::c_int,
-        x: libc::c_double,
-        lower: libc::c_double,
-        roots: *mut libc::c_double,
-        weights: *mut libc::c_double,
-    ) -> libc::c_int;
-    fn CINTlrys_jacobi(
-        n: libc::c_int,
-        x: libc::c_double,
-        lower: libc::c_double,
-        roots: *mut libc::c_double,
-        weights: *mut libc::c_double,
-    ) -> libc::c_int;
-    fn gamma_inc_like(f: *mut libc::c_double, t: libc::c_double, m: libc::c_int);
-    fn lgamma_inc_like(f: *mut f64, t: f64, m: libc::c_int);
-    fn fmt_erfc_like(
-        f: *mut libc::c_double,
-        t: libc::c_double,
-        lower: libc::c_double,
-        m: libc::c_int,
-    );
-    fn fmt_lerfc_like(
-        f: *mut f64,
-        t: f64,
-        lower: f64,
-        m: libc::c_int,
-    );
-    fn _CINT_polynomial_roots(
-        roots: *mut libc::c_double,
-        cs: *mut libc::c_double,
-        nroots: libc::c_int,
-    ) -> libc::c_int;
 }
-pub type size_t = libc::c_ulong;
-pub type __off_t = libc::c_long;
-pub type __off64_t = libc::c_long;
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _IO_FILE {

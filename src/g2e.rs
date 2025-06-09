@@ -1,5 +1,16 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+
+use crate::cint_bas::CINTcart_comp;
+use crate::g1e::CINTcommon_fac_sp;
+use crate::rys_roots::CINTrys_roots;
+use crate::rys_roots::CINTsr_rys_roots;
+
+use crate::cint::CINTEnvVars;
+
+pub type size_t = libc::c_ulong;
+pub type __off_t = libc::c_long;
+pub type __off64_t = libc::c_long;
+
 extern "C" {
     pub type _IO_wide_data;
     pub type _IO_codecvt;
@@ -7,33 +18,8 @@ extern "C" {
     static mut stderr: *mut FILE;
     fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
     fn sqrt(_: libc::c_double) -> libc::c_double;
-    fn CINTcart_comp(
-        nx: *mut libc::c_int,
-        ny: *mut libc::c_int,
-        nz: *mut libc::c_int,
-        lmax: libc::c_int,
-    );
-    fn CINTrys_roots(
-        nroots: libc::c_int,
-        x: libc::c_double,
-        u: *mut libc::c_double,
-        w: *mut libc::c_double,
-    );
-    fn CINTsr_rys_roots(
-        nroots: libc::c_int,
-        x: libc::c_double,
-        lower: libc::c_double,
-        u: *mut libc::c_double,
-        w: *mut libc::c_double,
-    );
-    fn CINTcommon_fac_sp(l: libc::c_int) -> libc::c_double;
 }
 
-use crate::cint::CINTEnvVars;
-
-pub type size_t = libc::c_ulong;
-pub type __off_t = libc::c_long;
-pub type __off64_t = libc::c_long;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _IO_FILE {

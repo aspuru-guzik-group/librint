@@ -1,5 +1,17 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 
+use crate::rys_roots::CINTrys_roots;
+use crate::cint_bas::CINTcart_comp;
+
+use crate::cint::CINTEnvVars;
+
+pub type size_t = libc::c_ulong;
+
+extern "C" {
+    fn sqrt(_: libc::c_double) -> libc::c_double;
+    fn abs(_: libc::c_int) -> libc::c_int;
+}
+
 fn MAX<T: PartialOrd>(x: T, y: T) -> T {
     if x > y {
         x
@@ -13,24 +25,6 @@ fn SQUARE(r: *mut f64) -> f64 {
         (*r.add(0) * *r.add(0)) + (*r.add(1) * *r.add(1)) + (*r.add(2) * *r.add(2))
     }
 }
-
-
-use crate::rys_roots::CINTrys_roots;
-
-extern "C" {
-    fn sqrt(_: libc::c_double) -> libc::c_double;
-    fn CINTcart_comp(
-        nx: *mut libc::c_int,
-        ny: *mut libc::c_int,
-        nz: *mut libc::c_int,
-        lmax: libc::c_int,
-    );
-    fn abs(_: libc::c_int) -> libc::c_int;
-}
-
-use crate::cint::CINTEnvVars;
-
-pub type size_t = libc::c_ulong;
 
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
