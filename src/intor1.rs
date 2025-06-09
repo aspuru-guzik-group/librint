@@ -8,29 +8,29 @@ extern "C" {
         natm: i32,
         bas: *mut i32,
         nbas: i32,
-        env: *mut libc::c_double,
+        env: *mut f64,
     );
     fn CINTnabla1j_1e(
-        f: *mut libc::c_double,
-        g: *mut libc::c_double,
+        f: *mut f64,
+        g: *mut f64,
         li: i32,
         lj: i32,
         lk: i32,
         envs: *mut CINTEnvVars,
     );
     fn c2s_sph_1e(
-        opij: *mut libc::c_double,
-        gctr: *mut libc::c_double,
+        opij: *mut f64,
+        gctr: *mut f64,
         dims: *mut i32,
         envs: *mut CINTEnvVars,
-        cache: *mut libc::c_double,
+        cache: *mut f64,
     );
     fn c2s_cart_1e(
-        opij: *mut libc::c_double,
-        gctr: *mut libc::c_double,
+        opij: *mut f64,
+        gctr: *mut f64,
         dims: *mut i32,
         envs: *mut CINTEnvVars,
-        cache: *mut libc::c_double,
+        cache: *mut f64,
     );
     fn CINTall_1e_optimizer(
         opt: *mut *mut CINTOpt,
@@ -39,13 +39,13 @@ extern "C" {
         natm: i32,
         bas: *mut i32,
         nbas: i32,
-        env: *mut libc::c_double,
+        env: *mut f64,
     );
     fn CINT1e_drv(
-        out: *mut libc::c_double,
+        out: *mut f64,
         dims: *mut i32,
         envs: *mut CINTEnvVars,
-        cache: *mut libc::c_double,
+        cache: *mut f64,
         f_c2s: Option::<unsafe extern "C" fn() -> ()>,
         int1e_type: i32,
     ) -> i32;
@@ -56,8 +56,8 @@ use crate::cint::CINTEnvVars;
 
 #[no_mangle]
 pub unsafe extern "C" fn CINTgout1e_int1e_kin(
-    mut gout: *mut libc::c_double,
-    mut g: *mut libc::c_double,
+    mut gout: *mut f64,
+    mut g: *mut f64,
     mut idx: *mut i32,
     mut envs: *mut CINTEnvVars,
     mut gout_empty: i32,
@@ -67,14 +67,14 @@ pub unsafe extern "C" fn CINTgout1e_int1e_kin(
     let mut iy: i32 = 0;
     let mut iz: i32 = 0;
     let mut n: i32 = 0;
-    let mut g0: *mut libc::c_double = g;
-    let mut g1: *mut libc::c_double = g0
+    let mut g0: *mut f64 = g;
+    let mut g1: *mut f64 = g0
         .offset(((*envs).g_size * 3 as i32) as isize);
-    let mut g2: *mut libc::c_double = g1
+    let mut g2: *mut f64 = g1
         .offset(((*envs).g_size * 3 as i32) as isize);
-    let mut g3: *mut libc::c_double = g2
+    let mut g3: *mut f64 = g2
         .offset(((*envs).g_size * 3 as i32) as isize);
-    let mut s: [libc::c_double; 9] = [0.; 9];
+    let mut s: [f64; 9] = [0.; 9];
     CINTnabla1j_1e(
         g1,
         g0,
@@ -162,7 +162,7 @@ pub unsafe extern "C" fn int1e_kin_optimizer(
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     let mut ng: [i32; 8] = [
         0 as i32,
@@ -178,16 +178,16 @@ pub unsafe extern "C" fn int1e_kin_optimizer(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_cart(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut i32,
     mut shls: *mut i32,
     mut atm: *mut i32,
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
         0 as i32,
@@ -205,8 +205,8 @@ pub unsafe extern "C" fn int1e_kin_cart(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut i32,
                 *mut CINTEnvVars,
                 i32,
@@ -217,8 +217,8 @@ pub unsafe extern "C" fn int1e_kin_cart(
         Some(
             CINTgout1e_int1e_kin
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut i32,
                     *mut CINTEnvVars,
                     i32,
@@ -234,11 +234,11 @@ pub unsafe extern "C" fn int1e_kin_cart(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut i32,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -246,11 +246,11 @@ pub unsafe extern "C" fn int1e_kin_cart(
             Some(
                 c2s_cart_1e
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut i32,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -259,16 +259,16 @@ pub unsafe extern "C" fn int1e_kin_cart(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_sph(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut i32,
     mut shls: *mut i32,
     mut atm: *mut i32,
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
         0 as i32,
@@ -286,8 +286,8 @@ pub unsafe extern "C" fn int1e_kin_sph(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut i32,
                 *mut CINTEnvVars,
                 i32,
@@ -298,8 +298,8 @@ pub unsafe extern "C" fn int1e_kin_sph(
         Some(
             CINTgout1e_int1e_kin
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut i32,
                     *mut CINTEnvVars,
                     i32,
@@ -315,11 +315,11 @@ pub unsafe extern "C" fn int1e_kin_sph(
         ::core::mem::transmute::<
             Option::<
                 unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut i32,
                     *mut CINTEnvVars,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -327,11 +327,11 @@ pub unsafe extern "C" fn int1e_kin_sph(
             Some(
                 c2s_sph_1e
                     as unsafe extern "C" fn(
-                        *mut libc::c_double,
-                        *mut libc::c_double,
+                        *mut f64,
+                        *mut f64,
                         *mut i32,
                         *mut CINTEnvVars,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -340,16 +340,16 @@ pub unsafe extern "C" fn int1e_kin_sph(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_spinor(
-    mut out: *mut libc::c_double,
+    mut out: *mut f64,
     mut dims: *mut i32,
     mut shls: *mut i32,
     mut atm: *mut i32,
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
     mut opt: *mut CINTOpt,
-    mut cache: *mut libc::c_double,
+    mut cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
         0 as i32,
@@ -367,8 +367,8 @@ pub unsafe extern "C" fn int1e_kin_spinor(
         .f_gout = ::core::mem::transmute::<
         Option::<
             unsafe extern "C" fn(
-                *mut libc::c_double,
-                *mut libc::c_double,
+                *mut f64,
+                *mut f64,
                 *mut i32,
                 *mut CINTEnvVars,
                 i32,
@@ -379,8 +379,8 @@ pub unsafe extern "C" fn int1e_kin_spinor(
         Some(
             CINTgout1e_int1e_kin
                 as unsafe extern "C" fn(
-                    *mut libc::c_double,
-                    *mut libc::c_double,
+                    *mut f64,
+                    *mut f64,
                     *mut i32,
                     *mut CINTEnvVars,
                     i32,

@@ -19,10 +19,10 @@ pub type size_t = libc::c_ulong;
 extern "C" {
     fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
     fn free(__ptr: *mut libc::c_void);
-    fn exp(_: libc::c_double) -> libc::c_double;
-    fn log(_: libc::c_double) -> libc::c_double;
-    fn sqrt(_: libc::c_double) -> libc::c_double;
-    fn fabs(_: libc::c_double) -> libc::c_double;
+    fn exp(_: f64) -> f64;
+    fn log(_: f64) -> f64;
+    fn sqrt(_: f64) -> f64;
+    fn fabs(_: f64) -> f64;
     fn memcpy(
         _: *mut libc::c_void,
         _: *const libc::c_void,
@@ -37,7 +37,7 @@ pub unsafe extern "C" fn CINTinit_2e_optimizer(
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     let mut opt0: *mut CINTOpt = malloc(
         ::core::mem::size_of::<CINTOpt>() as libc::c_ulong,
@@ -46,7 +46,7 @@ pub unsafe extern "C" fn CINTinit_2e_optimizer(
     (*opt0).non0ctr = 0 as *mut *mut i32;
     (*opt0).sortedidx = 0 as *mut *mut i32;
     (*opt0).nbas = nbas;
-    (*opt0).log_max_coeff = 0 as *mut *mut libc::c_double;
+    (*opt0).log_max_coeff = 0 as *mut *mut f64;
     (*opt0).pairdata = 0 as *mut *mut PairData;
     *opt = opt0;
 }
@@ -57,7 +57,7 @@ pub unsafe extern "C" fn CINTinit_optimizer(
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
 }
@@ -104,7 +104,7 @@ pub unsafe extern "C" fn CINTno_optimizer(
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     *opt = 0 as *mut CINTOpt;
 }
@@ -112,7 +112,7 @@ unsafe extern "C" fn _make_fakebas(
     mut fakebas: *mut i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) -> i32 {
     let mut i: i32 = 0;
     let mut max_l: i32 = 0 as i32;
@@ -194,7 +194,7 @@ unsafe extern "C" fn gen_idx(
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -361,7 +361,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
     CINTOpt_set_log_maxc(*opt, atm, natm, bas, nbas, env);
@@ -378,7 +378,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
                     i32,
                     *mut i32,
                     i32,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -393,7 +393,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
                         i32,
                         *mut i32,
                         i32,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -424,7 +424,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
     CINTOpt_setij(*opt, ng, atm, natm, bas, nbas, env);
@@ -441,7 +441,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
                     i32,
                     *mut i32,
                     i32,
-                    *mut libc::c_double,
+                    *mut f64,
                 ) -> (),
             >,
             Option::<unsafe extern "C" fn() -> ()>,
@@ -456,7 +456,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
                         i32,
                         *mut i32,
                         i32,
-                        *mut libc::c_double,
+                        *mut f64,
                     ) -> (),
             ),
         ),
@@ -487,7 +487,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //     mut natm: i32,
 //     mut bas: *mut i32,
 //     mut nbas: i32,
-//     mut env: *mut libc::c_double,
+//     mut env: *mut f64,
 // ) {
 //     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
 //     CINTOpt_setij(*opt, ng, atm, natm, bas, nbas, env);
@@ -504,7 +504,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //                     i32,
 //                     *mut i32,
 //                     i32,
-//                     *mut libc::c_double,
+//                     *mut f64,
 //                 ) -> (),
 //             >,
 //             Option::<unsafe extern "C" fn() -> ()>,
@@ -519,7 +519,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //                         i32,
 //                         *mut i32,
 //                         i32,
-//                         *mut libc::c_double,
+//                         *mut f64,
 //                     ) -> (),
 //             ),
 //         ),
@@ -550,7 +550,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //     mut natm: i32,
 //     mut bas: *mut i32,
 //     mut nbas: i32,
-//     mut env: *mut libc::c_double,
+//     mut env: *mut f64,
 // ) {
 //     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
 //     CINTOpt_set_log_maxc(*opt, atm, natm, bas, nbas, env);
@@ -567,7 +567,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //                     i32,
 //                     *mut i32,
 //                     i32,
-//                     *mut libc::c_double,
+//                     *mut f64,
 //                 ) -> (),
 //             >,
 //             Option::<unsafe extern "C" fn() -> ()>,
@@ -582,7 +582,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //                         i32,
 //                         *mut i32,
 //                         i32,
-//                         *mut libc::c_double,
+//                         *mut f64,
 //                     ) -> (),
 //             ),
 //         ),
@@ -613,7 +613,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //     mut natm: i32,
 //     mut bas: *mut i32,
 //     mut nbas: i32,
-//     mut env: *mut libc::c_double,
+//     mut env: *mut f64,
 // ) {
 //     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
 //     CINTOpt_setij(*opt, ng, atm, natm, bas, nbas, env);
@@ -630,7 +630,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //                     i32,
 //                     *mut i32,
 //                     i32,
-//                     *mut libc::c_double,
+//                     *mut f64,
 //                 ) -> (),
 //             >,
 //             Option::<unsafe extern "C" fn() -> ()>,
@@ -645,7 +645,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //                         i32,
 //                         *mut i32,
 //                         i32,
-//                         *mut libc::c_double,
+//                         *mut f64,
 //                     ) -> (),
 //             ),
 //         ),
@@ -676,7 +676,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //     mut natm: i32,
 //     mut bas: *mut i32,
 //     mut nbas: i32,
-//     mut env: *mut libc::c_double,
+//     mut env: *mut f64,
 // ) {
 //     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
 //     CINTOpt_set_log_maxc(*opt, atm, natm, bas, nbas, env);
@@ -693,7 +693,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //                     i32,
 //                     *mut i32,
 //                     i32,
-//                     *mut libc::c_double,
+//                     *mut f64,
 //                 ) -> (),
 //             >,
 //             Option::<unsafe extern "C" fn() -> ()>,
@@ -708,7 +708,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //                         i32,
 //                         *mut i32,
 //                         i32,
-//                         *mut libc::c_double,
+//                         *mut f64,
 //                     ) -> (),
 //             ),
 //         ),
@@ -733,17 +733,17 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 // }
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
-    mut log_maxc: *mut libc::c_double,
-    mut coeff: *mut libc::c_double,
+    mut log_maxc: *mut f64,
+    mut coeff: *mut f64,
     mut nprim: i32,
     mut nctr: i32,
 ) {
     let mut i: i32 = 0;
     let mut ip: i32 = 0;
-    let mut maxc: libc::c_double = 0.;
+    let mut maxc: f64 = 0.;
     ip = 0 as i32;
     while ip < nprim {
-        maxc = 0 as libc::c_double;
+        maxc = 0 as f64;
         i = 0 as i32;
         while i < nctr {
             maxc = if maxc > fabs(*coeff.offset((i * nprim + ip) as isize)) {
@@ -766,12 +766,12 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     let mut i: i32 = 0;
     let mut iprim: i32 = 0;
     let mut ictr: i32 = 0;
-    let mut ci: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut ci: *mut f64 = 0 as *mut f64;
     let mut tot_prim: size_t = 0 as size_t;
     i = 0 as i32;
     while i < nbas {
@@ -788,16 +788,16 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
     }
     (*opt)
         .log_max_coeff = malloc(
-        (::core::mem::size_of::<*mut libc::c_double>() as libc::c_ulong)
+        (::core::mem::size_of::<*mut f64>() as libc::c_ulong)
             .wrapping_mul(
                 (if nbas > 1 as i32 { nbas } else { 1 as i32 })
                     as libc::c_ulong,
             ),
-    ) as *mut *mut libc::c_double;
-    let mut plog_maxc: *mut libc::c_double = malloc(
-        (::core::mem::size_of::<libc::c_double>() as libc::c_ulong)
+    ) as *mut *mut f64;
+    let mut plog_maxc: *mut f64 = malloc(
+        (::core::mem::size_of::<f64>() as libc::c_ulong)
             .wrapping_mul(tot_prim),
-    ) as *mut libc::c_double;
+    ) as *mut f64;
     let ref mut fresh5 = *((*opt).log_max_coeff).offset(0 as isize);
     *fresh5 = plog_maxc;
     i = 0 as i32;
@@ -819,41 +819,41 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
 #[no_mangle]
 pub unsafe extern "C" fn CINTset_pairdata(
     mut pairdata: *mut PairData,
-    mut ai: *mut libc::c_double,
-    mut aj: *mut libc::c_double,
-    mut ri: *mut libc::c_double,
-    mut rj: *mut libc::c_double,
-    mut log_maxci: *mut libc::c_double,
-    mut log_maxcj: *mut libc::c_double,
+    mut ai: *mut f64,
+    mut aj: *mut f64,
+    mut ri: *mut f64,
+    mut rj: *mut f64,
+    mut log_maxci: *mut f64,
+    mut log_maxcj: *mut f64,
     mut li_ceil: i32,
     mut lj_ceil: i32,
     mut iprim: i32,
     mut jprim: i32,
-    mut rr_ij: libc::c_double,
-    mut expcutoff: libc::c_double,
-    mut env: *mut libc::c_double,
+    mut rr_ij: f64,
+    mut expcutoff: f64,
+    mut env: *mut f64,
 ) -> i32 {
     let mut ip: i32 = 0;
     let mut jp: i32 = 0;
     let mut n: i32 = 0;
-    let mut aij: libc::c_double = 0.;
-    let mut eij: libc::c_double = 0.;
-    let mut cceij: libc::c_double = 0.;
-    let mut wj: libc::c_double = 0.;
+    let mut aij: f64 = 0.;
+    let mut eij: f64 = 0.;
+    let mut cceij: f64 = 0.;
+    let mut wj: f64 = 0.;
     aij = *ai.offset((iprim - 1 as i32) as isize)
         + *aj.offset((jprim - 1 as i32) as isize);
-    let mut log_rr_ij: libc::c_double = 1.7f64 - 1.5f64 * log(aij);
+    let mut log_rr_ij: f64 = 1.7f64 - 1.5f64 * log(aij);
     let mut lij: i32 = li_ceil + lj_ceil;
     if lij > 0 as i32 {
-        let mut dist_ij: libc::c_double = sqrt(rr_ij);
-        let mut omega: libc::c_double = *env.offset(8 as isize);
-        if omega < 0 as libc::c_double {
-            let mut r_guess: libc::c_double = 8.0f64;
-            let mut omega2: libc::c_double = omega * omega;
-            let mut theta: libc::c_double = omega2 / (omega2 + aij);
-            log_rr_ij += lij as libc::c_double * log(dist_ij + theta * r_guess + 1.0f64);
+        let mut dist_ij: f64 = sqrt(rr_ij);
+        let mut omega: f64 = *env.offset(8 as isize);
+        if omega < 0 as f64 {
+            let mut r_guess: f64 = 8.0f64;
+            let mut omega2: f64 = omega * omega;
+            let mut theta: f64 = omega2 / (omega2 + aij);
+            log_rr_ij += lij as f64 * log(dist_ij + theta * r_guess + 1.0f64);
         } else {
-            log_rr_ij += lij as libc::c_double * log(dist_ij + 1.0f64);
+            log_rr_ij += lij as f64 * log(dist_ij + 1.0f64);
         }
     }
     let mut pdata: *mut PairData = 0 as *mut PairData;
@@ -863,7 +863,7 @@ pub unsafe extern "C" fn CINTset_pairdata(
     while jp < jprim {
         ip = 0 as i32;
         while ip < iprim {
-            aij = 1 as libc::c_double
+            aij = 1 as f64
                 / (*ai.offset(ip as isize) + *aj.offset(jp as isize));
             eij = rr_ij * *ai.offset(ip as isize) * *aj.offset(jp as isize) * aij;
             cceij = eij - log_rr_ij - *log_maxci.offset(ip as isize)
@@ -896,7 +896,7 @@ pub unsafe extern "C" fn CINTset_pairdata(
                 (*pdata).rij[0 as usize] = 1e18f64;
                 (*pdata).rij[1 as usize] = 1e18f64;
                 (*pdata).rij[2 as usize] = 1e18f64;
-                (*pdata).eij = 0 as libc::c_double;
+                (*pdata).eij = 0 as f64;
             }
             ip += 1;
             ip;
@@ -916,7 +916,7 @@ pub unsafe extern "C" fn CINTOpt_setij(
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -926,18 +926,18 @@ pub unsafe extern "C" fn CINTOpt_setij(
     let mut jprim: i32 = 0;
     let mut li: i32 = 0;
     let mut lj: i32 = 0;
-    let mut ai: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut aj: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut ri: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut rj: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut expcutoff: libc::c_double = 0.;
-    if *env.offset(0 as isize) == 0 as libc::c_double {
-        expcutoff = 60 as libc::c_double;
+    let mut ai: *mut f64 = 0 as *mut f64;
+    let mut aj: *mut f64 = 0 as *mut f64;
+    let mut ri: *mut f64 = 0 as *mut f64;
+    let mut rj: *mut f64 = 0 as *mut f64;
+    let mut expcutoff: f64 = 0.;
+    if *env.offset(0 as isize) == 0 as f64 {
+        expcutoff = 60 as f64;
     } else {
-        expcutoff = if 40 as libc::c_double
+        expcutoff = if 40 as f64
             > *env.offset(0 as isize)
         {
-            40 as libc::c_double
+            40 as f64
         } else {
             *env.offset(0 as isize)
         };
@@ -945,9 +945,9 @@ pub unsafe extern "C" fn CINTOpt_setij(
     if ((*opt).log_max_coeff).is_null() {
         CINTOpt_set_log_maxc(opt, atm, natm, bas, nbas, env);
     }
-    let mut log_max_coeff: *mut *mut libc::c_double = (*opt).log_max_coeff;
-    let mut log_maxci: *mut libc::c_double = 0 as *mut libc::c_double;
-    let mut log_maxcj: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut log_max_coeff: *mut *mut f64 = (*opt).log_max_coeff;
+    let mut log_maxci: *mut f64 = 0 as *mut f64;
+    let mut log_maxcj: *mut f64 = 0 as *mut f64;
     let mut tot_prim: size_t = 0 as size_t;
     i = 0 as i32;
     while i < nbas {
@@ -993,7 +993,7 @@ pub unsafe extern "C" fn CINTOpt_setij(
             + *ng.offset(3 as isize);
     }
     let mut empty: i32 = 0;
-    let mut rr: libc::c_double = 0.;
+    let mut rr: f64 = 0.;
     let mut pdata0: *mut PairData = 0 as *mut PairData;
     i = 0 as i32;
     while i < nbas {
@@ -1124,7 +1124,7 @@ pub unsafe extern "C" fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
 pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
     mut sortedidx: *mut i32,
     mut non0ctr: *mut i32,
-    mut ci: *mut libc::c_double,
+    mut ci: *mut f64,
     mut iprim: i32,
     mut ictr: i32,
 ) {
@@ -1141,7 +1141,7 @@ pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
         kp = 0 as i32;
         while j < ictr {
             if *ci.offset((iprim * j + ip) as isize)
-                != 0 as libc::c_double
+                != 0 as f64
             {
                 *sortedidx.offset(k as isize) = j;
                 k += 1;
@@ -1174,12 +1174,12 @@ pub unsafe extern "C" fn CINTOpt_set_non0coeff(
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut libc::c_double,
+    mut env: *mut f64,
 ) {
     let mut i: i32 = 0;
     let mut iprim: i32 = 0;
     let mut ictr: i32 = 0;
-    let mut ci: *mut libc::c_double = 0 as *mut libc::c_double;
+    let mut ci: *mut f64 = 0 as *mut f64;
     let mut tot_prim: size_t = 0 as size_t;
     let mut tot_prim_ctr: size_t = 0 as size_t;
     i = 0 as i32;
