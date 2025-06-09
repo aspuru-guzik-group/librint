@@ -56,9 +56,9 @@ static mut TURNOVER_POINT: [libc::c_double; 40] = [
 unsafe extern "C" fn fmt1_gamma_inc_like(
     mut f: *mut libc::c_double,
     mut t: libc::c_double,
-    mut m: libc::c_int,
+    mut m: i32,
 ) {
-    let mut i: libc::c_int = 0;
+    let mut i: i32 = 0;
     let mut b: libc::c_double = m as libc::c_double + 0.5f64;
     let mut bi: libc::c_double = 0.;
     let mut e: libc::c_double = 0.5f64 * exp(-t);
@@ -73,9 +73,9 @@ unsafe extern "C" fn fmt1_gamma_inc_like(
     }
     *f.offset(m as isize) = s / b;
     i = m;
-    while i > 0 as libc::c_int {
+    while i > 0 as i32 {
         b -= 1.0f64;
-        *f.offset((i - 1 as libc::c_int) as isize) = (e + t * *f.offset(i as isize)) / b;
+        *f.offset((i - 1 as i32) as isize) = (e + t * *f.offset(i as isize)) / b;
         i -= 1;
         i;
     }
@@ -84,29 +84,29 @@ unsafe extern "C" fn fmt1_gamma_inc_like(
 pub unsafe extern "C" fn gamma_inc_like(
     mut f: *mut libc::c_double,
     mut t: libc::c_double,
-    mut m: libc::c_int,
+    mut m: i32,
 ) {
     if t < TURNOVER_POINT[m as usize] {
         fmt1_gamma_inc_like(f, t, m);
     } else {
-        let mut i: libc::c_int = 0;
+        let mut i: i32 = 0;
         let mut tt: libc::c_double = sqrt(t);
         *f
             .offset(
-                0 as libc::c_int as isize,
+                0 as isize,
             ) = 0.8862269254527580136490837416705725913987747280611935641069038949264f64
             / tt * erf(tt);
-        if m > 0 as libc::c_int {
+        if m > 0 as i32 {
             let mut e: libc::c_double = exp(-t);
             let mut b: libc::c_double = 0.5f64 / t;
-            i = 1 as libc::c_int;
+            i = 1 as i32;
             while i <= m {
                 *f
                     .offset(
                         i as isize,
                     ) = b
-                    * ((2 as libc::c_int * i - 1 as libc::c_int) as libc::c_double
-                        * *f.offset((i - 1 as libc::c_int) as isize) - e);
+                    * ((2 as i32 * i - 1 as i32) as libc::c_double
+                        * *f.offset((i - 1 as i32) as isize) - e);
                 i += 1;
                 i;
             }
@@ -116,7 +116,7 @@ pub unsafe extern "C" fn gamma_inc_like(
 unsafe extern "C" fn fmt1_lgamma_inc_like(
     mut f: *mut f64,
     mut t: f64,
-    mut m: libc::c_int,
+    mut m: i32,
 ) {
     let mut b: f64 = m as f64 + 0.5f64;
     let mut bi: f64 = 0.0f64;
@@ -124,7 +124,7 @@ unsafe extern "C" fn fmt1_lgamma_inc_like(
     let mut x: f64 = e;
     let mut s: f64 = e;
     let mut tol: f64 = 2.0e-20f64 * e;
-    let mut i: libc::c_int = 0;
+    let mut i: i32 = 0;
     bi = b + 1.0f64;
     while x > tol {
         x *= t / bi;
@@ -133,9 +133,9 @@ unsafe extern "C" fn fmt1_lgamma_inc_like(
     }
     *f.offset(m as isize) = s / b;
     i = m;
-    while i > 0 as libc::c_int {
+    while i > 0 as i32 {
         b -= 1.0f64;
-        *f.offset((i - 1 as libc::c_int) as isize) = (e + t * *f.offset(i as isize)) / b;
+        *f.offset((i - 1 as i32) as isize) = (e + t * *f.offset(i as isize)) / b;
         i -= 1;
         i;
     }
@@ -144,30 +144,30 @@ unsafe extern "C" fn fmt1_lgamma_inc_like(
 pub unsafe extern "C" fn lgamma_inc_like(
     mut f: *mut f64,
     mut t: f64,
-    mut m: libc::c_int,
+    mut m: i32,
 ) {
     if t < TURNOVER_POINT[m as usize] {
         fmt1_lgamma_inc_like(f, t, m);
     } else {
-        let mut i: libc::c_int = 0;
+        let mut i: i32 = 0;
         let mut tt: f64 = sqrtl(t);
         *f
             .offset(
-                0 as libc::c_int as isize,
+                0 as isize,
             ) = 
             0.8862269254527580136490837416705725913987747280611935641069038949264
          / tt * erfl(tt);
-        if m > 0 as libc::c_int {
+        if m > 0 as i32 {
             let mut e: f64 = expl(-t);
             let mut b: f64 = 0.5f64 / t;
-            i = 1 as libc::c_int;
+            i = 1 as i32;
             while i <= m {
                 *f
                     .offset(
                         i as isize,
                     ) = b
-                    * ((2 as libc::c_int * i - 1 as libc::c_int) as f64
-                        * *f.offset((i - 1 as libc::c_int) as isize) - e);
+                    * ((2 as i32 * i - 1 as i32) as f64
+                        * *f.offset((i - 1 as i32) as isize) - e);
                 i += 1;
                 i;
             }
@@ -177,34 +177,34 @@ pub unsafe extern "C" fn lgamma_inc_like(
 #[inline]
 unsafe extern "C" fn _pow(
     mut base: libc::c_double,
-    mut exponent: libc::c_int,
+    mut exponent: i32,
 ) -> libc::c_double {
-    let mut i: libc::c_int = 0;
-    let mut result: libc::c_double = 1 as libc::c_int as libc::c_double;
-    i = 1 as libc::c_int;
+    let mut i: i32 = 0;
+    let mut result: libc::c_double = 1 as libc::c_double;
+    i = 1 as i32;
     while i <= exponent {
         if i & exponent != 0 {
             result *= base;
         }
         base *= base;
-        i <<= 1 as libc::c_int;
+        i <<= 1 as i32;
     }
     return result;
 }
 #[inline]
 unsafe extern "C" fn _powl(
     mut base: f64,
-    mut exponent: libc::c_int,
+    mut exponent: i32,
 ) -> f64 {
-    let mut i: libc::c_int = 0;
+    let mut i: i32 = 0;
     let mut result: f64 = 1.0f64;
-    i = 1 as libc::c_int;
+    i = 1 as i32;
     while i <= exponent {
         if i & exponent != 0 {
             result *= base;
         }
         base *= base;
-        i <<= 1 as libc::c_int;
+        i <<= 1 as i32;
     }
     return result;
 }
@@ -213,9 +213,9 @@ pub unsafe extern "C" fn fmt1_erfc_like(
     mut f: *mut libc::c_double,
     mut t: libc::c_double,
     mut lower: libc::c_double,
-    mut m: libc::c_int,
+    mut m: i32,
 ) {
-    let mut i: libc::c_int = 0;
+    let mut i: i32 = 0;
     let mut lower2: libc::c_double = lower * lower;
     let mut b: libc::c_double = m as libc::c_double + 0.5f64;
     let mut bi: libc::c_double = 0.;
@@ -239,11 +239,11 @@ pub unsafe extern "C" fn fmt1_erfc_like(
     let mut val: libc::c_double = s / b;
     *f.offset(m as isize) = val;
     i = m;
-    while i > 0 as libc::c_int {
+    while i > 0 as i32 {
         b -= 1.0f64;
         e1 /= lower2;
         val = (e - e1 + t * val) / b;
-        *f.offset((i - 1 as libc::c_int) as isize) = val;
+        *f.offset((i - 1 as i32) as isize) = val;
         i -= 1;
         i;
     }
@@ -253,17 +253,17 @@ pub unsafe extern "C" fn fmt_erfc_like(
     mut f: *mut libc::c_double,
     mut t: libc::c_double,
     mut lower: libc::c_double,
-    mut m: libc::c_int,
+    mut m: i32,
 ) {
-    if lower == 0 as libc::c_int as libc::c_double {
+    if lower == 0 as libc::c_double {
         return gamma_inc_like(f, t, m);
     }
-    let mut i: libc::c_int = 0;
+    let mut i: i32 = 0;
     let mut lower2: libc::c_double = lower * lower;
-    if t * lower2 > 200 as libc::c_int as libc::c_double {
-        i = 0 as libc::c_int;
+    if t * lower2 > 200 as libc::c_double {
+        i = 0 as i32;
         while i <= m {
-            *f.offset(i as isize) = 0 as libc::c_int as libc::c_double;
+            *f.offset(i as isize) = 0 as libc::c_double;
             i += 1;
             i;
         }
@@ -275,18 +275,18 @@ pub unsafe extern "C" fn fmt_erfc_like(
         let mut tt: libc::c_double = sqrt(t);
         let mut val: libc::c_double = 0.8862269254527580136490837416705725913987747280611935641069038949264f64
             / tt * (erfc(lower * tt) - erfc(tt));
-        *f.offset(0 as libc::c_int as isize) = val;
-        if m > 0 as libc::c_int {
+        *f.offset(0 as isize) = val;
+        if m > 0 as i32 {
             let mut e: libc::c_double = exp(-t);
             let mut e1: libc::c_double = exp(-t * lower2) * lower;
             let mut b: libc::c_double = 0.5f64 / t;
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < m {
                 val = b
-                    * ((2 as libc::c_int * i + 1 as libc::c_int) as libc::c_double * val
+                    * ((2 as i32 * i + 1 as i32) as libc::c_double * val
                         - e + e1);
                 e1 *= lower2;
-                *f.offset((i + 1 as libc::c_int) as isize) = val;
+                *f.offset((i + 1 as i32) as isize) = val;
                 i += 1;
                 i;
             }
@@ -298,15 +298,15 @@ pub unsafe extern "C" fn fmt_lerfc_like(
     mut f: *mut f64,
     mut t: f64,
     mut lower: f64,
-    mut m: libc::c_int,
+    mut m: i32,
 ) {
     if lower == 0.0f64 {
         return lgamma_inc_like(f, t, m);
     }
-    let mut i: libc::c_int = 0;
+    let mut i: i32 = 0;
     let mut lower2: f64 = lower * lower;
     if t * lower2 > 200.0f64 {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i <= m {
             *f.offset(i as isize) = 0.0f64;
             i += 1;
@@ -321,18 +321,18 @@ pub unsafe extern "C" fn fmt_lerfc_like(
         let mut val: f64 = 
             0.8862269254527580136490837416705725913987747280611935641069038949264
         / tt * (erfcl(lower * tt) - erfcl(tt));
-        *f.offset(0 as libc::c_int as isize) = val;
-        if m > 0 as libc::c_int {
+        *f.offset(0 as isize) = val;
+        if m > 0 as i32 {
             let mut e: f64 = expl(-t);
             let mut e1: f64 = expl(-t * lower2) * lower;
             let mut b: f64 = 0.5f64 / t;
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < m {
                 val = b
-                    * ((2 as libc::c_int * i + 1 as libc::c_int) as f64 * val - e
+                    * ((2 as i32 * i + 1 as i32) as f64 * val - e
                         + e1);
                 e1 *= lower2;
-                *f.offset((i + 1 as libc::c_int) as isize) = val;
+                *f.offset((i + 1 as i32) as isize) = val;
                 i += 1;
                 i;
             }
@@ -344,9 +344,9 @@ pub unsafe extern "C" fn fmt1_lerfc_like(
     mut f: *mut f64,
     mut t: f64,
     mut lower: f64,
-    mut m: libc::c_int,
+    mut m: i32,
 ) {
-    let mut i: libc::c_int = 0;
+    let mut i: i32 = 0;
     let mut lower2: f64 = lower * lower;
     let mut b: f64 = m as f64 + 0.5f64;
     let mut bi: f64 = 0.0f64;
@@ -370,11 +370,11 @@ pub unsafe extern "C" fn fmt1_lerfc_like(
     let mut val: f64 = s / b;
     *f.offset(m as isize) = val;
     i = m;
-    while i > 0 as libc::c_int {
+    while i > 0 as i32 {
         b -= 1.0f64;
         e1 /= lower2;
         val = (e - e1 + t * val) / b;
-        *f.offset((i - 1 as libc::c_int) as isize) = val;
+        *f.offset((i - 1 as i32) as isize) = val;
         i -= 1;
         i;
     }
