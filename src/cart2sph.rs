@@ -6,8 +6,6 @@ use crate::fblas::CINTdgemm_NT;
 
 use crate::cint::CINTEnvVars;
 
-pub type size_t = libc::c_ulong;
-
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct cart2sp_t {
@@ -17,7 +15,7 @@ pub struct cart2sp_t {
     pub cart2j_gt_lR: *mut f64,
     pub cart2j_gt_lI: *mut f64,
 }
-pub type uintptr_t = libc::c_ulong;
+pub type uintptr_t = u64;
 static mut g_trans_cart2sph: [f64; 19176] = [
     1 as f64,
     1 as f64,
@@ -90470,8 +90468,8 @@ unsafe extern "C" fn dcopy_grids_ij(
     mi: i32,
     mj: i32,
 ) {
-    let ngi: size_t = (ngrids * ni) as size_t;
-    let mgi: size_t = (mgrids * mi) as size_t;
+    let ngi: u64 = (ngrids * ni) as u64;
+    let mgi: u64 = (mgrids * mi) as u64;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut m: i32 = 0;
@@ -90509,10 +90507,10 @@ unsafe extern "C" fn dcopy_iklj(
     mk: i32,
     ml: i32,
 ) {
-    let nij: size_t = (ni * nj) as size_t;
-    let nijk: size_t = nij.wrapping_mul(nk as libc::c_ulong);
-    let mik: size_t = (mi * mk) as size_t;
-    let mikl: size_t = mik.wrapping_mul(ml as libc::c_ulong);
+    let nij: u64 = (ni * nj) as u64;
+    let nijk: u64 = nij.wrapping_mul(nk as u64);
+    let mik: u64 = (mi * mk) as u64;
+    let mikl: u64 = mik.wrapping_mul(ml as u64);
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -90526,7 +90524,7 @@ unsafe extern "C" fn dcopy_iklj(
                 k = 0 as i32;
                 while k < mk {
                     pijkl = fijkl
-                        .offset((k as libc::c_ulong).wrapping_mul(nij) as isize);
+                        .offset((k as u64).wrapping_mul(nij) as isize);
                     pgctr = gctr.offset((k * mi) as isize);
                     j = 0 as i32;
                     while j < mj {
@@ -90534,7 +90532,7 @@ unsafe extern "C" fn dcopy_iklj(
                             .offset(
                                 (ni * j) as isize,
                             ) = *pgctr
-                            .offset(mikl.wrapping_mul(j as libc::c_ulong) as isize);
+                            .offset(mikl.wrapping_mul(j as u64) as isize);
                         j += 1;
                         j;
                     }
@@ -90553,7 +90551,7 @@ unsafe extern "C" fn dcopy_iklj(
                 k = 0 as i32;
                 while k < mk {
                     pijkl = fijkl
-                        .offset((k as libc::c_ulong).wrapping_mul(nij) as isize);
+                        .offset((k as u64).wrapping_mul(nij) as isize);
                     pgctr = gctr.offset((k * mi) as isize);
                     j = 0 as i32;
                     while j < mj {
@@ -90563,8 +90561,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(0 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(0 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90572,8 +90570,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(1 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(1 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90581,8 +90579,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(2 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(2 as u64) as isize,
                             );
                         j += 1;
                         j;
@@ -90602,7 +90600,7 @@ unsafe extern "C" fn dcopy_iklj(
                 k = 0 as i32;
                 while k < mk {
                     pijkl = fijkl
-                        .offset((k as libc::c_ulong).wrapping_mul(nij) as isize);
+                        .offset((k as u64).wrapping_mul(nij) as isize);
                     pgctr = gctr.offset((k * mi) as isize);
                     j = 0 as i32;
                     while j < mj {
@@ -90612,8 +90610,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(0 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(0 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90621,8 +90619,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(1 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(1 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90630,8 +90628,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(2 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(2 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90639,8 +90637,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(3 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(3 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90648,8 +90646,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(4 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(4 as u64) as isize,
                             );
                         j += 1;
                         j;
@@ -90669,7 +90667,7 @@ unsafe extern "C" fn dcopy_iklj(
                 k = 0 as i32;
                 while k < mk {
                     pijkl = fijkl
-                        .offset((k as libc::c_ulong).wrapping_mul(nij) as isize);
+                        .offset((k as u64).wrapping_mul(nij) as isize);
                     pgctr = gctr.offset((k * mi) as isize);
                     j = 0 as i32;
                     while j < mj {
@@ -90679,8 +90677,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(0 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(0 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90688,8 +90686,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(1 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(1 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90697,8 +90695,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(2 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(2 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90706,8 +90704,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(3 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(3 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90715,8 +90713,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(4 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(4 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90724,8 +90722,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(5 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(5 as u64) as isize,
                             );
                         j += 1;
                         j;
@@ -90745,7 +90743,7 @@ unsafe extern "C" fn dcopy_iklj(
                 k = 0 as i32;
                 while k < mk {
                     pijkl = fijkl
-                        .offset((k as libc::c_ulong).wrapping_mul(nij) as isize);
+                        .offset((k as u64).wrapping_mul(nij) as isize);
                     pgctr = gctr.offset((k * mi) as isize);
                     j = 0 as i32;
                     while j < mj {
@@ -90755,8 +90753,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(0 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(0 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90764,8 +90762,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(1 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(1 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90773,8 +90771,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(2 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(2 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90782,8 +90780,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(3 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(3 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90791,8 +90789,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(4 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(4 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90800,8 +90798,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(5 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(5 as u64) as isize,
                             );
                         *pijkl
                             .offset(
@@ -90809,8 +90807,8 @@ unsafe extern "C" fn dcopy_iklj(
                             ) = *pgctr
                             .offset(
                                 mikl
-                                    .wrapping_mul(j as libc::c_ulong)
-                                    .wrapping_add(6 as libc::c_ulong) as isize,
+                                    .wrapping_mul(j as u64)
+                                    .wrapping_add(6 as u64) as isize,
                             );
                         j += 1;
                         j;
@@ -90830,7 +90828,7 @@ unsafe extern "C" fn dcopy_iklj(
                 k = 0 as i32;
                 while k < mk {
                     pijkl = fijkl
-                        .offset((k as libc::c_ulong).wrapping_mul(nij) as isize);
+                        .offset((k as u64).wrapping_mul(nij) as isize);
                     pgctr = gctr.offset((k * mi) as isize);
                     j = 0 as i32;
                     while j < mj {
@@ -90842,8 +90840,8 @@ unsafe extern "C" fn dcopy_iklj(
                                 ) = *pgctr
                                 .offset(
                                     mikl
-                                        .wrapping_mul(j as libc::c_ulong)
-                                        .wrapping_add(i as libc::c_ulong) as isize,
+                                        .wrapping_mul(j as u64)
+                                        .wrapping_add(i as u64) as isize,
                                 );
                             i += 1;
                             i;
@@ -90871,17 +90869,17 @@ pub unsafe extern "C" fn c2s_dset0(
     let mut ni: i32 = *dims.offset(0 as isize);
     let mut nj: i32 = *dims.offset(1 as isize);
     let mut nk: i32 = *dims.offset(2 as isize);
-    let mut nij: size_t = (ni * nj) as size_t;
-    let mut nijk: size_t = nij.wrapping_mul(nk as libc::c_ulong);
+    let mut nij: u64 = (ni * nj) as u64;
+    let mut nijk: u64 = nij.wrapping_mul(nk as u64);
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut l: i32 = 0;
     if dims == counts {
         i = 0 as i32;
-        while (i as libc::c_ulong)
+        while (i as u64)
             < nijk
-                .wrapping_mul(*counts.offset(3 as isize) as libc::c_ulong)
+                .wrapping_mul(*counts.offset(3 as isize) as u64)
         {
             *out.offset(i as isize) = 0 as f64;
             i += 1;
@@ -90898,7 +90896,7 @@ pub unsafe extern "C" fn c2s_dset0(
     while l < dl {
         k = 0 as i32;
         while k < dk {
-            pout = out.offset((k as libc::c_ulong).wrapping_mul(nij) as isize);
+            pout = out.offset((k as u64).wrapping_mul(nij) as isize);
             j = 0 as i32;
             while j < dj {
                 i = 0 as i32;
@@ -91036,11 +91034,11 @@ pub unsafe extern "C" fn c2s_sph_1e(
     let mut buflen: i32 = nfi * dj;
     let mut buf1: *mut f64 = 0 as *mut f64;
     let mut buf2: *mut f64 = 0 as *mut f64;
-    buf1 = ((cache as uintptr_t).wrapping_add(7 as libc::c_ulong)
+    buf1 = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut f64;
     cache = buf1.offset(buflen as isize);
-    buf2 = ((cache as uintptr_t).wrapping_add(7 as libc::c_ulong)
+    buf2 = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut f64;
     cache = buf2.offset(buflen as isize);
@@ -91232,7 +91230,7 @@ pub unsafe extern "C" fn c2s_sph_2e1(
     let mut lc: i32 = 0;
     let mut buflen: i32 = nfikl * dj;
     let mut buf1: *mut f64 = 0 as *mut f64;
-    buf1 = ((cache as uintptr_t).wrapping_add(7 as libc::c_ulong)
+    buf1 = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut f64;
     cache = buf1.offset((buflen * 4 as i32) as isize);

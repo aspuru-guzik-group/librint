@@ -959,19 +959,19 @@ pub unsafe extern "C" fn CINTprim_to_ctr_0(
     mut gc: *mut f64,
     mut gp: *mut f64,
     mut coeff: *mut f64,
-    mut nf: size_t,
+    mut nf: u64,
     mut nprim: i32,
     mut nctr: i32,
     mut non0ctr: i32,
     mut sortedidx: *mut i32,
 ) {
     let mut i: i32 = 0;
-    let mut n: size_t = 0;
+    let mut n: u64 = 0;
     let mut c0: f64 = 0.;
     i = 0 as i32;
     while i < nctr {
         c0 = *coeff.offset((nprim * i) as isize);
-        n = 0 as size_t;
+        n = 0 as u64;
         while n < nf {
             *gc
                 .offset(
@@ -989,7 +989,7 @@ pub unsafe extern "C" fn CINTprim_to_ctr_1(
     mut gc: *mut f64,
     mut gp: *mut f64,
     mut coeff: *mut f64,
-    mut nf: size_t,
+    mut nf: u64,
     mut nprim: i32,
     mut nctr: i32,
     mut non0ctr: i32,
@@ -997,13 +997,13 @@ pub unsafe extern "C" fn CINTprim_to_ctr_1(
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
-    let mut n: size_t = 0;
+    let mut n: u64 = 0;
     let mut c0: f64 = 0.;
     i = 0 as i32;
     while i < non0ctr {
         c0 = *coeff.offset((nprim * *sortedidx.offset(i as isize)) as isize);
         j = *sortedidx.offset(i as isize);
-        n = 0 as size_t;
+        n = 0 as u64;
         while n < nf {
             *gc.offset(nf.wrapping_mul(j as libc::c_ulong).wrapping_add(n) as isize)
                 += c0 * *gp.offset(n as isize);

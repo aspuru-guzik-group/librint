@@ -14,8 +14,6 @@ use crate::cint::PairData;
 use crate::cint::CINTOpt;
 use crate::cint::CINTEnvVars;
 
-pub type size_t = libc::c_ulong;
-
 extern "C" {
     fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
     fn free(__ptr: *mut libc::c_void);
@@ -152,14 +150,14 @@ unsafe extern "C" fn _allocate_index_xyz(
     let mut i: i32 = 0;
     let mut cumcart: i32 = (l_allow + 1 as i32)
         * (l_allow + 2 as i32) * (l_allow + 3 as i32) / 6 as i32;
-    let mut ll: size_t = (max_l + 1 as i32) as size_t;
-    let mut cc: size_t = cumcart as size_t;
+    let mut ll: u64 = (max_l + 1 as i32) as u64;
+    let mut cc: u64 = cumcart as u64;
     i = 1 as i32;
     while i < order {
         ll = (ll as libc::c_ulong).wrapping_mul(16 as libc::c_ulong)
-            as size_t as size_t;
-        cc = (cc as libc::c_ulong).wrapping_mul(cumcart as libc::c_ulong) as size_t
-            as size_t;
+            as u64 as u64;
+        cc = (cc as libc::c_ulong).wrapping_mul(cumcart as libc::c_ulong) as u64
+            as u64;
         i += 1;
         i;
     }
@@ -772,14 +770,14 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
     let mut iprim: i32 = 0;
     let mut ictr: i32 = 0;
     let mut ci: *mut f64 = 0 as *mut f64;
-    let mut tot_prim: size_t = 0 as size_t;
+    let mut tot_prim: u64 = 0 as u64;
     i = 0 as i32;
     while i < nbas {
         tot_prim = (tot_prim as libc::c_ulong)
             .wrapping_add(
                 *bas.offset((8 as i32 * i + 2 as i32) as isize)
                     as libc::c_ulong,
-            ) as size_t as size_t;
+            ) as u64 as u64;
         i += 1;
         i;
     }
@@ -948,14 +946,14 @@ pub unsafe extern "C" fn CINTOpt_setij(
     let mut log_max_coeff: *mut *mut f64 = (*opt).log_max_coeff;
     let mut log_maxci: *mut f64 = 0 as *mut f64;
     let mut log_maxcj: *mut f64 = 0 as *mut f64;
-    let mut tot_prim: size_t = 0 as size_t;
+    let mut tot_prim: u64 = 0 as u64;
     i = 0 as i32;
     while i < nbas {
         tot_prim = (tot_prim as libc::c_ulong)
             .wrapping_add(
                 *bas.offset((8 as i32 * i + 2 as i32) as isize)
                     as libc::c_ulong,
-            ) as size_t as size_t;
+            ) as u64 as u64;
         i += 1;
         i;
     }
@@ -1180,21 +1178,21 @@ pub unsafe extern "C" fn CINTOpt_set_non0coeff(
     let mut iprim: i32 = 0;
     let mut ictr: i32 = 0;
     let mut ci: *mut f64 = 0 as *mut f64;
-    let mut tot_prim: size_t = 0 as size_t;
-    let mut tot_prim_ctr: size_t = 0 as size_t;
+    let mut tot_prim: u64 = 0 as u64;
+    let mut tot_prim_ctr: u64 = 0 as u64;
     i = 0 as i32;
     while i < nbas {
         tot_prim = (tot_prim as libc::c_ulong)
             .wrapping_add(
                 *bas.offset((8 as i32 * i + 2 as i32) as isize)
                     as libc::c_ulong,
-            ) as size_t as size_t;
+            ) as u64 as u64;
         tot_prim_ctr = (tot_prim_ctr as libc::c_ulong)
             .wrapping_add(
                 (*bas.offset((8 as i32 * i + 2 as i32) as isize)
                     * *bas.offset((8 as i32 * i + 3 as i32) as isize))
                     as libc::c_ulong,
-            ) as size_t as size_t;
+            ) as u64 as u64;
         i += 1;
         i;
     }
