@@ -5,7 +5,7 @@
 // pub mod dscf;
 // pub mod p2c;
 
-// pub mod utils;
+pub mod utils;
 // pub mod linalg;
 
 pub mod cint;
