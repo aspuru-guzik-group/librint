@@ -1,52 +1,10 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 #![feature(extern_types)]
 extern "C" {
-    pub type _IO_wide_data;
-    pub type _IO_codecvt;
-    pub type _IO_marker;
-    static mut stderr: *mut FILE;
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
-    fn sqrt(_: f64) -> f64;
+    // fn sqrt(_: f64) -> f64;
     fn fabs(_: f64) -> f64;
 }
-pub type size_t = libc::c_ulong;
-pub type __off_t = libc::c_long;
-pub type __off64_t = libc::c_long;
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct _IO_FILE {
-    pub _flags: i32,
-    pub _IO_read_ptr: *mut libc::c_char,
-    pub _IO_read_end: *mut libc::c_char,
-    pub _IO_read_base: *mut libc::c_char,
-    pub _IO_write_base: *mut libc::c_char,
-    pub _IO_write_ptr: *mut libc::c_char,
-    pub _IO_write_end: *mut libc::c_char,
-    pub _IO_buf_base: *mut libc::c_char,
-    pub _IO_buf_end: *mut libc::c_char,
-    pub _IO_save_base: *mut libc::c_char,
-    pub _IO_backup_base: *mut libc::c_char,
-    pub _IO_save_end: *mut libc::c_char,
-    pub _markers: *mut _IO_marker,
-    pub _chain: *mut _IO_FILE,
-    pub _fileno: i32,
-    pub _flags2: i32,
-    pub _old_offset: __off_t,
-    pub _cur_column: libc::c_ushort,
-    pub _vtable_offset: libc::c_schar,
-    pub _shortbuf: [libc::c_char; 1],
-    pub _lock: *mut libc::c_void,
-    pub _offset: __off64_t,
-    pub _codecvt: *mut _IO_codecvt,
-    pub _wide_data: *mut _IO_wide_data,
-    pub _freeres_list: *mut _IO_FILE,
-    pub _freeres_buf: *mut libc::c_void,
-    pub __pad5: size_t,
-    pub _mode: i32,
-    pub _unused2: [libc::c_char; 20],
-}
-pub type _IO_lock_t = ();
-pub type FILE = _IO_FILE;
+
 unsafe extern "C" fn _dlarrk(
     mut n: i32,
     mut iw: i32,
@@ -186,14 +144,12 @@ unsafe extern "C" fn _dlasq4(
             if *dmin.offset(1 as isize)
                 == *dn.offset(1 as isize)
             {
-                b1 = sqrt(
-                    *qvecp.offset((n0 - 1 as i32) as isize)
-                        * *evecp.offset((n0 - 2 as i32) as isize),
-                );
-                b2 = sqrt(
-                    *qvecp.offset((n0 - 2 as i32) as isize)
-                        * *evecp.offset((n0 - 3 as i32) as isize),
-                );
+                b1 = (*qvecp.offset((n0 - 1 as i32) as isize)
+                        * *evecp.offset((n0 - 2 as i32) as isize)
+                ).sqrt();
+                b2 = (*qvecp.offset((n0 - 2 as i32) as isize)
+                        * *evecp.offset((n0 - 3 as i32) as isize)
+                ).sqrt();
                 a2 = *qvecp.offset((n0 - 2 as i32) as isize)
                     + *evecp.offset((n0 - 2 as i32) as isize);
                 gap2 = *dmin.offset(2 as isize) - a2
@@ -250,7 +206,7 @@ unsafe extern "C" fn _dlasq4(
                 }
                 a2 *= 1.05f64;
                 if a2 < 0.563f64 {
-                    s = *dn.offset(0 as isize) * (1.0f64 - sqrt(a2))
+                    s = *dn.offset(0 as isize) * (1.0f64 - (a2).sqrt())
                         / (a2 + 1.0f64);
                 } else {
                     s = *dmin.offset(0 as isize) * 0.25f64;
@@ -290,7 +246,7 @@ unsafe extern "C" fn _dlasq4(
             }
             a2 *= 1.05f64;
             if a2 < 0.563f64 {
-                s = *dn.offset(1 as isize) * (1.0f64 - sqrt(a2))
+                s = *dn.offset(1 as isize) * (1.0f64 - (a2).sqrt())
                     / (a2 + 1.0f64);
             } else {
                 s = *dmin.offset(0 as isize) * 0.25f64;
@@ -330,7 +286,7 @@ unsafe extern "C" fn _dlasq4(
                 a2 *= 1.05f64;
             }
             if a2 < 0.563f64 {
-                s = *dn.offset(2 as isize) * (1.0f64 - sqrt(a2))
+                s = *dn.offset(2 as isize) * (1.0f64 - (a2).sqrt())
                     / (a2 + 1.0f64);
             } else {
                 s = *dmin.offset(0 as isize) * 0.25f64;
@@ -370,7 +326,7 @@ unsafe extern "C" fn _dlasq4(
                 }
             }
             a2 = *dmin.offset(1 as isize) / (b2 * 1.05f64 + 1.0f64);
-            b2 = sqrt(b2 * 1.05f64);
+            b2 = (b2 * 1.05f64).sqrt();
             gap2 = *dmin.offset(2 as isize) * 0.5f64 - a2;
             if gap2 > 0.0f64 && gap2 > b2 * a2 {
                 s = if s > a2 * (1.0f64 - a2 * 1.01f64 * (b2 / gap2) * b2) {
@@ -427,13 +383,12 @@ unsafe extern "C" fn _dlasq4(
             }
             s = *dmin.offset(2 as isize) * 0.333f64;
             a2 = *dmin.offset(2 as isize) / (b2 * 1.05f64 + 1.0f64);
-            b2 = sqrt(b2 * 1.05f64);
+            b2 = (b2 * 1.05f64).sqrt();
             gap2 = *qvecp.offset((n0 - 2 as i32) as isize)
                 + *evecp.offset((n0 - 3 as i32) as isize)
-                - sqrt(
-                    *qvecp.offset((n0 - 3 as i32) as isize)
-                        * *evecp.offset((n0 - 3 as i32) as isize),
-                ) - a2;
+                - (*qvecp.offset((n0 - 3 as i32) as isize)
+                        * *evecp.offset((n0 - 3 as i32) as isize)
+                ).sqrt() - a2;
             if gap2 > 0.0f64 && gap2 > b2 * a2 {
                 s = if s > a2 * (1.0f64 - a2 * 1.01f64 * (b2 / gap2) * b2) {
                     s
@@ -675,18 +630,15 @@ unsafe extern "C" fn _dlasq2(
         evec1p = evec1;
         if qmin < 0 as f64
             || emax < 0 as f64
-        {
-            fprintf(
-                stderr,
-                b"dlasq2: qmin < 0 or emax < 0\0" as *const u8 as *const libc::c_char,
-            );
+        {   
+            eprintln!("dlasq2: qmin < 0 or emax < 0");
             return 1 as i32;
         }
         dmin[0 as i32
-            as usize] = -if 0.0f64 > qmin - 2.0f64 * sqrt(qmin * emax) {
+            as usize] = -if 0.0f64 > qmin - 2.0f64 * (qmin * emax).sqrt() {
             0.0f64
         } else {
-            qmin - 2.0f64 * sqrt(qmin * emax)
+            qmin - 2.0f64 * (qmin * emax).sqrt()
         };
         nbig = (n0 - i0) * 10 as i32;
         iwhilb = 0 as i32;
@@ -726,7 +678,7 @@ unsafe extern "C" fn _dlasq2(
                         s = *qvecp.offset(n1 as isize)
                             * (*evecp.offset(n2 as isize) / t);
                         s = *qvecp.offset(n1 as isize)
-                            * (*evecp.offset(n2 as isize) / (t + sqrt(t * (t + s))));
+                            * (*evecp.offset(n2 as isize) / (t + (t * (t + s)).sqrt()));
                         t = *qvecp.offset(n2 as isize)
                             + (s + *evecp.offset(n2 as isize));
                         *qvecp.offset(n1 as isize) *= *qvecp.offset(n2 as isize) / t;
@@ -808,11 +760,7 @@ unsafe extern "C" fn _dlasq2(
             iwhilb;
         }
         if iwhilb == nbig {
-            fprintf(
-                stderr,
-                b"dlasq2: Maximum number of iterations exceeded\0" as *const u8
-                    as *const libc::c_char,
-            );
+            eprintln!("dlasq2: Maximum number of iterations exceeded");
             return 2 as i32;
         }
         itry += 1;
@@ -1027,11 +975,7 @@ unsafe extern "C" fn _compute_eigenvalues(
         i = 0 as i32;
         while i < n {
             if *work.offset(i as isize) < 0.0f64 {
-                fprintf(
-                    stderr,
-                    b"dlarre: negative eigenvalues\n\0" as *const u8
-                        as *const libc::c_char,
-                );
+                eprintln!("dlarre: negative eigenvalues");
                 return -(6 as i32);
             }
             i += 1;
@@ -1169,7 +1113,7 @@ unsafe extern "C" fn _dlarrf(
         ktry;
     }
     if max1 > 1e16f64 {
-        fprintf(stderr, b"dlarrf max1 = %g\0" as *const u8 as *const libc::c_char, max1);
+        eprintln!("dlarrf max1 = {}", max1);
         return 1 as i32;
     }
     return 0 as i32;
@@ -1430,7 +1374,7 @@ unsafe extern "C" fn _dlar1v(
         i;
     }
     tmp = 1.0f64 / ztz;
-    nrminv = sqrt(tmp);
+    nrminv = (tmp).sqrt();
     i = 0 as i32;
     while i < n {
         *vec.offset(i as isize) *= nrminv;
@@ -1851,7 +1795,7 @@ unsafe extern "C" fn _dlaev2(
     sm = a + c;
     df = a - c;
     tb = b + b;
-    rt = sqrt(tb * tb + df * df);
+    rt = (tb * tb + df * df).sqrt();
     if sm > 0.0f64 {
         rt1 = (sm + rt) * 0.5f64;
         sgn1 = 1 as i32;
@@ -1874,14 +1818,14 @@ unsafe extern "C" fn _dlaev2(
     }
     if fabs(cs) > fabs(tb) {
         ct = -tb / cs;
-        sn1 = 1.0f64 / sqrt(ct * ct + 1.0f64);
+        sn1 = 1.0f64 / (ct * ct + 1.0f64).sqrt();
         cs1 = ct * sn1;
     } else if b == 0.0f64 {
         cs1 = 1.0f64;
         sn1 = 0.0f64;
     } else {
         tn = -cs / tb;
-        cs1 = 1.0f64 / sqrt(tn * tn + 1.0f64);
+        cs1 = 1.0f64 / (tn * tn + 1.0f64).sqrt();
         sn1 = tn * cs1;
     }
     if sgn1 == sgn2 {

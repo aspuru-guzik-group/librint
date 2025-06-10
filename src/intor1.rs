@@ -1,55 +1,11 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-extern "C" {
-    fn CINTinit_int1e_EnvVars(
-        envs: *mut CINTEnvVars,
-        ng: *mut i32,
-        shls: *mut i32,
-        atm: *mut i32,
-        natm: i32,
-        bas: *mut i32,
-        nbas: i32,
-        env: *mut f64,
-    );
-    fn CINTnabla1j_1e(
-        f: *mut f64,
-        g: *mut f64,
-        li: i32,
-        lj: i32,
-        lk: i32,
-        envs: *mut CINTEnvVars,
-    );
-    fn c2s_sph_1e(
-        opij: *mut f64,
-        gctr: *mut f64,
-        dims: *mut i32,
-        envs: *mut CINTEnvVars,
-        cache: *mut f64,
-    );
-    fn c2s_cart_1e(
-        opij: *mut f64,
-        gctr: *mut f64,
-        dims: *mut i32,
-        envs: *mut CINTEnvVars,
-        cache: *mut f64,
-    );
-    fn CINTall_1e_optimizer(
-        opt: *mut *mut CINTOpt,
-        ng: *mut i32,
-        atm: *mut i32,
-        natm: i32,
-        bas: *mut i32,
-        nbas: i32,
-        env: *mut f64,
-    );
-    fn CINT1e_drv(
-        out: *mut f64,
-        dims: *mut i32,
-        envs: *mut CINTEnvVars,
-        cache: *mut f64,
-        f_c2s: Option::<unsafe extern "C" fn() -> ()>,
-        int1e_type: i32,
-    ) -> i32;
-}
+
+use crate::cart2sph::c2s_sph_1e;
+use crate::cart2sph::c2s_cart_1e;
+use crate::cint1e::CINT1e_drv;
+use crate::g1e::CINTinit_int1e_EnvVars;
+use crate::g1e::CINTnabla1j_1e;
+use crate::optimizer::CINTall_1e_optimizer;
 
 use crate::cint::CINTOpt;
 use crate::cint::CINTEnvVars;

@@ -17,10 +17,6 @@ use crate::cint::CINTEnvVars;
 extern "C" {
     fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
     fn free(__ptr: *mut libc::c_void);
-    fn exp(_: f64) -> f64;
-    fn log(_: f64) -> f64;
-    fn sqrt(_: f64) -> f64;
-    fn fabs(_: f64) -> f64;
     fn memcpy(
         _: *mut libc::c_void,
         _: *const libc::c_void,
@@ -744,15 +740,15 @@ pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
         maxc = 0 as f64;
         i = 0 as i32;
         while i < nctr {
-            maxc = if maxc > fabs(*coeff.offset((i * nprim + ip) as isize)) {
+            maxc = if maxc > (*coeff.offset((i * nprim + ip) as isize)).abs() {
                 maxc
             } else {
-                fabs(*coeff.offset((i * nprim + ip) as isize))
+                (*coeff.offset((i * nprim + ip) as isize)).abs()
             };
             i += 1;
             i;
         }
-        *log_maxc.offset(ip as isize) = log(maxc);
+        *log_maxc.offset(ip as isize) = (maxc).ln();
         ip += 1;
         ip;
     }
@@ -840,18 +836,18 @@ pub unsafe extern "C" fn CINTset_pairdata(
     let mut wj: f64 = 0.;
     aij = *ai.offset((iprim - 1 as i32) as isize)
         + *aj.offset((jprim - 1 as i32) as isize);
-    let mut log_rr_ij: f64 = 1.7f64 - 1.5f64 * log(aij);
+    let mut log_rr_ij: f64 = 1.7f64 - 1.5f64 * (aij).ln();
     let mut lij: i32 = li_ceil + lj_ceil;
     if lij > 0 as i32 {
-        let mut dist_ij: f64 = sqrt(rr_ij);
+        let mut dist_ij: f64 = (rr_ij).sqrt();
         let mut omega: f64 = *env.offset(8 as isize);
         if omega < 0 as f64 {
             let mut r_guess: f64 = 8.0f64;
             let mut omega2: f64 = omega * omega;
             let mut theta: f64 = omega2 / (omega2 + aij);
-            log_rr_ij += lij as f64 * log(dist_ij + theta * r_guess + 1.0f64);
+            log_rr_ij += lij as f64 * (dist_ij + theta * r_guess + 1.0f64).ln();
         } else {
-            log_rr_ij += lij as f64 * log(dist_ij + 1.0f64);
+            log_rr_ij += lij as f64 * (dist_ij + 1.0f64).ln();
         }
     }
     let mut pdata: *mut PairData = 0 as *mut PairData;
@@ -889,7 +885,7 @@ pub unsafe extern "C" fn CINTset_pairdata(
                     + wj
                         * (*rj.offset(2 as isize)
                             - *ri.offset(2 as isize));
-                (*pdata).eij = exp(-eij);
+                (*pdata).eij = (-eij).exp();
             } else {
                 (*pdata).rij[0 as usize] = 1e18f64;
                 (*pdata).rij[1 as usize] = 1e18f64;

@@ -7,55 +7,6 @@ use crate::rys_roots::CINTsr_rys_roots;
 
 use crate::cint::CINTEnvVars;
 
-pub type size_t = libc::c_ulong;
-pub type __off_t = libc::c_long;
-pub type __off64_t = libc::c_long;
-
-extern "C" {
-    pub type _IO_wide_data;
-    pub type _IO_codecvt;
-    pub type _IO_marker;
-    static mut stderr: *mut FILE;
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
-    fn sqrt(_: f64) -> f64;
-}
-
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct _IO_FILE {
-    pub _flags: i32,
-    pub _IO_read_ptr: *mut libc::c_char,
-    pub _IO_read_end: *mut libc::c_char,
-    pub _IO_read_base: *mut libc::c_char,
-    pub _IO_write_base: *mut libc::c_char,
-    pub _IO_write_ptr: *mut libc::c_char,
-    pub _IO_write_end: *mut libc::c_char,
-    pub _IO_buf_base: *mut libc::c_char,
-    pub _IO_buf_end: *mut libc::c_char,
-    pub _IO_save_base: *mut libc::c_char,
-    pub _IO_backup_base: *mut libc::c_char,
-    pub _IO_save_end: *mut libc::c_char,
-    pub _markers: *mut _IO_marker,
-    pub _chain: *mut _IO_FILE,
-    pub _fileno: i32,
-    pub _flags2: i32,
-    pub _old_offset: __off_t,
-    pub _cur_column: libc::c_ushort,
-    pub _vtable_offset: libc::c_schar,
-    pub _shortbuf: [libc::c_char; 1],
-    pub _lock: *mut libc::c_void,
-    pub _offset: __off64_t,
-    pub _codecvt: *mut _IO_codecvt,
-    pub _wide_data: *mut _IO_wide_data,
-    pub _freeres_list: *mut _IO_FILE,
-    pub _freeres_buf: *mut libc::c_void,
-    pub __pad5: size_t,
-    pub _mode: i32,
-    pub _unused2: [libc::c_char; 20],
-}
-pub type _IO_lock_t = ();
-pub type FILE = _IO_FILE;
-
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct Rys2eT {
@@ -5575,15 +5526,8 @@ pub unsafe extern "C" fn CINTg0_2e_2d4d_unrolled(
         }
         _ => {}
     }
-    fprintf(
-        stderr,
-        b"Dimension error for CINTg0_2e_lj2d4d: iklj = %d %d %d %d\0" as *const u8
-            as *const libc::c_char,
-        (*envs).li_ceil,
-        (*envs).lk_ceil,
-        (*envs).ll_ceil,
-        (*envs).lj_ceil,
-    );
+    eprintln!("Dimension error for CINTg0_2e_lj2d4d: iklj = {} {} {} {}", 
+        (*envs).li_ceil, (*envs).lk_ceil, (*envs).ll_ceil, (*envs).lj_ceil);
 }
 #[inline]
 unsafe extern "C" fn _srg0_2d4d_0000(
@@ -13630,15 +13574,8 @@ pub unsafe extern "C" fn CINTsrg0_2e_2d4d_unrolled(
         }
         _ => {}
     }
-    fprintf(
-        stderr,
-        b"Dimension error for CINTg0_2e_lj2d4d: iklj = %d %d %d %d\0" as *const u8
-            as *const libc::c_char,
-        (*envs).li_ceil,
-        (*envs).lk_ceil,
-        (*envs).ll_ceil,
-        (*envs).lj_ceil,
-    );
+    eprintln!("Dimension error for CINTg0_2e_lj2d4d: iklj = {} {} {} {}",
+        (*envs).li_ceil, (*envs).lk_ceil, (*envs).ll_ceil, (*envs).lj_ceil);
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTg0_2e_lj2d4d(
@@ -13706,7 +13643,7 @@ pub unsafe extern "C" fn CINTg0_2e(
     let mut rr: f64 = xij_kl * xij_kl + yij_kl * yij_kl + zij_kl * zij_kl;
     a1 = aij * akl;
     a0 = a1 / (aij + akl);
-    fac1 = sqrt(a0 / (a1 * a1 * a1)) * (*envs).fac[0 as usize];
+    fac1 = (a0 / (a1 * a1 * a1)).sqrt() * (*envs).fac[0 as usize];
     x = a0 * rr;
     let omega: f64 = *((*envs).env).offset(8 as isize);
     let mut theta: f64 = 0 as f64;
@@ -13719,9 +13656,9 @@ pub unsafe extern "C" fn CINTg0_2e(
         }
         let mut rorder: i32 = (*envs).rys_order;
         if rorder == nroots {
-            CINTsr_rys_roots(nroots, x, sqrt(theta), u.as_mut_ptr(), w);
+            CINTsr_rys_roots(nroots, x, (theta).sqrt(), u.as_mut_ptr(), w);
         } else {
-            let mut sqrt_theta: f64 = -sqrt(theta);
+            let mut sqrt_theta: f64 = -(theta).sqrt();
             CINTrys_roots(rorder, x, u.as_mut_ptr(), w);
             CINTrys_roots(
                 rorder,
@@ -13762,7 +13699,7 @@ pub unsafe extern "C" fn CINTg0_2e(
     } else {
         theta = omega * omega / (omega * omega + a0);
         x *= theta;
-        fac1 *= sqrt(theta);
+        fac1 *= (theta).sqrt();
         CINTrys_roots(nroots, x, u.as_mut_ptr(), w);
         irys = 0 as i32;
         while irys < nroots {

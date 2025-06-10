@@ -21,54 +21,9 @@ use crate::cint::CINTEnvVars;
 pub type uintptr_t = u64;
 
 extern "C" {
-    pub type _IO_wide_data;
-    pub type _IO_codecvt;
-    pub type _IO_marker;
-    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn malloc(_: u64) -> *mut libc::c_void;
     fn free(__ptr: *mut libc::c_void);
-    static mut stderr: *mut FILE;
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> i32;
-    fn exp(_: f64) -> f64;
-    fn log(_: f64) -> f64;
-    fn sqrt(_: f64) -> f64;
 }
-
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct _IO_FILE {
-    pub _flags: i32,
-    pub _IO_read_ptr: *mut libc::c_char,
-    pub _IO_read_end: *mut libc::c_char,
-    pub _IO_read_base: *mut libc::c_char,
-    pub _IO_write_base: *mut libc::c_char,
-    pub _IO_write_ptr: *mut libc::c_char,
-    pub _IO_write_end: *mut libc::c_char,
-    pub _IO_buf_base: *mut libc::c_char,
-    pub _IO_buf_end: *mut libc::c_char,
-    pub _IO_save_base: *mut libc::c_char,
-    pub _IO_backup_base: *mut libc::c_char,
-    pub _IO_save_end: *mut libc::c_char,
-    pub _markers: *mut _IO_marker,
-    pub _chain: *mut _IO_FILE,
-    pub _fileno: i32,
-    pub _flags2: i32,
-    pub _old_offset: __off_t,
-    pub _cur_column: libc::c_ushort,
-    pub _vtable_offset: libc::c_schar,
-    pub _shortbuf: [libc::c_char; 1],
-    pub _lock: *mut libc::c_void,
-    pub _offset: __off64_t,
-    pub _codecvt: *mut _IO_codecvt,
-    pub _wide_data: *mut _IO_wide_data,
-    pub _freeres_list: *mut _IO_FILE,
-    pub _freeres_buf: *mut libc::c_void,
-    pub __pad5: size_t,
-    pub _mode: i32,
-    pub _unused2: [libc::c_char; 20],
-}
-pub type _IO_lock_t = ();
-pub type FILE = _IO_FILE;
-pub type uintptr_t = libc::c_ulong;
 
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_loop_nopt(
@@ -228,7 +183,7 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
     let mut rij: *mut f64 = 0 as *mut f64;
     akl = *ak.offset((k_prim - 1 as i32) as isize)
         + *al.offset((l_prim - 1 as i32) as isize);
-    log_rr_kl = 1.7f64 - 1.5f64 * log(akl);
+    log_rr_kl = 1.7f64 - 1.5f64 * (akl).ln();
     let mut omega: f64 = *env.offset(8 as isize);
     if omega < 0 as f64 {
         if (*envs).rys_order > 1 as i32 {
@@ -239,21 +194,21 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
                 let mut aij: f64 = *ai
                     .offset((i_prim - 1 as i32) as isize)
                     + *aj.offset((j_prim - 1 as i32) as isize);
-                let mut dist_ij: f64 = sqrt(rr_ij);
+                let mut dist_ij: f64 = (rr_ij).sqrt();
                 let mut theta: f64 = omega2 / (omega2 + aij);
                 expcutoff
                     += lij as f64
-                        * log((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64));
+                        * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
             }
             if lkl > 0 as i32 {
                 let mut theta_0: f64 = omega2 / (omega2 + akl);
                 log_rr_kl
                     += lkl as f64
-                        * log(sqrt(rr_kl) + theta_0 * r_guess + 1.0f64);
+                        * ((rr_kl).sqrt() + theta_0 * r_guess + 1.0f64).ln();
             }
         }
     } else if lkl > 0 as i32 {
-        log_rr_kl += lkl as f64 * log(sqrt(rr_kl) + 1.0f64);
+        log_rr_kl += lkl as f64 * ((rr_kl).sqrt() + 1.0f64).ln();
     }
     let mut idx: *mut i32 = 0 as *mut i32;
     idx = ((cache as uintptr_t).wrapping_add(7 as u64)
@@ -393,7 +348,7 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
                     + *al.offset(lp as isize) * *rl.offset(2 as isize))
                     / akl;
                 eijcutoff = expcutoff - ccekl;
-                ekl = exp(-ekl);
+                ekl = (-ekl).exp();
                 if k_ctr == 1 as i32 {
                     fac1k = fac1l * *ck.offset(kp as isize);
                 } else {
@@ -801,24 +756,24 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
         let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
         let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0 as i32 {
-            let mut dist_ij: f64 = sqrt(rr_ij);
+            let mut dist_ij: f64 = (rr_ij).sqrt();
             let mut aij: f64 = *ai
                 .offset((i_prim - 1 as i32) as isize)
                 + *aj.offset((j_prim - 1 as i32) as isize);
             let mut theta: f64 = omega2 / (omega2 + aij);
             expcutoff
                 += lij as f64
-                    * log((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64));
+                    * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0 as i32 {
-            let mut dist_kl: f64 = sqrt(rr_kl);
+            let mut dist_kl: f64 = (rr_kl).sqrt();
             let mut akl: f64 = *ak
                 .offset((k_prim - 1 as i32) as isize)
                 + *al.offset((l_prim - 1 as i32) as isize);
             let mut theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff
                 += lkl as f64
-                    * log((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64));
+                    * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
     let mut nc: i32 = 1 as i32;
@@ -1136,24 +1091,24 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
         let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
         let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0 as i32 {
-            let mut dist_ij: f64 = sqrt(rr_ij);
+            let mut dist_ij: f64 = (rr_ij).sqrt();
             let mut aij: f64 = *ai
                 .offset((i_prim - 1 as i32) as isize)
                 + *aj.offset((j_prim - 1 as i32) as isize);
             let mut theta: f64 = omega2 / (omega2 + aij);
             expcutoff
                 += lij as f64
-                    * log((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64));
+                    * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0 as i32 {
-            let mut dist_kl: f64 = sqrt(rr_kl);
+            let mut dist_kl: f64 = (rr_kl).sqrt();
             let mut akl: f64 = *ak
                 .offset((k_prim - 1 as i32) as isize)
                 + *al.offset((l_prim - 1 as i32) as isize);
             let mut theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff
                 += lkl as f64
-                    * log((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64));
+                    * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
     let mut nc: i32 = i_ctr;
@@ -1505,24 +1460,24 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
         let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
         let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0 as i32 {
-            let mut dist_ij: f64 = sqrt(rr_ij);
+            let mut dist_ij: f64 = (rr_ij).sqrt();
             let mut aij: f64 = *ai
                 .offset((i_prim - 1 as i32) as isize)
                 + *aj.offset((j_prim - 1 as i32) as isize);
             let mut theta: f64 = omega2 / (omega2 + aij);
             expcutoff
                 += lij as f64
-                    * log((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64));
+                    * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0 as i32 {
-            let mut dist_kl: f64 = sqrt(rr_kl);
+            let mut dist_kl: f64 = (rr_kl).sqrt();
             let mut akl: f64 = *ak
                 .offset((k_prim - 1 as i32) as isize)
                 + *al.offset((l_prim - 1 as i32) as isize);
             let mut theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff
                 += lkl as f64
-                    * log((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64));
+                    * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
     let mut nc: i32 = j_ctr;
@@ -1876,24 +1831,24 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
         let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
         let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0 as i32 {
-            let mut dist_ij: f64 = sqrt(rr_ij);
+            let mut dist_ij: f64 = (rr_ij).sqrt();
             let mut aij: f64 = *ai
                 .offset((i_prim - 1 as i32) as isize)
                 + *aj.offset((j_prim - 1 as i32) as isize);
             let mut theta: f64 = omega2 / (omega2 + aij);
             expcutoff
                 += lij as f64
-                    * log((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64));
+                    * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0 as i32 {
-            let mut dist_kl: f64 = sqrt(rr_kl);
+            let mut dist_kl: f64 = (rr_kl).sqrt();
             let mut akl: f64 = *ak
                 .offset((k_prim - 1 as i32) as isize)
                 + *al.offset((l_prim - 1 as i32) as isize);
             let mut theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff
                 += lkl as f64
-                    * log((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64));
+                    * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
     let mut nc: i32 = k_ctr;
@@ -2247,24 +2202,24 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
         let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
         let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0 as i32 {
-            let mut dist_ij: f64 = sqrt(rr_ij);
+            let mut dist_ij: f64 = (rr_ij).sqrt();
             let mut aij: f64 = *ai
                 .offset((i_prim - 1 as i32) as isize)
                 + *aj.offset((j_prim - 1 as i32) as isize);
             let mut theta: f64 = omega2 / (omega2 + aij);
             expcutoff
                 += lij as f64
-                    * log((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64));
+                    * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0 as i32 {
-            let mut dist_kl: f64 = sqrt(rr_kl);
+            let mut dist_kl: f64 = (rr_kl).sqrt();
             let mut akl: f64 = *ak
                 .offset((k_prim - 1 as i32) as isize)
                 + *al.offset((l_prim - 1 as i32) as isize);
             let mut theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff
                 += lkl as f64
-                    * log((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64));
+                    * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
     let mut nc: i32 = l_ctr;
@@ -2618,24 +2573,24 @@ pub unsafe extern "C" fn CINT2e_loop(
         let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
         let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0 as i32 {
-            let mut dist_ij: f64 = sqrt(rr_ij);
+            let mut dist_ij: f64 = (rr_ij).sqrt();
             let mut aij: f64 = *ai
                 .offset((i_prim - 1 as i32) as isize)
                 + *aj.offset((j_prim - 1 as i32) as isize);
             let mut theta: f64 = omega2 / (omega2 + aij);
             expcutoff
                 += lij as f64
-                    * log((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64));
+                    * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0 as i32 {
-            let mut dist_kl: f64 = sqrt(rr_kl);
+            let mut dist_kl: f64 = (rr_kl).sqrt();
             let mut akl: f64 = *ak
                 .offset((k_prim - 1 as i32) as isize)
                 + *al.offset((l_prim - 1 as i32) as isize);
             let mut theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff
                 += lkl as f64
-                    * log((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64));
+                    * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
     let mut nc: i32 = i_ctr * j_ctr * k_ctr * l_ctr;
@@ -3151,18 +3106,10 @@ pub unsafe extern "C" fn CINT2e_drv(
             nc.wrapping_mul(n_comp as u64)
                 .wrapping_add(nf.wrapping_mul(4 as u64))
         };
-        if cache_size >= 2147483647 as libc::c_ulong {
-            fprintf(
-                stderr,
-                b"CINT2e_drv cache_size overflow: cache_size %zu > %d, nf %zu, nc %zu, n_comp %d\n\0"
-                    as *const u8 as *const libc::c_char,
-                cache_size,
-                2147483647 as i32,
-                nf,
-                nc,
-                n_comp,
-            );
-            cache_size = 0 as size_t;
+        if cache_size >= 2147483647 as u64 {
+            eprintln!("CINT2e_drv cache_size overflow: cache_size {} > {}, nf {}, nc {}, n_comp {}",
+                cache_size, 2147483647 as i32, nf, nc, n_comp);
+            cache_size = 0 as u64;
         }
         return cache_size as i32;
     }

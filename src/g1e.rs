@@ -5,13 +5,6 @@ use crate::cint_bas::CINTcart_comp;
 
 use crate::cint::CINTEnvVars;
 
-pub type size_t = libc::c_ulong;
-
-extern "C" {
-    fn sqrt(_: f64) -> f64;
-    fn abs(_: i32) -> i32;
-}
-
 fn MAX<T: PartialOrd>(x: T, y: T) -> T {
     if x > y {
         x
@@ -212,7 +205,7 @@ pub unsafe extern "C" fn CINTg1e_ovlp(
             0 as isize,
         ) = (*envs).fac[0 as usize]
         * 1.7724538509055160272981674833411451f64 * 3.14159265358979323846f64
-        / (aij * sqrt(aij));
+        / (aij * (aij).sqrt());
     let mut nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
     if nmax == 0 as i32 {
         return 1 as i32;
@@ -339,7 +332,7 @@ pub unsafe extern "C" fn CINTnuc_mod(
         zeta = 0 as f64;
     }
     if zeta > 0 as f64 {
-        return sqrt(zeta / (aij + zeta))
+        return (zeta / (aij + zeta)).sqrt()
     } else {
         return 1 as f64
     };
@@ -390,7 +383,7 @@ pub unsafe extern "C" fn CINTg1e_nuc(
             );
     } else {
         fac1 = 2 as f64 * 3.14159265358979323846f64
-            * -abs(*atm.offset((0 as i32 + nuc_id * 6 as i32) as isize))
+            * -(*atm.offset((0 as i32 + nuc_id * 6 as i32) as isize)).abs()
                 as f64 * (*envs).fac[0 as usize] * tau / aij;
         cr = env
             .offset(
