@@ -84,6 +84,7 @@ fn main() {
             // for i in 0..(di*dj) {
             //     print!("{} ", buf[i as usize]);
             // }
+            denv.fill(0.0);
 
             cint_diff(&mut buf, &mut dbuf, &mut shls, &mut atm, natm as i32, &mut bas, nbas as i32, &mut env, &mut denv);
             for i in 28..34 {
