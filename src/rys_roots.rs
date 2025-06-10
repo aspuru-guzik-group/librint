@@ -3027,9 +3027,9 @@ unsafe extern "C" fn segment_solve(
     } else {
         error = fn2.expect("non-null function pointer")(n, x, lower, u, w);
     }
-    if error != 0 {
-        error = CINTlrys_schmidt(n, x, lower, u, w);
-    }
+    // if error != 0 {
+    //     error = CINTlrys_schmidt(n, x, lower, u, w);
+    // }
     return error;
 }
 #[no_mangle]
@@ -3077,171 +3077,171 @@ pub unsafe extern "C" fn CINTrys_roots(
     }
     let mut err: i32 = 0;
     match nroots {
-        1 => {
-            err = rys_root1(x, u, w);
-        }
-        2 => {
-            err = rys_root2(x, u, w);
-        }
-        3 => {
-            err = rys_root3(x, u, w);
-        }
-        4 => {
-            err = rys_root4(x, u, w);
-        }
-        5 => {
-            err = rys_root5(x, u, w);
-        }
-        6 | 7 => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                11 as f64,
-                Some(
-                    CINTrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTrys_schmidt
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
-        }
-        8 => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                11 as f64,
-                Some(
-                    CINTrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTlrys_schmidt
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
-        }
-        9 => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                10 as f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
-        }
-        10 | 11 => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                18 as f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
-        }
-        12 => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                22 as f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
-        }
+        // 1 => {
+        //     err = rys_root1(x, u, w);
+        // }
+        // 2 => {
+        //     err = rys_root2(x, u, w);
+        // }
+        // 3 => {
+        //     err = rys_root3(x, u, w);
+        // }
+        // 4 => {
+        //     err = rys_root4(x, u, w);
+        // }
+        // 5 => {
+        //     err = rys_root5(x, u, w);
+        // }
+        // 6 | 7 => {
+        //     err = segment_solve(
+        //         nroots,
+        //         x,
+        //         0.0f64,
+        //         u,
+        //         w,
+        //         11 as f64,
+        //         Some(
+        //             CINTrys_jacobi
+        //                 as unsafe extern "C" fn(
+        //                     i32,
+        //                     f64,
+        //                     f64,
+        //                     *mut f64,
+        //                     *mut f64,
+        //                 ) -> i32,
+        //         ),
+        //         Some(
+        //             CINTrys_schmidt
+        //                 as unsafe extern "C" fn(
+        //                     i32,
+        //                     f64,
+        //                     f64,
+        //                     *mut f64,
+        //                     *mut f64,
+        //                 ) -> i32,
+        //         ),
+        //     );
+        // }
+        // 8 => {
+        //     err = segment_solve(
+        //         nroots,
+        //         x,
+        //         0.0f64,
+        //         u,
+        //         w,
+        //         11 as f64,
+        //         Some(
+        //             CINTrys_jacobi
+        //                 as unsafe extern "C" fn(
+        //                     i32,
+        //                     f64,
+        //                     f64,
+        //                     *mut f64,
+        //                     *mut f64,
+        //                 ) -> i32,
+        //         ),
+        //         Some(
+        //             CINTlrys_schmidt
+        //                 as unsafe extern "C" fn(
+        //                     i32,
+        //                     f64,
+        //                     f64,
+        //                     *mut f64,
+        //                     *mut f64,
+        //                 ) -> i32,
+        //         ),
+        //     );
+        // }
+        // 9 => {
+        //     err = segment_solve(
+        //         nroots,
+        //         x,
+        //         0.0f64,
+        //         u,
+        //         w,
+        //         10 as f64,
+        //         Some(
+        //             CINTlrys_jacobi
+        //                 as unsafe extern "C" fn(
+        //                     i32,
+        //                     f64,
+        //                     f64,
+        //                     *mut f64,
+        //                     *mut f64,
+        //                 ) -> i32,
+        //         ),
+        //         Some(
+        //             CINTlrys_laguerre
+        //                 as unsafe extern "C" fn(
+        //                     i32,
+        //                     f64,
+        //                     f64,
+        //                     *mut f64,
+        //                     *mut f64,
+        //                 ) -> i32,
+        //         ),
+        //     );
+        // }
+        // 10 | 11 => {
+        //     err = segment_solve(
+        //         nroots,
+        //         x,
+        //         0.0f64,
+        //         u,
+        //         w,
+        //         18 as f64,
+        //         Some(
+        //             CINTlrys_jacobi
+        //                 as unsafe extern "C" fn(
+        //                     i32,
+        //                     f64,
+        //                     f64,
+        //                     *mut f64,
+        //                     *mut f64,
+        //                 ) -> i32,
+        //         ),
+        //         Some(
+        //             CINTlrys_laguerre
+        //                 as unsafe extern "C" fn(
+        //                     i32,
+        //                     f64,
+        //                     f64,
+        //                     *mut f64,
+        //                     *mut f64,
+        //                 ) -> i32,
+        //         ),
+        //     );
+        // }
+        // 12 => {
+        //     err = segment_solve(
+        //         nroots,
+        //         x,
+        //         0.0f64,
+        //         u,
+        //         w,
+        //         22 as f64,
+        //         Some(
+        //             CINTlrys_jacobi
+        //                 as unsafe extern "C" fn(
+        //                     i32,
+        //                     f64,
+        //                     f64,
+        //                     *mut f64,
+        //                     *mut f64,
+        //                 ) -> i32,
+        //         ),
+        //         Some(
+        //             CINTlrys_laguerre
+        //                 as unsafe extern "C" fn(
+        //                     i32,
+        //                     f64,
+        //                     f64,
+        //                     *mut f64,
+        //                     *mut f64,
+        //                 ) -> i32,
+        //         ),
+        //     );
+        // }
         _ => {
             err = segment_solve(
                 nroots,

@@ -5411,26 +5411,26 @@ unsafe extern "C" fn lnaive_jacobi_moments(
         lower,
         n - 1 as i32,
     );
-    i = 0 as i32;
-    while i < n {
-        coef = lJACOBI_COEF
-            .as_mut_ptr()
-            .offset((i * (i + 1 as i32) / 2 as i32) as isize);
-        order = JACOBI_COEF_ORDER
-            .as_mut_ptr()
-            .offset((i * (i + 1 as i32) / 2 as i32) as isize);
-        s = 0.0f64;
-        j = 0 as i32;
-        while j <= i {
-            k = *order.offset(j as isize);
-            s += *coef.offset(k as isize) * fmt[k as usize];
-            j += 1;
-            j;
-        }
-        *mus.offset(i as isize) = s;
-        i += 1;
-        i;
-    }
+    // i = 0 as i32;
+    // while i < n {
+    //     coef = lJACOBI_COEF
+    //         .as_mut_ptr()
+    //         .offset((i * (i + 1 as i32) / 2 as i32) as isize);
+    //     order = JACOBI_COEF_ORDER
+    //         .as_mut_ptr()
+    //         .offset((i * (i + 1 as i32) / 2 as i32) as isize);
+    //     s = 0.0f64;
+    //     j = 0 as i32;
+    //     while j <= i {
+    //         k = *order.offset(j as isize);
+    //         s += *coef.offset(k as isize) * fmt[k as usize];
+    //         j += 1;
+    //         j;
+    //     }
+    //     *mus.offset(i as isize) = s;
+    //     i += 1;
+    //     i;
+    // }
 }
 unsafe extern "C" fn lflocke_jacobi_moments(
     mut n: i32,
