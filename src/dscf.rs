@@ -23,7 +23,7 @@ pub fn ovlp(
 ) {
     let (natm, nbas) = nmol(atm, bas);
     let mut env: Vec<f64> = combine(&env1, &env2);
-    cint1e_ovlp_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
+    cint1e_ovlp_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
 }
 
 
@@ -39,7 +39,7 @@ fn kin(
 ) {
     let (natm, nbas) = nmol(atm, bas);
     let mut env: Vec<f64> = combine(&env1, &env2);
-    cint1e_kin_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
+    cint1e_kin_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
 }
 
 #[no_mangle]
@@ -54,7 +54,7 @@ fn nuc(
 ) {
     let (natm, nbas) = nmol(atm, bas);
     let mut env: Vec<f64> = combine(&env1, &env2);
-    cint1e_nuc_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
+    cint1e_nuc_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
 }
 
 #[no_mangle]
@@ -69,7 +69,7 @@ fn two(
 ) {
     let (natm, nbas) = nmol(atm, bas);
     let mut env: Vec<f64> = combine(&env1, &env2);
-    cint2e_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env);
+    cint2e_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
 }
 
 #[no_mangle]

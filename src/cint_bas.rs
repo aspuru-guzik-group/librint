@@ -35,16 +35,27 @@ pub unsafe extern "C" fn CINTcgtos_cart(
     return (l + 1 as i32) * (l + 2 as i32) / 2 as i32
         * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize);
 }
+
+// #[no_mangle]
+// pub unsafe extern "C" fn CINTcgto_cart(
+//     bas_id: i32,
+//     mut bas: *const i32,
+// ) -> i32 {
+//     let mut l: i32 = *bas
+//         .offset((8 as i32 * bas_id + 1 as i32) as isize);
+//     return (l + 1 as i32) * (l + 2 as i32) / 2 as i32
+//         * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize);
+// }
+
 #[no_mangle]
-pub unsafe extern "C" fn CINTcgto_cart(
-    bas_id: i32,
-    mut bas: *const i32,
+pub fn CINTcgto_cart(
+    bas_id: usize,
+    bas: &[i32],
 ) -> i32 {
-    let mut l: i32 = *bas
-        .offset((8 as i32 * bas_id + 1 as i32) as isize);
-    return (l + 1 as i32) * (l + 2 as i32) / 2 as i32
-        * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize);
+    let mut l: i32 = bas[8 * bas_id + 1];
+    return (l + 1) * (l + 2) / 2 * bas[8 * bas_id + 3];
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn CINTcgtos_spheric(
     bas_id: i32,
@@ -54,15 +65,25 @@ pub unsafe extern "C" fn CINTcgtos_spheric(
         * 2 as i32 + 1 as i32)
         * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize);
 }
+
+// #[no_mangle]
+// pub unsafe extern "C" fn CINTcgto_spheric(
+//     bas_id: i32,
+//     mut bas: *const i32,
+// ) -> i32 {
+//     return (*bas.offset((8 as i32 * bas_id + 1 as i32) as isize)
+//         * 2 as i32 + 1 as i32)
+//         * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize);
+// }
+
 #[no_mangle]
-pub unsafe extern "C" fn CINTcgto_spheric(
-    bas_id: i32,
-    mut bas: *const i32,
+pub fn CINTcgto_spheric(
+    bas_id: usize,
+    bas: &[i32],
 ) -> i32 {
-    return (*bas.offset((8 as i32 * bas_id + 1 as i32) as isize)
-        * 2 as i32 + 1 as i32)
-        * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize);
+    return (bas[8 * bas_id + 1] * 2 + 1) * bas[8 * bas_id + 3];
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn CINTcgtos_spinor(
     bas_id: i32,
@@ -136,30 +157,30 @@ unsafe extern "C" fn tot_cgto_accum(
     }
     return s;
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTtot_cgto_spheric(
-    mut bas: *const i32,
-    nbas: i32,
-) -> i32 {
-    return tot_cgto_accum(
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(i32, *const i32) -> i32,
-            >,
-            Option::<unsafe extern "C" fn() -> i32>,
-        >(
-            Some(
-                CINTcgto_spheric
-                    as unsafe extern "C" fn(
-                        i32,
-                        *const i32,
-                    ) -> i32,
-            ),
-        ),
-        bas,
-        nbas,
-    );
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn CINTtot_cgto_spheric(
+//     mut bas: *const i32,
+//     nbas: i32,
+// ) -> i32 {
+//     return tot_cgto_accum(
+//         ::core::mem::transmute::<
+//             Option::<
+//                 unsafe extern "C" fn(i32, *const i32) -> i32,
+//             >,
+//             Option::<unsafe extern "C" fn() -> i32>,
+//         >(
+//             Some(
+//                 CINTcgto_spheric
+//                     as unsafe extern "C" fn(
+//                         i32,
+//                         *const i32,
+//                     ) -> i32,
+//             ),
+//         ),
+//         bas,
+//         nbas,
+//     );
+// }
 #[no_mangle]
 pub unsafe extern "C" fn CINTtot_cgto_spinor(
     mut bas: *const i32,
@@ -184,30 +205,30 @@ pub unsafe extern "C" fn CINTtot_cgto_spinor(
         nbas,
     );
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTtot_cgto_cart(
-    mut bas: *const i32,
-    nbas: i32,
-) -> i32 {
-    return tot_cgto_accum(
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(i32, *const i32) -> i32,
-            >,
-            Option::<unsafe extern "C" fn() -> i32>,
-        >(
-            Some(
-                CINTcgto_cart
-                    as unsafe extern "C" fn(
-                        i32,
-                        *const i32,
-                    ) -> i32,
-            ),
-        ),
-        bas,
-        nbas,
-    );
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn CINTtot_cgto_cart(
+//     mut bas: *const i32,
+//     nbas: i32,
+// ) -> i32 {
+//     return tot_cgto_accum(
+//         ::core::mem::transmute::<
+//             Option::<
+//                 unsafe extern "C" fn(i32, *const i32) -> i32,
+//             >,
+//             Option::<unsafe extern "C" fn() -> i32>,
+//         >(
+//             Some(
+//                 CINTcgto_cart
+//                     as unsafe extern "C" fn(
+//                         i32,
+//                         *const i32,
+//                     ) -> i32,
+//             ),
+//         ),
+//         bas,
+//         nbas,
+//     );
+// }
 unsafe extern "C" fn shells_cgto_offset(
     mut f: Option::<unsafe extern "C" fn() -> i32>,
     mut ao_loc: *mut i32,
@@ -233,58 +254,58 @@ unsafe extern "C" fn shells_cgto_offset(
         i;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTshells_cart_offset(
-    mut ao_loc: *mut i32,
-    mut bas: *const i32,
-    nbas: i32,
-) {
-    shells_cgto_offset(
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(i32, *const i32) -> i32,
-            >,
-            Option::<unsafe extern "C" fn() -> i32>,
-        >(
-            Some(
-                CINTcgto_cart
-                    as unsafe extern "C" fn(
-                        i32,
-                        *const i32,
-                    ) -> i32,
-            ),
-        ),
-        ao_loc,
-        bas,
-        nbas,
-    );
-}
-#[no_mangle]
-pub unsafe extern "C" fn CINTshells_spheric_offset(
-    mut ao_loc: *mut i32,
-    mut bas: *const i32,
-    nbas: i32,
-) {
-    shells_cgto_offset(
-        ::core::mem::transmute::<
-            Option::<
-                unsafe extern "C" fn(i32, *const i32) -> i32,
-            >,
-            Option::<unsafe extern "C" fn() -> i32>,
-        >(
-            Some(
-                CINTcgto_spheric
-                    as unsafe extern "C" fn(
-                        i32,
-                        *const i32,
-                    ) -> i32,
-            ),
-        ),
-        ao_loc,
-        bas,
-        nbas,
-    );
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn CINTshells_cart_offset(
+//     mut ao_loc: *mut i32,
+//     mut bas: *const i32,
+//     nbas: i32,
+// ) {
+//     shells_cgto_offset(
+//         ::core::mem::transmute::<
+//             Option::<
+//                 unsafe extern "C" fn(i32, *const i32) -> i32,
+//             >,
+//             Option::<unsafe extern "C" fn() -> i32>,
+//         >(
+//             Some(
+//                 CINTcgto_cart
+//                     as unsafe extern "C" fn(
+//                         i32,
+//                         *const i32,
+//                     ) -> i32,
+//             ),
+//         ),
+//         ao_loc,
+//         bas,
+//         nbas,
+//     );
+// }
+// #[no_mangle]
+// pub unsafe extern "C" fn CINTshells_spheric_offset(
+//     mut ao_loc: *mut i32,
+//     mut bas: *const i32,
+//     nbas: i32,
+// ) {
+//     shells_cgto_offset(
+//         ::core::mem::transmute::<
+//             Option::<
+//                 unsafe extern "C" fn(i32, *const i32) -> i32,
+//             >,
+//             Option::<unsafe extern "C" fn() -> i32>,
+//         >(
+//             Some(
+//                 CINTcgto_spheric
+//                     as unsafe extern "C" fn(
+//                         i32,
+//                         *const i32,
+//                     ) -> i32,
+//             ),
+//         ),
+//         ao_loc,
+//         bas,
+//         nbas,
+//     );
+// }
 #[no_mangle]
 pub unsafe extern "C" fn CINTshells_spinor_offset(
     mut ao_loc: *mut i32,

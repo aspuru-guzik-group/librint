@@ -1,5 +1,6 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
 
+use crate::cint::CINTOpt;
 use crate::cint_bas::{CINTcgto_cart, CINTcgto_spheric};
 use crate::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart, cint1e_ovlp_sph, cint1e_nuc_sph};
 use crate::intor1::{cint1e_kin_cart, cint1e_kin_sph};
@@ -15,7 +16,9 @@ pub const BAS_SLOTS: usize = 8;
 type inte = fn(buf: &mut [f64], shls: &mut [i32], 
     atm: &mut [i32], natm: i32, 
     bas: &mut [i32], nbas: i32, 
-    env: &mut [f64]) -> i32;
+    env: &mut [f64],
+    *mut CINTOpt,
+) -> i32;
 
 type cgto = fn(bas_id: usize, bas: &[i32],) -> i32;
 
@@ -112,7 +115,7 @@ pub fn integral1e(
 
             buf = vec![0.0; di * dj];
 
-            func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -189,7 +192,7 @@ pub fn integral2e(
                     
                     buf = vec![0.0; di * dj * dk * dl];
         
-                    func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+                    func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
                     let mut c: usize = 0;
                     for laml in lam..(lam + dl) {
                         for sigk in sig..(sig + dk) {
@@ -257,7 +260,7 @@ fn integrals(
 
             buf = vec![0.0; di * dj];
 
-            cint1e_ovlp_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            cint1e_ovlp_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -266,7 +269,7 @@ fn integrals(
                 }
             }
 
-            cint1e_kin_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            cint1e_kin_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -275,7 +278,7 @@ fn integrals(
                 }
             }
 
-            cint1e_nuc_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            cint1e_nuc_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -301,7 +304,7 @@ fn integrals(
                     
                     buf = vec![0.0; di * dj * dk * dl];
         
-                    cint2e_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+                    cint2e_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
                     let mut c: usize = 0;
                     for laml in lam..(lam + dl) {
                         for sigk in sig..(sig + dk) {
@@ -606,7 +609,7 @@ pub fn energyfast(
 
             buf = vec![0.0; di * dj];
 
-            cint1e_kin_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            cint1e_kin_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -615,7 +618,7 @@ pub fn energyfast(
                 }
             }
 
-            cint1e_nuc_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+            cint1e_nuc_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -643,7 +646,7 @@ pub fn energyfast(
 
                     buf = vec![0.0; di * dj * dk * dl];
 
-                    cint2e_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env);
+                    cint2e_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
                     let mut c: usize = 0;
                     for laml in lam..(lam + dl) {
                         for sigk in sig..(sig + dk) {

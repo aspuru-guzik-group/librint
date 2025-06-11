@@ -3945,30 +3945,30 @@ pub unsafe extern "C" fn int2e_cart(
         ),
     );
 }
-#[no_mangle]
-pub unsafe extern "C" fn cint2e_sph(
-    mut out: *mut f64,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-    mut opt: *mut CINTOpt,
-) -> i32 {
-    return int2e_sph(
-        out,
-        0 as *mut i32,
-        shls,
-        atm,
-        natm,
-        bas,
-        nbas,
-        env,
-        opt,
-        0 as *mut f64,
-    );
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn cint2e_sph(
+//     mut out: *mut f64,
+//     mut shls: *mut i32,
+//     mut atm: *mut i32,
+//     mut natm: i32,
+//     mut bas: *mut i32,
+//     mut nbas: i32,
+//     mut env: *mut f64,
+//     mut opt: *mut CINTOpt,
+// ) -> i32 {
+//     return int2e_sph(
+//         out,
+//         0 as *mut i32,
+//         shls,
+//         atm,
+//         natm,
+//         bas,
+//         nbas,
+//         env,
+//         opt,
+//         0 as *mut f64,
+//     );
+// }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_optimizer(
     mut opt: *mut *mut CINTOpt,
@@ -4002,30 +4002,30 @@ pub unsafe extern "C" fn cint2e_cart_optimizer(
 ) {
     int2e_optimizer(opt, atm, natm, bas, nbas, env);
 }
-#[no_mangle]
-pub unsafe extern "C" fn cint2e_cart(
-    mut out: *mut f64,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-    mut opt: *mut CINTOpt,
-) -> i32 {
-    return int2e_cart(
-        out,
-        0 as *mut i32,
-        shls,
-        atm,
-        natm,
-        bas,
-        nbas,
-        env,
-        opt,
-        0 as *mut f64,
-    );
-}
+// #[no_mangle]
+// pub unsafe extern "C" fn cint2e_cart(
+//     mut out: *mut f64,
+//     mut shls: *mut i32,
+//     mut atm: *mut i32,
+//     mut natm: i32,
+//     mut bas: *mut i32,
+//     mut nbas: i32,
+//     mut env: *mut f64,
+//     mut opt: *mut CINTOpt,
+// ) -> i32 {
+//     return int2e_cart(
+//         out,
+//         0 as *mut i32,
+//         shls,
+//         atm,
+//         natm,
+//         bas,
+//         nbas,
+//         env,
+//         opt,
+//         0 as *mut f64,
+//     );
+// }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_sph_(
     mut out: *mut f64,
@@ -4110,4 +4110,58 @@ pub unsafe extern "C" fn cint2e_optimizer_(
 ) {
     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
     int2e_optimizer(opt, atm, *natm, bas, *nbas, env);
+}
+
+#[no_mangle]
+pub fn cint2e_cart(
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    natm: i32,
+    bas: &mut [i32],
+    nbas: i32,
+    env: &mut [f64],
+    opt: *mut CINTOpt,
+) -> i32 {
+    unsafe {
+        return int2e_cart(
+            out.as_mut_ptr(),
+            0 as *mut i32,
+            shls.as_mut_ptr(),
+            atm.as_mut_ptr(),
+            natm,
+            bas.as_mut_ptr(),
+            nbas,
+            env.as_mut_ptr(),
+            opt,
+            0 as *mut f64,
+        );
+    }
+}
+
+#[no_mangle]
+pub fn cint2e_sph(
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    natm: i32,
+    bas: &mut [i32],
+    nbas: i32,
+    env: &mut [f64],
+    opt: *mut CINTOpt,
+) -> i32 {
+    unsafe {
+        return int2e_sph(
+            out.as_mut_ptr(),
+            0 as *mut i32,
+            shls.as_mut_ptr(),
+            atm.as_mut_ptr(),
+            natm,
+            bas.as_mut_ptr(),
+            nbas,
+            env.as_mut_ptr(),
+            opt,
+            0 as *mut f64,
+        );
+    }
 }
