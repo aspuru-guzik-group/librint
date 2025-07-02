@@ -89,7 +89,6 @@ geometries = {
     ],
 }
 
-# Define functions to time
 def test_jax(mol_jax):
     # mol_jax = build_mol(atom, charge, basis)
     E, grad = value_and_grad(hf_energy)(mol_jax)
@@ -107,22 +106,35 @@ def test_grad(mol_rpyscf, P):
     gradient = librint.dscf.grad(mol_rpyscf, P)
     return gradient
 
+def test_fd(mol):
+    a, b = librint.utils.split(mol._bas)
+    h = 1e-12
+
+    fd = np.zeros(b-a)
+    for j in range(a, b):
+        mol._env[j] -= h
+        P1 = librint.scf.density(mol, imax=MAX_ITER)
+        E1 = librint.scf.energy(mol, P1)
+        
+        mol._env[j] += 2.0*h
+        P2 = librint.scf.density(mol, imax=MAX_ITER)
+        E2 = librint.scf.energy(mol, P2)
+
+        fd[j-a] = (E2 - E1)/(2.0*h)
+        mol._env[j] -= h
+
+    return fd
+
 def gradient_test(mol_jax, mol_rpyscf, P):
     n_runs = 4
 
+    time_fd = timeit.timeit(lambda: test_fd(mol_rpyscf), number=n_runs)
     time_jax = timeit.timeit(lambda: test_jax(mol_jax), number=n_runs)
     time_analytical = timeit.timeit(lambda: test_analytical(mol_rpyscf, P), number=n_runs)
     time_librpyscf = timeit.timeit(lambda: test_librpyscf(mol_rpyscf, P), number=n_runs)
     time_grad = timeit.timeit(lambda: test_grad(mol_rpyscf, P), number=n_runs)
 
-    # Print results
-    # print(f"{geo} {basis}")
-    # print(f"Average time for jax.value_and_grad: {time_jax / n_runs:.6f} s/run")
-    # print(f"Average time for librint.analytical: {time_analytical / n_runs:.6f} s/run")
-    # print(f"Average time for librint.denergy   : {time_librpyscf / n_runs:.6f} s/run")
-    # print(f"Average time for librint.grad      : {time_grad / n_runs:.6f} s/run")
-
-    return (time_jax / n_runs, time_analytical / n_runs, time_librpyscf / n_runs, time_grad / n_runs)
+    return (time_fd / n_runs, time_jax / n_runs, time_analytical / n_runs, time_librpyscf / n_runs, time_grad / n_runs)
 
 if __name__ == '__main__':
     molecules = [
@@ -134,13 +146,8 @@ if __name__ == '__main__':
         ("sto-3g", "NH3"),
         ("sto-3g", "CH4"),
         # ("sto-3g", "C6H6"),
-        # ("6-31g*", "CH4")
+        # ("6-31g*", "C6H6")
     ]
-    
-    # basis = "sto-3g"
-    # basis = "6-31g*"
-    # geo = "H2"
-    # geo = "C6H6"
 
     for (basis, geo) in molecules:
         molecule = geometries[geo]
@@ -160,46 +167,54 @@ if __name__ == '__main__':
         mol_jax = build_mol(atom, charge, basis)  # Precomputed mol for JAX
 
         a, b, c = test_jax(mol_jax)
+
+        g0 = test_fd(mol_rpyscf)
         g1 = np.concatenate([c, b])
         g2 = librint.dscf.danalyticalf(mol_rpyscf, P)
         g3 = librint.dscf.denergyf(mol_rpyscf, P)
         g4 = librint.dscf.grad(mol_rpyscf, P)
 
-        (t1, t2, t3, t4) = gradient_test(mol_jax, mol_rpyscf, P)
+        (t0, t1, t2, t3, t4) = gradient_test(mol_jax, mol_rpyscf, P)
 
         print(f"{geo} {basis}")
         print(f"Avg Times")
+        print(f"finite difference : {t0:.6f} s/run")
         print(f"jax.value_and_grad: {t1:.6f} s/run")
         print(f"librint.analytical: {t2:.6f} s/run")
         print(f"librint.denergy   : {t3:.6f} s/run")
         print(f"librint.grad      : {t4:.6f} s/run")
 
         print("\nGradients")
+        print("{}".format(np.sort(g0)))
         print("{}".format(np.sort(g1)))
         print("{}".format(np.sort(g2)))
         print("{}".format(np.sort(g3)))
         print("{}".format(np.sort(g4)))
 
-        # file_time = "./timing/" + geo + "_" + basis
+        file = "_run1"
 
-        # os.makedirs(os.path.dirname(file_time), exist_ok=True)
+        file_time = "./time" + file + "/" + geo + "_" + basis
 
-        # with open(file_time, 'a') as f:
-        #     # f.write(f"{geo} {basis}\n")
-        #     f.write(f"jax: {t1}\n")
-        #     f.write(f"analytical: {t2}\n")
-        #     f.write(f"denergy: {t3}\n")
-        #     f.write(f"grad: {t4}\n")
-        #     f.write(f"librint / jax: {(t3 / t1):.6f}\n\n")
+        os.makedirs(os.path.dirname(file_time), exist_ok=True)
+
+        with open(file_time, 'a') as f:
+            # f.write(f"{geo} {basis}\n")
+            f.write(f"fd:         {t0}\n")
+            f.write(f"jax:        {t1}\n")
+            f.write(f"analytical: {t2}\n")
+            f.write(f"denergy:    {t3}\n")
+            f.write(f"grad:       {t4}\n")
+            f.write(f"librint / jax: {(t3 / t1):.6f}\n\n")
         
-        file_grad = "./grad/" + geo + "_" + basis
+        file_grad = "./grad" + file + "/" + geo + "_" + basis
 
         os.makedirs(os.path.dirname(file_grad), exist_ok=True)
 
         with open(file_grad, 'a') as f:
             # f.write(f"{geo} {basis}\n")
-            f.write(f"jax: {np.sort(g1)}\n")
+            f.write(f"fd:         {np.sort(g0)}\n")
+            f.write(f"jax:        {np.sort(g1)}\n")
             f.write(f"analytical: {np.sort(g2)}\n")
-            f.write(f"denergy: {np.sort(g3)}\n")
-            f.write(f"grad: {np.sort(g4)}\n")
+            f.write(f"denergy:    {np.sort(g3)}\n")
+            f.write(f"grad:       {np.sort(g4)}\n")
 
