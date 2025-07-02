@@ -8,7 +8,7 @@ def parse_time_line(line):
     return float(value)
 
 def build_dict():
-    base_dir = "./grad"
+    base_dir = "./time"
     data = {}
 
     if not os.path.isdir(base_dir):
@@ -152,7 +152,7 @@ if __name__ == "__main__":
     import pprint
     pprint.pprint(d)
 
-    metrics = ["jax", "analytical", "denergy", "grad"]
+    metrics = ["fd", "jax", "analytical", "denergy", "grad"]
     plot_bar(d, metrics)
     
     plot_speedup_ratio(d, "jax", "analytical")
