@@ -346,3 +346,57 @@ pub unsafe extern "C" fn int1e_kin_spinor(
     envs.common_factor *= 0.5f64;
     panic!("Reached end of non-void function without returning");
 }
+
+#[no_mangle]
+pub fn cint1e_kin_cart(
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    natm: i32,
+    bas: &mut [i32],
+    nbas: i32,
+    env: &mut [f64],
+    opt: *mut CINTOpt,
+) -> i32 {
+    unsafe {
+        return int1e_kin_cart(
+            out.as_mut_ptr(),
+            0 as *mut i32,
+            shls.as_mut_ptr(),
+            atm.as_mut_ptr(),
+            natm,
+            bas.as_mut_ptr(),
+            nbas,
+            env.as_mut_ptr(),
+            opt,
+            0 as *mut f64,
+        );
+    }
+}
+
+#[no_mangle]
+pub fn cint1e_kin_sph(
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    natm: i32,
+    bas: &mut [i32],
+    nbas: i32,
+    env: &mut [f64],
+    opt: *mut CINTOpt,
+) -> i32 {
+    unsafe {
+        return int1e_kin_sph(
+            out.as_mut_ptr(),
+            0 as *mut i32,
+            shls.as_mut_ptr(),
+            atm.as_mut_ptr(),
+            natm,
+            bas.as_mut_ptr(),
+            nbas,
+            env.as_mut_ptr(),
+            opt,
+            0 as *mut f64,
+        );
+    }
+}
