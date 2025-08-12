@@ -6,20 +6,8 @@ use crate::rys_roots::CINTrys_roots;
 use crate::rys_roots::CINTsr_rys_roots;
 
 use crate::cint::CINTEnvVars;
+use crate::cint::Rys2eT;
 
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct Rys2eT {
-    pub c00x: [f64; 32],
-    pub c00y: [f64; 32],
-    pub c00z: [f64; 32],
-    pub c0px: [f64; 32],
-    pub c0py: [f64; 32],
-    pub c0pz: [f64; 32],
-    pub b01: [f64; 32],
-    pub b00: [f64; 32],
-    pub b10: [f64; 32],
-}
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
     mut envs: *mut CINTEnvVars,
@@ -36,7 +24,7 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
     (*envs).atm = atm;
     (*envs).bas = bas;
     (*envs).env = env;
-    (*envs).shls = shls;
+    (*envs).shls = shls.as_mut_ptr();
     let i_sh: i32 = *shls.offset(0 as isize);
     let j_sh: i32 = *shls.offset(1 as isize);
     let k_sh: i32 = *shls.offset(2 as isize);
@@ -85,7 +73,7 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
                                 (8 as i32 * i_sh + 0 as i32) as isize,
                             ) + 1 as i32) as isize,
                 ) as isize,
-        );
+        ).as_mut();
     (*envs)
         .rj = env
         .offset(
@@ -97,7 +85,7 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
                                 (8 as i32 * j_sh + 0 as i32) as isize,
                             ) + 1 as i32) as isize,
                 ) as isize,
-        );
+        ).as_mut();
     (*envs)
         .rk = env
         .offset(
@@ -109,7 +97,7 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
                                 (8 as i32 * k_sh + 0 as i32) as isize,
                             ) + 1 as i32) as isize,
                 ) as isize,
-        );
+        ).as_mut();
     (*envs)
         .c2rust_unnamed_1
         .rl = env
@@ -122,7 +110,7 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
                                 (8 as i32 * l_sh + 0 as i32) as isize,
                             ) + 1 as i32) as isize,
                 ) as isize,
-        );
+        ).as_mut();
     (*envs)
         .common_factor = 3.14159265358979323846f64 * 3.14159265358979323846f64
         * 3.14159265358979323846f64 * 2 as f64
@@ -188,62 +176,62 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
         (*envs).rx_in_rklrx = (*envs).rk;
         (*envs)
             .rkrl[0 as i32
-            as usize] = *((*envs).rk).offset(0 as isize)
-            - *((*envs).c2rust_unnamed_1.rl).offset(0 as isize);
+            as usize] = *((*envs).rk.as_mut_ptr()).offset(0 as isize)
+            - *((*envs).c2rust_unnamed_1.rl.as_mut_ptr()).offset(0 as isize);
         (*envs)
             .rkrl[1 as i32
-            as usize] = *((*envs).rk).offset(1 as isize)
-            - *((*envs).c2rust_unnamed_1.rl).offset(1 as isize);
+            as usize] = *((*envs).rk.as_mut_ptr()).offset(1 as isize)
+            - *((*envs).c2rust_unnamed_1.rl.as_mut_ptr()).offset(1 as isize);
         (*envs)
             .rkrl[2 as i32
-            as usize] = *((*envs).rk).offset(2 as isize)
-            - *((*envs).c2rust_unnamed_1.rl).offset(2 as isize);
+            as usize] = *((*envs).rk.as_mut_ptr()).offset(2 as isize)
+            - *((*envs).c2rust_unnamed_1.rl.as_mut_ptr()).offset(2 as isize);
     } else {
         (*envs).g2d_klmax = (*envs).g_stride_l;
         (*envs).rx_in_rklrx = (*envs).c2rust_unnamed_1.rl;
         (*envs)
             .rkrl[0 as i32
-            as usize] = *((*envs).c2rust_unnamed_1.rl).offset(0 as isize)
-            - *((*envs).rk).offset(0 as isize);
+            as usize] = *((*envs).c2rust_unnamed_1.rl.as_mut_ptr()).offset(0 as isize)
+            - *((*envs).rk.as_mut_ptr()).offset(0 as isize);
         (*envs)
             .rkrl[1 as i32
-            as usize] = *((*envs).c2rust_unnamed_1.rl).offset(1 as isize)
-            - *((*envs).rk).offset(1 as isize);
+            as usize] = *((*envs).c2rust_unnamed_1.rl.as_mut_ptr()).offset(1 as isize)
+            - *((*envs).rk.as_mut_ptr()).offset(1 as isize);
         (*envs)
             .rkrl[2 as i32
-            as usize] = *((*envs).c2rust_unnamed_1.rl).offset(2 as isize)
-            - *((*envs).rk).offset(2 as isize);
+            as usize] = *((*envs).c2rust_unnamed_1.rl.as_mut_ptr()).offset(2 as isize)
+            - *((*envs).rk.as_mut_ptr()).offset(2 as isize);
     }
     if ibase != 0 {
         (*envs).g2d_ijmax = (*envs).g_stride_i;
         (*envs).rx_in_rijrx = (*envs).ri;
         (*envs)
             .rirj[0 as i32
-            as usize] = *((*envs).ri).offset(0 as isize)
-            - *((*envs).rj).offset(0 as isize);
+            as usize] = *((*envs).ri.as_mut_ptr()).offset(0 as isize)
+            - *((*envs).rj.as_mut_ptr()).offset(0 as isize);
         (*envs)
             .rirj[1 as i32
-            as usize] = *((*envs).ri).offset(1 as isize)
-            - *((*envs).rj).offset(1 as isize);
+            as usize] = *((*envs).ri.as_mut_ptr()).offset(1 as isize)
+            - *((*envs).rj.as_mut_ptr()).offset(1 as isize);
         (*envs)
             .rirj[2 as i32
-            as usize] = *((*envs).ri).offset(2 as isize)
-            - *((*envs).rj).offset(2 as isize);
+            as usize] = *((*envs).ri.as_mut_ptr()).offset(2 as isize)
+            - *((*envs).rj.as_mut_ptr()).offset(2 as isize);
     } else {
         (*envs).g2d_ijmax = (*envs).g_stride_j;
         (*envs).rx_in_rijrx = (*envs).rj;
         (*envs)
             .rirj[0 as i32
-            as usize] = *((*envs).rj).offset(0 as isize)
-            - *((*envs).ri).offset(0 as isize);
+            as usize] = *((*envs).rj.as_mut_ptr()).offset(0 as isize)
+            - *((*envs).ri.as_mut_ptr()).offset(0 as isize);
         (*envs)
             .rirj[1 as i32
-            as usize] = *((*envs).rj).offset(1 as isize)
-            - *((*envs).ri).offset(1 as isize);
+            as usize] = *((*envs).rj.as_mut_ptr()).offset(1 as isize)
+            - *((*envs).ri.as_mut_ptr()).offset(1 as isize);
         (*envs)
             .rirj[2 as i32
-            as usize] = *((*envs).rj).offset(2 as isize)
-            - *((*envs).ri).offset(2 as isize);
+            as usize] = *((*envs).rj.as_mut_ptr()).offset(2 as isize)
+            - *((*envs).ri.as_mut_ptr()).offset(2 as isize);
     }
     if rys_order <= 2 as i32 {
         (*envs)
@@ -13645,7 +13633,7 @@ pub unsafe extern "C" fn CINTg0_2e(
     a0 = a1 / (aij + akl);
     fac1 = (a0 / (a1 * a1 * a1)).sqrt() * (*envs).fac[0 as usize];
     x = a0 * rr;
-    let omega: f64 = *((*envs).env).offset(8 as isize);
+    let omega: f64 = *((*envs).env.as_mut_ptr()).offset(8 as isize);
     let mut theta: f64 = 0 as f64;
     if omega == 0.0f64 {
         CINTrys_roots(nroots, x, u.as_mut_ptr(), w);
@@ -13722,28 +13710,18 @@ pub unsafe extern "C" fn CINTg0_2e(
     let mut tmp4: f64 = 0.;
     let mut tmp5: f64 = 0.;
     let mut rijrx: f64 = *rij.offset(0 as isize)
-        - *((*envs).rx_in_rijrx).offset(0 as isize);
+        - *((*envs).rx_in_rijrx.as_mut_ptr()).offset(0 as isize);
     let mut rijry: f64 = *rij.offset(1 as isize)
-        - *((*envs).rx_in_rijrx).offset(1 as isize);
+        - *((*envs).rx_in_rijrx.as_mut_ptr()).offset(1 as isize);
     let mut rijrz: f64 = *rij.offset(2 as isize)
-        - *((*envs).rx_in_rijrx).offset(2 as isize);
+        - *((*envs).rx_in_rijrx.as_mut_ptr()).offset(2 as isize);
     let mut rklrx: f64 = *rkl.offset(0 as isize)
-        - *((*envs).rx_in_rklrx).offset(0 as isize);
+        - *((*envs).rx_in_rklrx.as_mut_ptr()).offset(0 as isize);
     let mut rklry: f64 = *rkl.offset(1 as isize)
-        - *((*envs).rx_in_rklrx).offset(1 as isize);
+        - *((*envs).rx_in_rklrx.as_mut_ptr()).offset(1 as isize);
     let mut rklrz: f64 = *rkl.offset(2 as isize)
-        - *((*envs).rx_in_rklrx).offset(2 as isize);
-    let mut bc: Rys2eT = Rys2eT {
-        c00x: [0.; 32],
-        c00y: [0.; 32],
-        c00z: [0.; 32],
-        c0px: [0.; 32],
-        c0py: [0.; 32],
-        c0pz: [0.; 32],
-        b01: [0.; 32],
-        b00: [0.; 32],
-        b10: [0.; 32],
-    };
+        - *((*envs).rx_in_rklrx.as_mut_ptr()).offset(2 as isize);
+    let mut bc: Rys2eT = Rys2eT::new();
     let mut b00: *mut f64 = (bc.b00).as_mut_ptr();
     let mut b10: *mut f64 = (bc.b10).as_mut_ptr();
     let mut b01: *mut f64 = (bc.b01).as_mut_ptr();

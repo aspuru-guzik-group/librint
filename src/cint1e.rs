@@ -33,9 +33,9 @@ pub unsafe extern "C" fn CINT1e_loop(
     mut cache: *mut f64,
     mut int1e_type: i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
+    let mut shls: *mut i32 = (*envs).shls.as_mut_ptr();
+    let mut bas: *mut i32 = (*envs).bas.as_mut_ptr();
+    let mut env: *mut f64 = (*envs).env.as_mut_ptr();
     let mut i_sh: i32 = *shls.offset(0 as isize);
     let mut j_sh: i32 = *shls.offset(1 as isize);
     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
@@ -81,8 +81,8 @@ pub unsafe extern "C" fn CINT1e_loop(
         pdata_base,
         ai,
         aj,
-        (*envs).ri,
-        (*envs).rj,
+        (*envs).ri.as_mut_ptr(),
+        (*envs).rj.as_mut_ptr(),
         log_maxci,
         log_maxcj,
         (*envs).li_ceil,
@@ -280,8 +280,8 @@ pub unsafe extern "C" fn CINT1e_loop(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_cache_size(mut envs: *mut CINTEnvVars) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
+    let mut shls: *mut i32 = (*envs).shls.as_mut_ptr();
+    let mut bas: *mut i32 = (*envs).bas.as_mut_ptr();
     let mut i_prim: i32 = *bas
         .offset(
             (8 as i32 * *shls.offset(0 as isize)

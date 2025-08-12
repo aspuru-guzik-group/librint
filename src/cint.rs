@@ -10,6 +10,20 @@ pub struct PairData {
 
 #[derive(Copy, Clone)]
 #[repr(C)]
+pub struct Rys2eT {
+    pub c00x: [f64; 32],
+    pub c00y: [f64; 32],
+    pub c00z: [f64; 32],
+    pub c0px: [f64; 32],
+    pub c0py: [f64; 32],
+    pub c0pz: [f64; 32],
+    pub b01: [f64; 32],
+    pub b00: [f64; 32],
+    pub b10: [f64; 32],
+}
+
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct CINTOpt {
     pub index_xyz_array: *mut *mut i32,
     pub non0ctr: *mut *mut i32,
@@ -19,13 +33,13 @@ pub struct CINTOpt {
     pub pairdata: *mut *mut PairData,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 #[repr(C)]
 pub struct CINTEnvVars {
-    pub atm: *mut i32,
-    pub bas: *mut i32,
-    pub env: *mut f64,
-    pub shls: *mut i32,
+    pub atm: Vec<i32>,
+    pub bas: Vec<i32>,
+    pub env: Vec<f64>,
+    pub shls: [i32; 4],
     pub natm: i32,
     pub nbas: i32,
     pub i_l: i32,
@@ -59,17 +73,17 @@ pub struct CINTEnvVars {
     pub expcutoff: f64,
     pub rirj: [f64; 3],
     pub rkrl: [f64; 3],
-    pub rx_in_rijrx: *mut f64,
-    pub rx_in_rklrx: *mut f64,
-    pub ri: *mut f64,
-    pub rj: *mut f64,
-    pub rk: *mut f64,
+    pub rx_in_rijrx: [f64; 3],
+    pub rx_in_rklrx: [f64; 3],
+    pub ri: [f64; 3],
+    pub rj: [f64; 3],
+    pub rk: [f64; 3],
     pub c2rust_unnamed_1: C2RustUnnamed,
     pub f_g0_2e: Option::<unsafe extern "C" fn() -> i32>,
     pub f_g0_2d4d: Option::<unsafe extern "C" fn() -> ()>,
     pub f_gout: Option::<unsafe extern "C" fn() -> ()>,
     pub opt: *mut CINTOpt,
-    pub idx: *mut i32,
+    pub idx: Vec<i32>,
     pub ai: [f64; 1],
     pub aj: [f64; 1],
     pub ak: [f64; 1],
@@ -79,88 +93,120 @@ pub struct CINTEnvVars {
     pub rkl: [f64; 3],
 }
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 #[repr(C)]
-pub union C2RustUnnamed {
-    pub rl: *mut f64,
-    pub grids: *mut f64,
+pub struct C2RustUnnamed {
+    pub rl: [f64; 3],
+    pub grids: Vec<f64>,
 }
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub union C2RustUnnamed_0 {
+pub struct C2RustUnnamed_0 {
     pub nfl: i32,
     pub ngrids: i32,
 }
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub union C2RustUnnamed_1 {
+pub struct C2RustUnnamed_1 {
     pub nfk: i32,
     pub grids_offset: i32,
 }
 
+impl PairData {
+    pub fn new() -> Self {
+        let mut pdata: PairData = PairData {
+            rij: [0.0; 3],
+            eij: 0.0,
+            cceij: 0.0,
+        };
+        pdata
+    }
+}
+
+impl Rys2eT {
+    pub fn new() -> Self {
+        let mut rys: Rys2eT = Rys2eT {
+            c00x: [0.0; 32],
+            c00y: [0.0; 32],
+            c00z: [0.0; 32],
+            c0px: [0.0; 32],
+            c0py: [0.0; 32],
+            c0pz: [0.0; 32],
+            b01: [0.0; 32],
+            b00: [0.0; 32],
+            b10: [0.0; 32],
+        };
+        rys
+    }
+}
+
 impl CINTEnvVars {
     pub fn new() -> Self {
-    let mut envs: CINTEnvVars = CINTEnvVars {
-        atm: 0 as *mut i32,
-        bas: 0 as *mut i32,
-        env: 0 as *mut f64,
-        shls: 0 as *mut i32,
-        natm: 0,
-        nbas: 0,
-        i_l: 0,
-        j_l: 0,
-        k_l: 0,
-        l_l: 0,
-        nfi: 0,
-        nfj: 0,
-        c2rust_unnamed: C2RustUnnamed_1 { nfk: 0 },
-        c2rust_unnamed_0: C2RustUnnamed_0 { nfl: 0 },
-        nf: 0,
-        rys_order: 0,
-        x_ctr: [0; 4],
-        gbits: 0,
-        ncomp_e1: 0,
-        ncomp_e2: 0,
-        ncomp_tensor: 0,
-        li_ceil: 0,
-        lj_ceil: 0,
-        lk_ceil: 0,
-        ll_ceil: 0,
-        g_stride_i: 0,
-        g_stride_k: 0,
-        g_stride_l: 0,
-        g_stride_j: 0,
-        nrys_roots: 0,
-        g_size: 0,
-        g2d_ijmax: 0,
-        g2d_klmax: 0,
-        common_factor: 0.,
-        expcutoff: 0.,
-        rirj: [0.; 3],
-        rkrl: [0.; 3],
-        rx_in_rijrx: 0 as *mut f64,
-        rx_in_rklrx: 0 as *mut f64,
-        ri: 0 as *mut f64,
-        rj: 0 as *mut f64,
-        rk: 0 as *mut f64,
-        c2rust_unnamed_1: C2RustUnnamed {
-            rl: 0 as *mut f64,
-        },
-        f_g0_2e: None,
-        f_g0_2d4d: None,
-        f_gout: None,
-        opt: 0 as *mut CINTOpt,
-        idx: 0 as *mut i32,
-        ai: [0.; 1],
-        aj: [0.; 1],
-        ak: [0.; 1],
-        al: [0.; 1],
-        fac: [0.; 1],
-        rij: [0.; 3],
-        rkl: [0.; 3],
-    };
-    envs
+        let mut envs: CINTEnvVars = CINTEnvVars {
+            atm: Vec::new(),
+            bas: Vec::new(),
+            env: Vec::new(),
+            shls: [0; 4],
+            natm: 0,
+            nbas: 0,
+            i_l: 0,
+            j_l: 0,
+            k_l: 0,
+            l_l: 0,
+            nfi: 0,
+            nfj: 0,
+            c2rust_unnamed: C2RustUnnamed_1 {
+                nfk: 0,
+                grids_offset: 0,
+            },
+            c2rust_unnamed_0: C2RustUnnamed_0 { nfl: 0, ngrids: 0 },
+            nf: 0,
+            rys_order: 0,
+            x_ctr: [0; 4],
+            gbits: 0,
+            ncomp_e1: 0,
+            ncomp_e2: 0,
+            ncomp_tensor: 0,
+            li_ceil: 0,
+            lj_ceil: 0,
+            lk_ceil: 0,
+            ll_ceil: 0,
+            g_stride_i: 0,
+            g_stride_k: 0,
+            g_stride_l: 0,
+            g_stride_j: 0,
+            nrys_roots: 0,
+            g_size: 0,
+            g2d_ijmax: 0,
+            g2d_klmax: 0,
+            common_factor: 0.,
+            expcutoff: 0.,
+            rirj: [0.; 3],
+            rkrl: [0.; 3],
+            rx_in_rijrx: [0.0; 3],
+            rx_in_rklrx: [0.0; 3],
+            ri: [0.0; 3],
+            rj: [0.0; 3],
+            rk: [0.0; 3],
+            c2rust_unnamed_1: C2RustUnnamed {
+                rl: [0.0; 3],
+                grids: Vec::new(),
+            },
+            f_g0_2e: None,
+            f_g0_2d4d: None,
+            f_gout: None,
+            opt: 0 as *mut CINTOpt,
+            idx: Vec::new(),
+            ai: [0.; 1],
+            aj: [0.; 1],
+            ak: [0.; 1],
+            al: [0.; 1],
+            fac: [0.; 1],
+            rij: [0.; 3],
+            rkl: [0.; 3],
+        };
+        envs
     }
 }

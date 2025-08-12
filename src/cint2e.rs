@@ -32,9 +32,9 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
     mut cache: *mut f64,
     mut empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
+    let mut shls: *mut i32 = (*envs).shls.as_mut_ptr();
+    let mut bas: *mut i32 = (*envs).bas.as_mut_ptr();
+    let mut env: *mut f64 = (*envs).env.as_mut_ptr();
     let mut i_sh: i32 = *shls.offset(0 as isize);
     let mut j_sh: i32 = *shls.offset(1 as isize);
     let mut k_sh: i32 = *shls.offset(2 as isize);
@@ -51,8 +51,8 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
         .offset((8 as i32 * k_sh + 2 as i32) as isize);
     let mut l_prim: i32 = *bas
         .offset((8 as i32 * l_sh + 2 as i32) as isize);
-    let mut rk: *mut f64 = (*envs).rk;
-    let mut rl: *mut f64 = (*envs).c2rust_unnamed_1.rl;
+    let mut rk: *mut f64 = (*envs).rk.as_mut_ptr();
+    let mut rl: *mut f64 = (*envs).c2rust_unnamed_1.rl.as_mut_ptr();
     let mut ai: *mut f64 = env
         .offset(
             *bas.offset((8 as i32 * i_sh + 5 as i32) as isize) as isize,
@@ -121,8 +121,8 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
         pdata_base,
         ai,
         aj,
-        (*envs).ri,
-        (*envs).rj,
+        (*envs).ri.as_mut_ptr(),
+        (*envs).rj.as_mut_ptr(),
         log_maxci,
         log_maxcj,
         (*envs).li_ceil,
@@ -550,9 +550,9 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
     mut cache: *mut f64,
     mut empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
+    let mut shls: *mut i32 = (*envs).shls.as_mut_ptr();
+    let mut bas: *mut i32 = (*envs).bas.as_mut_ptr();
+    let mut env: *mut f64 = (*envs).env.as_mut_ptr();
     let mut i_sh: i32 = *shls.offset(0 as isize);
     let mut j_sh: i32 = *shls.offset(1 as isize);
     let mut k_sh: i32 = *shls.offset(2 as isize);
@@ -645,8 +645,8 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
             _pdata_ij,
             ai,
             aj,
-            (*envs).ri,
-            (*envs).rj,
+            (*envs).ri.as_mut_ptr(),
+            (*envs).rj.as_mut_ptr(),
             log_maxci,
             log_maxcj,
             (*envs).li_ceil,
@@ -669,8 +669,8 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
             _pdata_kl,
             ak,
             al,
-            (*envs).rk,
-            (*envs).c2rust_unnamed_1.rl,
+            (*envs).rk.as_mut_ptr(),
+            (*envs).c2rust_unnamed_1.rl.as_mut_ptr(),
             log_maxck,
             log_maxcl,
             (*envs).lk_ceil,
@@ -885,9 +885,9 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
     mut cache: *mut f64,
     mut empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
+    let mut shls: *mut i32 = (*envs).shls.as_mut_ptr();
+    let mut bas: *mut i32 = (*envs).bas.as_mut_ptr();
+    let mut env: *mut f64 = (*envs).env.as_mut_ptr();
     let mut i_sh: i32 = *shls.offset(0 as isize);
     let mut j_sh: i32 = *shls.offset(1 as isize);
     let mut k_sh: i32 = *shls.offset(2 as isize);
@@ -980,8 +980,8 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
             _pdata_ij,
             ai,
             aj,
-            (*envs).ri,
-            (*envs).rj,
+            (*envs).ri.as_mut_ptr(),
+            (*envs).rj.as_mut_ptr(),
             log_maxci,
             log_maxcj,
             (*envs).li_ceil,
@@ -1004,8 +1004,8 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
             _pdata_kl,
             ak,
             al,
-            (*envs).rk,
-            (*envs).c2rust_unnamed_1.rl,
+            (*envs).rk.as_mut_ptr(),
+            (*envs).c2rust_unnamed_1.rl.as_mut_ptr(),
             log_maxck,
             log_maxcl,
             (*envs).lk_ceil,
@@ -1254,9 +1254,9 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
     mut cache: *mut f64,
     mut empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
+    let mut shls: *mut i32 = (*envs).shls.as_mut_ptr();
+    let mut bas: *mut i32 = (*envs).bas.as_mut_ptr();
+    let mut env: *mut f64 = (*envs).env.as_mut_ptr();
     let mut i_sh: i32 = *shls.offset(0 as isize);
     let mut j_sh: i32 = *shls.offset(1 as isize);
     let mut k_sh: i32 = *shls.offset(2 as isize);
@@ -1349,8 +1349,8 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
             _pdata_ij,
             ai,
             aj,
-            (*envs).ri,
-            (*envs).rj,
+            (*envs).ri.as_mut_ptr(),
+            (*envs).rj.as_mut_ptr(),
             log_maxci,
             log_maxcj,
             (*envs).li_ceil,
@@ -1373,8 +1373,8 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
             _pdata_kl,
             ak,
             al,
-            (*envs).rk,
-            (*envs).c2rust_unnamed_1.rl,
+            (*envs).rk.as_mut_ptr(),
+            (*envs).c2rust_unnamed_1.rl.as_mut_ptr(),
             log_maxck,
             log_maxcl,
             (*envs).lk_ceil,
@@ -1625,9 +1625,9 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
     mut cache: *mut f64,
     mut empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
+    let mut shls: *mut i32 = (*envs).shls.as_mut_ptr();
+    let mut bas: *mut i32 = (*envs).bas.as_mut_ptr();
+    let mut env: *mut f64 = (*envs).env.as_mut_ptr();
     let mut i_sh: i32 = *shls.offset(0 as isize);
     let mut j_sh: i32 = *shls.offset(1 as isize);
     let mut k_sh: i32 = *shls.offset(2 as isize);
@@ -1720,8 +1720,8 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
             _pdata_ij,
             ai,
             aj,
-            (*envs).ri,
-            (*envs).rj,
+            (*envs).ri.as_mut_ptr(),
+            (*envs).rj.as_mut_ptr(),
             log_maxci,
             log_maxcj,
             (*envs).li_ceil,
@@ -1744,8 +1744,8 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
             _pdata_kl,
             ak,
             al,
-            (*envs).rk,
-            (*envs).c2rust_unnamed_1.rl,
+            (*envs).rk.as_mut_ptr(),
+            (*envs).c2rust_unnamed_1.rl.as_mut_ptr(),
             log_maxck,
             log_maxcl,
             (*envs).lk_ceil,
@@ -1996,9 +1996,9 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
     mut cache: *mut f64,
     mut empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
+    let mut shls: *mut i32 = (*envs).shls.as_mut_ptr();
+    let mut bas: *mut i32 = (*envs).bas.as_mut_ptr();
+    let mut env: *mut f64 = (*envs).env.as_mut_ptr();
     let mut i_sh: i32 = *shls.offset(0 as isize);
     let mut j_sh: i32 = *shls.offset(1 as isize);
     let mut k_sh: i32 = *shls.offset(2 as isize);
@@ -2091,8 +2091,8 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
             _pdata_ij,
             ai,
             aj,
-            (*envs).ri,
-            (*envs).rj,
+            (*envs).ri.as_mut_ptr(),
+            (*envs).rj.as_mut_ptr(),
             log_maxci,
             log_maxcj,
             (*envs).li_ceil,
@@ -2115,8 +2115,8 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
             _pdata_kl,
             ak,
             al,
-            (*envs).rk,
-            (*envs).c2rust_unnamed_1.rl,
+            (*envs).rk.as_mut_ptr(),
+            (*envs).c2rust_unnamed_1.rl.as_mut_ptr(),
             log_maxck,
             log_maxcl,
             (*envs).lk_ceil,
@@ -2367,9 +2367,9 @@ pub unsafe extern "C" fn CINT2e_loop(
     mut cache: *mut f64,
     mut empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
+    let mut shls: *mut i32 = (*envs).shls.as_mut_ptr();
+    let mut bas: *mut i32 = (*envs).bas.as_mut_ptr();
+    let mut env: *mut f64 = (*envs).env.as_mut_ptr();
     let mut i_sh: i32 = *shls.offset(0 as isize);
     let mut j_sh: i32 = *shls.offset(1 as isize);
     let mut k_sh: i32 = *shls.offset(2 as isize);
@@ -2462,8 +2462,8 @@ pub unsafe extern "C" fn CINT2e_loop(
             _pdata_ij,
             ai,
             aj,
-            (*envs).ri,
-            (*envs).rj,
+            (*envs).ri.as_mut_ptr(),
+            (*envs).rj.as_mut_ptr(),
             log_maxci,
             log_maxcj,
             (*envs).li_ceil,
@@ -2486,8 +2486,8 @@ pub unsafe extern "C" fn CINT2e_loop(
             _pdata_kl,
             ak,
             al,
-            (*envs).rk,
-            (*envs).c2rust_unnamed_1.rl,
+            (*envs).rk.as_mut_ptr(),
+            (*envs).c2rust_unnamed_1.rl.as_mut_ptr(),
             log_maxck,
             log_maxcl,
             (*envs).lk_ceil,
@@ -3051,8 +3051,8 @@ pub unsafe extern "C" fn CINT2e_drv(
     let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2
         * (*envs).ncomp_tensor;
     if out.is_null() {
-        let mut bas: *mut i32 = (*envs).bas;
-        let mut shls: *mut i32 = (*envs).shls;
+        let mut bas: *mut i32 = (*envs).bas.as_mut_ptr();
+        let mut shls: *mut i32 = (*envs).shls.as_mut_ptr();
         let mut i_prim: i32 = *bas
             .offset(
                 (8 as i32 * *shls.offset(0 as isize)
@@ -3115,8 +3115,8 @@ pub unsafe extern "C" fn CINT2e_drv(
     }
     let mut stack: *mut f64 = 0 as *mut f64;
     if cache.is_null() {
-        let mut bas_0: *mut i32 = (*envs).bas;
-        let mut shls_0: *mut i32 = (*envs).shls;
+        let mut bas_0: *mut i32 = (*envs).bas.as_mut_ptr();
+        let mut shls_0: *mut i32 = (*envs).shls.as_mut_ptr();
         let mut i_prim_0: i32 = *bas_0
             .offset(
                 (8 as i32 * *shls_0.offset(0 as isize)
