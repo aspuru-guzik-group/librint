@@ -5,20 +5,24 @@ use std::env;
 
 use std::time::Instant;
 
-use std::autodiff::autodiff;
+use std::autodiff::*; //::autodiff;
 use librint::utils::read_basis;
 use librint::scf::nmol;
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
-use librint::cint2e::cint2e_cart;
+// use librint::cint2e::cint2e_cart;
+
+// use librint::reduc::{nmol, CINTcgto_cart, cint1e_ovlp_cart};
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
 #[no_mangle]
-#[autodiff(dovlpp, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
-#[autodiff(dovlppfor, Forward, Dual, Const, Const, Const, Const, Const, Dual)]
+// #[autodiff(dovlppfor, Forward, Dual, Const, Const, Const, Const, Const, Dual)]
+#[autodiff_forward(dovlppfor, Dual, Const, Const, Const, Const, Const, Dual)]
+// #[autodiff_reverse(dovlpp, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
+// #[autodiff(dovlpp, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
 fn ovlpp(
     out: &mut [f64], 
     shls: &mut [i32], 
@@ -39,29 +43,6 @@ fn ovlpp(
         std::ptr::null_mut(),
     );
 }
-
-// #[no_mangle]
-// #[autodiff(dovlppfor, Forward, Dual, Const, Const, Const, Const, Const, Dual)]
-// fn ovlpp(
-//     out: &mut [f64], 
-//     shls: &mut [i32], 
-//     atm: &mut [i32],
-//     natm: usize, 
-//     bas: &mut [i32], 
-//     nbas: usize, 
-//     env: &mut [f64]
-// ) {
-//     cint1e_ovlp_cart(
-//         out, 
-//         shls, 
-//         atm, 
-//         natm as i32, 
-//         bas, 
-//         nbas as i32, 
-//         env,
-//         std::ptr::null_mut(),
-//     );
-// }
 
 // #[no_mangle]
 // #[autodiff(drepp, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]

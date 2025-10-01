@@ -16,6 +16,11 @@ debug-assertions = true
 lto = "fat"
 debug = 0
 
+[profile.profiling]
+inherits = "dev"
+opt-level = 1
+debug = true
+
 [profile.release]
 lto = "fat"
 debug = 0
@@ -25,8 +30,8 @@ debug = 0
 # crate-type = ["cdylib"]
 
 [[bin]]
-name = "int"
-path = "primal/integral.rs"
+name = "overhead"
+path = "overhead/overhead.rs"
 
 [[bin]]
 name = "dint"
