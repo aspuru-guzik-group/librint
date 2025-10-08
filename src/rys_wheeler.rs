@@ -5,14 +5,14 @@ use crate::fmt::fmt_erfc_like;
 use crate::eigh::_CINTdiagonalize;
 
 extern "C" {
-    fn expl(_: f64) -> f64;
-    fn exp(_: f64) -> f64;
-    fn sqrtl(_: f64) -> f64;
-    fn sqrt(_: f64) -> f64;
-    fn erfl(_: f64) -> f64;
-    fn erf(_: f64) -> f64;
-    fn erfcl(_: f64) -> f64;
-    fn erfc(_: f64) -> f64;
+    pub fn expl(_: f64) -> f64;
+    pub fn exp(_: f64) -> f64;
+    pub fn sqrtl(_: f64) -> f64;
+    pub fn sqrt(_: f64) -> f64;
+    pub fn erfl(_: f64) -> f64;
+    pub fn erf(_: f64) -> f64;
+    pub fn erfcl(_: f64) -> f64;
+    pub fn erfc(_: f64) -> f64;
 }
 
 static mut JACOBI_ALPHA: [f64; 48] = [
