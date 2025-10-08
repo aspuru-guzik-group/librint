@@ -102,11 +102,8 @@ pub unsafe extern "C" fn CINT1e_drv(
         .as_mut_ptr()
         .offset(2 as isize);
     let mut idx: *mut i32 = 0 as *mut i32;
-    //let nc: i32 = 42;//i_ctr * j_ctr;
     let mut g: *mut f64 = 0 as *mut f64;
     let mut gout: *mut f64 = 0 as *mut f64;
-    //let mut gctri: *mut f64 = 0 as *mut f64;
-    //let mut gctrj: *mut f64 = 0 as *mut f64;
     g = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut f64;
