@@ -78,77 +78,17 @@ pub unsafe extern "C" fn CINT1e_loop(
     log_maxcj = log_maxci.offset(i_prim as isize);
     CINTOpt_log_max_pgto_coeff(log_maxci, ci, i_prim, i_ctr);
     CINTOpt_log_max_pgto_coeff(log_maxcj, cj, j_prim, j_ctr);
-    if CINTset_pairdata(
-        pdata_base,
-        ai,
-        aj,
-        (*envs).ri,
-        (*envs).rj,
-        log_maxci,
-        log_maxcj,
-        (*envs).li_ceil,
-        (*envs).lj_ceil,
-        i_prim,
-        j_prim,
-        (*envs).rirj[0 as usize] * (*envs).rirj[0 as usize]
-            + (*envs).rirj[1 as usize]
-                * (*envs).rirj[1 as usize]
-            + (*envs).rirj[2 as usize]
-                * (*envs).rirj[2 as usize],
-        expcutoff,
-        env,
-    ) != 0
-    {
-        return 0 as i32;
-    }
-    let mut fac1i: f64 = 0.;
-    let mut fac1j: f64 = 0.;
-    let mut expij: f64 = 0.;
-    let mut ip: i32 = 0;
-    let mut jp: i32 = 0;
     let mut empty: [i32; 4] = [
         1 as i32,
         1 as i32,
         1 as i32,
         1 as i32,
     ];
-    let mut gempty: *mut i32 = empty
-        .as_mut_ptr()
-        .offset(0 as isize);
-    let mut iempty: *mut i32 = empty
-        .as_mut_ptr()
-        .offset(1 as isize);
     let mut jempty: *mut i32 = empty
         .as_mut_ptr()
         .offset(2 as isize);
-    let mut rij: *mut f64 = 0 as *mut f64;
     let mut idx: *mut i32 = 0 as *mut i32;
-    idx = ((cache as uintptr_t).wrapping_add(7 as u64)
-        & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
-        as *mut i32;
-    cache = idx.offset(((*envs).nf * 3 as i32) as isize) as *mut f64;
-    CINTg1e_index_xyz(idx, envs);
-    let mut non0ctri: *mut i32 = 0 as *mut i32;
-    let mut non0ctrj: *mut i32 = 0 as *mut i32;
-    let mut non0idxi: *mut i32 = 0 as *mut i32;
-    let mut non0idxj: *mut i32 = 0 as *mut i32;
-    non0ctri = ((cache as uintptr_t).wrapping_add(7 as u64)
-        & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
-        as *mut i32;
-    cache = non0ctri.offset((i_prim + j_prim + i_prim * i_ctr + j_prim * j_ctr) as isize)
-        as *mut f64;
-    non0ctrj = non0ctri.offset(i_prim as isize);
-    non0idxi = non0ctrj.offset(j_prim as isize);
-    non0idxj = non0idxi.offset((i_prim * i_ctr) as isize);
-    CINTOpt_non0coeff_byshell(non0idxi, non0ctri, ci, i_prim, i_ctr);
-    CINTOpt_non0coeff_byshell(non0idxj, non0ctrj, cj, j_prim, j_ctr);
     let nc: i32 = i_ctr * j_ctr;
-    let leng: i32 = (*envs).g_size * 3 as i32
-        * (((1 as i32) << (*envs).gbits) + 1 as i32);
-    let lenj: i32 = (*envs).nf * nc * n_comp;
-    let leni: i32 = (*envs).nf * i_ctr * n_comp;
-    let len0: i32 = (*envs).nf * n_comp;
-    let len: i32 = leng + lenj + leni + len0;
     let mut g: *mut f64 = 0 as *mut f64;
     let mut gout: *mut f64 = 0 as *mut f64;
     let mut gctri: *mut f64 = 0 as *mut f64;
@@ -156,33 +96,14 @@ pub unsafe extern "C" fn CINT1e_loop(
     g = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut f64;
-    cache = g.offset(len as isize);
-    let mut g1: *mut f64 = g.offset(leng as isize);
-    if n_comp == 1 as i32 {
-        gctrj = gctr;
-    } else {
-        gctrj = g1;
-        g1 = g1.offset(lenj as isize);
-    }
-    if j_ctr == 1 as i32 {
-        gctri = gctrj;
-        iempty = jempty;
-    } else {
-        gctri = g1;
-        g1 = g1.offset(leni as isize);
-    }
-    if i_ctr == 1 as i32 {
-        gout = gctri;
-        gempty = iempty;
-    } else {
-        gout = g1;
-    }
-    let mut common_factor: f64 = (*envs).common_factor
-        * CINTcommon_fac_sp((*envs).i_l) * CINTcommon_fac_sp((*envs).j_l);
-    pdata_ij = pdata_base;
-    jp = 0 as i32;
-    // new
-    make_g1e_gout(gout, g, idx, envs, *gempty, int1e_type);
+    CINTg1e_nuc(g, envs, -(1 as i32));
+    ::core::mem::transmute::<
+        _,
+        fn(_, _, _, _, _),
+    >(
+        (Some(((*envs).f_gout).expect("non-null function pointer")))
+            .expect("non-null function pointer"),
+    )(gout, g, idx, envs, empty);
     if n_comp > 1 as i32 && *jempty == 0 {
         CINTdmat_transpose(gctr, gctrj, (*envs).nf * nc, n_comp);
     }
@@ -261,25 +182,25 @@ pub unsafe extern "C" fn CINT1e_drv(
     return has_value;
 }
 // Manuel 
-unsafe extern "C" fn make_g1e_gout(
-    mut gout: *mut f64,
-    mut g: *mut f64,
-    mut idx: *mut i32,
-    mut envs: *mut CINTEnvVars,
-    mut empty: i32,
-    mut int1e_type: i32,
-) {
-    //let mut ia: i32 = 0;
-    // new
-    CINTg1e_nuc(g, envs, -(1 as i32));
-    ::core::mem::transmute::<
-        _,
-        fn(_, _, _, _, _),
-    >(
-        (Some(((*envs).f_gout).expect("non-null function pointer")))
-            .expect("non-null function pointer"),
-    )(gout, g, idx, envs, empty);
-}
+//unsafe extern "C" fn make_g1e_gout(
+//    mut gout: *mut f64,
+//    mut g: *mut f64,
+//    mut idx: *mut i32,
+//    mut envs: *mut CINTEnvVars,
+//    mut empty: i32,
+//    mut int1e_type: i32,
+//) {
+//    //let mut ia: i32 = 0;
+//    // new
+//    CINTg1e_nuc(g, envs, -(1 as i32));
+//    ::core::mem::transmute::<
+//        _,
+//        fn(_, _, _, _, _),
+//    >(
+//        (Some(((*envs).f_gout).expect("non-null function pointer")))
+//            .expect("non-null function pointer"),
+//    )(gout, g, idx, envs, empty);
+//}
 #[no_mangle]
 pub unsafe extern "C" fn CINTgout1e(
     mut gout: *mut f64,
