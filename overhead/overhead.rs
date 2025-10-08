@@ -1,9 +1,9 @@
 #![allow(dead_code, unused, non_snake_case, non_upper_case_globals,unused_variables,improper_ctypes_definitions,static_mut_refs)]
 #![feature(autodiff)]
 
-use librint::rys_roots::*;
-use librint::rys_wheeler::*;
-
+//use librint::rys_roots::*;
+use librint::rys_roots::{segment_solve, CINTrys_schmidt, CINTlrys_schmidt, rys_root5, rys_root4, rys_root3, rys_root2, rys_root1, POLY_SMALLX_R0, POLY_SMALLX_R1, POLY_SMALLX_W0, POLY_SMALLX_W1, POLY_LARGEX_WW, POLY_LARGEX_RT};
+use librint::rys_wheeler::{sqrt, CINTlrys_jacobi, CINTlrys_laguerre, CINTrys_jacobi};
 
 use std::io;
 use std::fs::File;
