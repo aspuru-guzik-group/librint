@@ -7,7 +7,17 @@ use std::time::Instant;
 
 use std::autodiff::*; //::autodiff;
 use librint::utils::read_basis;
-use librint::scf::nmol;
+//use librint::scf::nmol;
+#[no_mangle]
+pub fn nmol(
+    atm: &Vec<i32>,
+    bas: &Vec<i32>,
+) 
+-> (usize, usize) {
+    let natm: usize = atm.len() / ATM_SLOTS;
+    let nbas: usize = bas.len() / BAS_SLOTS;
+    return (natm, nbas);
+}
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
