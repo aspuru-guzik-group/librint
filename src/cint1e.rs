@@ -26,42 +26,6 @@ extern "C" {
     fn free(__ptr: *mut libc::c_void);
 }
 
-// Manuel up
-#[no_mangle]
-//pub unsafe extern "C" fn CINT1e_loop(
-//    mut gctr: *mut f64,
-//    mut envs: *mut CINTEnvVars,
-//    mut cache: *mut f64,
-//    mut int1e_type: i32,
-//) -> i32 {
-//    let mut empty: [i32; 4] = [
-//        1 as i32,
-//        1 as i32,
-//        1 as i32,
-//        1 as i32,
-//    ];
-//    let mut jempty: *mut i32 = empty
-//        .as_mut_ptr()
-//        .offset(2 as isize);
-//    let mut idx: *mut i32 = 0 as *mut i32;
-//    let nc: i32 = 42;//i_ctr * j_ctr;
-//    let mut g: *mut f64 = 0 as *mut f64;
-//    let mut gout: *mut f64 = 0 as *mut f64;
-//    let mut gctri: *mut f64 = 0 as *mut f64;
-//    let mut gctrj: *mut f64 = 0 as *mut f64;
-//    g = ((cache as uintptr_t).wrapping_add(7 as u64)
-//        & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
-//        as *mut f64;
-//    CINTg1e_nuc(g, envs, -(1 as i32));
-//    ::core::mem::transmute::<
-//        _,
-//        fn(_, _, _, _, _),
-//    >(
-//        (Some(((*envs).f_gout).expect("non-null function pointer")))
-//            .expect("non-null function pointer"),
-//    )(gout, g, idx, envs, empty);
-//    return (*jempty == 0) as i32;
-//}
 #[no_mangle]
 pub unsafe extern "C" fn int1e_cache_size(mut envs: *mut CINTEnvVars) -> i32 {
     let mut shls: *mut i32 = (*envs).shls;
@@ -110,13 +74,10 @@ pub unsafe extern "C" fn CINT1e_drv(
     mut f_c2s: Option::<unsafe extern "C" fn() -> ()>,
     mut int1e_type: i32,
 ) -> i32 {
-    if out.is_null() {
-        return int1e_cache_size(envs);
-    }
     let mut x_ctr: *mut i32 = ((*envs).x_ctr).as_mut_ptr();
     let mut nc: i32 = (*envs).nf * *x_ctr.offset(0 as isize)
         * *x_ctr.offset(1 as isize);
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
+    let mut n_comp: i32 = 42;
     let mut stack: *mut f64 = 0 as *mut f64;
     if cache.is_null() {
         let mut cache_size: u64 = int1e_cache_size(envs) as u64;
@@ -141,11 +102,11 @@ pub unsafe extern "C" fn CINT1e_drv(
         .as_mut_ptr()
         .offset(2 as isize);
     let mut idx: *mut i32 = 0 as *mut i32;
-    let nc: i32 = 42;//i_ctr * j_ctr;
+    //let nc: i32 = 42;//i_ctr * j_ctr;
     let mut g: *mut f64 = 0 as *mut f64;
     let mut gout: *mut f64 = 0 as *mut f64;
-    let mut gctri: *mut f64 = 0 as *mut f64;
-    let mut gctrj: *mut f64 = 0 as *mut f64;
+    //let mut gctri: *mut f64 = 0 as *mut f64;
+    //let mut gctrj: *mut f64 = 0 as *mut f64;
     g = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut f64;
@@ -373,16 +334,16 @@ pub unsafe extern "C" fn int1e_ovlp_cart(
     mut opt: *mut CINTOpt,
     mut cache: *mut f64,
 ) -> i32 {
-    let mut ng: [i32; 8] = [
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        1 as i32,
-        1 as i32,
-        1 as i32,
-    ];
+    //let mut ng: [i32; 8] = [
+    //    0 as i32,
+    //    0 as i32,
+    //    0 as i32,
+    //    0 as i32,
+    //    0 as i32,
+    //    1 as i32,
+    //    1 as i32,
+    //    1 as i32,
+    //];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     return CINT1e_drv(
         out,
