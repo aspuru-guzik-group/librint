@@ -1,7 +1,7 @@
 #![allow(dead_code, unused, non_snake_case, non_upper_case_globals,unused_variables,improper_ctypes_definitions,static_mut_refs)]
 #![feature(autodiff)]
 
-use librint::rys_roots::{segment_solve, CINTrys_schmidt, CINTlrys_schmidt, rys_root5, rys_root4, rys_root3, rys_root2, rys_root1, POLY_SMALLX_R0, POLY_SMALLX_R1, POLY_SMALLX_W0, POLY_SMALLX_W1, POLY_LARGEX_WW, POLY_LARGEX_RT};
+use librint::rys_roots::{POLY_SMALLX_R0, POLY_SMALLX_R1, POLY_SMALLX_W0, POLY_SMALLX_W1, POLY_LARGEX_WW, POLY_LARGEX_RT};
 extern "C" {
     pub fn sqrt(_: f64) -> f64;
 }
@@ -282,19 +282,19 @@ pub unsafe extern "C" fn CINTrys_roots(
     let mut err: i32 = 0;
     match nroots {
         1 => {
-            err = rys_root1(x, u, w);
+            err = 42; //rys_root1(x, u, w);
         }
         2 => {
-            err = rys_root2(x, u, w);
+            err = 42; //rys_root2(x, u, w);
         }
         3 => {
-            err = rys_root3(x, u, w);
+            err = 42; //rys_root3(x, u, w);
         }
         4 => {
-            err = rys_root4(x, u, w);
+            err = 42; //rys_root4(x, u, w);
         }
         5 => {
-            err = rys_root5(x, u, w);
+            err = 42; //rys_root5(x, u, w);
         }
         6 | 7 => {
             err = 42;
