@@ -34,50 +34,7 @@ pub unsafe extern "C" fn CINT1e_loop(
     mut cache: *mut f64,
     mut int1e_type: i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
-    let mut i_sh: i32 = *shls.offset(0 as isize);
-    let mut j_sh: i32 = *shls.offset(1 as isize);
-    let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
-    let mut i_prim: i32 = *bas
-        .offset((8 as i32 * i_sh + 2 as i32) as isize);
-    let mut j_prim: i32 = *bas
-        .offset((8 as i32 * j_sh + 2 as i32) as isize);
-    let mut ai: *mut f64 = env
-        .offset(
-            *bas.offset((8 as i32 * i_sh + 5 as i32) as isize) as isize,
-        );
-    let mut aj: *mut f64 = env
-        .offset(
-            *bas.offset((8 as i32 * j_sh + 5 as i32) as isize) as isize,
-        );
-    let mut ci: *mut f64 = env
-        .offset(
-            *bas.offset((8 as i32 * i_sh + 6 as i32) as isize) as isize,
-        );
-    let mut cj: *mut f64 = env
-        .offset(
-            *bas.offset((8 as i32 * j_sh + 6 as i32) as isize) as isize,
-        );
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
-    let mut expcutoff: f64 = (*envs).expcutoff;
-    let mut log_maxci: *mut f64 = 0 as *mut f64;
-    let mut log_maxcj: *mut f64 = 0 as *mut f64;
-    let mut pdata_base: *mut PairData = 0 as *mut PairData;
-    let mut pdata_ij: *mut PairData = 0 as *mut PairData;
-    log_maxci = ((cache as uintptr_t).wrapping_add(7 as u64)
-        & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
-        as *mut f64;
-    cache = log_maxci.offset((i_prim + j_prim) as isize);
-    pdata_base = ((cache as uintptr_t).wrapping_add(7 as u64)
-        & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
-        as *mut PairData;
-    cache = pdata_base.offset((i_prim * j_prim) as isize) as *mut f64;
-    log_maxcj = log_maxci.offset(i_prim as isize);
-    CINTOpt_log_max_pgto_coeff(log_maxci, ci, i_prim, i_ctr);
-    CINTOpt_log_max_pgto_coeff(log_maxcj, cj, j_prim, j_ctr);
+    let mut n_comp: i32 = 42;//(*envs).ncomp_e1 * (*envs).ncomp_tensor;
     let mut empty: [i32; 4] = [
         1 as i32,
         1 as i32,
@@ -88,7 +45,7 @@ pub unsafe extern "C" fn CINT1e_loop(
         .as_mut_ptr()
         .offset(2 as isize);
     let mut idx: *mut i32 = 0 as *mut i32;
-    let nc: i32 = i_ctr * j_ctr;
+    let nc: i32 = 42;//i_ctr * j_ctr;
     let mut g: *mut f64 = 0 as *mut f64;
     let mut gout: *mut f64 = 0 as *mut f64;
     let mut gctri: *mut f64 = 0 as *mut f64;
@@ -104,9 +61,9 @@ pub unsafe extern "C" fn CINT1e_loop(
         (Some(((*envs).f_gout).expect("non-null function pointer")))
             .expect("non-null function pointer"),
     )(gout, g, idx, envs, empty);
-    if n_comp > 1 as i32 && *jempty == 0 {
-        CINTdmat_transpose(gctr, gctrj, (*envs).nf * nc, n_comp);
-    }
+    //if n_comp > 1 as i32 && *jempty == 0 {
+    //    CINTdmat_transpose(gctr, gctrj, (*envs).nf * nc, n_comp);
+    //}
     return (*jempty == 0) as i32;
 }
 #[no_mangle]
