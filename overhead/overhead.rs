@@ -2,7 +2,6 @@
 #![feature(autodiff)]
 
 use librint::rys_roots::{segment_solve, CINTrys_schmidt, CINTlrys_schmidt, rys_root5, rys_root4, rys_root3, rys_root2, rys_root1, POLY_SMALLX_R0, POLY_SMALLX_R1, POLY_SMALLX_W0, POLY_SMALLX_W1, POLY_LARGEX_WW, POLY_LARGEX_RT};
-use librint::rys_wheeler::{CINTlrys_laguerre, CINTrys_jacobi};
 extern "C" {
     pub fn sqrt(_: f64) -> f64;
 }
@@ -298,64 +297,10 @@ pub unsafe extern "C" fn CINTrys_roots(
             err = rys_root5(x, u, w);
         }
         6 | 7 => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                11 as f64,
-                Some(
-                    CINTrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTrys_schmidt
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
+            err = 42;
         }
         8 => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                11 as f64,
-                Some(
-                    CINTrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTlrys_schmidt
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
+            err = 42;
         }
         9 => {
             err = 42;
