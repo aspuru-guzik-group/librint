@@ -6,7 +6,7 @@ use crate::fmt::fmt_lerfc_like;
 use crate::fmt::gamma_inc_like;
 use crate::fmt::lgamma_inc_like;
 use crate::rys_wheeler::CINTlrys_laguerre;
-use crate::rys_wheeler::CINTrys_jacobi;
+//use crate::rys_wheeler::CINTrys_jacobi;
 use crate::rys_wheeler::CINTlrys_jacobi;
 
 extern "C" {

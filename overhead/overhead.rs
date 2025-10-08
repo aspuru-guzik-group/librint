@@ -1,6 +1,96 @@
 #![allow(dead_code, unused, non_snake_case, non_upper_case_globals,unused_variables,improper_ctypes_definitions,static_mut_refs)]
 #![feature(autodiff)]
 
+use librint::rys_roots::*;
+use librint::rys_wheeler::*;
+
+
+use std::io;
+use std::fs::File;
+use std::io::BufReader;
+use std::io::BufWriter;
+use std::io::prelude::*;
+
+use std::env;
+use std::time::Instant;
+
+use std::autodiff::*; //::autodiff;
+
+
+enum Token {
+    Int(i32),
+    Float(f64),
+    Delimiter,
+    Invalid,
+}
+
+pub fn read_basis(
+    path: &str, // std::path::PathBuf,
+    atm: &mut Vec<i32>, 
+    bas: &mut Vec<i32>, 
+    env: &mut Vec<f64>
+) -> io::Result<()> {
+    // assert!(path.exists());
+    let file = File::open(path)?;
+    let mut reader = BufReader::new(file);
+    let mut contents = String::new();
+    reader.read_to_string(&mut contents)?;
+
+    let mut tokens = contents.split_whitespace().map(|s| {
+        if s == "|" {
+            Token::Delimiter
+        } else if let Ok(int_val) = s.parse::<i32>() {
+            Token::Int(int_val)
+        } else if let Ok(float_val) = s.parse::<f64>() {
+            Token::Float(float_val)
+        } else {
+            Token::Invalid
+        }
+    });
+
+    while let Some(token) = tokens.next() {
+        match token {
+            Token::Int(value) => {
+                atm.push(value);
+            }
+            Token::Delimiter => {
+                break;
+            }
+            Token::Float(_) | Token::Invalid => {
+                println!("Error: Expected int in file.");
+            }
+        }
+    }
+
+    while let Some(token) = tokens.next() {
+        match token {
+            Token::Int(value) => {
+                bas.push(value);
+            }
+            Token::Delimiter => {
+                break;
+            }
+            Token::Float(_) | Token::Invalid => {
+                println!("Error: Expected int in file.");
+            }
+        }
+    }
+
+    while let Some(token) = tokens.next() {
+        match token {
+            Token::Float(value) => {
+                env.push(value);
+            }
+            Token::Delimiter => (),
+            Token::Int(_) | Token::Invalid => {
+                println!("Error: Expected float in file.");
+            }
+        }
+    }
+    Ok(())
+}
+
+
 #[no_mangle]
 pub fn CINTcgto_cart(
     bas_id: usize,
@@ -140,12 +230,6 @@ pub struct PairData {
 }
 
 //mod rys_roots;
-use librint::rys_roots::*;
-use librint::rys_wheeler::*;
-use std::env;
-
-use std::time::Instant;
-
 fn SQUARE(r: *mut f64) -> f64 {
     unsafe {
         (*r.add(0) * *r.add(0)) + (*r.add(1) * *r.add(1)) + (*r.add(2) * *r.add(2))
@@ -426,9 +510,6 @@ pub unsafe extern "C" fn CINTnuc_mod(
     };
 }
 
-use std::autodiff::*; //::autodiff;
-use librint::utils::read_basis;
-//use librint::scf::nmol;
 #[no_mangle]
 pub fn nmol(
     atm: &Vec<i32>,
@@ -459,12 +540,6 @@ pub union C2RustUnnamed_1 {
     pub nfk: i32,
     pub grids_offset: i32,
 }
-
-//use librint::cint_bas::CINTcgto_cart;
-//use librint::cint1e::cint1e_ovlp_cart;
-// use librint::cint2e::cint2e_cart;
-
-// use librint::reduc::{nmol, CINTcgto_cart, cint1e_ovlp_cart};
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
