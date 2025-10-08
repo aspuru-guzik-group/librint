@@ -1,9 +1,11 @@
 #![allow(dead_code, unused, non_snake_case, non_upper_case_globals,unused_variables,improper_ctypes_definitions,static_mut_refs)]
 #![feature(autodiff)]
 
-//use librint::rys_roots::*;
 use librint::rys_roots::{segment_solve, CINTrys_schmidt, CINTlrys_schmidt, rys_root5, rys_root4, rys_root3, rys_root2, rys_root1, POLY_SMALLX_R0, POLY_SMALLX_R1, POLY_SMALLX_W0, POLY_SMALLX_W1, POLY_LARGEX_WW, POLY_LARGEX_RT};
-use librint::rys_wheeler::{sqrt, CINTlrys_jacobi, CINTlrys_laguerre, CINTrys_jacobi};
+use librint::rys_wheeler::{CINTlrys_laguerre, CINTrys_jacobi};
+extern "C" {
+    pub fn sqrt(_: f64) -> f64;
+}
 
 use std::io;
 use std::fs::File;
@@ -356,124 +358,16 @@ pub unsafe extern "C" fn CINTrys_roots(
             );
         }
         9 => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                10 as f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
+            err = 42;
         }
         10 | 11 => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                18 as f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
+            err = 42;
         }
         12 => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                22 as f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
+            err = 42;
         }
         _ => {
-            err = segment_solve(
-                nroots,
-                x,
-                0.0f64,
-                u,
-                w,
-                50 as f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
-                ),
-            );
+            err = 42;
         }
     }
     if err != 0 {
