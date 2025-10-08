@@ -1,7 +1,6 @@
 #![allow(dead_code, unused, non_snake_case, non_upper_case_globals,unused_variables,improper_ctypes_definitions,static_mut_refs)]
 #![feature(autodiff)]
 
-use librint::rys_roots::{POLY_SMALLX_R0, POLY_SMALLX_R1, POLY_SMALLX_W0, POLY_SMALLX_W1, POLY_LARGEX_WW, POLY_LARGEX_RT};
 extern "C" {
     pub fn sqrt(_: f64) -> f64;
 }
@@ -230,7 +229,6 @@ pub struct PairData {
     pub cceij: f64,
 }
 
-//mod rys_roots;
 fn SQUARE(r: *mut f64) -> f64 {
     unsafe {
         (*r.add(0) * *r.add(0)) + (*r.add(1) * *r.add(1)) + (*r.add(2) * *r.add(2))
@@ -248,20 +246,6 @@ pub unsafe extern "C" fn CINTrys_roots(
             / 2 as i32;
         let mut i: i32 = 0;
         i = 0 as i32;
-        while i < nroots {
-            *u
-                .offset(
-                    i as isize,
-                ) = POLY_SMALLX_R0[(off + i) as usize]
-                + POLY_SMALLX_R1[(off + i) as usize] * x;
-            *w
-                .offset(
-                    i as isize,
-                ) = POLY_SMALLX_W0[(off + i) as usize]
-                + POLY_SMALLX_W1[(off + i) as usize] * x;
-            i += 1;
-            i;
-        }
         return;
     } else if x >= (35 as i32 + nroots * 5 as i32) as f64 {
         let mut off_0: i32 = nroots * (nroots - 1 as i32)
@@ -271,9 +255,9 @@ pub unsafe extern "C" fn CINTrys_roots(
         let mut t: f64 = sqrt(0.78539816339744827900f64 / x);
         i_0 = 0 as i32;
         while i_0 < nroots {
-            rt = POLY_LARGEX_RT[(off_0 + i_0) as usize];
+            rt = 3.3;
             *u.offset(i_0 as isize) = rt / (x - rt);
-            *w.offset(i_0 as isize) = POLY_LARGEX_WW[(off_0 + i_0) as usize] * t;
+            *w.offset(i_0 as isize) = 3.14;
             i_0 += 1;
             i_0;
         }
