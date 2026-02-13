@@ -30,8 +30,8 @@ debug = 0
 
 [[bin]]
 name = "overhead"
-path = "overhead/overhead.rs"
+path = "tests/overhead/overhead.rs"
 
 [[bin]]
 name = "dint"
-path = "enzyme/integral.rs"
+path = "tests/enzyme/integral.rs"
