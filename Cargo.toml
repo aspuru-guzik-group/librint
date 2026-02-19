@@ -24,10 +24,14 @@ debug = 0
 # [lib]
 # crate-type = ["cdylib"]
 
-[[bin]]
-name = "int"
-path = "primal/integral.rs"
+#[[bin]]
+#name = "int"
+#path = "primal/integral.rs"
+
+#[[bin]]
+#name = "dint"
+#path = "enzyme/integral.rs"
 
 [[bin]]
-name = "dint"
-path = "enzyme/integral.rs"
+name = "simple"
+path = "tests/simple.rs"
