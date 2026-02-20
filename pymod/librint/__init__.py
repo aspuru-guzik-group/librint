@@ -1,9 +1,18 @@
 import os
 import ctypes
+import sys
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-so_path = os.path.join(current_dir, "librint.so")
+def dylib_suffix():
+    # sys.platform is stable across CPython implementations
+    if sys.platform == "darwin":
+        return ".dylib"
+    if sys.platform.startswith("win"):
+        return ".dll"
+    return ".so"
+
+so_path = os.path.join(current_dir, "librint" + dylib_suffix())
 
 library = None
 
