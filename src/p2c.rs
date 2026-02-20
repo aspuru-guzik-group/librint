@@ -1,9 +1,15 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
+#![feature(autodiff)]
 
-use crate::scf::{integral1e, integral2e, density, energyfast, scf};
+use std::autodiff::*;
+
+use crate::cint1e::cint1e_ovlp_cart;
+use crate::utils::{split, combine};
+
+use crate::scf::{nmol, integral1e, integral2e, density, energyfast, scf};
 use crate::dscf::{dovlp, dHcoreg, dSg, dRg, gradenergy, danalyticalg, denergyfast};
 
-use crate::utils::split;
+// use crate::utils::split;
 use crate::cint_bas::CINTcgto_cart;
 
 #[no_mangle]
@@ -66,6 +72,21 @@ pub extern "C" fn int2e_c(
 }
 
 #[no_mangle]
+#[autodiff_reverse(dovlpp, Duplicated, Const, Const, Const, Const, Duplicated)]
+pub fn ovlppp(
+    out: &mut Vec<f64>, 
+    shls: &mut Vec<i32>, 
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>, 
+    env1: &mut Vec<f64>,
+    env2: &mut Vec<f64>,
+) {
+    let (natm, nbas) = nmol(atm, bas);
+    let mut env: Vec<f64> = combine(&env1, &env2);
+    cint1e_ovlp_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
+}
+
+#[no_mangle]
 pub extern "C" fn dint1e_ovlp_c(
     i: i32,
     j: i32,
@@ -93,7 +114,7 @@ pub extern "C" fn dint1e_ovlp_c(
     let mut buf = vec![0.0; di * dj];
     let mut dbuf = vec![0.0; di * dj];
 
-    dovlp(&mut buf, &mut dbuf, &mut shls, &mut atm, &mut bas, &mut env1, &mut env2, &mut denv);
+    dovlpp(&mut buf, &mut dbuf, &mut shls, &mut atm, &mut bas, &mut env1, &mut env2, &mut denv);
 
     let denv_ptr = denv.as_mut_ptr();
     std::mem::forget(denv);

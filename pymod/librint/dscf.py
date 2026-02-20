@@ -4,7 +4,7 @@ import numpy as np
 from librint import library
 from librint import utils
 
-def grad(mol, i, j) -> np.ndarray:
+def dint1e_ovlp(mol, i, j) -> np.ndarray:
     atm, bas, env, nelec = utils.prep(mol)
 
     atm_ctypes = atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
