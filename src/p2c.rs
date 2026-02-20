@@ -114,6 +114,7 @@ pub extern "C" fn dint1e_ovlp_c(
     let mut buf = vec![0.0; di * dj];
     let mut dbuf = vec![0.0; di * dj];
 
+    dbuf[0] = 1.0;
     dovlpp(&mut buf, &mut dbuf, &mut shls, &mut atm, &mut bas, &mut env1, &mut env2, &mut denv);
 
     let denv_ptr = denv.as_mut_ptr();
