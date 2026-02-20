@@ -1,9 +1,0 @@
-setup.py
-librint/__init__.py
-librint/dscf.py
-librint/scf.py
-librint/utils.py
-librint.egg-info/PKG-INFO
-librint.egg-info/SOURCES.txt
-librint.egg-info/dependency_links.txt
-librint.egg-info/top_level.txt
