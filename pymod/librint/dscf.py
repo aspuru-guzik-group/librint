@@ -12,7 +12,7 @@ def dint1e_ovlp(mol, i, j) -> np.ndarray:
     env_ctypes = env.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
     s1, s2 = utils.split(bas)
-    denv_c = library.dint1e_ovlp(i, j, atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()))
+    denv_c = library.dint1e_ovlp_c(i, j, atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()))
     denv = np.ctypeslib.as_array(denv_c, shape=(1, s2-s1))
     return denv.flatten()
 
