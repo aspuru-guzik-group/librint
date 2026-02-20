@@ -21,8 +21,9 @@ lto = "fat"
 debug = 0
 #rustflags = ["-Z", "autodiff=Enable"]
 
-# [lib]
-# crate-type = ["cdylib"]
+[lib]
+crate-type = ["cdylib"]
+name = "rint"
 
 #[[bin]]
 #name = "int"
