@@ -1,7 +1,7 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
 #![feature(autodiff)]
 
-use std::autodiff::autodiff;
+use std::autodiff::*;
 use crate::cint_bas::CINTcgto_cart;
 use crate::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart};
 use crate::intor1::cint1e_kin_cart;
@@ -12,7 +12,7 @@ use crate::utils::{split, combine};
 use crate::linalg::matmult;
 
 #[no_mangle]
-#[autodiff(dovlp, Reverse, Duplicated, Const, Const, Const, Const, Duplicated)]
+#[autodiff_reverse(dovlp, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn ovlp(
     out: &mut Vec<f64>, 
     shls: &mut Vec<i32>, 
@@ -28,7 +28,7 @@ pub fn ovlp(
 
 
 #[no_mangle]
-#[autodiff(dkin, Reverse, Duplicated, Const, Const, Const, Const, Duplicated)]
+#[autodiff_reverse(dkin, Duplicated, Const, Const, Const, Const, Duplicated)]
 fn kin(
     out: &mut Vec<f64>, 
     shls: &mut Vec<i32>, 
@@ -43,7 +43,7 @@ fn kin(
 }
 
 #[no_mangle]
-#[autodiff(dnuc, Reverse, Duplicated, Const, Const, Const, Const, Duplicated)]
+#[autodiff_reverse(dnuc, Duplicated, Const, Const, Const, Const, Duplicated)]
 fn nuc(
     out: &mut Vec<f64>, 
     shls: &mut Vec<i32>, 
@@ -58,7 +58,7 @@ fn nuc(
 }
 
 #[no_mangle]
-#[autodiff(dtwo, Reverse, Duplicated, Const, Const, Const, Const, Duplicated)]
+#[autodiff_reverse(dtwo, Duplicated, Const, Const, Const, Const, Duplicated)]
 fn two(
     out: &mut Vec<f64>, 
     shls: &mut Vec<i32>, 
@@ -411,7 +411,7 @@ pub fn danalyticalg(
 }
 
 #[no_mangle]
-#[autodiff(denergy, Reverse, Const, Const, Const, Duplicated, Const, Active)]
+#[autodiff_reverse(denergy, Const, Const, Const, Duplicated, Const, Active)]
 pub fn energywrap(
     atm: &mut Vec<i32>,
     bas: &mut Vec<i32>,
@@ -460,7 +460,7 @@ pub fn denergyg(
 }
 
 #[no_mangle]
-#[autodiff(denergyf, Reverse, Const, Const, Const, Duplicated, Const, Active)]
+#[autodiff_reverse(denergyf, Const, Const, Const, Duplicated, Const, Active)]
 pub fn energyf(
     atm: &mut Vec<i32>,
     bas: &mut Vec<i32>,
