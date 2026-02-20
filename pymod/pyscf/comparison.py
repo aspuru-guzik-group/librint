@@ -188,30 +188,31 @@ if do_test_gradient:
 # AA: stuff below is mislabeled as JAX, but actually calling PySCF
 # reason was to test the int1e_ovlp JAX derivative, which turned out to be not easy
 def jax_int1e_ovlp(mol_jax):
-    return mol.intor('int1e_ovlp')
+    return mol_jax.intor('int1e_ovlp')
     # return mol.intor('int2e')
     # return mol_jax.intor('int2e')
 
 
 def test_jax():
-    # mol_jax = build_mol(atom, charge, basis)
+    mol_jax = build_mol(atom, charge, basis)
     # return value_and_grad(jax_int1e_ovlp)(mol_jax)
     return jax_int1e_ovlp(mol_jax)
 
 def test_librpyscf():
     # atm, bas, env, nelec = librint.utils.prep(mol_rpyscf)
-    # mol_rpyscf = pyscf.gto.M(atom=atom, 
-    #                       basis=basis)
+    mol_rpyscf = pyscf.gto.M(atom=atom, 
+                          basis=basis,
+                          charge=charge)
     return librint.scf.int1e(mol_rpyscf, 'ovlp')
 
 # # time
 if do_test_primal:
     n_runs = 3
     
-    time_mol = timeit.timeit(jax_int1e_ovlp, number=n_runs)
-    time_jax = timeit.timeit(test_jax, number=n_runs)
     time_librpyscf = timeit.timeit(test_librpyscf, number=n_runs)
+    # time_mol = timeit.timeit(jax_int1e_ovlp, number=n_runs)
+    time_jax = timeit.timeit(test_jax, number=n_runs)
 
-    print(f"Average time for mol.int1e_ovlp : {time_mol / n_runs:.6f} seconds per run")
-    print(f"Average time for jax.int1e_ovlp : {time_jax / n_runs:.6f} seconds per run")
     print(f"Average time for librpyscf.int1e: {time_librpyscf / n_runs:.6f} seconds per run")
+    # print(f"Average time for mol.int1e_ovlp : {time_mol / n_runs:.6f} seconds per run")
+    print(f"Average time for jax.int1e_ovlp : {time_jax / n_runs:.6f} seconds per run")
