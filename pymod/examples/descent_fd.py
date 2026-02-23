@@ -1,3 +1,7 @@
+"""
+Gradient descent implemented using finite difference.
+"""
+
 import numpy as np
 import pyscf
 
@@ -6,7 +10,7 @@ import libcscf
 
 import time
 
-SAVE = True
+SAVE = False
 
 # mol = pyscf.gto.M(atom='''
 #                     O   -0.0000000   -0.1113512    0.0000000
@@ -18,8 +22,6 @@ SAVE = True
 # bas = np.asarray(mol._bas, dtype=np.int32, order='C')
 # env = np.asarray(mol._env, dtype=np.double, order='C')
 
-# nelec = 10
-
 mol = pyscf.gto.M(atom='''
                     H 0 0 -0.4
                     H 0 0 0.4''',
@@ -29,12 +31,10 @@ atm = np.asarray(mol._atm, dtype=np.int32, order='C')
 bas = np.asarray(mol._bas, dtype=np.int32, order='C')
 env = np.asarray(mol._env, dtype=np.double, order='C')
 
-nelec = 2
-
 a, b = utils.split(bas)
 print(a, b)
 
-S = libcscf.int1e(atm, bas, env, 'ovlp')
+S = libcscf.int1e(mol, 'ovlp')
 print("S: ")
 utils.pmat(S)
 
@@ -53,18 +53,18 @@ while not (delta < epsilon or i == max_i):
     # NORMALIZE ENV
     utils.basis_atm(bas, env)
     
-    P = libcscf.RHF(atm, bas, env, nelec)
-    E = libcscf.energy(atm, bas, env, P)
-    denv = libcscf.grad(atm, bas, env, P)
+    P = libcscf.RHF(mol)
+    E = libcscf.energy(mol, P)
+    denv = libcscf.grad(mol, P)
 
     fd = np.zeros(b-a)
     for j in range(a, b):
         env[j] -= h
-        P1 = libcscf.RHF(atm, bas, env, nelec)
-        E1 = libcscf.energy(atm, bas, env, P1)
+        P1 = libcscf.RHF(mol)
+        E1 = libcscf.energy(mol, P1)
         env[j] += 2.0*h
-        P2 = libcscf.RHF(atm, bas, env, nelec)
-        E2 = libcscf.energy(atm, bas, env, P2)
+        P2 = libcscf.RHF(mol)
+        E2 = libcscf.energy(mol, P2)
 
         fd[j-a] = (E2 - E1)/(2.0*h)
         env[j] -= h
@@ -98,7 +98,7 @@ print("env:   ", env[a:b])
 print("E:   ", E)
 print("grad:", denv)
 
-S = libcscf.int1e(atm, bas, env, 'ovlp')
+S = libcscf.int1e(mol, 'ovlp')
 print("S:")
 utils.pmat(S)
 

@@ -1,8 +1,5 @@
 import timeit
 
-# Import the necessary libraries
-# import librpyscf
-
 import librint
 from jax import value_and_grad
 
@@ -133,28 +130,3 @@ print(f"Average time for jax.value_and_grad: {time_jax / n_runs:.6f} seconds per
 print(f"Average time for librint.denergy: {time_librint / n_runs:.6f} seconds per run")
 print(f"Average time for librint.analytical: {time_analytical / n_runs:.6f} seconds per run")
 print(f"Average time for librint.grad: {time_grad / n_runs:.6f} seconds per run")
-
-
-
-
-# hackie code for writing results to file
-
-# sto_2g = get_basis('sto-2g', fmt='nwchem')
-# sto_3g = 'sto-3g'
-
-# if (basis == sto_2g):
-#     bas = "sto-2g"
-# else:
-#     bas = "sto-3g"
-
-
-# file_path = "timing/test"
-
-# os.makedirs(os.path.dirname(file_path), exist_ok=True)
-
-
-# with open(file_path, 'a') as f:
-#     f.write(f"{geo} {bas}\n")
-#     f.write(f"librpyscf.denergy: {time_librpyscf / n_runs:.6f} seconds per run\n")
-#     f.write(f"jax.value_and_grad: {time_jax / n_runs:.6f} seconds per run\n")
-#     f.write(f"jax / librpyscf: {(time_jax / n_runs)/(time_librpyscf / n_runs):.6f}\n\n")

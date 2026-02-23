@@ -45,18 +45,6 @@ library.int2e_c.argtypes = (
 )
 library.int2e_c.restype = ctypes.POINTER(ctypes.c_double)
 
-library.dint1e_ovlp_c.argtypes = (
-    ctypes.c_size_t,
-    ctypes.c_size_t,
-    ctypes.POINTER(ctypes.c_int),
-    ctypes.c_size_t,
-    ctypes.POINTER(ctypes.c_int),
-    ctypes.c_size_t,
-    ctypes.POINTER(ctypes.c_double),
-    ctypes.c_size_t,
-)
-library.dint1e_ovlp_c.restype = ctypes.POINTER(ctypes.c_double)
-
 library.density_c.argtypes = (
     ctypes.POINTER(ctypes.c_int),
     ctypes.c_size_t,

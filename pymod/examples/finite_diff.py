@@ -1,14 +1,11 @@
 import numpy as np
 import pyscf
 
-# import libcscf2
-import libcscf as libcscf2
-import libcscf
-import utils
+from librint import scf, dscf, utils
 
 import time
 
-SAVE = True
+# SAVE = True
 
 h = 1e-6
 
@@ -34,15 +31,15 @@ env = np.asarray(mol._env, dtype=np.double, order='C')
 
 a, b = utils.split(bas)
 
-def derivatives(atm, bas, env):
+def derivatives(mol):
     dS = []
 
     for i in range(a, b):
         env[i] += h
-        S1 = libcscf2.int1e(atm, bas, env, 'ovlp')
+        S1 = scf.int1e(mol, 'ovlp')
 
         env[i] -= 2.0*h
-        S2 = libcscf2.int1e(atm, bas, env, 'ovlp')
+        S2 = scf.int1e(mol, 'ovlp')
 
         dS.append(-(S2 - S1)/(2.0*h))
 
@@ -54,13 +51,13 @@ def derivatives(atm, bas, env):
 
     for i in range(a, b):
         env[i] += h
-        T1 = libcscf2.int1e(atm, bas, env, 'kin')
-        V1 = libcscf2.int1e(atm, bas, env, 'nuc')
+        T1 = scf.int1e(mol, 'kin')
+        V1 = scf.int1e(mol, 'nuc')
         H1 = T1 + V1
 
         env[i] -= 2.0*h
-        T2 = libcscf2.int1e(atm, bas, env, 'kin')
-        V2 = libcscf2.int1e(atm, bas, env, 'nuc')
+        T2 = scf.int1e(mol, 'kin')
+        V2 = scf.int1e(mol, 'nuc')
         H2 = T2 + V2
 
         dH.append(-(H2 - H1)/(2.0*h))
@@ -73,10 +70,10 @@ def derivatives(atm, bas, env):
 
     for i in range(a, b):
         env[i] += h
-        R1 = libcscf2.int2e(atm, bas, env)
+        R1 = scf.int2e(mol)
 
         env[i] -= 2.0*h
-        R2 = libcscf2.int2e(atm, bas, env)
+        R2 = scf.int2e(mol)
 
         dR.append(-(R2 - R1)/(2.0*h))
 
@@ -89,21 +86,12 @@ def derivatives(atm, bas, env):
 
 np.set_printoptions(precision=5)
 
-P = libcscf2.density(atm, bas, env, nelec)
-E = libcscf2.energy(atm, bas, env, P)
+P = scf.density(mol)
+E = scf.energy(mol, P)
 
-# P0 = libcscf.density(atm, bas, env, nelec)
-# E0 = libcscf.energy(atm, bas, env, P)
-
-# print()
-# print("P & E")
-# print("norm(P-P): ", np.linalg.norm(P - P0))
-# print("E-E:       ", E - E0)
-# print()
-
-def calcF(atm, bas, env, P):
-    H = libcscf2.int1e(atm, bas, env, 'kin') + libcscf2.int1e(atm, bas, env, 'nuc')
-    R = libcscf2.int2e(atm, bas, env)
+def calcF(mol, P):
+    H = scf.int1e(mol, 'kin') + scf.int1e(mol, 'nuc')
+    R = scf.int2e(mol)
     # ls * mnsl - ls * mlsn
     J = np.einsum('ijkl,lk->ij', R, P)
     K = np.einsum('ilkj,lk->ij', R, P)
@@ -111,17 +99,17 @@ def calcF(atm, bas, env, P):
     F = H + (J - 0.5*K)
     return F
 
-F = calcF(atm, bas, env, P)
+F = calcF(mol, P)
 
-dH, dR, dS = derivatives(atm, bas, env)
+dH, dR, dS = derivatives(mol)
 
 grad_hcore = 0.5 * np.tensordot(dH, P)
 grad_two = 0.5 * 0.25 * np.tensordot(np.tensordot(dR, P), P)
 grad_ovlp = - 0.25 * np.tensordot(dS, P @ F @ P)
 
-dH0 = libcscf.dHcoref(atm, bas, env, P)
-dR0 = libcscf.dRf(atm, bas, env, P)
-dS0 = libcscf.dSf(atm, bas, env, P)
+dH0 = dscf.dHcoref(mol, P)
+dR0 = dscf.dRf(mol, P)
+dS0 = dscf.dSf(mol, P)
 
 print()
 print("derivatives: dH, dR, dS")
@@ -135,7 +123,7 @@ print("dS fd:    ", np.tensordot(dS, P @ F @ P))
 print("dS rust:  ", dS0)
 print()
 
-denv = libcscf.grad(atm, bas, env, P)
+denv = dscf.grad(mol, P)
 
 print()
 print("ad energy vs hcore + two")
@@ -148,11 +136,11 @@ h = 1e-6
 fd = np.zeros(b-a)
 for j in range(a, b):
     env[j] -= h
-    P1 = libcscf2.density(atm, bas, env, nelec)
-    E1 = libcscf2.energy(atm, bas, env, P1)
+    P1 = scf.density(mol)
+    E1 = scf.energy(mol, P1)
     env[j] += 2.0*h
-    P2 = libcscf2.density(atm, bas, env, nelec)
-    E2 = libcscf2.energy(atm, bas, env, P2)
+    P2 = scf.density(mol)
+    E2 = scf.energy(mol, P2)
 
     fd[j-a] = (E2 - E1)/(2.0*h)
     env[j] -= h
@@ -165,7 +153,7 @@ print("ad e - 0.5 dS:         ", denv - 0.5 * dS0)
 print("dH + dR - 0.5 dS:      ", dH0 + dR0 - 0.5 * dS0)
 print()
 
-de = libcscf.denergyf(atm, bas, env, P)
+de = dscf.denergyf(mol, P)
 # import librpyscf
 # de = librpyscf.denergyf(mol, P)
 

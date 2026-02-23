@@ -1,12 +1,15 @@
+"""
+Gradient descent implemented using librint.
+"""
+
 import numpy as np
 import pyscf
 
-import utils
-import libcscf
+from librint import scf, dscf, utils
 
 import time
 
-SAVE = True
+SAVE = False
 
 mol = pyscf.gto.M(atom='''
                     O   -0.0000000   -0.1113512    0.0000000
@@ -48,13 +51,13 @@ while not (delta < epsilon or i == max_i):
     start = time.perf_counter()
     utils.basis_atm(bas, env)
     
-    P = libcscf.density(atm, bas, env, nelec)
-    denergy = libcscf.denergyf(atm, bas, env, P)
+    P = scf.density(mol)
+    denergy = dscf.denergyf(mol, P)
     env[a:b] = env[a:b] - alpha * denergy
     delta = np.linalg.norm(denergy)
     end = time.perf_counter()
 
-    E = libcscf.energy(atm, bas, env, P)
+    E = scf.energy(mol, P)
 
     # fd = np.zeros(b-a)
     # for j in range(a, b):

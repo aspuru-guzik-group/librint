@@ -1,3 +1,8 @@
+"""
+BFGS example. Unimplemented, to be used for optimizing parameters using
+gradient.
+"""
+
 import numpy as np 
 import matplotlib.pyplot as plt 
 

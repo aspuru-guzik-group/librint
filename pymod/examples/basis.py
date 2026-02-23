@@ -1,4 +1,9 @@
+"""
+Used to obtain atm, bas, env from molecules. Used only for rust molecules folder.
+"""
+
 import pyscf
+from pyscf import gto
 
 geometries = {
     'HF': [
@@ -47,32 +52,23 @@ geometries = {
     ],
 }
 
-# geo = "H2"
-# basis = "sto-3g"
+geo = "H2"
+basis = "sto-3g"
 
-# molecule = geometries[geo]
+molecule = geometries[geo]
+atom = '\n'.join([f"{atom[0]} {0.529*atom[2][0]} {0.529*atom[2][1]} {0.529*atom[2][2]}" for atom in molecule])
+mol = pyscf.gto.M(atom=atom, basis=basis, symmetry=False)
 
-# atom = '\n'.join([f"{atom[0]} {0.529*atom[2][0]} {0.529*atom[2][1]} {0.529*atom[2][2]}" for atom in molecule])
-
-# mol = pyscf.gto.M(atom=atom, basis=basis, symmetry=False)
-
-
-from pyscf import gto
-
-mol = gto.Mole()
-mol.atom = '''
-H0 0 0 0
-H1 0 0 0.74
-'''
-mol.basis = {
-    'H0': gto.basis.load('sto-3g', 'H'),
-    'H1': gto.basis.load('sto-3g', 'H'),
-}
-mol.build()
-
-# print(mol._atm)
-# print(mol._bas)
-# print(mol._env)
+# mol = gto.Mole()
+# mol.atom = '''
+# H0 0 0 0
+# H1 0 0 0.74
+# '''
+# mol.basis = {
+#     'H0': gto.basis.load('sto-3g', 'H'),
+#     'H1': gto.basis.load('sto-3g', 'H'),
+# }
+# mol.build()
 
 atm = mol._atm
 bas = mol._bas
