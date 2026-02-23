@@ -73,6 +73,64 @@ fn two(
 }
 
 #[no_mangle]
+pub fn dS_uncontracted(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+) -> Vec<f64> {
+    let (_, nbas) = nmol(&atm, &bas);
+    let nshells = angl(&bas, 0);
+
+    let (s1, s2) = split(bas);
+
+    let mut env1: Vec<f64> = env[0..s1].to_vec();
+    let mut env2: Vec<f64> = env[s1..s2].to_vec();
+
+    let mut dS = vec![0.0; nshells * nshells * env2.len()];
+
+    let mut buf;
+    let mut dbuf;
+    let mut denv;
+    let mut shls = vec![0; 4];
+
+    let mut mu;
+    let mut nu;
+
+    mu = 0;
+    for i in 0..nbas {
+        shls[0] = i as i32; let di = CINTcgto_cart(i, &bas) as usize;
+        nu = 0;
+        for j in 0..nbas {
+            shls[1] = j as i32; let dj = CINTcgto_cart(j, &bas) as usize;
+
+            buf = vec![0.0; di * dj];
+            dbuf = vec![0.0; di * dj];
+
+            let mut c: usize = 0;
+            for nuj in nu..(nu + dj) {
+                for mui in mu..(mu + di) {
+                    dbuf[c] = 1.0;
+
+                    denv = vec![0.0; env2.len()];
+                    dovlp(&mut buf, &mut dbuf, &mut shls, atm, bas, &mut env1, &mut env2, &mut denv);
+                    for l in 0..env2.len() {
+                        dS[(nuj * nshells + mui) * env2.len() + l] = denv[l];
+                        // dS[l * nshells * nshells + nuj * nshells + mui] = denv[l];
+                    }
+                    
+                    dbuf[c] = 0.0;
+                    c += 1;
+                }
+            }
+            nu += dj;
+        }
+        mu += di;
+    }
+    
+    return dS;
+}
+
+#[no_mangle]
 fn dSf(
     atm: &mut Vec<i32>,
     bas: &mut Vec<i32>,

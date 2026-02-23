@@ -95,6 +95,16 @@ library.grad_c.argtypes =(
 )
 library.grad_c.restype = ctypes.POINTER(ctypes.c_double)
 
+library.dS_u.argtypes =(
+    ctypes.POINTER(ctypes.c_int),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_int),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_double),
+    ctypes.c_size_t,
+)
+library.dS_u.restype = ctypes.POINTER(ctypes.c_double)
+
 library.dS_c.argtypes =(
     ctypes.POINTER(ctypes.c_int),
     ctypes.c_size_t,

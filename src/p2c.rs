@@ -7,7 +7,7 @@ use crate::cint1e::cint1e_ovlp_cart;
 use crate::utils::combine;
 
 use crate::scf::{nmol, integral1e, integral2e, density, energyfast, scf};
-use crate::dscf::{dHcoreg, dSg, dRg, gradenergy, danalyticalg, denergyfast};
+use crate::dscf::{dS_uncontracted, dHcoreg, dSg, dRg, gradenergy, danalyticalg, denergyfast};
 
 #[no_mangle]
 fn c2r_arr(
@@ -69,18 +69,21 @@ pub extern "C" fn int2e_c(
 }
 
 #[no_mangle]
-#[autodiff_reverse(dovlpp, Duplicated, Const, Const, Const, Const, Duplicated)]
-pub fn ovlppp(
-    out: &mut Vec<f64>, 
-    shls: &mut Vec<i32>, 
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>, 
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-) {
-    let (natm, nbas) = nmol(atm, bas);
-    let mut env: Vec<f64> = combine(&env1, &env2);
-    cint1e_ovlp_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
+pub extern "C" fn dS_u(
+    atm_p: *mut i32,
+    atm_l: usize,
+    bas_p: *mut i32,
+    bas_l: usize,
+    env_p: *mut f64,
+    env_l: usize,
+) -> *mut f64 {
+    let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
+
+    let mut dS = dS_uncontracted(&mut atm, &mut bas, &mut env);
+
+    let dS_ptr = dS.as_mut_ptr();
+    std::mem::forget(dS);
+    return dS_ptr;
 }
 
 #[no_mangle]

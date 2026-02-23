@@ -9,12 +9,7 @@ Activate virtual environment:
 source .venv/bin/activate
 ```
 
-Install required libraries:
-```
-pip install numpy ...
-```
-
-Install librint:
+Install librint, this will install all the required libraries:
 ```
 pip install -e .
 ```
