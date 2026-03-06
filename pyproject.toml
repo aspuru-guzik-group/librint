@@ -10,6 +10,7 @@ dependencies = [
     "numpy>=2.2.6",
     "pyscf>=2.12.1",
     "pyscfad>=0.1.10",
+    "pytest>=9.0.2",
     "scipy>=1.15.3",
 ]
 
