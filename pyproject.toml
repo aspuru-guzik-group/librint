@@ -19,8 +19,8 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-package-dir = { "" = "pymod" }
+package-dir = { "" = "python" }
 
 [tool.setuptools.packages.find]
-where = ["pymod"]
+where = ["python"]
 
