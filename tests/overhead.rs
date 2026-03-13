@@ -5,7 +5,7 @@ use std::env;
 
 use std::time::Instant;
 
-use std::autodiff::autodiff;
+use std::autodiff::*;
 use librint::utils::read_basis;
 use librint::scf::nmol;
 
@@ -17,8 +17,8 @@ pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
 #[no_mangle]
-#[autodiff(dovlpp, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
-#[autodiff(dovlppfor, Forward, Dual, Const, Const, Const, Const, Const, Dual)]
+#[autodiff_reverse(dovlpp, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
+#[autodiff_forward(dovlppfor, Dual, Const, Const, Const, Const, Const, Dual)]
 fn ovlpp(
     out: &mut [f64], 
     shls: &mut [i32], 
