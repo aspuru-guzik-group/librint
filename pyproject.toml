@@ -1,21 +1,27 @@
 [project]
 name = "librint"
 version = "0.1.0"
-description = "Add your description here"
+description = "Librint: Rust-based Automatic Differentiation of Quantum Chemistry Calculations"
 readme = "README.md"
 requires-python = "==3.10.*"
 dependencies = [
+    "pyscf>=2.12.1",
+    "numpy>=2.2.6",
+]
+
+[dependency-groups]
+dev = [
+    "scipy>=1.15.3",
     "basis-set-exchange>=0.11",
     "matplotlib>=3.10.8",
-    "numpy>=2.2.6",
-    "pyscf>=2.12.1",
-    "pyscfad>=0.1.10",
     "pytest>=9.0.2",
-    "scipy>=1.15.3",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.10.0",
+    "pyscfad>=0.1.10",
 ]
 
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
@@ -24,3 +30,8 @@ package-dir = { "" = "python" }
 [tool.setuptools.packages.find]
 where = ["python"]
 
+[tool.setuptools.package-data]
+librint = ["*.so", "*.dylib", "test_sanity.py"]
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]
