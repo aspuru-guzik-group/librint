@@ -66,13 +66,15 @@ pub fn dS_uncontracted(
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
+            denv = vec![0.0; env2.len()];
 
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
+                    dbuf.fill(0.0);
                     dbuf[c] = 1.0;
 
-                    denv = vec![0.0; env2.len()];
+                    denv.fill(0.0);
                     dovlpp(&mut buf, &mut dbuf, &mut shls, atm, bas, &mut env1, &mut env2, &mut denv);
                     for l in 0..env2.len() {
                         dS[(nuj * nshells + mui) * env2.len() + l] = denv[l];
@@ -125,21 +127,25 @@ pub fn dS_uncontracted_for(
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
+            denv = vec![0.0; env2.len()];
 
-            let mut c: usize = 0;
-            for nuj in nu..(nu + dj) {
-                for mui in mu..(mu + di) {
-                    dbuf[c] = 1.0;
+            for l in 0..env2.len() {
+                // We use fwd mode, buf is the output, so init it to 0.0. autodiff will
+                // overwrite it with the derivative
+                buf.fill(0.0);
+                dbuf.fill(0.0);
 
-                    denv = vec![0.0; env2.len()];
-                    dovlppfor(&mut buf, &mut dbuf, &mut shls, atm, bas, &mut env1, &mut env2, &mut denv);
-                    for l in 0..env2.len() {
-                        dS[(nuj * nshells + mui) * env2.len() + l] = denv[l];
-                        // dS[l * nshells * nshells + nuj * nshells + mui] = denv[l];
+                denv.fill(0.0);
+                // We use fwd mode, env2 is the input, so seed the shadow denv to 1.0
+                denv[l] = 1.0;
+                dovlppfor(&mut buf, &mut dbuf, &mut shls, atm, bas, &mut env1, &mut env2, &mut denv);
+
+                let mut c: usize = 0;
+                for nuj in nu..(nu + dj) {
+                    for mui in mu..(mu + di) {
+                        dS[(nuj * nshells + mui) * env2.len() + l] = dbuf[c];
+                        c += 1;
                     }
-                    
-                    dbuf[c] = 0.0;
-                    c += 1;
                 }
             }
             nu += dj;
@@ -182,6 +188,9 @@ fn main() {
         if (dS[i] - dS_for[i]).abs() > 1e-10 {
             println!("Mismatch at index {}: dS = {}, dS_for = {}", i, dS[i], dS_for[i]);
             mismatches += 1;
+        }
+        else {
+            println!("Match at index {}: dS = {}, dS_for = {}", i, dS[i], dS_for[i]);
         }
     }
     if (mismatches == 0) {
