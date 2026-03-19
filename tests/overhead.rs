@@ -249,6 +249,202 @@ fn time_forward_mode(
     println!("average dovlp time: {:.6} sec", total_dovlp_time_for / count as f64);
     println!("avg overhead:       {:.6}", total_dovlp_time_for / total_ovlp_time_for);
 }
+// Idea 1: Full-matrix function — both i,j loops inside, forward differentiate.
+#[no_mangle]
+#[autodiff_forward(dovlpp_matrix_for, Dual, Const, Const, Const, Dual)]
+pub fn ovlpp_matrix(
+    out: &mut Vec<f64>,
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env1: &mut Vec<f64>,
+    env2: &mut Vec<f64>,
+) {
+    let (natm, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
+    let mut env: Vec<f64> = combine(&env1, &env2);
+    let mut shls_buf = vec![0i32; 4];
+
+    let mut mu = 0;
+    for i in 0..nbas {
+        shls_buf[0] = i as i32;
+        let di = CINTcgto_cart(i, &bas) as usize;
+        let mut nu = 0;
+        for j in 0..nbas {
+            shls_buf[1] = j as i32;
+            let dj = CINTcgto_cart(j, &bas) as usize;
+
+            let mut buf = vec![0.0; di * dj];
+            cint1e_ovlp_cart(&mut buf, &mut shls_buf, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
+
+            let mut c: usize = 0;
+            for nuj in nu..(nu + dj) {
+                for mui in mu..(mu + di) {
+                    out[nuj * nshells + mui] = buf[c];
+                    c += 1;
+                }
+            }
+            nu += dj;
+        }
+        mu += di;
+    }
+}
+
+// Idea 2: Row-level function — j loop inside, reverse differentiate.
+#[no_mangle]
+#[autodiff_reverse(dovlpp_row_rev, Duplicated, Const, Const, Const, Const, Duplicated)]
+pub fn ovlpp_row(
+    out: &mut Vec<f64>,
+    i_shell: &mut Vec<i32>,
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env1: &mut Vec<f64>,
+    env2: &mut Vec<f64>,
+) {
+    let (natm, nbas) = nmol(atm, bas);
+    let i = i_shell[0] as usize;
+    let di = CINTcgto_cart(i, &bas) as usize;
+    let mut env: Vec<f64> = combine(&env1, &env2);
+    let mut shls = vec![0i32; 4];
+    shls[0] = i as i32;
+
+    let mut nu = 0;
+    for j in 0..nbas {
+        shls[1] = j as i32;
+        let dj = CINTcgto_cart(j, &bas) as usize;
+
+        let mut buf = vec![0.0; di * dj];
+        cint1e_ovlp_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
+
+        let mut c: usize = 0;
+        for nuj in nu..(nu + dj) {
+            for mui in 0..di {
+                out[nuj * di + mui] = buf[c];
+                c += 1;
+            }
+        }
+        nu += dj;
+    }
+}
+
+
+fn time_matrix_forward_mode(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    env2_len: usize,
+    dS: &mut [f64],
+) {
+    println!("--- Timing Matrix Forward Mode dS ---");
+    let nshells = angl(&bas, 0);
+
+    let (s1, s2) = split(bas);
+    let mut env1: Vec<f64> = env[0..s1].to_vec();
+    let mut env2: Vec<f64> = env[s1..s2].to_vec();
+
+    // Time the primal (building the full matrix once)
+    let start_primal = std::time::Instant::now();
+    let mut out_primal = vec![0.0; nshells * nshells];
+    ovlpp_matrix(&mut out_primal, atm, bas, &mut env1, &mut env2);
+    let primal_time = start_primal.elapsed().as_secs_f64();
+
+    // Time the full Jacobian computation: env2_len forward calls
+    let start_total = std::time::Instant::now();
+    for l in 0..env2_len {
+        let mut out = vec![0.0; nshells * nshells];
+        let mut dout = vec![0.0; nshells * nshells];
+        let mut denv2 = vec![0.0; env2_len];
+        denv2[l] = 1.0;
+
+        dovlpp_matrix_for(
+            &mut out, &mut dout,
+            atm, bas,
+            &mut env1,
+            &mut env2, &mut denv2,
+        );
+
+        for idx in 0..(nshells * nshells) {
+            dS[idx * env2_len + l] = dout[idx];
+        }
+    }
+    let total_dovlp_time = start_total.elapsed().as_secs_f64();
+
+    println!("AD calls:           {}", env2_len);
+    println!("primal time:        {:.6} sec", primal_time);
+    println!("total dovlp time:   {:.6} sec", total_dovlp_time);
+    println!("avg dovlp time:     {:.6} sec", total_dovlp_time / env2_len as f64);
+    println!("avg overhead:       {:.6}", total_dovlp_time / primal_time);
+}
+
+
+fn time_row_reverse_mode(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    env2_len: usize,
+    dS: &mut [f64],
+) {
+    println!("--- Timing Row Reverse Mode dS ---");
+    let (_, nbas) = nmol(&atm, &bas);
+    let nshells = angl(&bas, 0);
+
+    let (s1, s2) = split(bas);
+    let mut env1: Vec<f64> = env[0..s1].to_vec();
+    let mut env2: Vec<f64> = env[s1..s2].to_vec();
+
+    // Time the primal (building one row, then full matrix)
+    let start_primal = std::time::Instant::now();
+    for i in 0..nbas {
+        let di = CINTcgto_cart(i, &bas) as usize;
+        let mut i_shell = vec![i as i32];
+        let row_size = di * nshells;
+        let mut out = vec![0.0; row_size];
+        ovlpp_row(&mut out, &mut i_shell, atm, bas, &mut env1, &mut env2);
+    }
+    let primal_time = start_primal.elapsed().as_secs_f64();
+
+    // Time the full Jacobian computation
+    let mut total_calls = 0;
+    let start_total = std::time::Instant::now();
+    let mut mu = 0;
+    for i in 0..nbas {
+        let di = CINTcgto_cart(i, &bas) as usize;
+        let mut i_shell = vec![i as i32];
+        let row_size = di * nshells;
+
+        for c in 0..row_size {
+            let mut out = vec![0.0; row_size];
+            let mut dout = vec![0.0; row_size];
+            dout[c] = 1.0;
+            let mut denv2 = vec![0.0; env2_len];
+
+            dovlpp_row_rev(
+                &mut out, &mut dout,
+                &mut i_shell,
+                atm, bas,
+                &mut env1,
+                &mut env2, &mut denv2,
+            );
+
+            let mui_local = c % di;
+            let nuj = c / di;
+            let mui = mu + mui_local;
+
+            for l in 0..env2_len {
+                dS[(nuj * nshells + mui) * env2_len + l] = denv2[l];
+            }
+            total_calls += 1;
+        }
+        mu += di;
+    }
+    let total_dovlp_time = start_total.elapsed().as_secs_f64();
+
+    println!("AD calls:           {}", total_calls);
+    println!("primal time:        {:.6} sec", primal_time);
+    println!("total dovlp time:   {:.6} sec", total_dovlp_time);
+    println!("avg dovlp time:     {:.6} sec", total_dovlp_time / total_calls as f64);
+    println!("avg overhead:       {:.6}", total_dovlp_time / primal_time);
+}
+
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -276,13 +472,17 @@ fn main() {
 
     let mut dS = vec![0.0; nbas * nbas * env2.len()];
     let mut dS_for = vec![0.0; nbas * nbas * env2.len()];
+    let mut dS_matrix_for = vec![0.0; nshells * nshells * env2.len()];
+    let mut dS_row_rev = vec![0.0; nshells * nshells * env2.len()];
 
 
     time_reverse_mode(&mut atm, natm, &mut bas, nbas, &mut env, env2.len(), &mut dS);
     time_forward_mode(&mut atm, natm, &mut bas, nbas, &mut env, env2.len(), &mut dS_for);
+    time_matrix_forward_mode(&mut atm, &mut bas, &mut env, env2.len(), &mut dS_matrix_for);
+    time_row_reverse_mode(&mut atm, &mut bas, &mut env, env2.len(), &mut dS_row_rev);
 
 
-    // now compare dS and dS_for
+    // Compare dS and dS_for
     let mut mismatches = 0;
     for i in 0..dS.len() {
         if mismatches > 10 {
@@ -293,81 +493,9 @@ fn main() {
             mismatches += 1;
         }
     }
-    if (mismatches == 0) {
+    if mismatches == 0 {
         println!("dS and dS_for match");
     }
 
     println!("env2.len() {}", env2.len());
-
-    // let mut total_repp_time = 0.0;
-    // let mut total_drepp_time = 0.0;
-    // count = 0;
-
-    // for i in 0..nbas {
-    //     for j in 0..nbas {
-    //         for k in 0..nbas {
-    //             for l in 0..nbas {
-    //                 // Set shell quartet indices
-    //                 let mut shls: [i32; 4] = [0; 4];
-    //                 shls[0] = i as i32;
-    //                 shls[1] = j as i32;
-    //                 shls[2] = k as i32;
-    //                 shls[3] = l as i32;
-
-    //                 // Compute basis function counts for each shell
-    //                 let di = CINTcgto_cart(i, &bas);
-    //                 let dj = CINTcgto_cart(j, &bas);
-    //                 let dk = CINTcgto_cart(k, &bas);
-    //                 let dl = CINTcgto_cart(l, &bas);
-
-    //                 // Compute size of output array: product of all basis function counts
-    //                 let size = (di * dj * dk * dl) as usize;
-
-    //                 let mut buf = vec![0.0f64; size];
-    //                 let mut dbuf = vec![0.0f64; size];
-    //                 dbuf[0] = 1.0;
-
-    //                 // Time primal function
-    //                 let start_repp = Instant::now();
-    //                 repp(
-    //                     &mut buf,
-    //                     &mut shls,
-    //                     &mut atm,
-    //                     natm,
-    //                     &mut bas,
-    //                     nbas,
-    //                     &mut env,
-    //                 );
-    //                 let duration_repp = start_repp.elapsed().as_secs_f64();
-    //                 total_repp_time += duration_repp;
-
-    //                 // Time autodiff function
-    //                 let mut denv = vec![0.0f64; env.len()];
-    //                 let start_drepp = Instant::now();
-    //                 drepp(
-    //                     &mut buf,
-    //                     &mut dbuf,
-    //                     &mut shls,
-    //                     &mut atm,
-    //                     natm,
-    //                     &mut bas,
-    //                     nbas,
-    //                     &mut env,
-    //                     &mut denv,
-    //                 );
-    //                 let duration_drepp = start_drepp.elapsed().as_secs_f64();
-    //                 total_drepp_time += duration_drepp;
-
-    //                 count += 1;
-    //             }
-    //         }
-    //     }
-    // }
-
-    // println!("count {}", count);
-    // println!("total rep time:     {:.6} sec", total_repp_time);
-    // println!("total drep time:    {:.6} sec", total_drepp_time);
-    // println!("average rep time:   {:.6} sec", total_repp_time / count as f64);
-    // println!("average drep time:  {:.6} sec", total_drepp_time / count as f64);
-    // println!("avg overhead:       {:.6}", total_drepp_time / total_repp_time);
 }
