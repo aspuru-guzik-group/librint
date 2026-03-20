@@ -21,14 +21,14 @@ fn SQUARE(r: *mut f64) -> f64 {
 
 #[no_mangle]
 pub unsafe fn CINTinit_int1e_EnvVars(
-    mut envs: *mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
     ng: &[i32;8],
-    mut shls: *mut i32,
-    mut atm: *mut i32,
+    shls: *mut i32,
+    atm: *mut i32,
     natm: i32,
-    mut bas: *mut i32,
+    bas: *mut i32,
     nbas: i32,
-    mut env: *mut f64,
+    env: *mut f64,
 ) {
     (*envs).natm = natm;
     (*envs).nbas = nbas;
