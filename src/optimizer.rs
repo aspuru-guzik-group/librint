@@ -183,7 +183,7 @@ unsafe extern "C" fn gen_idx(
     mut findex_xyz: Option::<unsafe extern "C" fn() -> ()>,
     mut order: i32,
     mut l_allow: i32,
-    mut ng: &[i32;8],
+    ng: &[i32;8],
     mut atm: *mut i32,
     mut natm: i32,
     mut bas: *mut i32,
@@ -364,7 +364,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
         *opt,
         ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut CINTEnvVars,
                     &[i32;8],
                     *mut i32,
@@ -379,7 +379,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
         >(
             Some(
                 CINTinit_int1e_EnvVars
-                    as unsafe extern "C" fn(
+                    as unsafe fn(
                         *mut CINTEnvVars,
                         &[i32;8],
                         *mut i32,

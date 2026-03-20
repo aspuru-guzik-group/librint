@@ -20,14 +20,14 @@ fn SQUARE(r: *mut f64) -> f64 {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
+pub unsafe fn CINTinit_int1e_EnvVars(
     mut envs: *mut CINTEnvVars,
-    mut ng: &[i32;8],
+    ng: &[i32;8],
     mut shls: *mut i32,
     mut atm: *mut i32,
-    mut natm: i32,
+    natm: i32,
     mut bas: *mut i32,
-    mut nbas: i32,
+    nbas: i32,
     mut env: *mut f64,
 ) {
     (*envs).natm = natm;
