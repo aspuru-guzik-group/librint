@@ -27,41 +27,41 @@ extern "C" {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn CINT1e_loop(
-    mut gctr: *mut f64,
-    mut envs: *mut CINTEnvVars,
+pub unsafe fn CINT1e_loop(
+    gctr: *mut f64,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
     int1e_type: i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
-    let mut i_sh: i32 = *shls.offset(0 as isize);
-    let mut j_sh: i32 = *shls.offset(1 as isize);
-    let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
-    let mut i_prim: i32 = *bas
+    let shls: *mut i32 = (*envs).shls;
+    let bas: *mut i32 = (*envs).bas;
+    let env: *const f64 = (*envs).env;
+    let i_sh: i32 = *shls.offset(0 as isize);
+    let j_sh: i32 = *shls.offset(1 as isize);
+    let i_ctr: i32 = (*envs).x_ctr[0 as usize];
+    let j_ctr: i32 = (*envs).x_ctr[1 as usize];
+    let i_prim: i32 = *bas
         .offset((8 as i32 * i_sh + 2 as i32) as isize);
-    let mut j_prim: i32 = *bas
+    let j_prim: i32 = *bas
         .offset((8 as i32 * j_sh + 2 as i32) as isize);
-    let mut ai: *mut f64 = env
+    let ai: *const f64 = env
         .offset(
             *bas.offset((8 as i32 * i_sh + 5 as i32) as isize) as isize,
         );
-    let mut aj: *mut f64 = env
+    let aj: *const f64 = env
         .offset(
             *bas.offset((8 as i32 * j_sh + 5 as i32) as isize) as isize,
         );
-    let mut ci: *mut f64 = env
+    let ci: *const f64 = env
         .offset(
             *bas.offset((8 as i32 * i_sh + 6 as i32) as isize) as isize,
         );
-    let mut cj: *mut f64 = env
+    let cj: *const f64 = env
         .offset(
             *bas.offset((8 as i32 * j_sh + 6 as i32) as isize) as isize,
         );
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
-    let mut expcutoff: f64 = (*envs).expcutoff;
+    let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
+    let expcutoff: f64 = (*envs).expcutoff;
     let mut log_maxci: *mut f64 = 0 as *mut f64;
     let mut log_maxcj: *mut f64 = 0 as *mut f64;
     let mut pdata_base: *mut PairData = 0 as *mut PairData;

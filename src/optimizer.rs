@@ -727,10 +727,10 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 // }
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
-    mut log_maxc: *mut f64,
-    mut coeff: *mut f64,
-    mut nprim: i32,
-    mut nctr: i32,
+    log_maxc: *mut f64,
+    coeff: *const f64,
+    nprim: i32,
+    nctr: i32,
 ) {
     let mut i: i32 = 0;
     let mut ip: i32 = 0;
@@ -811,10 +811,10 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTset_pairdata(
+pub unsafe fn CINTset_pairdata(
     mut pairdata: *mut PairData,
-    mut ai: *mut f64,
-    mut aj: *mut f64,
+    ai: *const f64,
+    aj: *const f64,
     ri: *const f64,
     rj: *const f64,
     mut log_maxci: *mut f64,
@@ -825,7 +825,7 @@ pub unsafe extern "C" fn CINTset_pairdata(
     mut jprim: i32,
     mut rr_ij: f64,
     mut expcutoff: f64,
-    mut env: *mut f64,
+    mut env: *const f64,
 ) -> i32 {
     let mut ip: i32 = 0;
     let mut jp: i32 = 0;
@@ -1114,7 +1114,7 @@ pub unsafe extern "C" fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
 pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
     mut sortedidx: *mut i32,
     mut non0ctr: *mut i32,
-    mut ci: *mut f64,
+    ci: *const f64,
     mut iprim: i32,
     mut ictr: i32,
 ) {

@@ -951,7 +951,7 @@ pub unsafe extern "C" fn CINTprim_to_ctr(
 pub unsafe extern "C" fn CINTprim_to_ctr_0(
     mut gc: *mut f64,
     mut gp: *mut f64,
-    mut coeff: *mut f64,
+    coeff: *const f64,
     mut nf: u64,
     mut nprim: i32,
     mut nctr: i32,
@@ -981,7 +981,7 @@ pub unsafe extern "C" fn CINTprim_to_ctr_0(
 pub unsafe extern "C" fn CINTprim_to_ctr_1(
     mut gc: *mut f64,
     mut gp: *mut f64,
-    mut coeff: *mut f64,
+    coeff: *const f64,
     mut nf: u64,
     mut nprim: i32,
     _nctr: i32,
