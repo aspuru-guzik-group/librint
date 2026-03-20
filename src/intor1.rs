@@ -11,11 +11,12 @@ use crate::cint::CINTOpt;
 use crate::cint::CINTEnvVars;
 
 #[no_mangle]
-pub unsafe extern "C" fn CINTgout1e_int1e_kin(
+pub unsafe fn CINTgout1e_int1e_kin(
+//pub unsafe extern "C" fn CINTgout1e_int1e_kin(
     mut gout: *mut f64,
     mut g: *mut f64,
     mut idx: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    envs: &CINTEnvVars,
     mut gout_empty: i32,
 ) {
     let mut nf: i32 = (*envs).nf;
@@ -37,7 +38,7 @@ pub unsafe extern "C" fn CINTgout1e_int1e_kin(
         (*envs).i_l + 0 as i32,
         (*envs).j_l + 0 as i32,
         0 as i32,
-        envs,
+        &*envs,
     );
     CINTnabla1j_1e(
         g2,
@@ -45,7 +46,7 @@ pub unsafe extern "C" fn CINTgout1e_int1e_kin(
         (*envs).i_l + 0 as i32,
         (*envs).j_l + 1 as i32,
         0 as i32,
-        envs,
+        &*envs,
     );
     CINTnabla1j_1e(
         g3,
@@ -53,7 +54,7 @@ pub unsafe extern "C" fn CINTgout1e_int1e_kin(
         (*envs).i_l + 0 as i32,
         (*envs).j_l + 0 as i32,
         0 as i32,
-        envs,
+        &*envs,
     );
     n = 0 as i32;
     while n < nf {
@@ -160,23 +161,23 @@ pub unsafe extern "C" fn int1e_kin_cart(
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
-            unsafe extern "C" fn(
+            unsafe fn(
                 *mut f64,
                 *mut f64,
                 *mut i32,
-                *mut CINTEnvVars,
+                &CINTEnvVars,
                 i32,
             ) -> (),
         >,
-        Option::<unsafe extern "C" fn() -> ()>,
+        Option::<unsafe fn() -> ()>,
     >(
         Some(
             CINTgout1e_int1e_kin
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    *mut CINTEnvVars,
+                    &CINTEnvVars,
                     i32,
                 ) -> (),
         ),
@@ -241,23 +242,23 @@ pub unsafe extern "C" fn int1e_kin_sph(
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
-            unsafe extern "C" fn(
+            unsafe fn(
                 *mut f64,
                 *mut f64,
                 *mut i32,
-                *mut CINTEnvVars,
+                &CINTEnvVars,
                 i32,
             ) -> (),
         >,
-        Option::<unsafe extern "C" fn() -> ()>,
+        Option::<unsafe fn() -> ()>,
     >(
         Some(
             CINTgout1e_int1e_kin
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    *mut CINTEnvVars,
+                    &CINTEnvVars,
                     i32,
                 ) -> (),
         ),
@@ -322,23 +323,23 @@ pub unsafe extern "C" fn int1e_kin_spinor(
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
-            unsafe extern "C" fn(
+            unsafe fn(
                 *mut f64,
                 *mut f64,
                 *mut i32,
-                *mut CINTEnvVars,
+                &CINTEnvVars,
                 i32,
             ) -> (),
         >,
-        Option::<unsafe extern "C" fn() -> ()>,
+        Option::<unsafe fn() -> ()>,
     >(
         Some(
             CINTgout1e_int1e_kin
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    *mut CINTEnvVars,
+                    &CINTEnvVars,
                     i32,
                 ) -> (),
         ),

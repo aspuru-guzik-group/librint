@@ -26,6 +26,7 @@ pub unsafe extern "C" fn CINTdaxpy2v(
     }
 }
 #[no_mangle]
+#[inline(never)]
 pub unsafe extern "C" fn CINTdmat_transpose(
     a_t: *mut f64,
     a: *const f64,

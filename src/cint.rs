@@ -67,7 +67,7 @@ pub struct CINTEnvVars {
     pub c2rust_unnamed_1: C2RustUnnamed,
     pub f_g0_2e: Option::<unsafe extern "C" fn() -> i32>,
     pub f_g0_2d4d: Option::<unsafe extern "C" fn() -> ()>,
-    pub f_gout: Option::<unsafe extern "C" fn() -> ()>,
+    pub f_gout: Option::<unsafe fn() -> ()>,
     pub opt: *mut CINTOpt,
     pub idx: *mut i32,
     pub ai: [f64; 1],

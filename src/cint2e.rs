@@ -3290,11 +3290,12 @@ pub unsafe extern "C" fn CINT2e_drv(
     return (empty == 0) as i32;
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTgout2e(
+//pub unsafe extern "C" fn CINTgout2e(
+pub unsafe fn CINTgout2e(
     mut gout: *mut f64,
     mut g: *mut f64,
     mut idx: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    envs: &CINTEnvVars,
     mut gout_empty: i32,
 ) {
     let mut nf: i32 = (*envs).nf;
@@ -3792,23 +3793,23 @@ pub unsafe extern "C" fn int2e_sph(
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
-            unsafe extern "C" fn(
+            unsafe fn(
                 *mut f64,
                 *mut f64,
                 *mut i32,
-                *mut CINTEnvVars,
+                &CINTEnvVars,
                 i32,
             ) -> (),
         >,
-        Option::<unsafe extern "C" fn() -> ()>,
+        Option::<unsafe fn() -> ()>,
     >(
         Some(
             CINTgout2e
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    *mut CINTEnvVars,
+                    &CINTEnvVars,
                     i32,
                 ) -> (),
         ),
@@ -3893,23 +3894,23 @@ pub unsafe extern "C" fn int2e_cart(
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
-            unsafe extern "C" fn(
+            unsafe fn(
                 *mut f64,
                 *mut f64,
                 *mut i32,
-                *mut CINTEnvVars,
+                &CINTEnvVars,
                 i32,
             ) -> (),
         >,
-        Option::<unsafe extern "C" fn() -> ()>,
+        Option::<unsafe fn() -> ()>,
     >(
         Some(
             CINTgout2e
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    *mut CINTEnvVars,
+                    &CINTEnvVars,
                     i32,
                 ) -> (),
         ),

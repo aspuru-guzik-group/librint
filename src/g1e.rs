@@ -613,7 +613,7 @@ pub unsafe extern "C" fn CINTnabla1j_1e(
     mut li: i32,
     mut lj: i32,
     mut lk: i32,
-    mut envs: *mut CINTEnvVars,
+    envs: &CINTEnvVars,
 ) {
     let dj: i32 = (*envs).g_stride_j;
     let dk: i32 = (*envs).g_stride_k;
@@ -948,6 +948,7 @@ pub unsafe extern "C" fn CINTprim_to_ctr(
     }
 }
 #[no_mangle]
+#[inline(never)]
 pub unsafe extern "C" fn CINTprim_to_ctr_0(
     mut gc: *mut f64,
     mut gp: *mut f64,
@@ -978,6 +979,7 @@ pub unsafe extern "C" fn CINTprim_to_ctr_0(
     }
 }
 #[no_mangle]
+#[inline(never)]
 pub unsafe extern "C" fn CINTprim_to_ctr_1(
     mut gc: *mut f64,
     mut gp: *mut f64,

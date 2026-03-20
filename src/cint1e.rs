@@ -499,14 +499,15 @@ unsafe extern "C" fn make_g1e_gout(
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTgout1e(
+#[inline(never)]
+pub unsafe fn CINTgout1e(
     mut gout: *mut f64,
     mut g: *mut f64,
     mut idx: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    envs: &CINTEnvVars,
     mut empty: i32,
 ) {
-    let mut nf: i32 = (*envs).nf;
+    let nf: i32 = envs.nf;
     let mut n: i32 = 0;
     let mut ix: i32 = 0;
     let mut iy: i32 = 0;
@@ -540,11 +541,12 @@ pub unsafe extern "C" fn CINTgout1e(
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTgout1e_nuc(
+pub unsafe fn CINTgout1e_nuc(
+//pub unsafe extern "C" fn CINTgout1e_nuc(
     mut gout: *mut f64,
     mut g: *mut f64,
     mut idx: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    envs: &CINTEnvVars,
     mut empty: i32,
 ) {
     let mut nf: i32 = (*envs).nf;
@@ -647,23 +649,25 @@ pub unsafe extern "C" fn int1e_ovlp_sph(
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
-            unsafe extern "C" fn(
+            unsafe fn(
                 *mut f64,
                 *mut f64,
                 *mut i32,
-                *mut CINTEnvVars,
+                &CINTEnvVars,
+                //*mut CINTEnvVars,
                 i32,
             ) -> (),
         >,
-        Option::<unsafe extern "C" fn() -> ()>,
+        Option::<unsafe fn() -> ()>,
+        //Option::<unsafe extern "C" fn() -> ()>,
     >(
         Some(
             CINTgout1e
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    *mut CINTEnvVars,
+                    &CINTEnvVars,
                     i32,
                 ) -> (),
         ),
@@ -727,23 +731,23 @@ pub unsafe extern "C" fn int1e_ovlp_cart(
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
-            unsafe extern "C" fn(
+            unsafe fn(
                 *mut f64,
                 *mut f64,
                 *mut i32,
-                *mut CINTEnvVars,
+                &CINTEnvVars,
                 i32,
             ) -> (),
         >,
-        Option::<unsafe extern "C" fn() -> ()>,
+        Option::<unsafe fn() -> ()>,
     >(
         Some(
             CINTgout1e
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    *mut CINTEnvVars,
+                    &CINTEnvVars,
                     i32,
                 ) -> (),
         ),
@@ -818,23 +822,23 @@ pub unsafe extern "C" fn int1e_nuc_sph(
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
-            unsafe extern "C" fn(
+            unsafe fn(
                 *mut f64,
                 *mut f64,
                 *mut i32,
-                *mut CINTEnvVars,
+                &CINTEnvVars,
                 i32,
             ) -> (),
         >,
-        Option::<unsafe extern "C" fn() -> ()>,
+        Option::<unsafe fn() -> ()>,
     >(
         Some(
             CINTgout1e_nuc
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    *mut CINTEnvVars,
+                    &CINTEnvVars,
                     i32,
                 ) -> (),
         ),
@@ -898,23 +902,23 @@ pub unsafe extern "C" fn int1e_nuc_cart(
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
-            unsafe extern "C" fn(
+            unsafe fn(
                 *mut f64,
                 *mut f64,
                 *mut i32,
-                *mut CINTEnvVars,
+                &CINTEnvVars,
                 i32,
             ) -> (),
         >,
-        Option::<unsafe extern "C" fn() -> ()>,
+        Option::<unsafe fn() -> ()>,
     >(
         Some(
             CINTgout1e_nuc
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    *mut CINTEnvVars,
+                    &CINTEnvVars,
                     i32,
                 ) -> (),
         ),
