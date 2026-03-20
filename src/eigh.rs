@@ -1273,7 +1273,7 @@ unsafe extern "C" fn _dlar1v(
     mut diag_off1: *mut f64,
     mut ld: *mut f64,
     mut lld: *mut f64,
-    mut gaptol: f64,
+    _gaptol: f64,
     mut vec: *mut f64,
     mut negcnt: *mut i32,
     mut twist_index: *mut i32,

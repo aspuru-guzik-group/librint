@@ -5557,11 +5557,11 @@ unsafe extern "C" fn lrys_wheeler_partial(
     let mut da: [f64; 1088] = [0.; 1088];
     let mut db: *mut f64 = da.as_mut_ptr().offset(n as isize);
     let mut c0: *mut f64 = db.offset(n as isize);
-    let mut mu0: f64 = (*moments.offset(0 as isize));
+    let mut mu0: f64 = *moments.offset(0 as isize);
     let mut first_seen: i32 = 1 as i32;
     let mut i: i32 = 0;
     lwheeler_recursion(n, alpha, beta, moments, a.as_mut_ptr(), b);
-    da[0 as usize] = (a[0 as usize]);
+    da[0 as usize] = a[0 as usize];
     i = 1 as i32;
     while i < n {
         if *b.offset(i as isize) < 1e-19f64 {
@@ -5578,8 +5578,8 @@ unsafe extern "C" fn lrys_wheeler_partial(
             }
             first_seen = 0 as i32;
         }
-        da[i as usize] = (a[i as usize]);
-        *db.offset(i as isize) = (sqrtl(*b.offset(i as isize)));
+        da[i as usize] = a[i as usize];
+        *db.offset(i as isize) = sqrtl(*b.offset(i as isize));
         i += 1;
         i;
     }

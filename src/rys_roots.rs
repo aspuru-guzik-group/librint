@@ -5733,8 +5733,8 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
     }
     if nroots == 1 as i32 {
         rt[0 as i32
-            as usize] = (fmt_ints[1 as usize]
-            / fmt_ints[0 as usize]);
+            as usize] = fmt_ints[1 as usize]
+            / fmt_ints[0 as usize];
     } else {
         error = R_lsmit(qcs, fmt_ints.as_mut_ptr(), nroots1);
         if error != 0 {
@@ -5747,7 +5747,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
                 *cs
                     .offset(
                         (k * nroots1 + i) as isize,
-                    ) = (*qcs.offset((k * nroots1 + i) as isize));
+                    ) = *qcs.offset((k * nroots1 + i) as isize);
                 i += 1;
                 i;
             }
@@ -5759,7 +5759,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
             return error;
         }
     }
-    dum0 = (1.0f64 / fmt_ints[0 as usize]);
+    dum0 = 1.0f64 / fmt_ints[0 as usize];
     k = 0 as i32;
     while k < nroots {
         root = rt[k as usize];

@@ -88419,28 +88419,28 @@ unsafe extern "C" fn a_ket_cart2spheric(
     return gsph;
 }
 unsafe extern "C" fn s_bra_cart2spheric(
-    mut gsph: *mut f64,
-    mut nket: i32,
+    _gsph: *mut f64,
+    _nket: i32,
     mut gcart: *mut f64,
-    mut l: i32,
+    _l: i32,
 ) -> *mut f64 {
     return gcart;
 }
 unsafe extern "C" fn s_ket_cart2spheric(
-    mut gsph: *mut f64,
+    _gsph: *mut f64,
     mut gcart: *mut f64,
-    mut lds: i32,
-    mut nbra: i32,
-    mut l: i32,
+    _lds: i32,
+    _nbra: i32,
+    _l: i32,
 ) -> *mut f64 {
     return gcart;
 }
 unsafe extern "C" fn s_ket_cart2spheric_copy(
     mut gsph: *mut f64,
     mut gcart: *mut f64,
-    mut lds: i32,
+    _lds: i32,
     mut nbra: i32,
-    mut l: i32,
+    _l: i32,
 ) -> *mut f64 {
     let mut i: i32 = 0;
     i = 0 as i32;
@@ -88452,19 +88452,19 @@ unsafe extern "C" fn s_ket_cart2spheric_copy(
     return gsph;
 }
 unsafe extern "C" fn p_bra_cart2spheric(
-    mut gsph: *mut f64,
-    mut nket: i32,
+    _gsph: *mut f64,
+    _nket: i32,
     mut gcart: *mut f64,
-    mut l: i32,
+    _l: i32,
 ) -> *mut f64 {
     return gcart;
 }
 unsafe extern "C" fn p_ket_cart2spheric(
-    mut gsph: *mut f64,
+    _gsph: *mut f64,
     mut gcart: *mut f64,
-    mut lds: i32,
-    mut nbra: i32,
-    mut l: i32,
+    _lds: i32,
+    _nbra: i32,
+    _l: i32,
 ) -> *mut f64 {
     return gcart;
 }
@@ -88473,7 +88473,7 @@ unsafe extern "C" fn p_ket_cart2spheric_copy(
     mut gcart: *mut f64,
     mut lds: i32,
     mut nbra: i32,
-    mut l: i32,
+    _l: i32,
 ) -> *mut f64 {
     let mut i: i32 = 0;
     i = 0 as i32;
@@ -88499,7 +88499,7 @@ unsafe extern "C" fn d_bra_cart2spheric(
     mut gsph: *mut f64,
     mut nket: i32,
     mut gcart: *mut f64,
-    mut l: i32,
+    _l: i32,
 ) -> *mut f64 {
     let mut coeff_c2s: *mut f64 = g_c2s[2 as usize].cart2sph;
     let mut pgsph: *mut f64 = gsph;
@@ -88549,7 +88549,7 @@ unsafe extern "C" fn d_ket_cart2spheric(
     mut gcart: *mut f64,
     mut lds: i32,
     mut nbra: i32,
-    mut l: i32,
+    _l: i32,
 ) -> *mut f64 {
     let mut coeff_c2s: *mut f64 = g_c2s[2 as usize].cart2sph;
     let mut pgsph: *mut f64 = gsph;
@@ -88616,7 +88616,7 @@ unsafe extern "C" fn f_bra_cart2spheric(
     mut gsph: *mut f64,
     mut nket: i32,
     mut gcart: *mut f64,
-    mut l: i32,
+    _l: i32,
 ) -> *mut f64 {
     let mut coeff_c2s: *mut f64 = g_c2s[3 as usize].cart2sph;
     let mut pgsph: *mut f64 = gsph;
@@ -88688,7 +88688,7 @@ unsafe extern "C" fn f_ket_cart2spheric(
     mut gcart: *mut f64,
     mut lds: i32,
     mut nbra: i32,
-    mut l: i32,
+    _l: i32,
 ) -> *mut f64 {
     let mut coeff_c2s: *mut f64 = g_c2s[3 as usize].cart2sph;
     let mut pgsph: *mut f64 = gsph;
@@ -88787,7 +88787,7 @@ unsafe extern "C" fn g_bra_cart2spheric(
     mut gsph: *mut f64,
     mut nket: i32,
     mut gcart: *mut f64,
-    mut l: i32,
+    _l: i32,
 ) -> *mut f64 {
     let mut coeff_c2s: *mut f64 = g_c2s[4 as usize].cart2sph;
     let mut pgsph: *mut f64 = gsph;
@@ -88889,7 +88889,7 @@ unsafe extern "C" fn g_ket_cart2spheric(
     mut gcart: *mut f64,
     mut lds: i32,
     mut nbra: i32,
-    mut l: i32,
+    _l: i32,
 ) -> *mut f64 {
     let mut coeff_c2s: *mut f64 = g_c2s[4 as usize].cart2sph;
     let mut pgsph: *mut f64 = gsph;
@@ -89793,9 +89793,9 @@ unsafe extern "C" fn a_bra_cart2spinor_si(
 unsafe extern "C" fn a_bra_cart2spinor_sf(
     mut gspR: *mut f64,
     mut gspI: *mut f64,
-    mut gx: *mut f64,
-    mut gy: *mut f64,
-    mut gz: *mut f64,
+    _gx: *mut f64,
+    _gy: *mut f64,
+    _gz: *mut f64,
     mut g1: *mut f64,
     mut nket: i32,
     mut kappa: i32,
@@ -89950,9 +89950,9 @@ unsafe extern "C" fn a_bra1_cart2spinor_si(
 unsafe extern "C" fn a_bra1_cart2spinor_sf(
     mut gspR: *mut f64,
     mut gspI: *mut f64,
-    mut gx: *mut f64,
-    mut gy: *mut f64,
-    mut gz: *mut f64,
+    _gx: *mut f64,
+    _gy: *mut f64,
+    _gz: *mut f64,
     mut g1: *mut f64,
     mut ngrids: i32,
     mut nket: i32,
@@ -90067,14 +90067,14 @@ unsafe extern "C" fn a_bra1_cart2spinor_zi(
     let mut caI: f64 = 0.;
     let mut cbR: f64 = 0.;
     let mut cbI: f64 = 0.;
-    let mut v1R: f64 = 0.;
-    let mut vxR: f64 = 0.;
-    let mut vyR: f64 = 0.;
-    let mut vzR: f64 = 0.;
-    let mut v1I: f64 = 0.;
-    let mut vxI: f64 = 0.;
-    let mut vyI: f64 = 0.;
-    let mut vzI: f64 = 0.;
+    let _v1R: f64 = 0.;
+    let _vxR: f64 = 0.;
+    let _vyR: f64 = 0.;
+    let _vzR: f64 = 0.;
+    let _v1I: f64 = 0.;
+    let _vxI: f64 = 0.;
+    let _vyI: f64 = 0.;
+    let _vzI: f64 = 0.;
     let mut v11R: f64 = 0.;
     let mut v12R: f64 = 0.;
     let mut v21R: f64 = 0.;
@@ -90144,9 +90144,9 @@ unsafe extern "C" fn a_bra1_cart2spinor_zi(
 unsafe extern "C" fn a_bra1_cart2spinor_zf(
     mut gspR: *mut f64,
     mut gspI: *mut f64,
-    mut gx: *mut f64,
-    mut gy: *mut f64,
-    mut gz: *mut f64,
+    _gx: *mut f64,
+    _gy: *mut f64,
+    _gz: *mut f64,
     mut g1: *mut f64,
     mut ngrids: i32,
     mut nket: i32,
@@ -90440,7 +90440,7 @@ unsafe extern "C" fn dcopy_ij(
     mut out: *mut f64,
     mut gctr: *mut f64,
     ni: i32,
-    nj: i32,
+    _nj: i32,
     mi: i32,
     mj: i32,
 ) {
@@ -90463,7 +90463,7 @@ unsafe extern "C" fn dcopy_grids_ij(
     mut gctr: *const f64,
     ngrids: i32,
     ni: i32,
-    nj: i32,
+    _nj: i32,
     mgrids: i32,
     mi: i32,
     mj: i32,
@@ -90501,7 +90501,7 @@ unsafe extern "C" fn dcopy_iklj(
     ni: i32,
     nj: i32,
     nk: i32,
-    nl: i32,
+    _nl: i32,
     mi: i32,
     mj: i32,
     mk: i32,
@@ -91545,7 +91545,7 @@ pub unsafe extern "C" fn c2s_cart_1e(
     mut gctr: *mut f64,
     mut dims: *mut i32,
     mut envs: *mut CINTEnvVars,
-    mut cache: *mut f64,
+    _cache: *mut f64,
 ) {
     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
@@ -91578,7 +91578,7 @@ pub unsafe extern "C" fn c2s_cart_2e1(
     mut gctr: *mut f64,
     mut dims: *mut i32,
     mut envs: *mut CINTEnvVars,
-    mut cache: *mut f64,
+    _cache: *mut f64,
 ) {
     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];

@@ -633,7 +633,7 @@ pub unsafe extern "C" fn int1e_ovlp_sph(
     mut bas: *mut i32,
     mut nbas: i32,
     mut env: *mut f64,
-    mut opt: *mut CINTOpt,
+    _opt: *mut CINTOpt,
     mut cache: *mut f64,
 ) -> i32 {
     let ng: [i32; 8] = [
@@ -786,11 +786,11 @@ pub unsafe extern "C" fn int1e_ovlp_cart(
 #[no_mangle]
 pub unsafe extern "C" fn int1e_ovlp_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    _atm: *mut i32,
+    _natm: i32,
+    _bas: *mut i32,
+    _nbas: i32,
+    _env: *mut f64,
 ) {
     *opt = 0 as *mut CINTOpt;
 }
@@ -804,7 +804,7 @@ pub unsafe extern "C" fn int1e_nuc_sph(
     mut bas: *mut i32,
     mut nbas: i32,
     mut env: *mut f64,
-    mut opt: *mut CINTOpt,
+    _opt: *mut CINTOpt,
     mut cache: *mut f64,
 ) -> i32 {
     let ng: [i32; 8] = [
@@ -957,11 +957,11 @@ pub unsafe extern "C" fn int1e_nuc_cart(
 #[no_mangle]
 pub unsafe extern "C" fn int1e_nuc_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    _atm: *mut i32,
+    _natm: i32,
+    _bas: *mut i32,
+    _nbas: i32,
+    _env: *mut f64,
 ) {
     *opt = 0 as *mut CINTOpt;
 }

@@ -142,7 +142,7 @@ pub unsafe extern "C" fn int1e_kin_cart(
     mut bas: *mut i32,
     mut nbas: i32,
     mut env: *mut f64,
-    mut opt: *mut CINTOpt,
+    _opt: *mut CINTOpt,
     mut cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
@@ -223,7 +223,7 @@ pub unsafe extern "C" fn int1e_kin_sph(
     mut bas: *mut i32,
     mut nbas: i32,
     mut env: *mut f64,
-    mut opt: *mut CINTOpt,
+    _opt: *mut CINTOpt,
     mut cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
@@ -296,16 +296,16 @@ pub unsafe extern "C" fn int1e_kin_sph(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_spinor(
-    mut out: *mut f64,
-    mut dims: *mut i32,
+    _out: *mut f64,
+    _dims: *mut i32,
     mut shls: *mut i32,
     mut atm: *mut i32,
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
     mut env: *mut f64,
-    mut opt: *mut CINTOpt,
-    mut cache: *mut f64,
+    _opt: *mut CINTOpt,
+    _cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
         0 as i32,

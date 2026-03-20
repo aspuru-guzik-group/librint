@@ -211,7 +211,7 @@ pub unsafe extern "C" fn CINTg1e_ovlp(
         return 1 as i32;
     }
     let mut rij: *mut f64 = ((*envs).rij).as_mut_ptr();
-    let mut rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
+    let rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
     let mut lj: i32 = 0;
     let mut di: i32 = 0;
     let mut dj: i32 = 0;
@@ -955,8 +955,8 @@ pub unsafe extern "C" fn CINTprim_to_ctr_0(
     mut nf: u64,
     mut nprim: i32,
     mut nctr: i32,
-    mut non0ctr: i32,
-    mut sortedidx: *mut i32,
+    _non0ctr: i32,
+    _sortedidx: *mut i32,
 ) {
     let mut i: i32 = 0;
     let mut n: u64 = 0;
@@ -984,7 +984,7 @@ pub unsafe extern "C" fn CINTprim_to_ctr_1(
     mut coeff: *mut f64,
     mut nf: u64,
     mut nprim: i32,
-    mut nctr: i32,
+    _nctr: i32,
     mut non0ctr: i32,
     mut sortedidx: *mut i32,
 ) {

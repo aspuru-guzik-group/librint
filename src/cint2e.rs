@@ -567,10 +567,10 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
     {
         return 0 as i32;
     }
-    let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
+    let _i_ctr: i32 = (*envs).x_ctr[0 as usize];
+    let _j_ctr: i32 = (*envs).x_ctr[1 as usize];
+    let _k_ctr: i32 = (*envs).x_ctr[2 as usize];
+    let _l_ctr: i32 = (*envs).x_ctr[3 as usize];
     let mut i_prim: i32 = *bas
         .offset((8 as i32 * i_sh + 2 as i32) as isize);
     let mut j_prim: i32 = *bas
@@ -703,29 +703,29 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
         1 as i32,
         1 as i32,
     ];
-    let mut iempty: *mut i32 = _empty
+    let _iempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(0 as isize);
-    let mut jempty: *mut i32 = _empty
+    let _jempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(1 as isize);
-    let mut kempty: *mut i32 = _empty
+    let _kempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(2 as isize);
-    let mut lempty: *mut i32 = _empty
+    let _lempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(3 as isize);
     let mut gempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(4 as isize);
-    let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
-    let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
-    let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
-    let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
-    let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
-    let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
-    let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
-    let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
+    let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
+    let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
+    let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
+    let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
+    let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
+    let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
+    let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
+    let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
     let mut eijcutoff: f64 = 0.;
@@ -903,9 +903,9 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
         return 0 as i32;
     }
     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
+    let _j_ctr: i32 = (*envs).x_ctr[1 as usize];
+    let _k_ctr: i32 = (*envs).x_ctr[2 as usize];
+    let _l_ctr: i32 = (*envs).x_ctr[3 as usize];
     let mut i_prim: i32 = *bas
         .offset((8 as i32 * i_sh + 2 as i32) as isize);
     let mut j_prim: i32 = *bas
@@ -1041,26 +1041,26 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
     let mut iempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(0 as isize);
-    let mut jempty: *mut i32 = _empty
+    let _jempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(1 as isize);
-    let mut kempty: *mut i32 = _empty
+    let _kempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(2 as isize);
-    let mut lempty: *mut i32 = _empty
+    let _lempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(3 as isize);
-    let mut gempty: *mut i32 = _empty
+    let _gempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(4 as isize);
     let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
-    let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
-    let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
-    let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
+    let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
+    let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
+    let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
     let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
-    let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
-    let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
-    let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
+    let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
+    let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
+    let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
     let mut eijcutoff: f64 = 0.;
@@ -1271,10 +1271,10 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
     {
         return 0 as i32;
     }
-    let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+    let _i_ctr: i32 = (*envs).x_ctr[0 as usize];
     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
+    let _k_ctr: i32 = (*envs).x_ctr[2 as usize];
+    let _l_ctr: i32 = (*envs).x_ctr[3 as usize];
     let mut i_prim: i32 = *bas
         .offset((8 as i32 * i_sh + 2 as i32) as isize);
     let mut j_prim: i32 = *bas
@@ -1413,23 +1413,23 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
     let mut jempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(1 as isize);
-    let mut kempty: *mut i32 = _empty
+    let _kempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(2 as isize);
-    let mut lempty: *mut i32 = _empty
+    let _lempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(3 as isize);
-    let mut gempty: *mut i32 = _empty
+    let _gempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(4 as isize);
-    let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
+    let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
     let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
-    let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
-    let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
-    let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
+    let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
+    let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
+    let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
     let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
-    let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
-    let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
+    let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
+    let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
     let mut eijcutoff: f64 = 0.;
@@ -1642,10 +1642,10 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
     {
         return 0 as i32;
     }
-    let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
+    let _i_ctr: i32 = (*envs).x_ctr[0 as usize];
+    let _j_ctr: i32 = (*envs).x_ctr[1 as usize];
     let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
+    let _l_ctr: i32 = (*envs).x_ctr[3 as usize];
     let mut i_prim: i32 = *bas
         .offset((8 as i32 * i_sh + 2 as i32) as isize);
     let mut j_prim: i32 = *bas
@@ -1778,7 +1778,7 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
         1 as i32,
         1 as i32,
     ];
-    let mut iempty: *mut i32 = _empty
+    let _iempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(0 as isize);
     let mut jempty: *mut i32 = _empty
@@ -1787,20 +1787,20 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
     let mut kempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(2 as isize);
-    let mut lempty: *mut i32 = _empty
+    let _lempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(3 as isize);
-    let mut gempty: *mut i32 = _empty
+    let _gempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(4 as isize);
-    let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
-    let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
+    let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
+    let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
     let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
-    let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
-    let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
-    let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
+    let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
+    let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
+    let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
     let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
-    let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
+    let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
     let mut eijcutoff: f64 = 0.;
@@ -2013,9 +2013,9 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
     {
         return 0 as i32;
     }
-    let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
+    let _i_ctr: i32 = (*envs).x_ctr[0 as usize];
+    let _j_ctr: i32 = (*envs).x_ctr[1 as usize];
+    let _k_ctr: i32 = (*envs).x_ctr[2 as usize];
     let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
     let mut i_prim: i32 = *bas
         .offset((8 as i32 * i_sh + 2 as i32) as isize);
@@ -2149,10 +2149,10 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
         1 as i32,
         1 as i32,
     ];
-    let mut iempty: *mut i32 = _empty
+    let _iempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(0 as isize);
-    let mut jempty: *mut i32 = _empty
+    let _jempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(1 as isize);
     let mut kempty: *mut i32 = _empty
@@ -2161,16 +2161,16 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
     let mut lempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(3 as isize);
-    let mut gempty: *mut i32 = _empty
+    let _gempty: *mut i32 = _empty
         .as_mut_ptr()
         .offset(4 as isize);
-    let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
-    let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
-    let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
+    let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
+    let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
+    let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
     let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
-    let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
-    let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
-    let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
+    let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
+    let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
+    let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
     let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
