@@ -117,7 +117,6 @@ pub unsafe fn CINT1e_loop(
     let mut jempty: *mut i32 = empty
         .as_mut_ptr()
         .offset(2 as isize);
-    let mut rij: *mut f64 = 0 as *mut f64;
     let mut idx: *mut i32 = 0 as *mut i32;
     idx = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
@@ -190,7 +189,7 @@ pub unsafe fn CINT1e_loop(
             if !((*pdata_ij).cceij > expcutoff) {
                 (*envs).ai[0 as usize] = *ai.offset(ip as isize);
                 expij = (*pdata_ij).eij;
-                rij = ((*pdata_ij).rij).as_mut_ptr();
+                let rij = ((*pdata_ij).rij).as_ptr();
                 (*envs)
                     .rij[0 as i32
                     as usize] = *rij.offset(0 as isize);
