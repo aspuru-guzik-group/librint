@@ -138,16 +138,16 @@ pub unsafe fn CINTinit_int1e_EnvVars(
     (*envs).g_stride_l = (*envs).g_size;
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg1e_index_xyz(
+pub unsafe fn CINTg1e_index_xyz(
     mut idx: *mut i32,
-    envs: *const CINTEnvVars,
+    envs: &CINTEnvVars,
 ) {
-    let i_l: i32 = (*envs).i_l;
-    let j_l: i32 = (*envs).j_l;
-    let nfi: i32 = (*envs).nfi;
-    let nfj: i32 = (*envs).nfj;
-    let di: i32 = (*envs).g_stride_i;
-    let dj: i32 = (*envs).g_stride_j;
+    let i_l: i32 = envs.i_l;
+    let j_l: i32 = envs.j_l;
+    let nfi: i32 = envs.nfi;
+    let nfj: i32 = envs.nfj;
+    let di: i32 = envs.g_stride_i;
+    let dj: i32 = envs.g_stride_j;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut n: i32 = 0;
@@ -166,8 +166,8 @@ pub unsafe extern "C" fn CINTg1e_index_xyz(
     CINTcart_comp(i_nx.as_mut_ptr(), i_ny.as_mut_ptr(), i_nz.as_mut_ptr(), i_l);
     CINTcart_comp(j_nx.as_mut_ptr(), j_ny.as_mut_ptr(), j_nz.as_mut_ptr(), j_l);
     ofx = 0 as i32;
-    ofy = (*envs).g_size;
-    ofz = (*envs).g_size * 2 as i32;
+    ofy = envs.g_size;
+    ofz = envs.g_size * 2 as i32;
     n = 0 as i32;
     j = 0 as i32;
     while j < nfj {

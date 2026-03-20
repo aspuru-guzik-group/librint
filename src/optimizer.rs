@@ -180,7 +180,7 @@ unsafe extern "C" fn _allocate_index_xyz(
 unsafe extern "C" fn gen_idx(
     mut opt: *mut CINTOpt,
     mut finit: Option::<unsafe extern "C" fn() -> ()>,
-    mut findex_xyz: Option::<unsafe extern "C" fn() -> ()>,
+    mut findex_xyz: Option::<unsafe fn() -> ()>,
     mut order: i32,
     mut l_allow: i32,
     ng: &[i32;8],
@@ -392,12 +392,12 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
             ),
         ),
         ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> ()>,
-            Option::<unsafe extern "C" fn() -> ()>,
+            Option::<unsafe fn(*mut i32, &CINTEnvVars) -> ()>,
+            Option::<unsafe fn() -> ()>,
         >(
             Some(
                 CINTg1e_index_xyz
-                    as unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> (),
+                    as unsafe fn(*mut i32, &CINTEnvVars) -> (),
             ),
         ),
         2 as i32,
@@ -455,12 +455,12 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
             ),
         ),
         ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> ()>,
-            Option::<unsafe extern "C" fn() -> ()>,
+            Option::<unsafe fn(*mut i32, &CINTEnvVars) -> ()>,
+            Option::<unsafe fn() -> ()>,
         >(
             Some(
                 CINTg2e_index_xyz
-                    as unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> (),
+                    as unsafe fn(*mut i32, &CINTEnvVars) -> (),
             ),
         ),
         4 as i32,

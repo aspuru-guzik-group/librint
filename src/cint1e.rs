@@ -123,7 +123,7 @@ pub unsafe fn CINT1e_loop(
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut i32;
     cache = idx.offset(((*envs).nf * 3 as i32) as isize) as *mut f64;
-    CINTg1e_index_xyz(idx, envs);
+    CINTg1e_index_xyz(idx, &*envs);
     let mut non0ctri: *mut i32 = 0 as *mut i32;
     let mut non0ctrj: *mut i32 = 0 as *mut i32;
     let mut non0idxi: *mut i32 = 0 as *mut i32;

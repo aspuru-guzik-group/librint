@@ -216,7 +216,7 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
         as *mut i32;
     cache = idx.offset(nf.wrapping_mul(3 as u64) as isize)
         as *mut f64;
-    CINTg2e_index_xyz(idx, envs);
+    CINTg2e_index_xyz(idx, &*envs);
     let mut non0ctri: *mut i32 = 0 as *mut i32;
     let mut non0ctrj: *mut i32 = 0 as *mut i32;
     let mut non0ctrk: *mut i32 = 0 as *mut i32;
@@ -746,7 +746,7 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
             as *mut i32;
         cache = idx.offset(nf.wrapping_mul(3 as u64) as isize)
             as *mut f64;
-        CINTg2e_index_xyz(idx, envs);
+        CINTg2e_index_xyz(idx, &*envs);
     }
     let mut omega: f64 = *env.offset(8 as isize);
     if omega < 0 as f64 && (*envs).rys_order > 1 as i32
@@ -1081,7 +1081,7 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
             as *mut i32;
         cache = idx.offset(nf.wrapping_mul(3 as u64) as isize)
             as *mut f64;
-        CINTg2e_index_xyz(idx, envs);
+        CINTg2e_index_xyz(idx, &*envs);
     }
     let mut omega: f64 = *env.offset(8 as isize);
     if omega < 0 as f64 && (*envs).rys_order > 1 as i32
@@ -1450,7 +1450,7 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
             as *mut i32;
         cache = idx.offset(nf.wrapping_mul(3 as u64) as isize)
             as *mut f64;
-        CINTg2e_index_xyz(idx, envs);
+        CINTg2e_index_xyz(idx, &*envs);
     }
     let mut omega: f64 = *env.offset(8 as isize);
     if omega < 0 as f64 && (*envs).rys_order > 1 as i32
@@ -1821,7 +1821,7 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
             as *mut i32;
         cache = idx.offset(nf.wrapping_mul(3 as u64) as isize)
             as *mut f64;
-        CINTg2e_index_xyz(idx, envs);
+        CINTg2e_index_xyz(idx, &*envs);
     }
     let mut omega: f64 = *env.offset(8 as isize);
     if omega < 0 as f64 && (*envs).rys_order > 1 as i32
@@ -2192,7 +2192,7 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
             as *mut i32;
         cache = idx.offset(nf.wrapping_mul(3 as u64) as isize)
             as *mut f64;
-        CINTg2e_index_xyz(idx, envs);
+        CINTg2e_index_xyz(idx, &*envs);
     }
     let mut omega: f64 = *env.offset(8 as isize);
     if omega < 0 as f64 && (*envs).rys_order > 1 as i32
@@ -2563,7 +2563,7 @@ pub unsafe extern "C" fn CINT2e_loop(
             as *mut i32;
         cache = idx.offset(nf.wrapping_mul(3 as u64) as isize)
             as *mut f64;
-        CINTg2e_index_xyz(idx, envs);
+        CINTg2e_index_xyz(idx, &*envs);
     }
     let mut omega: f64 = *env.offset(8 as isize);
     if omega < 0 as f64 && (*envs).rys_order > 1 as i32

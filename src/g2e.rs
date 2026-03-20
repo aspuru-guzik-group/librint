@@ -401,22 +401,22 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
     );
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg2e_index_xyz(
+pub unsafe fn CINTg2e_index_xyz(
     mut idx: *mut i32,
-    mut envs: *const CINTEnvVars,
+    envs: &CINTEnvVars,
 ) {
-    let i_l: i32 = (*envs).i_l;
-    let j_l: i32 = (*envs).j_l;
-    let k_l: i32 = (*envs).k_l;
-    let l_l: i32 = (*envs).l_l;
-    let nfi: i32 = (*envs).nfi;
-    let nfj: i32 = (*envs).nfj;
-    let nfk: i32 = (*envs).c2rust_unnamed.nfk;
-    let nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
-    let di: i32 = (*envs).g_stride_i;
-    let dk: i32 = (*envs).g_stride_k;
-    let dl: i32 = (*envs).g_stride_l;
-    let dj: i32 = (*envs).g_stride_j;
+    let i_l: i32 = envs.i_l;
+    let j_l: i32 = envs.j_l;
+    let k_l: i32 = envs.k_l;
+    let l_l: i32 = envs.l_l;
+    let nfi: i32 = envs.nfi;
+    let nfj: i32 = envs.nfj;
+    let nfk: i32 = envs.c2rust_unnamed.nfk;
+    let nfl: i32 = envs.c2rust_unnamed_0.nfl;
+    let di: i32 = envs.g_stride_i;
+    let dk: i32 = envs.g_stride_k;
+    let dl: i32 = envs.g_stride_l;
+    let dj: i32 = envs.g_stride_j;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -448,8 +448,8 @@ pub unsafe extern "C" fn CINTg2e_index_xyz(
     CINTcart_comp(k_nx.as_mut_ptr(), k_ny.as_mut_ptr(), k_nz.as_mut_ptr(), k_l);
     CINTcart_comp(l_nx.as_mut_ptr(), l_ny.as_mut_ptr(), l_nz.as_mut_ptr(), l_l);
     ofx = 0 as i32;
-    ofy = (*envs).g_size;
-    ofz = (*envs).g_size * 2 as i32;
+    ofy = envs.g_size;
+    ofz = envs.g_size * 2 as i32;
     n = 0 as i32;
     j = 0 as i32;
     while j < nfj {
