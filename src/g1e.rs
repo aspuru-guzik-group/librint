@@ -140,7 +140,7 @@ pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
 #[no_mangle]
 pub unsafe extern "C" fn CINTg1e_index_xyz(
     mut idx: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    envs: *const CINTEnvVars,
 ) {
     let i_l: i32 = (*envs).i_l;
     let j_l: i32 = (*envs).j_l;

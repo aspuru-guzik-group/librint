@@ -392,12 +392,12 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
             ),
         ),
         ::core::mem::transmute::<
-            Option::<unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> ()>,
+            Option::<unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> ()>,
             Option::<unsafe extern "C" fn() -> ()>,
         >(
             Some(
                 CINTg1e_index_xyz
-                    as unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> (),
+                    as unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> (),
             ),
         ),
         2 as i32,

@@ -31,7 +31,7 @@ pub unsafe extern "C" fn CINT1e_loop(
     mut gctr: *mut f64,
     mut envs: *mut CINTEnvVars,
     mut cache: *mut f64,
-    mut int1e_type: i32,
+    int1e_type: i32,
 ) -> i32 {
     let mut shls: *mut i32 = (*envs).shls;
     let mut bas: *mut i32 = (*envs).bas;
@@ -454,7 +454,7 @@ unsafe extern "C" fn make_g1e_gout(
     mut idx: *mut i32,
     mut envs: *mut CINTEnvVars,
     mut empty: i32,
-    mut int1e_type: i32,
+    int1e_type: i32,
 ) {
     let mut ia: i32 = 0;
     match int1e_type {
