@@ -11,8 +11,6 @@ use librint::scf::{nmol, angl};
 
 use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
-// use librint::cint2e::cint2e_cart;
-
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -121,8 +119,6 @@ fn time_reverse_element_mode(
 
             let size = (di * dj) as usize;
 
-            dbuf[..size].fill(0.0);
-
             let start_ovlp = std::time::Instant::now();
             ovlpp(
                 &mut buf,
@@ -162,6 +158,7 @@ fn time_reverse_element_mode(
                         dS[(nuj * nshells + mui) * env2_len + l] = denv[l];
                     }
 
+                    dbuf[c] = 0.0;
                     c += 1;
                 }
             }
@@ -195,7 +192,7 @@ fn time_forward_element_mode(
     
     let nshells = angl(bas, 0);
 
-    let max_size = (nbas * nbas) as usize; // Preallocate with an upper bound
+    let max_size = (nbas * nbas) as usize;
     let mut buf = vec![0.0; max_size];
     let mut dbuf = vec![0.0; max_size];
     let mut denv = vec![0.0f64; env.len()];
@@ -220,9 +217,6 @@ fn time_forward_element_mode(
             dj = CINTcgto_cart(j, bas) as usize;
 
             let size = (di * dj) as usize;
-            
-            buf[..size].fill(0.0);
-            dbuf[..size].fill(0.0);
 
             let start_ovlp = std::time::Instant::now();
             ovlpp(
@@ -238,10 +232,7 @@ fn time_forward_element_mode(
             total_ovlp_time_for += duration_ovlp;
 
             for l in 0..env2_len {
-                buf[..size].fill(0.0);
-                dbuf[..size].fill(0.0);
-                
-                denv.fill(0.0);
+                dbuf.fill(0.0);        
                 denv[l] = 1.0;
 
                 let start_dovlp = std::time::Instant::now();
@@ -266,6 +257,8 @@ fn time_forward_element_mode(
                         c += 1;
                     }
                 }
+
+                denv[l] = 0.0;
             }
 
             count += 1;
@@ -310,7 +303,7 @@ fn time_forward_matrix_mode(
 
     let start_total = std::time::Instant::now();
     for l in 0..env2_len {
-        denv2.fill(0.0);
+        dout.fill(0.0);
         denv2[l] = 1.0;
 
         dS_for(
@@ -319,6 +312,8 @@ fn time_forward_matrix_mode(
             &mut env1,
             &mut env2, &mut denv2,
         );
+
+        denv2[l] = 0.0;
 
         for idx in 0..(nshells * nshells) {
             dS[idx * env2_len + l] = dout[idx];
@@ -360,14 +355,10 @@ fn time_reverse_matrix_mode(
     let mut dout = vec![0.0; nshells * nshells];
     let mut denv2 = vec![0.0; env2_len];
 
-    let mut total_calls = 0;
     let start_total = std::time::Instant::now();
 
     for k in 0..(nshells * nshells) {
-        total_calls += 1;
-
         denv2.fill(0.0);
-        dout.fill(0.0);
         dout[k] = 1.0;
 
         dS_rev(
@@ -376,6 +367,8 @@ fn time_reverse_matrix_mode(
             &mut env1,
             &mut env2, &mut denv2,
         );
+
+        dout[k] = 0.0;
 
         for l in 0..env2_len {
             dS[k * env2_len + l] = denv2[l];
@@ -386,7 +379,7 @@ fn time_reverse_matrix_mode(
 
     println!("primal time:        {:.6} sec", primal_time);
     println!("total dovlp time:   {:.6} sec", total_dovlp_time);
-    println!("avg dovlp time:     {:.6} sec", total_dovlp_time / total_calls as f64);
+    println!("avg dovlp time:     {:.6} sec", total_dovlp_time / (nshells * nshells) as f64);
     println!("avg overhead:       {:.6}", total_dovlp_time / primal_time);
 }
 
