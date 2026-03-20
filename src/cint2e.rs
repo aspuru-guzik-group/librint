@@ -3777,7 +3777,7 @@ pub unsafe extern "C" fn int2e_sph(
     mut opt: *mut CINTOpt,
     mut cache: *mut f64,
 ) -> i32 {
-    let mut ng: [i32; 8] = [
+    let ng: [i32; 8] = [
         0 as i32,
         0 as i32,
         0 as i32,
@@ -3788,7 +3788,7 @@ pub unsafe extern "C" fn int2e_sph(
         1 as i32,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
-    CINTinit_int2e_EnvVars(&mut envs, ng.as_mut_ptr(), shls, atm, natm, bas, nbas, env);
+    CINTinit_int2e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
@@ -3863,7 +3863,7 @@ pub unsafe extern "C" fn int2e_optimizer(
         1 as i32,
         1 as i32,
     ];
-    CINTall_2e_optimizer(opt, ng.as_mut_ptr(), atm, natm, bas, nbas, env);
+    CINTall_2e_optimizer(opt, &ng, atm, natm, bas, nbas, env);
 }
 #[no_mangle]
 pub unsafe extern "C" fn int2e_cart(
@@ -3878,7 +3878,7 @@ pub unsafe extern "C" fn int2e_cart(
     mut opt: *mut CINTOpt,
     mut cache: *mut f64,
 ) -> i32 {
-    let mut ng: [i32; 8] = [
+    let ng: [i32; 8] = [
         0 as i32,
         0 as i32,
         0 as i32,
@@ -3889,7 +3889,7 @@ pub unsafe extern "C" fn int2e_cart(
         1 as i32,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
-    CINTinit_int2e_EnvVars(&mut envs, ng.as_mut_ptr(), shls, atm, natm, bas, nbas, env);
+    CINTinit_int2e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
