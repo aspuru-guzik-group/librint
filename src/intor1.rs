@@ -130,7 +130,7 @@ pub unsafe extern "C" fn int1e_kin_optimizer(
         1 as i32,
         1 as i32,
     ];
-    CINTall_1e_optimizer(opt, ng.as_mut_ptr(), atm, natm, bas, nbas, env);
+    CINTall_1e_optimizer(opt, &ng, atm, natm, bas, nbas, env);
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_cart(
@@ -156,7 +156,7 @@ pub unsafe extern "C" fn int1e_kin_cart(
         1 as i32,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
-    CINTinit_int1e_EnvVars(&mut envs, ng.as_mut_ptr(), shls, atm, natm, bas, nbas, env);
+    CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
@@ -237,7 +237,7 @@ pub unsafe extern "C" fn int1e_kin_sph(
         1 as i32,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
-    CINTinit_int1e_EnvVars(&mut envs, ng.as_mut_ptr(), shls, atm, natm, bas, nbas, env);
+    CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<
@@ -318,7 +318,7 @@ pub unsafe extern "C" fn int1e_kin_spinor(
         1 as i32,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
-    CINTinit_int1e_EnvVars(&mut envs, ng.as_mut_ptr(), shls, atm, natm, bas, nbas, env);
+    CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs
         .f_gout = ::core::mem::transmute::<
         Option::<

@@ -183,7 +183,7 @@ unsafe extern "C" fn gen_idx(
     mut findex_xyz: Option::<unsafe extern "C" fn() -> ()>,
     mut order: i32,
     mut l_allow: i32,
-    mut ng: *mut i32,
+    mut ng: &[i32;8],
     mut atm: *mut i32,
     mut natm: i32,
     mut bas: *mut i32,
@@ -350,7 +350,7 @@ unsafe extern "C" fn gen_idx(
 #[no_mangle]
 pub unsafe extern "C" fn CINTall_1e_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut ng: *mut i32,
+    ng: &[i32;8],
     mut atm: *mut i32,
     mut natm: i32,
     mut bas: *mut i32,
@@ -366,7 +366,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
             Option::<
                 unsafe extern "C" fn(
                     *mut CINTEnvVars,
-                    *mut i32,
+                    &[i32;8],
                     *mut i32,
                     *mut i32,
                     i32,
@@ -381,7 +381,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
                 CINTinit_int1e_EnvVars
                     as unsafe extern "C" fn(
                         *mut CINTEnvVars,
-                        *mut i32,
+                        &[i32;8],
                         *mut i32,
                         *mut i32,
                         i32,
@@ -413,7 +413,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
 #[no_mangle]
 pub unsafe extern "C" fn CINTall_2e_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut ng: *mut i32,
+    ng: &[i32;8],
     mut atm: *mut i32,
     mut natm: i32,
     mut bas: *mut i32,
@@ -429,7 +429,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
             Option::<
                 unsafe extern "C" fn(
                     *mut CINTEnvVars,
-                    *mut i32,
+                    &[i32;8],
                     *mut i32,
                     *mut i32,
                     i32,
@@ -444,7 +444,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
                 CINTinit_int2e_EnvVars
                     as unsafe extern "C" fn(
                         *mut CINTEnvVars,
-                        *mut i32,
+                        &[i32;8],
                         *mut i32,
                         *mut i32,
                         i32,
@@ -905,7 +905,7 @@ pub unsafe extern "C" fn CINTset_pairdata(
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_setij(
     mut opt: *mut CINTOpt,
-    mut ng: *mut i32,
+    ng: &[i32;8],
     mut atm: *mut i32,
     mut natm: i32,
     mut bas: *mut i32,
@@ -977,14 +977,10 @@ pub unsafe extern "C" fn CINTOpt_setij(
     let ref mut fresh7 = *((*opt).pairdata).offset(0 as isize);
     *fresh7 = pdata;
     let mut ijkl_inc: i32 = 0;
-    if *ng.offset(0 as isize) + *ng.offset(1 as isize)
-        > *ng.offset(2 as isize) + *ng.offset(3 as isize)
-    {
-        ijkl_inc = *ng.offset(0 as isize)
-            + *ng.offset(1 as isize);
+    if ng[0] + ng[1] > ng[2] + ng[3] {
+        ijkl_inc = ng[0] + ng[1];
     } else {
-        ijkl_inc = *ng.offset(2 as isize)
-            + *ng.offset(3 as isize);
+        ijkl_inc = ng[2] + ng[3];
     }
     let mut empty: i32 = 0;
     let mut rr: f64 = 0.;

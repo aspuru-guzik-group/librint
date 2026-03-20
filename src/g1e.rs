@@ -22,7 +22,7 @@ fn SQUARE(r: *mut f64) -> f64 {
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
     mut envs: *mut CINTEnvVars,
-    mut ng: *mut i32,
+    mut ng: &[i32;8],
     mut shls: *mut i32,
     mut atm: *mut i32,
     mut natm: i32,
@@ -61,8 +61,8 @@ pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
             .expcutoff = MAX(40 as f64, *env.offset(0 as isize))
             as f64;
     }
-    (*envs).li_ceil = (*envs).i_l + *ng.offset(0 as isize);
-    (*envs).lj_ceil = (*envs).j_l + *ng.offset(1 as isize);
+    (*envs).li_ceil = (*envs).i_l + ng[0];
+    (*envs).lj_ceil = (*envs).j_l + ng[1];
     (*envs)
         .ri = env
         .offset(
@@ -87,11 +87,11 @@ pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
                             ) + 1 as i32) as isize,
                 ) as isize,
         );
-    (*envs).gbits = *ng.offset(4 as isize);
-    (*envs).ncomp_e1 = *ng.offset(5 as isize);
-    (*envs).ncomp_tensor = *ng.offset(7 as isize);
-    if *ng.offset(6 as isize) > 0 as i32 {
-        (*envs).nrys_roots = *ng.offset(6 as isize);
+    (*envs).gbits = ng[4];
+    (*envs).ncomp_e1 = ng[5];
+    (*envs).ncomp_tensor = ng[7];
+    if ng[6] > 0 as i32 {
+        (*envs).nrys_roots = ng[6];
     } else {
         (*envs)
             .nrys_roots = ((*envs).li_ceil + (*envs).lj_ceil) / 2 as i32
