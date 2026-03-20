@@ -155,7 +155,10 @@ fn time_reverse_element_mode(
                     total_dovlp_time += duration_dovlp;
 
                     for l in 0..env2_len {
-                        dS[(nuj * nshells + mui) * env2_len + l] = denv[l];
+                        let idx = (nuj * nshells + mui) * env2_len + l;
+                        if idx < dS.len() {
+                            dS[idx] = denv[l];
+                        }
                     }
 
                     dbuf[c] = 0.0;
@@ -253,7 +256,10 @@ fn time_forward_element_mode(
                 let mut c: usize = 0;
                 for nuj in nu..(nu + dj) {
                     for mui in mu..(mu + di) {
-                        dS_for[(nuj * nshells + mui) * env2_len + l] = dbuf[c];
+                        let idx = (nuj * nshells + mui) * env2_len + l;
+                        if idx < dS_for.len() {
+                            dS_for[idx] = dbuf[c];
+                        }
                         c += 1;
                     }
                 }
