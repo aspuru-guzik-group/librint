@@ -82,16 +82,18 @@ pub fn S(
 }
 
 fn time_reverse_element_mode(
-    atm: &mut [i32],
+    atm: &mut Vec<i32>,
     natm: usize,
-    bas: &mut [i32],
+    bas: &mut Vec<i32>,
     nbas: usize,
-    env: &mut [f64],
+    env: &mut Vec<f64>,
     env2_len: usize,
     dS: &mut [f64],
 ) {
     println!("--- Timing Reverse Mode (element) dS ---");
     let mut shls: [i32; 4] = [0, 0, 0, 0];
+
+    let nshells = angl(&bas, 0);
 
     let max_size = (nbas * nbas) as usize;
     let mut buf = vec![0.0; max_size];
@@ -102,19 +104,24 @@ fn time_reverse_element_mode(
     let mut total_dovlp_time = 0.0;
     let mut count = 0;
 
+    let mut di = 0;
+    let mut dj = 0;
+
+    let mut mu: usize;
+    let mut nu: usize;
+    mu = 0;
     for i in 0..nbas {
+        nu = 0;
         for j in 0..nbas {
             shls[0] = i as i32;
             shls[1] = j as i32;
 
-            let di = CINTcgto_cart(i, bas);
-            let dj = CINTcgto_cart(j, bas);
+            di = CINTcgto_cart(i, bas) as usize;
+            dj = CINTcgto_cart(j, bas) as usize;
 
             let size = (di * dj) as usize;
-            
-            buf[..size].fill(0.0);
+
             dbuf[..size].fill(0.0);
-            dbuf[0] = 1.0;
 
             let start_ovlp = std::time::Instant::now();
             ovlpp(
@@ -129,27 +136,41 @@ fn time_reverse_element_mode(
             let duration_ovlp = start_ovlp.elapsed().as_secs_f64();
             total_ovlp_time += duration_ovlp;
 
-            denv.fill(0.0);
-            let start_dovlp = std::time::Instant::now();
-            dovlp_rev(
-                &mut buf,
-                &mut dbuf,
-                &mut shls,
-                atm,
-                natm,
-                bas,
-                nbas,
-                env,
-                &mut denv,
-            );
+            let mut c: usize = 0;
+            for nuj in nu..(nu + dj) {
+                for mui in mu..(mu + di) {
+                    denv.fill(0.0);
+                    dbuf[c] = 1.0;
 
-            let duration_dovlp = start_dovlp.elapsed().as_secs_f64();
-            total_dovlp_time += duration_dovlp;
-            for l in 0..env2_len {
-                dS[(i * nbas + j) * env2_len + l] = denv[l];
+                    let start_dovlp = std::time::Instant::now();
+                    dovlp_rev(
+                        &mut buf,
+                        &mut dbuf,
+                        &mut shls,
+                        atm,
+                        natm,
+                        bas,
+                        nbas,
+                        env,
+                        &mut denv,
+                    );
+
+                    let duration_dovlp = start_dovlp.elapsed().as_secs_f64();
+                    total_dovlp_time += duration_dovlp;
+
+                    for l in 0..env2_len {
+                        dS[(nuj * nshells + mui) * env2_len + l] = denv[l];
+                    }
+
+                    c += 1;
+                }
             }
+
             count += 1;
+
+            nu += dj;
         }
+        mu += di;
     }    
 
     println!("count {}", count);
@@ -161,16 +182,18 @@ fn time_reverse_element_mode(
 }
 
 fn time_forward_element_mode(
-    atm: &mut [i32],
+    atm: &mut Vec<i32>,
     natm: usize,
-    bas: &mut [i32],
+    bas: &mut Vec<i32>,
     nbas: usize,
-    env: &mut [f64],
+    env: &mut Vec<f64>,
     env2_len: usize,
     dS_for: &mut [f64],
 ) {
     println!("--- Timing Forward Mode (element) dS ---");
     let mut shls: [i32; 4] = [0, 0, 0, 0];
+    
+    let nshells = angl(bas, 0);
 
     let max_size = (nbas * nbas) as usize; // Preallocate with an upper bound
     let mut buf = vec![0.0; max_size];
@@ -181,13 +204,20 @@ fn time_forward_element_mode(
     let mut total_dovlp_time_for = 0.0;
     let mut count = 0;
 
+    let mut di = 0;
+    let mut dj = 0;
+
+    let mut mu: usize;
+    let mut nu: usize;
+    mu = 0;
     for i in 0..nbas {
+        nu = 0;
         for j in 0..nbas {
             shls[0] = i as i32;
             shls[1] = j as i32;
 
-            let di = CINTcgto_cart(i, bas);
-            let dj = CINTcgto_cart(j, bas);
+            di = CINTcgto_cart(i, bas) as usize;
+            dj = CINTcgto_cart(j, bas) as usize;
 
             let size = (di * dj) as usize;
             
@@ -228,12 +258,21 @@ fn time_forward_element_mode(
                 );
                 let duration_dovlp = start_dovlp.elapsed().as_secs_f64();
                 total_dovlp_time_for += duration_dovlp;
-
-                dS_for[(i * nbas + j) * env2_len + l] = dbuf[0];
+                
+                let mut c: usize = 0;
+                for nuj in nu..(nu + dj) {
+                    for mui in mu..(mu + di) {
+                        dS_for[(nuj * nshells + mui) * env2_len + l] = dbuf[c];
+                        c += 1;
+                    }
+                }
             }
 
             count += 1;
+
+            nu += dj;
         }
+        mu += di;
     }    
 
     println!("count {}", count);
@@ -271,6 +310,7 @@ fn time_forward_matrix_mode(
 
     let start_total = std::time::Instant::now();
     for l in 0..env2_len {
+        denv2.fill(0.0);
         denv2[l] = 1.0;
 
         dS_for(
@@ -284,7 +324,7 @@ fn time_forward_matrix_mode(
             dS[idx * env2_len + l] = dout[idx];
         }
     }
-    
+
     let total_dovlp_time = start_total.elapsed().as_secs_f64();
 
     println!("AD calls:           {}", env2_len);
@@ -316,10 +356,31 @@ fn time_reverse_matrix_mode(
     let primal_time = start_primal.elapsed().as_secs_f64();
 
     // Time the full Jacobian computation
+    let mut out = vec![0.0; nshells * nshells];
+    let mut dout = vec![0.0; nshells * nshells];
+    let mut denv2 = vec![0.0; env2_len];
+
     let mut total_calls = 0;
     let start_total = std::time::Instant::now();
 
-    // dS_rev(out, dout, atm, bas, env1, env2, denv2);
+    for k in 0..(nshells * nshells) {
+        total_calls += 1;
+
+        denv2.fill(0.0);
+        dout.fill(0.0);
+        dout[k] = 1.0;
+
+        dS_rev(
+            &mut out, &mut dout,
+            atm, bas,
+            &mut env1,
+            &mut env2, &mut denv2,
+        );
+
+        for l in 0..env2_len {
+            dS[k * env2_len + l] = denv2[l];
+        }
+    }
     
     let total_dovlp_time = start_total.elapsed().as_secs_f64();
 
