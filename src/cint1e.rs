@@ -62,13 +62,12 @@ pub unsafe fn CINT1e_loop(
         );
     let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
     let expcutoff: f64 = (*envs).expcutoff;
-    let mut pdata_base: *mut PairData = 0 as *mut PairData;
     let mut pdata_ij: *mut PairData = 0 as *mut PairData;
     let log_maxci = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut f64;
     cache = log_maxci.offset((i_prim + j_prim) as isize);
-    pdata_base = ((cache as uintptr_t).wrapping_add(7 as u64)
+    let pdata_base = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut PairData;
     cache = pdata_base.offset((i_prim * j_prim) as isize) as *mut f64;
