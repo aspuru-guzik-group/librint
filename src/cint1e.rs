@@ -62,11 +62,9 @@ pub unsafe fn CINT1e_loop(
         );
     let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
     let expcutoff: f64 = (*envs).expcutoff;
-    let mut log_maxci: *mut f64 = 0 as *mut f64;
-    let mut log_maxcj: *mut f64 = 0 as *mut f64;
     let mut pdata_base: *mut PairData = 0 as *mut PairData;
     let mut pdata_ij: *mut PairData = 0 as *mut PairData;
-    log_maxci = ((cache as uintptr_t).wrapping_add(7 as u64)
+    let log_maxci = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut f64;
     cache = log_maxci.offset((i_prim + j_prim) as isize);
@@ -74,7 +72,7 @@ pub unsafe fn CINT1e_loop(
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut PairData;
     cache = pdata_base.offset((i_prim * j_prim) as isize) as *mut f64;
-    log_maxcj = log_maxci.offset(i_prim as isize);
+    let log_maxcj = log_maxci.offset(i_prim as isize);
     CINTOpt_log_max_pgto_coeff(log_maxci, ci, i_prim, i_ctr);
     CINTOpt_log_max_pgto_coeff(log_maxcj, cj, j_prim, j_ctr);
     if CINTset_pairdata(
