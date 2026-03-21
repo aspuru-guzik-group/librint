@@ -90064,7 +90064,7 @@ pub unsafe extern "C" fn c2s_dset0(mut out: *mut f64, mut dims: *mut i32, mut co
 #[no_mangle]
 pub unsafe extern "C" fn c2s_grids_dset0(
     mut out: *mut f64,
-    mut dims: *mut i32,
+    dims: *const i32,
     mut counts: *mut i32,
 ) {
     let mut counts1: [i32; 4] = [

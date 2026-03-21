@@ -1001,7 +1001,7 @@ pub unsafe extern "C" fn CINTOpt_setij(
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
+pub unsafe fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
     if !cintopt.is_null() && !((*cintopt).pairdata).is_null() {
         free(*((*cintopt).pairdata).offset(0 as isize) as *mut libc::c_void);
         free((*cintopt).pairdata as *mut libc::c_void);
@@ -1009,12 +1009,12 @@ pub unsafe extern "C" fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
+pub unsafe fn CINTOpt_non0coeff_byshell(
     mut sortedidx: *mut i32,
-    mut non0ctr: *mut i32,
+    non0ctr: *mut i32,
     ci: *const f64,
-    mut iprim: i32,
-    mut ictr: i32,
+    iprim: i32,
+    ictr: i32,
 ) {
     let mut ip: i32 = 0;
     let mut j: i32 = 0;
