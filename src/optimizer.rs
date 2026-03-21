@@ -812,13 +812,13 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
 }
 #[no_mangle]
 pub unsafe fn CINTset_pairdata(
-    mut pairdata: *mut PairData,
+    pairdata: *mut PairData,
     ai: *const f64,
     aj: *const f64,
     ri: *const f64,
     rj: *const f64,
-    log_maxci: *mut f64,
-    log_maxcj: *mut f64,
+    log_maxci: *const f64,
+    log_maxcj: *const f64,
     li_ceil: i32,
     lj_ceil: i32,
     iprim: i32,
