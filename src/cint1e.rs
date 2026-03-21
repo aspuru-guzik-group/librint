@@ -312,7 +312,7 @@ pub unsafe extern "C" fn int1e_cache_size(envs: *mut CINTEnvVars) -> i32 {
     return cache_size;
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINT1e_drv(
+pub unsafe fn CINT1e_drv(
     out: *mut f64,
     mut dims: *mut i32,
     envs: *mut CINTEnvVars,

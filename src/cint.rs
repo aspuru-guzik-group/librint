@@ -70,12 +70,12 @@ pub struct CINTEnvVars {
     pub f_gout: Option::<unsafe fn() -> ()>,
     pub opt: *mut CINTOpt,
     pub idx: *mut i32,
-    pub ai: [f64; 1],
-    pub aj: [f64; 1],
+    pub ai: [f64; 1], // mut
+    pub aj: [f64; 1], // mut
     pub ak: [f64; 1],
     pub al: [f64; 1],
-    pub fac: [f64; 1],
-    pub rij: [f64; 3],
+    pub fac: [f64; 1], // mut
+    pub rij: [f64; 3], // mut
     pub rkl: [f64; 3],
 }
 
