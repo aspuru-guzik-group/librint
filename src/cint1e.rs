@@ -33,8 +33,8 @@ pub unsafe fn CINT1e_loop(
     mut cache: *mut f64,
     int1e_type: i32,
 ) -> i32 {
-    let shls: *mut i32 = (*envs).shls;
-    let bas: *mut i32 = (*envs).bas;
+    let shls: *const i32 = (*envs).shls;
+    let bas: *const i32 = (*envs).bas;
     let env: *const f64 = (*envs).env;
     let i_sh: i32 = *shls.offset(0 as isize);
     let j_sh: i32 = *shls.offset(1 as isize);
@@ -62,7 +62,7 @@ pub unsafe fn CINT1e_loop(
         );
     let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
     let expcutoff: f64 = (*envs).expcutoff;
-    let mut pdata_ij: *mut PairData = 0 as *mut PairData;
+    //let mut pdata_ij: *mut PairData = 0 as *mut PairData;
     let log_maxci = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut f64;
@@ -174,10 +174,10 @@ pub unsafe fn CINT1e_loop(
     }
     let mut common_factor: f64 = (*envs).common_factor
         * CINTcommon_fac_sp((*envs).i_l) * CINTcommon_fac_sp((*envs).j_l);
-    pdata_ij = pdata_base;
+    let mut pdata_ij = pdata_base;
     jp = 0 as i32;
     while jp < j_prim {
-        (*envs).aj[0 as usize] = *aj.offset(jp as isize);
+        (*envs).aj[0] = *aj.offset(jp as isize);
         if j_ctr == 1 as i32 {
             fac1j = common_factor * *cj.offset(jp as isize);
         } else {
@@ -190,15 +190,9 @@ pub unsafe fn CINT1e_loop(
                 (*envs).ai[0 as usize] = *ai.offset(ip as isize);
                 expij = (*pdata_ij).eij;
                 let rij = ((*pdata_ij).rij).as_ptr();
-                (*envs)
-                    .rij[0 as i32
-                    as usize] = *rij.offset(0 as isize);
-                (*envs)
-                    .rij[1 as i32
-                    as usize] = *rij.offset(1 as isize);
-                (*envs)
-                    .rij[2 as i32
-                    as usize] = *rij.offset(2 as isize);
+                (*envs).rij[0] = *rij.offset(0);
+                (*envs).rij[1] = *rij.offset(1);
+                (*envs).rij[2] = *rij.offset(2);
                 if i_ctr == 1 as i32 {
                     fac1i = fac1j * *ci.offset(ip as isize) * expij;
                 } else {
@@ -234,9 +228,7 @@ pub unsafe fn CINT1e_loop(
                 *iempty = 0 as i32;
             }
             ip += 1;
-            ip;
             pdata_ij = pdata_ij.offset(1);
-            pdata_ij;
         }
         if *iempty == 0 {
             if j_ctr > 1 as i32 {
@@ -267,7 +259,6 @@ pub unsafe fn CINT1e_loop(
             *jempty = 0 as i32;
         }
         jp += 1;
-        jp;
     }
     if n_comp > 1 as i32 && *jempty == 0 {
         CINTdmat_transpose(gctr, gctrj, (*envs).nf * nc, n_comp);
