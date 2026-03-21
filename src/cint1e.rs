@@ -97,10 +97,7 @@ pub unsafe fn CINT1e_loop(
     {
         return 0 as i32;
     }
-    let mut fac1i: f64 = 0.;
     let mut fac1j: f64 = 0.;
-    let mut expij: f64 = 0.;
-    let mut ip: i32 = 0;
     let mut jp: i32 = 0;
     let mut empty: [i32; 4] = [
         1 as i32,
@@ -184,21 +181,20 @@ pub unsafe fn CINT1e_loop(
             fac1j = common_factor;
             *iempty = 1 as i32;
         }
-        ip = 0 as i32;
+        let mut ip: i32 = 0;
         while ip < i_prim {
             if !((*pdata_ij).cceij > expcutoff) {
                 (*envs).ai[0 as usize] = *ai.offset(ip as isize);
-                expij = (*pdata_ij).eij;
+                let expij = (*pdata_ij).eij;
                 let rij = ((*pdata_ij).rij).as_ptr();
                 (*envs).rij[0] = *rij.offset(0);
                 (*envs).rij[1] = *rij.offset(1);
                 (*envs).rij[2] = *rij.offset(2);
-                if i_ctr == 1 as i32 {
-                    fac1i = fac1j * *ci.offset(ip as isize) * expij;
+                (*envs).fac[0] = if i_ctr == 1 {
+                    fac1j * *ci.offset(ip as isize) * expij
                 } else {
-                    fac1i = fac1j * expij;
-                }
-                (*envs).fac[0 as usize] = fac1i;
+                    fac1j * expij
+                };
                 make_g1e_gout(gout, g, idx, &*envs, *gempty, int1e_type);
                 if i_ctr > 1 as i32 {
                     if *iempty != 0 {
@@ -266,7 +262,7 @@ pub unsafe fn CINT1e_loop(
     return (*jempty == 0) as i32;
 }
 #[no_mangle]
-pub unsafe extern "C" fn int1e_cache_size(envs: &CINTEnvVars) -> i32 {
+pub unsafe fn int1e_cache_size(envs: &CINTEnvVars) -> i32 {
     let shls: *const i32 = envs.shls;
     let bas: *const i32 = envs.bas;
     let i_prim: i32 = *bas
