@@ -20,7 +20,7 @@ use crate::g1e::CINTinit_int1e_EnvVars;
 use crate::g1e::CINTprim_to_ctr_0;
 use crate::g1e::CINTprim_to_ctr_1;
 use crate::optimizer::CINTOpt_log_max_pgto_coeff;
-use crate::optimizer::CINTOpt_non0coeff_byshell;
+use crate::optimizer::{CINTOpt_non0coeff_byshell, CINTOpt_non0coeff_byshell_safe};
 use crate::optimizer::CINTset_pairdata;
 
 use crate::cint::CINTEnvVars;
@@ -107,8 +107,8 @@ pub unsafe fn CINT1e_loop(
     non0ctrj = non0ctri.offset(i_prim as isize);
     non0idxi = non0ctrj.offset(j_prim as isize);
     non0idxj = non0idxi.offset((i_prim * i_ctr) as isize);
-    CINTOpt_non0coeff_byshell(non0idxi, non0ctri, ci, i_prim, i_ctr);
-    CINTOpt_non0coeff_byshell(non0idxj, non0ctrj, cj, j_prim, j_ctr);
+    CINTOpt_non0coeff_byshell_safe(non0idxi, std::slice::from_raw_parts_mut(non0ctri, 999999), std::slice::from_raw_parts(ci, 999999), i_prim, i_ctr);
+    CINTOpt_non0coeff_byshell_safe(non0idxj, std::slice::from_raw_parts_mut(non0ctrj, 999999), std::slice::from_raw_parts(cj, 999999), j_prim, j_ctr);
     let nc: i32 = i_ctr * j_ctr;
     let leng: i32 = (*envs).g_size * 3 * (((1) << (*envs).gbits) + 1);
     let lenj: i32 = (*envs).nf * nc * n_comp;
@@ -277,6 +277,7 @@ pub unsafe fn CINT1e_drv(
     let mut stack: *mut f64 = 0 as *mut f64;
     if cache.is_null() {
         let mut cache_size: u64 = int1e_cache_size(&*envs) as u64;
+        dbg!(&cache_size);
         stack = malloc((::core::mem::size_of::<f64>() as u64).wrapping_mul(cache_size)) as *mut f64;
         cache = stack;
     }
@@ -290,17 +291,6 @@ pub unsafe fn CINT1e_drv(
         dims = counts.as_mut_ptr();
     }
     if f_c2s
-        == ::core::mem::transmute::<
-            Option<unsafe fn(*mut f64, *mut f64, *const i32, *const CINTEnvVars, *mut f64) -> ()>,
-            Option<unsafe fn() -> ()>,
-        >(Some(
-            c2s_sph_1e
-                as unsafe fn(*mut f64, *mut f64, *const i32, *const CINTEnvVars, *mut f64) -> (),
-        ))
-    {
-        counts[0 as usize] = ((*envs).i_l * 2 + 1) * *x_ctr.offset(0 as isize);
-        counts[1 as usize] = ((*envs).j_l * 2 + 1) * *x_ctr.offset(1 as isize);
-    } else if f_c2s
         == ::core::mem::transmute::<
             Option<unsafe fn(*mut f64, *mut f64, *const i32, *const CINTEnvVars, *mut f64) -> ()>,
             Option<unsafe fn() -> ()>,
@@ -319,10 +309,11 @@ pub unsafe fn CINT1e_drv(
     if has_value != 0 {
         n = 0;
         while n < n_comp {
-            ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                (Some(f_c2s.expect("non-null function pointer")))
-                    .expect("non-null function pointer"),
-            )(
+            //::core::mem::transmute::<_, fn(_, _, _, _, _)>(
+            //    (Some(f_c2s.expect("non-null function pointer")))
+            //        .expect("non-null function pointer"),
+            c2s_cart_1e
+            (
                 out.offset((nout * n) as isize),
                 gctr.offset((nc * n) as isize),
                 dims,
@@ -330,7 +321,6 @@ pub unsafe fn CINT1e_drv(
                 cache,
             );
             n += 1;
-            n;
         }
     } else {
         n = 0;

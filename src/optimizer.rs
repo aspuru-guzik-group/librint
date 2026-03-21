@@ -1009,6 +1009,51 @@ pub unsafe fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
     }
 }
 #[no_mangle]
+pub unsafe fn CINTOpt_non0coeff_byshell_safe(
+    mut sortedidx: *mut i32,
+    non0ctr: &mut [i32],
+    ci: &[f64],
+    iprim: i32,
+    ictr: i32,
+) { unsafe {
+    let mut ip: i32 = 0;
+    let mut j: i32 = 0;
+    let mut k: i32 = 0;
+    let mut kp: i32 = 0;
+    let vla = ictr as usize;
+    let mut zeroidx: Vec<i32> = ::std::vec::from_elem(0, vla);
+    ip = 0 as i32;
+    while ip < iprim {
+        j = 0 as i32;
+        k = 0 as i32;
+        kp = 0 as i32;
+        while j < ictr {
+            if *ci.get_unchecked((iprim * j + ip) as usize) != 0 as f64 {
+                *sortedidx.offset(k as isize) = j;
+                k += 1;
+                k;
+            } else {
+                *zeroidx.as_mut_ptr().offset(kp as isize) = j;
+                kp += 1;
+                kp;
+            }
+            j += 1;
+            j;
+        }
+        j = 0 as i32;
+        while j < kp {
+            *sortedidx.offset((k + j) as isize) = *zeroidx.as_mut_ptr().offset(j as isize);
+            j += 1;
+            j;
+        }
+        *non0ctr.get_unchecked_mut(ip as usize) = k;
+        sortedidx = sortedidx.offset(ictr as isize);
+        ip += 1;
+        ip;
+    }
+}
+}
+#[no_mangle]
 pub unsafe fn CINTOpt_non0coeff_byshell(
     mut sortedidx: *mut i32,
     non0ctr: *mut i32,
