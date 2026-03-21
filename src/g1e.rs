@@ -13,7 +13,7 @@ fn MAX<T: PartialOrd>(x: T, y: T) -> T {
     }
 }
 
-fn SQUARE(r: *mut f64) -> f64 {
+fn SQUARE(r: *const f64) -> f64 {
     unsafe {
         (*r.add(0) * *r.add(0)) + (*r.add(1) * *r.add(1)) + (*r.add(2) * *r.add(2))
     }
@@ -36,8 +36,8 @@ pub unsafe fn CINTinit_int1e_EnvVars(
     (*envs).bas = bas;
     (*envs).env = env;
     (*envs).shls = shls;
-    let i_sh: i32 = *shls.offset(0 as isize);
-    let j_sh: i32 = *shls.offset(1 as isize);
+    let i_sh: i32 = *shls.offset(0);
+    let j_sh: i32 = *shls.offset(1);
     (*envs).i_l = *bas.offset((8 as i32 * i_sh + 1 as i32) as isize);
     (*envs).j_l = *bas.offset((8 as i32 * j_sh + 1 as i32) as isize);
     (*envs)
@@ -54,11 +54,11 @@ pub unsafe fn CINTinit_int1e_EnvVars(
         / 2 as i32;
     (*envs).nf = (*envs).nfi * (*envs).nfj;
     (*envs).common_factor = 1 as f64;
-    if *env.offset(0 as isize) == 0 as f64 {
+    if *env.offset(0) == 0 as f64 {
         (*envs).expcutoff = 60 as f64;
     } else {
         (*envs)
-            .expcutoff = MAX(40 as f64, *env.offset(0 as isize))
+            .expcutoff = MAX(40 as f64, *env.offset(0))
             as f64;
     }
     (*envs).li_ceil = (*envs).i_l + ng[0];
@@ -105,31 +105,31 @@ pub unsafe fn CINTinit_int1e_EnvVars(
         dlj = (*envs).lj_ceil + 1 as i32;
         (*envs)
             .rirj[0 as i32
-            as usize] = *((*envs).ri).offset(0 as isize)
-            - *((*envs).rj).offset(0 as isize);
+            as usize] = *((*envs).ri).offset(0)
+            - *((*envs).rj).offset(0);
         (*envs)
             .rirj[1 as i32
-            as usize] = *((*envs).ri).offset(1 as isize)
-            - *((*envs).rj).offset(1 as isize);
+            as usize] = *((*envs).ri).offset(1)
+            - *((*envs).rj).offset(1);
         (*envs)
             .rirj[2 as i32
-            as usize] = *((*envs).ri).offset(2 as isize)
-            - *((*envs).rj).offset(2 as isize);
+            as usize] = *((*envs).ri).offset(2)
+            - *((*envs).rj).offset(2);
     } else {
         dli = (*envs).li_ceil + 1 as i32;
         dlj = (*envs).li_ceil + (*envs).lj_ceil + 1 as i32;
         (*envs)
             .rirj[0 as i32
-            as usize] = *((*envs).rj).offset(0 as isize)
-            - *((*envs).ri).offset(0 as isize);
+            as usize] = *((*envs).rj).offset(0)
+            - *((*envs).ri).offset(0);
         (*envs)
             .rirj[1 as i32
-            as usize] = *((*envs).rj).offset(1 as isize)
-            - *((*envs).ri).offset(1 as isize);
+            as usize] = *((*envs).rj).offset(1)
+            - *((*envs).ri).offset(1);
         (*envs)
             .rirj[2 as i32
-            as usize] = *((*envs).rj).offset(2 as isize)
-            - *((*envs).ri).offset(2 as isize);
+            as usize] = *((*envs).rj).offset(2)
+            - *((*envs).ri).offset(2);
     }
     (*envs).g_stride_i = (*envs).nrys_roots;
     (*envs).g_stride_j = (*envs).nrys_roots * dli;
@@ -198,11 +198,11 @@ pub unsafe fn CINTg1e_ovlp(
         .offset(((*envs).g_size * 2 as i32) as isize);
     let mut aij: f64 = (*envs).ai[0 as usize]
         + (*envs).aj[0 as usize];
-    *gx.offset(0 as isize) = 1 as f64;
-    *gy.offset(0 as isize) = 1 as f64;
+    *gx.offset(0) = 1 as f64;
+    *gy.offset(0) = 1 as f64;
     *gz
         .offset(
-            0 as isize,
+            0,
         ) = (*envs).fac[0 as usize]
         * 1.7724538509055160272981674833411451f64 * 3.14159265358979323846f64
         / (aij * (aij).sqrt());
@@ -233,26 +233,26 @@ pub unsafe fn CINTg1e_ovlp(
     }
     let mut rijrx: [f64; 3] = [0.; 3];
     rijrx[0 as i32
-        as usize] = *rij.offset(0 as isize)
-        - *rx.offset(0 as isize);
+        as usize] = *rij.offset(0)
+        - *rx.offset(0);
     rijrx[1 as i32
-        as usize] = *rij.offset(1 as isize)
-        - *rx.offset(1 as isize);
+        as usize] = *rij.offset(1)
+        - *rx.offset(1);
     rijrx[2 as i32
-        as usize] = *rij.offset(2 as isize)
-        - *rx.offset(2 as isize);
+        as usize] = *rij.offset(2)
+        - *rx.offset(2);
     *gx
         .offset(
             di as isize,
-        ) = rijrx[0 as usize] * *gx.offset(0 as isize);
+        ) = rijrx[0 as usize] * *gx.offset(0);
     *gy
         .offset(
             di as isize,
-        ) = rijrx[1 as usize] * *gy.offset(0 as isize);
+        ) = rijrx[1 as usize] * *gy.offset(0);
     *gz
         .offset(
             di as isize,
-        ) = rijrx[2 as usize] * *gz.offset(0 as isize);
+        ) = rijrx[2 as usize] * *gz.offset(0);
     let mut aij2: f64 = 0.5f64 / aij;
     i = 1 as i32;
     while i < nmax {
@@ -287,19 +287,19 @@ pub unsafe fn CINTg1e_ovlp(
                 .offset(
                     n as isize,
                 ) = *gx.offset((n + di - dj) as isize)
-                + *rirj.offset(0 as isize)
+                + *rirj.offset(0)
                     * *gx.offset((n - dj) as isize);
             *gy
                 .offset(
                     n as isize,
                 ) = *gy.offset((n + di - dj) as isize)
-                + *rirj.offset(1 as isize)
+                + *rirj.offset(1)
                     * *gy.offset((n - dj) as isize);
             *gz
                 .offset(
                     n as isize,
                 ) = *gz.offset((n + di - dj) as isize)
-                + *rirj.offset(2 as isize)
+                + *rirj.offset(2)
                     * *gz.offset((n - dj) as isize);
             i += 1;
             i;
@@ -391,16 +391,10 @@ pub unsafe fn CINTg1e_nuc(
                     as isize,
             );
     }
-    crij[0 as i32
-        as usize] = *cr.offset(0 as isize)
-        - *rij.offset(0 as isize);
-    crij[1 as i32
-        as usize] = *cr.offset(1 as isize)
-        - *rij.offset(1 as isize);
-    crij[2 as i32
-        as usize] = *cr.offset(2 as isize)
-        - *rij.offset(2 as isize);
-    x = aij * tau * tau * SQUARE(crij.as_mut_ptr()) as f64;
+    crij[0] = *cr.offset(0) - *rij.offset(0);
+    crij[1] = *cr.offset(1) - *rij.offset(1);
+    crij[2] = *cr.offset(2) - *rij.offset(2);
+    x = aij * tau * tau * SQUARE(crij.as_ptr()) as f64;
     CINTrys_roots(nrys_roots, x, u.as_mut_ptr(), w);
     i = 0 as i32;
     while i < nrys_roots {
@@ -438,12 +432,12 @@ pub unsafe fn CINTg1e_nuc(
         dj = (*envs).g_stride_i;
         rx = (*envs).rj;
     }
-    let mut rijrx: f64 = *rij.offset(0 as isize)
-        - *rx.offset(0 as isize);
-    let mut rijry: f64 = *rij.offset(1 as isize)
-        - *rx.offset(1 as isize);
-    let mut rijrz: f64 = *rij.offset(2 as isize)
-        - *rx.offset(2 as isize);
+    let mut rijrx: f64 = *rij.offset(0)
+        - *rx.offset(0);
+    let mut rijry: f64 = *rij.offset(1)
+        - *rx.offset(1);
+    let mut rijrz: f64 = *rij.offset(2)
+        - *rx.offset(2);
     let mut aij2: f64 = 0.5f64 / aij;
     let mut ru: f64 = 0.;
     let mut rt: f64 = 0.;
@@ -461,9 +455,9 @@ pub unsafe fn CINTg1e_nuc(
         ru = tau * tau * u[n as usize]
             / (1 as f64 + u[n as usize]);
         rt = aij2 - aij2 * ru;
-        r0 = rijrx + ru * crij[0 as usize];
-        r1 = rijry + ru * crij[1 as usize];
-        r2 = rijrz + ru * crij[2 as usize];
+        r0 = rijrx + ru * crij[0];
+        r1 = rijry + ru * crij[1];
+        r2 = rijrz + ru * crij[2];
         *p0x.offset(n as isize) = r0 * *gx.offset(n as isize);
         *p0y.offset(n as isize) = r1 * *gy.offset(n as isize);
         *p0z.offset(n as isize) = r2 * *gz.offset(n as isize);
@@ -778,17 +772,17 @@ pub unsafe fn CINTx1i_1e(
                     .offset(
                         i as isize,
                     ) = *gx.offset((i + 1 as i32) as isize)
-                    + *ri.offset(0 as isize) * *gx.offset(i as isize);
+                    + *ri.offset(0) * *gx.offset(i as isize);
                 *fy
                     .offset(
                         i as isize,
                     ) = *gy.offset((i + 1 as i32) as isize)
-                    + *ri.offset(1 as isize) * *gy.offset(i as isize);
+                    + *ri.offset(1) * *gy.offset(i as isize);
                 *fz
                     .offset(
                         i as isize,
                     ) = *gz.offset((i + 1 as i32) as isize)
-                    + *ri.offset(2 as isize) * *gz.offset(i as isize);
+                    + *ri.offset(2) * *gz.offset(i as isize);
                 i += 1;
                 i;
             }
@@ -834,17 +828,17 @@ pub unsafe fn CINTx1j_1e(
                     .offset(
                         i as isize,
                     ) = *gx.offset((i + dj) as isize)
-                    + *rj.offset(0 as isize) * *gx.offset(i as isize);
+                    + *rj.offset(0) * *gx.offset(i as isize);
                 *fy
                     .offset(
                         i as isize,
                     ) = *gy.offset((i + dj) as isize)
-                    + *rj.offset(1 as isize) * *gy.offset(i as isize);
+                    + *rj.offset(1) * *gy.offset(i as isize);
                 *fz
                     .offset(
                         i as isize,
                     ) = *gz.offset((i + dj) as isize)
-                    + *rj.offset(2 as isize) * *gz.offset(i as isize);
+                    + *rj.offset(2) * *gz.offset(i as isize);
                 i += 1;
                 i;
             }
@@ -890,17 +884,17 @@ pub unsafe fn CINTx1k_1e(
                     .offset(
                         i as isize,
                     ) = *gx.offset((i + dk) as isize)
-                    + *rk.offset(0 as isize) * *gx.offset(i as isize);
+                    + *rk.offset(0) * *gx.offset(i as isize);
                 *fy
                     .offset(
                         i as isize,
                     ) = *gy.offset((i + dk) as isize)
-                    + *rk.offset(1 as isize) * *gy.offset(i as isize);
+                    + *rk.offset(1) * *gy.offset(i as isize);
                 *fz
                     .offset(
                         i as isize,
                     ) = *gz.offset((i + dk) as isize)
-                    + *rk.offset(2 as isize) * *gz.offset(i as isize);
+                    + *rk.offset(2) * *gz.offset(i as isize);
                 i += 1;
                 i;
             }
