@@ -876,18 +876,18 @@ pub unsafe extern "C" fn int1e_nuc_sph(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_nuc_cart(
-    mut out: *mut f64,
-    mut dims: *mut i32,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-    mut _opt: *mut CINTOpt,
+    out: *mut f64,
+    dims: *mut i32,
+    shls: *mut i32,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
+    _opt: *mut CINTOpt,
     mut cache: *mut f64,
 ) -> i32 {
-    let mut ng: [i32; 8] = [
+    let ng: [i32; 8] = [
         0 as i32,
         0 as i32,
         0 as i32,
@@ -1277,6 +1277,7 @@ pub unsafe extern "C" fn cint1e_nuc_optimizer_(
 
 
 #[no_mangle]
+#[inline(never)]
 pub fn cint1e_ovlp_cart(
     out: &mut [f64],
     shls: &mut [i32],

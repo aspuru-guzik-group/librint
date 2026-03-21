@@ -48,6 +48,7 @@ pub unsafe extern "C" fn CINTcgtos_cart(
 // }
 
 #[no_mangle]
+#[inline(never)]
 pub fn CINTcgto_cart(
     bas_id: usize,
     bas: &[i32],
