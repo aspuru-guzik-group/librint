@@ -87,7 +87,6 @@ pub unsafe fn CINT1e_loop(
     {
         return 0;
     }
-    let mut fac1j: f64 = 0.;
     let mut empty: [i32; 4] = [1, 1, 1, 1];
     let mut gempty: *mut i32 = empty.as_mut_ptr().offset(0 as isize);
     let mut iempty: *mut i32 = empty.as_mut_ptr().offset(1 as isize);
@@ -148,12 +147,12 @@ pub unsafe fn CINT1e_loop(
     let mut pdata_ij = pdata_base;
     for jp in 0..(j_prim as isize) {
         (*envs).aj[0] = *aj.offset(jp);
-        if j_ctr == 1 {
-            fac1j = common_factor * *cj.offset(jp);
+        let fac1j: f64 = if j_ctr == 1 {
+            common_factor * *cj.offset(jp)
         } else {
-            fac1j = common_factor;
             *iempty = 1;
-        }
+            common_factor
+        };
         for ip in 0..(i_prim as isize) {
             if !((*pdata_ij).cceij > expcutoff) {
                 (*envs).ai[0 as usize] = *ai.offset(ip);
