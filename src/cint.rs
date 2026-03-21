@@ -69,7 +69,7 @@ pub struct CINTEnvVars {
     pub f_g0_2d4d: Option::<unsafe extern "C" fn() -> ()>,
     pub f_gout: Option::<unsafe fn() -> ()>,
     pub opt: *mut CINTOpt,
-    pub idx: *mut i32,
+    //pub idx: *const i32,
     pub ai: [f64; 1], // mut
     pub aj: [f64; 1], // mut
     pub ak: [f64; 1],
@@ -152,7 +152,7 @@ impl CINTEnvVars {
         f_g0_2d4d: None,
         f_gout: None,
         opt: 0 as *mut CINTOpt,
-        idx: 0 as *mut i32,
+        //idx: 0 as *const i32,
         ai: [0.; 1],
         aj: [0.; 1],
         ak: [0.; 1],

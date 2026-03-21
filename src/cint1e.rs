@@ -275,10 +275,10 @@ pub unsafe fn CINT1e_loop(
     return (*jempty == 0) as i32;
 }
 #[no_mangle]
-pub unsafe extern "C" fn int1e_cache_size(envs: *mut CINTEnvVars) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut i_prim: i32 = *bas
+pub unsafe extern "C" fn int1e_cache_size(envs: &CINTEnvVars) -> i32 {
+    let shls: *const i32 = envs.shls;
+    let bas: *const i32 = envs.bas;
+    let i_prim: i32 = *bas
         .offset(
             (8 as i32 * *shls.offset(0 as isize)
                 + 2 as i32) as isize,
@@ -288,26 +288,26 @@ pub unsafe extern "C" fn int1e_cache_size(envs: *mut CINTEnvVars) -> i32 {
             (8 as i32 * *shls.offset(1 as isize)
                 + 2 as i32) as isize,
         );
-    let mut x_ctr: *mut i32 = ((*envs).x_ctr).as_mut_ptr();
-    let mut nc: i32 = (*envs).nf * *x_ctr.offset(0 as isize)
+    let x_ctr: *const i32 = (envs.x_ctr).as_ptr();
+    let nc: i32 = envs.nf * *x_ctr.offset(0 as isize)
         * *x_ctr.offset(1 as isize);
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
-    let mut leng: i32 = (*envs).g_size * 3 as i32
-        * (((1 as i32) << (*envs).gbits) + 1 as i32);
-    let mut lenj: i32 = (*envs).nf * nc * n_comp;
-    let mut leni: i32 = (*envs).nf * *x_ctr.offset(0 as isize)
+    let mut n_comp: i32 = envs.ncomp_e1 * envs.ncomp_tensor;
+    let mut leng: i32 = envs.g_size * 3 as i32
+        * (((1 as i32) << envs.gbits) + 1 as i32);
+    let mut lenj: i32 = envs.nf * nc * n_comp;
+    let mut leni: i32 = envs.nf * *x_ctr.offset(0 as isize)
         * n_comp;
-    let mut len0: i32 = (*envs).nf * n_comp;
+    let mut len0: i32 = envs.nf * n_comp;
     let mut pdata_size: i32 = i_prim * j_prim * 5 as i32
         + i_prim * *x_ctr.offset(0 as isize)
         + j_prim * *x_ctr.offset(1 as isize)
-        + (i_prim + j_prim) * 2 as i32 + (*envs).nf * 3 as i32;
+        + (i_prim + j_prim) * 2 as i32 + envs.nf * 3 as i32;
     let mut cache_size: i32 = if nc * n_comp + leng + lenj + leni + len0
-        + pdata_size > nc * n_comp + (*envs).nf * 8 as i32 * 2 as i32
+        + pdata_size > nc * n_comp + envs.nf * 8 as i32 * 2 as i32
     {
         nc * n_comp + leng + lenj + leni + len0 + pdata_size
     } else {
-        nc * n_comp + (*envs).nf * 8 as i32 * 2 as i32
+        nc * n_comp + envs.nf * 8 as i32 * 2 as i32
     };
     return cache_size;
 }
@@ -321,7 +321,7 @@ pub unsafe fn CINT1e_drv(
     int1e_type: i32,
 ) -> i32 {
     if out.is_null() {
-        return int1e_cache_size(envs);
+        return int1e_cache_size(&*envs);
     }
     let mut x_ctr: *mut i32 = ((*envs).x_ctr).as_mut_ptr();
     let mut nc: i32 = (*envs).nf * *x_ctr.offset(0 as isize)
@@ -329,7 +329,7 @@ pub unsafe fn CINT1e_drv(
     let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
     let mut stack: *mut f64 = 0 as *mut f64;
     if cache.is_null() {
-        let mut cache_size: u64 = int1e_cache_size(envs) as u64;
+        let mut cache_size: u64 = int1e_cache_size(&*envs) as u64;
         stack = malloc(
             (::core::mem::size_of::<f64>() as u64)
                 .wrapping_mul(cache_size),
