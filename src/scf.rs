@@ -1,7 +1,8 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
 
 use crate::cint::CINTOpt;
-use crate::cint1e::{cint1e_nuc_cart, cint1e_nuc_sph, cint1e_ovlp_cart, cint1e_ovlp_sph};
+use crate::cint1e::{cint1e_nuc_cart, cint1e_nuc_sph, cint1e_ovlp_cart};
+//use crate::cint1e::{cint1e_nuc_cart, cint1e_nuc_sph, cint1e_ovlp_cart, cint1e_ovlp_sph};
 use crate::cint2e::{cint2e_cart, cint2e_sph};
 use crate::cint_bas::{CINTcgto_cart, CINTcgto_spheric};
 use crate::intor1::{cint1e_kin_cart, cint1e_kin_sph};
@@ -88,7 +89,8 @@ pub fn integral1e(
         intcgto = CINTcgto_spheric;
 
         if typec == 0 {
-            func = cint1e_ovlp_sph;
+            func = cint1e_kin_sph;
+            //func = cint1e_ovlp_sph;
         } else if typec == 1 {
             func = cint1e_kin_sph;
         } else if typec == 2 {
