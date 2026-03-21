@@ -21,17 +21,13 @@ lto = "fat"
 debug = 0
 #rustflags = ["-Z", "autodiff=Enable"]
 
-[lib]
-crate-type = ["cdylib"]
-name = "rint"
+# [lib]
+# crate-type = ["cdylib"]
+# name = "rint"
 
-#[[bin]]
-#name = "int"
-#path = "primal/integral.rs"
-
-#[[bin]]
-#name = "dint"
-#path = "enzyme/integral.rs"
+[[bin]]
+name = "forward"
+path = "tests/for_back.rs"
 
 [[bin]]
 name = "simple"
