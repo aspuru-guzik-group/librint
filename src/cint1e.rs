@@ -41,9 +41,9 @@ pub unsafe fn CINT1e_loop(
     let i_ctr: i32 = (*envs).x_ctr[0 as usize];
     let j_ctr: i32 = (*envs).x_ctr[1 as usize];
     let i_prim: i32 = *bas
-        .offset((8 as i32 * i_sh + 2 as i32) as isize);
+        .offset((8 as i32 * i_sh + 2) as isize);
     let j_prim: i32 = *bas
-        .offset((8 as i32 * j_sh + 2 as i32) as isize);
+        .offset((8 as i32 * j_sh + 2) as isize);
     let ai: *const f64 = env
         .offset(
             *bas.offset((8 as i32 * i_sh + 5 as i32) as isize) as isize,
@@ -95,14 +95,14 @@ pub unsafe fn CINT1e_loop(
         env,
     ) != 0
     {
-        return 0 as i32;
+        return 0;
     }
     let mut fac1j: f64 = 0.;
     let mut empty: [i32; 4] = [
-        1 as i32,
-        1 as i32,
-        1 as i32,
-        1 as i32,
+        1,
+        1,
+        1,
+        1,
     ];
     let mut gempty: *mut i32 = empty
         .as_mut_ptr()
@@ -117,7 +117,7 @@ pub unsafe fn CINT1e_loop(
     idx = ((cache as uintptr_t).wrapping_add(7 as u64)
         & (8 as uintptr_t).wrapping_neg()) as *mut libc::c_void
         as *mut i32;
-    cache = idx.offset(((*envs).nf * 3 as i32) as isize) as *mut f64;
+    cache = idx.offset(((*envs).nf * 3) as isize) as *mut f64;
     CINTg1e_index_xyz(idx, &*envs);
     let mut non0ctri: *mut i32 = 0 as *mut i32;
     let mut non0ctrj: *mut i32 = 0 as *mut i32;
@@ -134,8 +134,8 @@ pub unsafe fn CINT1e_loop(
     CINTOpt_non0coeff_byshell(non0idxi, non0ctri, ci, i_prim, i_ctr);
     CINTOpt_non0coeff_byshell(non0idxj, non0ctrj, cj, j_prim, j_ctr);
     let nc: i32 = i_ctr * j_ctr;
-    let leng: i32 = (*envs).g_size * 3 as i32
-        * (((1 as i32) << (*envs).gbits) + 1 as i32);
+    let leng: i32 = (*envs).g_size * 3
+        * (((1) << (*envs).gbits) + 1);
     let lenj: i32 = (*envs).nf * nc * n_comp;
     let leni: i32 = (*envs).nf * i_ctr * n_comp;
     let len0: i32 = (*envs).nf * n_comp;
@@ -149,20 +149,20 @@ pub unsafe fn CINT1e_loop(
         as *mut f64;
     cache = g.offset(len as isize);
     let mut g1: *mut f64 = g.offset(leng as isize);
-    if n_comp == 1 as i32 {
+    if n_comp == 1 {
         gctrj = gctr;
     } else {
         gctrj = g1;
         g1 = g1.offset(lenj as isize);
     }
-    if j_ctr == 1 as i32 {
+    if j_ctr == 1 {
         gctri = gctrj;
         iempty = jempty;
     } else {
         gctri = g1;
         g1 = g1.offset(leni as isize);
     }
-    if i_ctr == 1 as i32 {
+    if i_ctr == 1 {
         gout = gctri;
         gempty = iempty;
     } else {
@@ -173,11 +173,11 @@ pub unsafe fn CINT1e_loop(
     let mut pdata_ij = pdata_base;
     for jp in 0..(j_prim as isize) {
         (*envs).aj[0] = *aj.offset(jp);
-        if j_ctr == 1 as i32 {
+        if j_ctr == 1 {
             fac1j = common_factor * *cj.offset(jp);
         } else {
             fac1j = common_factor;
-            *iempty = 1 as i32;
+            *iempty = 1;
         }
         for ip in 0..(i_prim as isize) {
             if !((*pdata_ij).cceij > expcutoff) {
@@ -193,7 +193,7 @@ pub unsafe fn CINT1e_loop(
                     fac1j * expij
                 };
                 make_g1e_gout(gout, g, idx, &*envs, *gempty, int1e_type);
-                if i_ctr > 1 as i32 {
+                if i_ctr > 1 {
                     if *iempty != 0 {
                         CINTprim_to_ctr_0(
                             gctri,
@@ -218,12 +218,12 @@ pub unsafe fn CINT1e_loop(
                         );
                     }
                 }
-                *iempty = 0 as i32;
+                *iempty = 0;
             }
             pdata_ij = pdata_ij.offset(1);
         }
         if *iempty == 0 {
-            if j_ctr > 1 as i32 {
+            if j_ctr > 1 {
                 if *jempty != 0 {
                     CINTprim_to_ctr_0(
                         gctrj,
@@ -248,10 +248,10 @@ pub unsafe fn CINT1e_loop(
                     );
                 }
             }
-            *jempty = 0 as i32;
+            *jempty = 0;
         }
     }
-    if n_comp > 1 as i32 && *jempty == 0 {
+    if n_comp > 1 && *jempty == 0 {
         CINTdmat_transpose(gctr, gctrj, (*envs).nf * nc, n_comp);
     }
     return (*jempty == 0) as i32;
@@ -263,19 +263,19 @@ pub unsafe fn int1e_cache_size(envs: &CINTEnvVars) -> i32 {
     let i_prim: i32 = *bas
         .offset(
             (8 as i32 * *shls.offset(0 as isize)
-                + 2 as i32) as isize,
+                + 2) as isize,
         );
     let mut j_prim: i32 = *bas
         .offset(
             (8 as i32 * *shls.offset(1 as isize)
-                + 2 as i32) as isize,
+                + 2) as isize,
         );
     let x_ctr: *const i32 = (envs.x_ctr).as_ptr();
     let nc: i32 = envs.nf * *x_ctr.offset(0 as isize)
         * *x_ctr.offset(1 as isize);
     let mut n_comp: i32 = envs.ncomp_e1 * envs.ncomp_tensor;
-    let mut leng: i32 = envs.g_size * 3 as i32
-        * (((1 as i32) << envs.gbits) + 1 as i32);
+    let mut leng: i32 = envs.g_size * 3
+        * (((1) << envs.gbits) + 1);
     let mut lenj: i32 = envs.nf * nc * n_comp;
     let mut leni: i32 = envs.nf * *x_ctr.offset(0 as isize)
         * n_comp;
@@ -283,13 +283,13 @@ pub unsafe fn int1e_cache_size(envs: &CINTEnvVars) -> i32 {
     let mut pdata_size: i32 = i_prim * j_prim * 5 as i32
         + i_prim * *x_ctr.offset(0 as isize)
         + j_prim * *x_ctr.offset(1 as isize)
-        + (i_prim + j_prim) * 2 as i32 + envs.nf * 3 as i32;
+        + (i_prim + j_prim) * 2 + envs.nf * 3;
     let mut cache_size: i32 = if nc * n_comp + leng + lenj + leni + len0
-        + pdata_size > nc * n_comp + envs.nf * 8 as i32 * 2 as i32
+        + pdata_size > nc * n_comp + envs.nf * 8 as i32 * 2
     {
         nc * n_comp + leng + lenj + leni + len0 + pdata_size
     } else {
-        nc * n_comp + envs.nf * 8 as i32 * 2 as i32
+        nc * n_comp + envs.nf * 8 as i32 * 2
     };
     return cache_size;
 }
@@ -353,11 +353,11 @@ pub unsafe fn CINT1e_drv(
             ),
         )
     {
-        counts[0 as i32
-            as usize] = ((*envs).i_l * 2 as i32 + 1 as i32)
+        counts[0
+            as usize] = ((*envs).i_l * 2 + 1)
             * *x_ctr.offset(0 as isize);
-        counts[1 as i32
-            as usize] = ((*envs).j_l * 2 as i32 + 1 as i32)
+        counts[1
+            as usize] = ((*envs).j_l * 2 + 1)
             * *x_ctr.offset(1 as isize);
     } else if f_c2s
         == ::core::mem::transmute::<
@@ -384,18 +384,18 @@ pub unsafe fn CINT1e_drv(
             ),
         )
     {
-        counts[0 as i32
+        counts[0
             as usize] = (*envs).nfi * *x_ctr.offset(0 as isize);
-        counts[1 as i32
+        counts[1
             as usize] = (*envs).nfj * *x_ctr.offset(1 as isize);
     }
-    counts[2 as usize] = 1 as i32;
-    counts[3 as usize] = 1 as i32;
+    counts[2 as usize] = 1;
+    counts[3 as usize] = 1;
     let mut nout: i32 = *dims.offset(0 as isize)
         * *dims.offset(1 as isize);
     let mut n: i32 = 0;
     if has_value != 0 {
-        n = 0 as i32;
+        n = 0;
         while n < n_comp {
             ::core::mem::transmute::<
                 _,
@@ -414,7 +414,7 @@ pub unsafe fn CINT1e_drv(
             n;
         }
     } else {
-        n = 0 as i32;
+        n = 0;
         while n < n_comp {
             c2s_dset0(out.offset((nout * n) as isize), dims, counts.as_mut_ptr());
             n += 1;
@@ -447,7 +447,7 @@ unsafe extern "C" fn make_g1e_gout(
             )(gout, g, idx, envs, empty);
         }
         1 => {
-            CINTg1e_nuc(g, &*envs, -(1 as i32));
+            CINTg1e_nuc(g, &*envs, -(1));
             ::core::mem::transmute::<
                 _,
                 fn(_, _, _, _, _),
@@ -457,7 +457,7 @@ unsafe extern "C" fn make_g1e_gout(
             )(gout, g, idx, envs, empty);
         }
         2 => {
-            ia = 0 as i32;
+            ia = 0;
             while ia < (*envs).natm {
                 CINTg1e_nuc(g, &*envs, ia);
                 ::core::mem::transmute::<
@@ -471,7 +471,7 @@ unsafe extern "C" fn make_g1e_gout(
                     g,
                     idx,
                     envs,
-                    (empty != 0 && ia == 0 as i32) as i32,
+                    (empty != 0 && ia == 0) as i32,
                 );
                 ia += 1;
                 ia;
@@ -495,11 +495,11 @@ pub unsafe fn CINTgout1e(
     let mut iy: i32 = 0;
     let mut iz: i32 = 0;
     if empty != 0 {
-        n = 0 as i32;
+        n = 0;
         while n < nf {
-            ix = *idx.offset((n * 3 as i32 + 0 as i32) as isize);
-            iy = *idx.offset((n * 3 as i32 + 1 as i32) as isize);
-            iz = *idx.offset((n * 3 as i32 + 2 as i32) as isize);
+            ix = *idx.offset((n * 3 + 0) as isize);
+            iy = *idx.offset((n * 3 + 1) as isize);
+            iz = *idx.offset((n * 3 + 2) as isize);
             *gout
                 .offset(
                     n as isize,
@@ -509,11 +509,11 @@ pub unsafe fn CINTgout1e(
             n;
         }
     } else {
-        n = 0 as i32;
+        n = 0;
         while n < nf {
-            ix = *idx.offset((n * 3 as i32 + 0 as i32) as isize);
-            iy = *idx.offset((n * 3 as i32 + 1 as i32) as isize);
-            iz = *idx.offset((n * 3 as i32 + 2 as i32) as isize);
+            ix = *idx.offset((n * 3 + 0) as isize);
+            iy = *idx.offset((n * 3 + 1) as isize);
+            iz = *idx.offset((n * 3 + 2) as isize);
             *gout.offset(n as isize)
                 += *g.offset(ix as isize) * *g.offset(iy as isize)
                     * *g.offset(iz as isize);
@@ -539,25 +539,25 @@ pub unsafe fn CINTgout1e_nuc(
     let mut gz: *mut f64 = 0 as *mut f64;
     let mut s: f64 = 0.;
     if empty != 0 {
-        n = 0 as i32;
+        n = 0;
         while n < nf {
             gx = g
                 .offset(
-                    *idx.offset((n * 3 as i32 + 0 as i32) as isize)
+                    *idx.offset((n * 3 + 0) as isize)
                         as isize,
                 );
             gy = g
                 .offset(
-                    *idx.offset((n * 3 as i32 + 1 as i32) as isize)
+                    *idx.offset((n * 3 + 1) as isize)
                         as isize,
                 );
             gz = g
                 .offset(
-                    *idx.offset((n * 3 as i32 + 2 as i32) as isize)
+                    *idx.offset((n * 3 + 2) as isize)
                         as isize,
                 );
             s = 0 as f64;
-            i = 0 as i32;
+            i = 0;
             while i < nrys_roots {
                 s
                     += *gx.offset(i as isize) * *gy.offset(i as isize)
@@ -570,25 +570,25 @@ pub unsafe fn CINTgout1e_nuc(
             n;
         }
     } else {
-        n = 0 as i32;
+        n = 0;
         while n < nf {
             gx = g
                 .offset(
-                    *idx.offset((n * 3 as i32 + 0 as i32) as isize)
+                    *idx.offset((n * 3 + 0) as isize)
                         as isize,
                 );
             gy = g
                 .offset(
-                    *idx.offset((n * 3 as i32 + 1 as i32) as isize)
+                    *idx.offset((n * 3 + 1) as isize)
                         as isize,
                 );
             gz = g
                 .offset(
-                    *idx.offset((n * 3 as i32 + 2 as i32) as isize)
+                    *idx.offset((n * 3 + 2) as isize)
                         as isize,
                 );
             s = 0 as f64;
-            i = 0 as i32;
+            i = 0;
             while i < nrys_roots {
                 s
                     += *gx.offset(i as isize) * *gy.offset(i as isize)
@@ -616,14 +616,14 @@ pub unsafe extern "C" fn int1e_ovlp_sph(
     cache: *mut f64,
 ) -> i32 {
     let ng: [i32; 8] = [
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        1 as i32,
-        1 as i32,
-        1 as i32,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
@@ -679,7 +679,7 @@ pub unsafe extern "C" fn int1e_ovlp_sph(
                     ) -> (),
             ),
         ),
-        0 as i32,
+        0,
     );
 }
 #[no_mangle]
@@ -696,14 +696,14 @@ pub unsafe fn int1e_ovlp_cart(
     cache: *mut f64,
 ) -> i32 {
     let ng: [i32; 8] = [
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        1 as i32,
-        1 as i32,
-        1 as i32,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
@@ -759,7 +759,7 @@ pub unsafe fn int1e_ovlp_cart(
                     ) -> (),
             ),
         ),
-        0 as i32,
+        0,
     );
 }
 #[no_mangle]
@@ -787,14 +787,14 @@ pub unsafe extern "C" fn int1e_nuc_sph(
     cache: *mut f64,
 ) -> i32 {
     let ng: [i32; 8] = [
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        1 as i32,
-        0 as i32,
-        1 as i32,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
@@ -850,7 +850,7 @@ pub unsafe extern "C" fn int1e_nuc_sph(
                     ) -> (),
             ),
         ),
-        2 as i32,
+        2,
     );
 }
 #[no_mangle]
@@ -867,14 +867,14 @@ pub unsafe extern "C" fn int1e_nuc_cart(
     cache: *mut f64,
 ) -> i32 {
     let ng: [i32; 8] = [
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        0 as i32,
-        1 as i32,
-        0 as i32,
-        1 as i32,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
@@ -930,7 +930,7 @@ pub unsafe extern "C" fn int1e_nuc_cart(
                     ) -> (),
             ),
         ),
-        2 as i32,
+        2,
     );
 }
 #[no_mangle]
