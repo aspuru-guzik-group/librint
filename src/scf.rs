@@ -77,7 +77,7 @@ pub fn integral1e(
         intcgto = CINTcgto_cart;
 
         if typec == 0 {
-            func = cint1e_ovlp_cart;
+            func = cint1e_kin_cart;
         } else if typec == 1 {
             func = cint1e_kin_cart;
         } else if typec == 2 {
@@ -288,6 +288,7 @@ fn integrals(
                 bas,
                 nbas as i32,
                 env,
+                std::ptr::null_mut(),
                 std::ptr::null_mut(),
             );
             let mut c: usize = 0;

@@ -22,8 +22,8 @@ pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
 #[no_mangle]
-#[autodiff_reverse(dovlp_rev, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
-#[autodiff_forward(dovlp_for, Dual, Const, Const, Const, Const, Const, Dual)]
+#[autodiff_reverse(dovlp_rev, Duplicated, Const, Const, Const, Const, Const, Duplicated, Duplicated)]
+#[autodiff_forward(dovlp_for, Dual, Const, Const, Const, Const, Const, Dual, Dual)]
 fn ovlpp(
     out: &mut [f64],
     shls: &mut [i32],
@@ -32,6 +32,7 @@ fn ovlpp(
     bas: &mut [i32],
     nbas: usize,
     env: &mut [f64],
+    cache: *mut f64,
 ) {
     cint1e_ovlp_cart(
         out,
@@ -42,6 +43,7 @@ fn ovlpp(
         nbas as i32,
         env,
         std::ptr::null_mut(),
+        cache,
     );
 }
 
@@ -62,6 +64,7 @@ pub fn S(
     let nshells = angl(bas, 0);
     //let mut env: Vec<f64> = combine(&env1, &env2);
     let mut shls_buf = vec![0i32; 4];
+    let mut cache = vec![0.0; 234];
 
     let mut mu = 0;
     for i in 0..nbas {
@@ -82,6 +85,7 @@ pub fn S(
                 nbas as i32,
                 env,
                 std::ptr::null_mut(),
+                cache.as_mut_ptr(),
             );
 
             let mut c: usize = 0;
@@ -125,6 +129,8 @@ fn time_reverse_element_mode(
 
     let mut mu: usize;
     let mut nu: usize;
+    let mut cache = vec![0.0; 234];
+    let mut dcache = vec![0.0; 234];
     mu = 0;
     for i in 0..nbas {
         nu = 0;
@@ -138,7 +144,7 @@ fn time_reverse_element_mode(
             let size = (di * dj) as usize;
 
             let start_ovlp = std::time::Instant::now();
-            ovlpp(&mut buf, &mut shls, atm, natm, bas, nbas, env);
+            ovlpp(&mut buf, &mut shls, atm, natm, bas, nbas, env, cache.as_mut_ptr());
             let duration_ovlp = start_ovlp.elapsed().as_secs_f64();
             total_ovlp_time += duration_ovlp;
 
@@ -150,7 +156,7 @@ fn time_reverse_element_mode(
 
                     let start_dovlp = std::time::Instant::now();
                     dovlp_rev(
-                        &mut buf, &mut dbuf, &mut shls, atm, natm, bas, nbas, env, &mut denv,
+                        &mut buf, &mut dbuf, &mut shls, atm, natm, bas, nbas, env, &mut denv, cache.as_mut_ptr(), dcache.as_mut_ptr(),
                     );
 
                     let duration_dovlp = start_dovlp.elapsed().as_secs_f64();
@@ -220,6 +226,8 @@ fn time_forward_element_mode(
 
     let mut mu: usize;
     let mut nu: usize;
+    let mut cache = vec![0.0; 234];
+    let mut dcache = vec![0.0; 234];
     mu = 0;
     for i in 0..nbas {
         nu = 0;
@@ -233,7 +241,7 @@ fn time_forward_element_mode(
             let size = (di * dj) as usize;
 
             let start_ovlp = std::time::Instant::now();
-            ovlpp(&mut buf, &mut shls, atm, natm, bas, nbas, env);
+            ovlpp(&mut buf, &mut shls, atm, natm, bas, nbas, env, cache.as_mut_ptr());
             let duration_ovlp = start_ovlp.elapsed().as_secs_f64();
             total_ovlp_time_for += duration_ovlp;
 
@@ -243,7 +251,7 @@ fn time_forward_element_mode(
 
                 let start_dovlp = std::time::Instant::now();
                 dovlp_for(
-                    &mut buf, &mut dbuf, &mut shls, atm, natm, bas, nbas, env, &mut denv,
+                    &mut buf, &mut dbuf, &mut shls, atm, natm, bas, nbas, env, &mut denv, cache.as_mut_ptr(), dcache.as_mut_ptr(),
                 );
                 let duration_dovlp = start_dovlp.elapsed().as_secs_f64();
                 total_dovlp_time_for += duration_dovlp;

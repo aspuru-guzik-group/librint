@@ -277,7 +277,6 @@ pub unsafe fn CINT1e_drv(
     let mut stack: *mut f64 = 0 as *mut f64;
     if cache.is_null() {
         let mut cache_size: u64 = int1e_cache_size(&*envs) as u64;
-        dbg!(&cache_size);
         stack = malloc((::core::mem::size_of::<f64>() as u64).wrapping_mul(cache_size)) as *mut f64;
         cache = stack;
     }
@@ -926,6 +925,7 @@ pub fn cint1e_ovlp_cart(
     nbas: i32,
     env: &mut [f64],
     opt: *mut CINTOpt,
+    cache: *mut f64,
 ) -> i32 {
     unsafe {
         return int1e_ovlp_cart(
@@ -938,7 +938,7 @@ pub fn cint1e_ovlp_cart(
             nbas,
             env.as_mut_ptr(),
             opt,
-            0 as *mut f64,
+            cache,
         );
     }
 }
