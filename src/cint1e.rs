@@ -98,7 +98,6 @@ pub unsafe fn CINT1e_loop(
         return 0 as i32;
     }
     let mut fac1j: f64 = 0.;
-    let mut jp: i32 = 0;
     let mut empty: [i32; 4] = [
         1 as i32,
         1 as i32,
@@ -172,8 +171,7 @@ pub unsafe fn CINT1e_loop(
     let mut common_factor: f64 = (*envs).common_factor
         * CINTcommon_fac_sp((*envs).i_l) * CINTcommon_fac_sp((*envs).j_l);
     let mut pdata_ij = pdata_base;
-    jp = 0 as i32;
-    while jp < j_prim {
+    for jp in 0..j_prim {
         (*envs).aj[0] = *aj.offset(jp as isize);
         if j_ctr == 1 as i32 {
             fac1j = common_factor * *cj.offset(jp as isize);
@@ -181,8 +179,7 @@ pub unsafe fn CINT1e_loop(
             fac1j = common_factor;
             *iempty = 1 as i32;
         }
-        let mut ip: i32 = 0;
-        while ip < i_prim {
+        for ip in 0..i_prim {
             if !((*pdata_ij).cceij > expcutoff) {
                 (*envs).ai[0 as usize] = *ai.offset(ip as isize);
                 let expij = (*pdata_ij).eij;
@@ -223,7 +220,6 @@ pub unsafe fn CINT1e_loop(
                 }
                 *iempty = 0 as i32;
             }
-            ip += 1;
             pdata_ij = pdata_ij.offset(1);
         }
         if *iempty == 0 {
@@ -254,7 +250,6 @@ pub unsafe fn CINT1e_loop(
             }
             *jempty = 0 as i32;
         }
-        jp += 1;
     }
     if n_comp > 1 as i32 && *jempty == 0 {
         CINTdmat_transpose(gctr, gctrj, (*envs).nf * nc, n_comp);
