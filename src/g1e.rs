@@ -188,9 +188,9 @@ pub unsafe fn CINTg1e_index_xyz(
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg1e_ovlp(
+pub unsafe fn CINTg1e_ovlp(
     mut g: *mut f64,
-    envs: *const CINTEnvVars,
+    envs: &CINTEnvVars,
 ) -> i32 {
     let mut gx: *mut f64 = g;
     let mut gy: *mut f64 = g.offset((*envs).g_size as isize);
@@ -338,9 +338,9 @@ pub unsafe extern "C" fn CINTnuc_mod(
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg1e_nuc(
+pub unsafe fn CINTg1e_nuc(
     mut g: *mut f64,
-    envs: *const CINTEnvVars,
+    envs: &CINTEnvVars,
     mut nuc_id: i32,
 ) -> i32 {
     let mut nrys_roots: i32 = (*envs).nrys_roots;
@@ -535,13 +535,13 @@ pub unsafe extern "C" fn CINTg1e_nuc(
     return 1 as i32;
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTnabla1i_1e(
+pub unsafe fn CINTnabla1i_1e(
     mut f: *mut f64,
     mut g: *mut f64,
     mut li: i32,
     mut lj: i32,
     mut lk: i32,
-    envs: *const CINTEnvVars,
+    envs: &CINTEnvVars,
 ) {
     let dj: i32 = (*envs).g_stride_j;
     let dk: i32 = (*envs).g_stride_k;
@@ -673,13 +673,13 @@ pub unsafe extern "C" fn CINTnabla1j_1e(
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTnabla1k_1e(
+pub unsafe fn CINTnabla1k_1e(
     mut f: *mut f64,
     mut g: *mut f64,
     mut li: i32,
     mut lj: i32,
     mut lk: i32,
-    envs: *const CINTEnvVars,
+    envs: &CINTEnvVars,
 ) {
     let dj: i32 = (*envs).g_stride_j;
     let dk: i32 = (*envs).g_stride_k;
@@ -744,14 +744,14 @@ pub unsafe extern "C" fn CINTnabla1k_1e(
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTx1i_1e(
+pub unsafe fn CINTx1i_1e(
     mut f: *mut f64,
     mut g: *mut f64,
     mut ri: *mut f64,
     mut li: i32,
     mut lj: i32,
     mut lk: i32,
-    envs: *const CINTEnvVars,
+    envs: &CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -800,14 +800,14 @@ pub unsafe extern "C" fn CINTx1i_1e(
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTx1j_1e(
+pub unsafe fn CINTx1j_1e(
     mut f: *mut f64,
     mut g: *mut f64,
     mut rj: *mut f64,
     mut li: i32,
     mut lj: i32,
     mut lk: i32,
-    envs: *const CINTEnvVars,
+    envs: &CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -856,14 +856,14 @@ pub unsafe extern "C" fn CINTx1j_1e(
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTx1k_1e(
+pub unsafe fn CINTx1k_1e(
     mut f: *mut f64,
     mut g: *mut f64,
     mut rk: *mut f64,
     mut li: i32,
     mut lj: i32,
     mut lk: i32,
-    mut envs: *const CINTEnvVars,
+    envs: &CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;

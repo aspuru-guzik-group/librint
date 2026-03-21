@@ -448,14 +448,14 @@ unsafe extern "C" fn make_g1e_gout(
     mut gout: *mut f64,
     mut g: *mut f64,
     mut idx: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    envs: *const CINTEnvVars,
     mut empty: i32,
     int1e_type: i32,
 ) {
     let mut ia: i32 = 0;
     match int1e_type {
         0 => {
-            CINTg1e_ovlp(g, envs);
+            CINTg1e_ovlp(g, &*envs);
             ::core::mem::transmute::<
                 _,
                 fn(_, _, _, _, _),
@@ -465,7 +465,7 @@ unsafe extern "C" fn make_g1e_gout(
             )(gout, g, idx, envs, empty);
         }
         1 => {
-            CINTg1e_nuc(g, envs, -(1 as i32));
+            CINTg1e_nuc(g, &*envs, -(1 as i32));
             ::core::mem::transmute::<
                 _,
                 fn(_, _, _, _, _),
@@ -477,7 +477,7 @@ unsafe extern "C" fn make_g1e_gout(
         2 => {
             ia = 0 as i32;
             while ia < (*envs).natm {
-                CINTg1e_nuc(g, envs, ia);
+                CINTg1e_nuc(g, &*envs, ia);
                 ::core::mem::transmute::<
                     _,
                     fn(_, _, _, _, _),
