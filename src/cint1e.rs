@@ -171,24 +171,24 @@ pub unsafe fn CINT1e_loop(
     let mut common_factor: f64 = (*envs).common_factor
         * CINTcommon_fac_sp((*envs).i_l) * CINTcommon_fac_sp((*envs).j_l);
     let mut pdata_ij = pdata_base;
-    for jp in 0..j_prim {
-        (*envs).aj[0] = *aj.offset(jp as isize);
+    for jp in 0..(j_prim as isize) {
+        (*envs).aj[0] = *aj.offset(jp);
         if j_ctr == 1 as i32 {
-            fac1j = common_factor * *cj.offset(jp as isize);
+            fac1j = common_factor * *cj.offset(jp);
         } else {
             fac1j = common_factor;
             *iempty = 1 as i32;
         }
-        for ip in 0..i_prim {
+        for ip in 0..(i_prim as isize) {
             if !((*pdata_ij).cceij > expcutoff) {
-                (*envs).ai[0 as usize] = *ai.offset(ip as isize);
+                (*envs).ai[0 as usize] = *ai.offset(ip);
                 let expij = (*pdata_ij).eij;
                 let rij = ((*pdata_ij).rij).as_ptr();
                 (*envs).rij[0] = *rij.offset(0);
                 (*envs).rij[1] = *rij.offset(1);
                 (*envs).rij[2] = *rij.offset(2);
                 (*envs).fac[0] = if i_ctr == 1 {
-                    fac1j * *ci.offset(ip as isize) * expij
+                    fac1j * *ci.offset(ip) * expij
                 } else {
                     fac1j * expij
                 };
@@ -198,23 +198,23 @@ pub unsafe fn CINT1e_loop(
                         CINTprim_to_ctr_0(
                             gctri,
                             gout,
-                            ci.offset(ip as isize),
+                            ci.offset(ip),
                             ((*envs).nf * n_comp) as u64,
                             i_prim,
                             i_ctr,
-                            *non0ctri.offset(ip as isize),
-                            non0idxi.offset((ip * i_ctr) as isize),
+                            *non0ctri.offset(ip),
+                            non0idxi.offset(ip * i_ctr as isize),
                         );
                     } else {
                         CINTprim_to_ctr_1(
                             gctri,
                             gout,
-                            ci.offset(ip as isize),
+                            ci.offset(ip),
                             ((*envs).nf * n_comp) as u64,
                             i_prim,
                             i_ctr,
-                            *non0ctri.offset(ip as isize),
-                            non0idxi.offset((ip * i_ctr) as isize),
+                            *non0ctri.offset(ip),
+                            non0idxi.offset(ip * i_ctr as isize),
                         );
                     }
                 }
@@ -228,23 +228,23 @@ pub unsafe fn CINT1e_loop(
                     CINTprim_to_ctr_0(
                         gctrj,
                         gctri,
-                        cj.offset(jp as isize),
+                        cj.offset(jp),
                         ((*envs).nf * i_ctr * n_comp) as u64,
                         j_prim,
                         j_ctr,
-                        *non0ctrj.offset(jp as isize),
-                        non0idxj.offset((jp * j_ctr) as isize),
+                        *non0ctrj.offset(jp),
+                        non0idxj.offset(jp * j_ctr as isize),
                     );
                 } else {
                     CINTprim_to_ctr_1(
                         gctrj,
                         gctri,
-                        cj.offset(jp as isize),
+                        cj.offset(jp),
                         ((*envs).nf * i_ctr * n_comp) as u64,
                         j_prim,
                         j_ctr,
-                        *non0ctrj.offset(jp as isize),
-                        non0idxj.offset((jp * j_ctr) as isize),
+                        *non0ctrj.offset(jp),
+                        non0idxj.offset(jp * j_ctr as isize),
                     );
                 }
             }
