@@ -90438,7 +90438,7 @@ unsafe extern "C" fn a_iket1_cart2spinor(
 }
 unsafe extern "C" fn dcopy_ij(
     mut out: *mut f64,
-    mut gctr: *mut f64,
+    mut gctr: *const f64,
     ni: i32,
     _nj: i32,
     mi: i32,
@@ -91011,11 +91011,11 @@ unsafe extern "C" fn sph2e_inner(
     return gsph;
 }
 #[no_mangle]
-pub unsafe extern "C" fn c2s_sph_1e(
-    mut opij: *mut f64,
+pub unsafe fn c2s_sph_1e(
+    opij: *mut f64,
     mut gctr: *mut f64,
-    mut dims: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    dims: *const i32,
+    envs: *const CINTEnvVars,
     mut cache: *mut f64,
 ) {
     let mut i_l: i32 = (*envs).i_l;
@@ -91540,11 +91540,11 @@ pub unsafe extern "C" fn c2s_sph_2e1(
 //     }
 // }
 #[no_mangle]
-pub unsafe extern "C" fn c2s_cart_1e(
+pub unsafe fn c2s_cart_1e(
     mut opij: *mut f64,
     mut gctr: *mut f64,
-    mut dims: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    mut dims: *const i32,
+    mut envs: *const CINTEnvVars,
     _cache: *mut f64,
 ) {
     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];

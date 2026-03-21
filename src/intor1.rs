@@ -190,23 +190,23 @@ pub unsafe extern "C" fn int1e_kin_cart(
         cache,
         ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut f64,
                     *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
+                    *const i32,
+                    *const CINTEnvVars,
                     *mut f64,
                 ) -> (),
             >,
-            Option::<unsafe extern "C" fn() -> ()>,
+            Option::<unsafe fn() -> ()>,
         >(
             Some(
                 c2s_cart_1e
-                    as unsafe extern "C" fn(
+                    as unsafe fn(
                         *mut f64,
                         *mut f64,
-                        *mut i32,
-                        *mut CINTEnvVars,
+                        *const i32,
+                        *const CINTEnvVars,
                         *mut f64,
                     ) -> (),
             ),
@@ -271,23 +271,23 @@ pub unsafe extern "C" fn int1e_kin_sph(
         cache,
         ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut f64,
                     *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
+                    *const i32,
+                    *const CINTEnvVars,
                     *mut f64,
                 ) -> (),
             >,
-            Option::<unsafe extern "C" fn() -> ()>,
+            Option::<unsafe fn() -> ()>,
         >(
             Some(
                 c2s_sph_1e
-                    as unsafe extern "C" fn(
+                    as unsafe fn(
                         *mut f64,
                         *mut f64,
-                        *mut i32,
-                        *mut CINTEnvVars,
+                        *const i32,
+                        *const CINTEnvVars,
                         *mut f64,
                     ) -> (),
             ),

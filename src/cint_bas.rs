@@ -335,9 +335,9 @@ pub unsafe extern "C" fn CINTshells_spinor_offset(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTcart_comp(
-    mut nx: *mut i32,
-    mut ny: *mut i32,
-    mut nz: *mut i32,
+    nx: *mut i32,
+    ny: *mut i32,
+    nz: *mut i32,
     lmax: i32,
 ) {
     let mut inc: i32 = 0 as i32;
@@ -353,11 +353,8 @@ pub unsafe extern "C" fn CINTcart_comp(
             *ny.offset(inc as isize) = ly;
             *nz.offset(inc as isize) = lz;
             inc += 1;
-            inc;
             ly -= 1;
-            ly;
         }
         lx -= 1;
-        lx;
     }
 }

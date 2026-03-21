@@ -38,14 +38,14 @@ pub unsafe fn CINTinit_int1e_EnvVars(
     (*envs).shls = shls;
     let i_sh: i32 = *shls.offset(0);
     let j_sh: i32 = *shls.offset(1);
-    (*envs).i_l = *bas.offset((8 as i32 * i_sh + 1 as i32) as isize);
-    (*envs).j_l = *bas.offset((8 as i32 * j_sh + 1 as i32) as isize);
+    (*envs).i_l = *bas.offset((8 * i_sh + 1 as i32) as isize);
+    (*envs).j_l = *bas.offset((8 * j_sh + 1 as i32) as isize);
     (*envs)
         .x_ctr[0 as i32
-        as usize] = *bas.offset((8 as i32 * i_sh + 3 as i32) as isize);
+        as usize] = *bas.offset((8 * i_sh + 3 as i32) as isize);
     (*envs)
         .x_ctr[1 as i32
-        as usize] = *bas.offset((8 as i32 * j_sh + 3 as i32) as isize);
+        as usize] = *bas.offset((8 * j_sh + 3 as i32) as isize);
     (*envs)
         .nfi = ((*envs).i_l + 1 as i32) * ((*envs).i_l + 2 as i32)
         / 2 as i32;
@@ -71,7 +71,7 @@ pub unsafe fn CINTinit_int1e_EnvVars(
                     (6 as i32
                         * *bas
                             .offset(
-                                (8 as i32 * i_sh + 0 as i32) as isize,
+                                (8 * i_sh + 0 as i32) as isize,
                             ) + 1 as i32) as isize,
                 ) as isize,
         );
@@ -83,7 +83,7 @@ pub unsafe fn CINTinit_int1e_EnvVars(
                     (6 as i32
                         * *bas
                             .offset(
-                                (8 as i32 * j_sh + 0 as i32) as isize,
+                                (8 * j_sh + 0 as i32) as isize,
                             ) + 1 as i32) as isize,
                 ) as isize,
         );
@@ -139,7 +139,7 @@ pub unsafe fn CINTinit_int1e_EnvVars(
 }
 #[no_mangle]
 pub unsafe fn CINTg1e_index_xyz(
-    mut idx: *mut i32,
+    idx: *mut i32,
     envs: &CINTEnvVars,
 ) {
     let i_l: i32 = envs.i_l;
@@ -148,9 +148,6 @@ pub unsafe fn CINTg1e_index_xyz(
     let nfj: i32 = envs.nfj;
     let di: i32 = envs.g_stride_i;
     let dj: i32 = envs.g_stride_j;
-    let mut i: i32 = 0;
-    let mut j: i32 = 0;
-    let mut n: i32 = 0;
     let mut ofx: i32 = 0;
     let mut ofjx: i32 = 0;
     let mut ofy: i32 = 0;
@@ -168,23 +165,21 @@ pub unsafe fn CINTg1e_index_xyz(
     ofx = 0 as i32;
     ofy = envs.g_size;
     ofz = envs.g_size * 2 as i32;
-    n = 0 as i32;
-    j = 0 as i32;
-    while j < nfj {
-        ofjx = ofx + dj * j_nx[j as usize];
-        ofjy = ofy + dj * j_ny[j as usize];
-        ofjz = ofz + dj * j_nz[j as usize];
-        i = 0 as i32;
-        while i < nfi {
-            *idx.offset((n + 0 as i32) as isize) = ofjx + di * i_nx[i as usize];
-            *idx.offset((n + 1 as i32) as isize) = ofjy + di * i_ny[i as usize];
-            *idx.offset((n + 2 as i32) as isize) = ofjz + di * i_nz[i as usize];
-            n += 3 as i32;
+    let mut n: isize = 0;
+    let mut j: usize = 0;
+    while j < (nfj as usize) {
+        ofjx = ofx + dj * j_nx[j];
+        ofjy = ofy + dj * j_ny[j];
+        ofjz = ofz + dj * j_nz[j];
+        let mut i: usize = 0;
+        while i < (nfi as usize) {
+            *idx.offset(n + 0) = ofjx + di * i_nx[i];
+            *idx.offset(n + 1) = ofjy + di * i_ny[i];
+            *idx.offset(n + 2) = ofjz + di * i_nz[i];
+            n += 3;
             i += 1;
-            i;
         }
         j += 1;
-        j;
     }
 }
 #[no_mangle]

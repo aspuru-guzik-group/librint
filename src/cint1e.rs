@@ -299,7 +299,7 @@ pub unsafe fn CINT1e_drv(
     mut dims: *mut i32,
     envs: *mut CINTEnvVars,
     mut cache: *mut f64,
-    f_c2s: Option::<unsafe extern "C" fn() -> ()>,
+    f_c2s: Option::<unsafe fn() -> ()>,
     int1e_type: i32,
 ) -> i32 {
     if out.is_null() {
@@ -331,23 +331,23 @@ pub unsafe fn CINT1e_drv(
     if f_c2s
         == ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut f64,
                     *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
+                    *const i32,
+                    *const CINTEnvVars,
                     *mut f64,
                 ) -> (),
             >,
-            Option::<unsafe extern "C" fn() -> ()>,
+            Option::<unsafe fn() -> ()>,
         >(
             Some(
                 c2s_sph_1e
-                    as unsafe extern "C" fn(
+                    as unsafe fn(
                         *mut f64,
                         *mut f64,
-                        *mut i32,
-                        *mut CINTEnvVars,
+                        *const i32,
+                        *const CINTEnvVars,
                         *mut f64,
                     ) -> (),
             ),
@@ -362,23 +362,23 @@ pub unsafe fn CINT1e_drv(
     } else if f_c2s
         == ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut f64,
                     *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
+                    *const i32,
+                    *const CINTEnvVars,
                     *mut f64,
                 ) -> (),
             >,
-            Option::<unsafe extern "C" fn() -> ()>,
+            Option::<unsafe fn() -> ()>,
         >(
             Some(
                 c2s_cart_1e
-                    as unsafe extern "C" fn(
+                    as unsafe fn(
                         *mut f64,
                         *mut f64,
-                        *mut i32,
-                        *mut CINTEnvVars,
+                        *const i32,
+                        *const CINTEnvVars,
                         *mut f64,
                     ) -> (),
             ),
@@ -635,12 +635,10 @@ pub unsafe extern "C" fn int1e_ovlp_sph(
                 *mut f64,
                 *mut i32,
                 &CINTEnvVars,
-                //*mut CINTEnvVars,
                 i32,
             ) -> (),
         >,
         Option::<unsafe fn() -> ()>,
-        //Option::<unsafe extern "C" fn() -> ()>,
     >(
         Some(
             CINTgout1e
@@ -660,23 +658,23 @@ pub unsafe extern "C" fn int1e_ovlp_sph(
         cache,
         ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut f64,
                     *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
+                    *const i32,
+                    *const CINTEnvVars,
                     *mut f64,
                 ) -> (),
             >,
-            Option::<unsafe extern "C" fn() -> ()>,
+            Option::<unsafe fn() -> ()>,
         >(
             Some(
                 c2s_sph_1e
-                    as unsafe extern "C" fn(
+                    as unsafe fn(
                         *mut f64,
                         *mut f64,
-                        *mut i32,
-                        *mut CINTEnvVars,
+                        *const i32,
+                        *const CINTEnvVars,
                         *mut f64,
                     ) -> (),
             ),
@@ -740,23 +738,23 @@ pub unsafe fn int1e_ovlp_cart(
         cache,
         ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut f64,
                     *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
+                    *const i32,
+                    *const CINTEnvVars,
                     *mut f64,
                 ) -> (),
             >,
-            Option::<unsafe extern "C" fn() -> ()>,
+            Option::<unsafe fn() -> ()>,
         >(
             Some(
                 c2s_cart_1e
-                    as unsafe extern "C" fn(
+                    as unsafe fn(
                         *mut f64,
                         *mut f64,
-                        *mut i32,
-                        *mut CINTEnvVars,
+                        *const i32,
+                        *const CINTEnvVars,
                         *mut f64,
                     ) -> (),
             ),
@@ -777,16 +775,16 @@ pub unsafe extern "C" fn int1e_ovlp_optimizer(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_nuc_sph(
-    mut out: *mut f64,
-    mut dims: *mut i32,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    out: *mut f64,
+    dims: *mut i32,
+    shls: *mut i32,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
     _opt: *mut CINTOpt,
-    mut cache: *mut f64,
+    cache: *mut f64,
 ) -> i32 {
     let ng: [i32; 8] = [
         0 as i32,
@@ -831,23 +829,23 @@ pub unsafe extern "C" fn int1e_nuc_sph(
         cache,
         ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut f64,
                     *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
+                    *const i32,
+                    *const CINTEnvVars,
                     *mut f64,
                 ) -> (),
             >,
-            Option::<unsafe extern "C" fn() -> ()>,
+            Option::<unsafe fn() -> ()>,
         >(
             Some(
                 c2s_sph_1e
-                    as unsafe extern "C" fn(
+                    as unsafe fn(
                         *mut f64,
                         *mut f64,
-                        *mut i32,
-                        *mut CINTEnvVars,
+                        *const i32,
+                        *const CINTEnvVars,
                         *mut f64,
                     ) -> (),
             ),
@@ -866,7 +864,7 @@ pub unsafe extern "C" fn int1e_nuc_cart(
     nbas: i32,
     env: *mut f64,
     _opt: *mut CINTOpt,
-    mut cache: *mut f64,
+    cache: *mut f64,
 ) -> i32 {
     let ng: [i32; 8] = [
         0 as i32,
@@ -911,23 +909,23 @@ pub unsafe extern "C" fn int1e_nuc_cart(
         cache,
         ::core::mem::transmute::<
             Option::<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut f64,
                     *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
+                    *const i32,
+                    *const CINTEnvVars,
                     *mut f64,
                 ) -> (),
             >,
-            Option::<unsafe extern "C" fn() -> ()>,
+            Option::<unsafe fn() -> ()>,
         >(
             Some(
                 c2s_cart_1e
-                    as unsafe extern "C" fn(
+                    as unsafe fn(
                         *mut f64,
                         *mut f64,
-                        *mut i32,
-                        *mut CINTEnvVars,
+                        *const i32,
+                        *const CINTEnvVars,
                         *mut f64,
                     ) -> (),
             ),
@@ -937,7 +935,7 @@ pub unsafe extern "C" fn int1e_nuc_cart(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_nuc_optimizer(
-    mut opt: *mut *mut CINTOpt,
+    opt: *mut *mut CINTOpt,
     _atm: *mut i32,
     _natm: i32,
     _bas: *mut i32,
