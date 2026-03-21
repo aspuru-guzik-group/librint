@@ -323,7 +323,7 @@ pub unsafe fn CINT1e_drv(
     if out.is_null() {
         return int1e_cache_size(&*envs);
     }
-    let mut x_ctr: *mut i32 = ((*envs).x_ctr).as_mut_ptr();
+    let mut x_ctr: *const i32 = ((*envs).x_ctr).as_ptr();
     let mut nc: i32 = (*envs).nf * *x_ctr.offset(0 as isize)
         * *x_ctr.offset(1 as isize);
     let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_tensor;
@@ -703,7 +703,7 @@ pub unsafe extern "C" fn int1e_ovlp_sph(
     );
 }
 #[no_mangle]
-pub unsafe extern "C" fn int1e_ovlp_cart(
+pub unsafe fn int1e_ovlp_cart(
     out: *mut f64,
     dims: *mut i32,
     shls: *mut i32,
