@@ -385,8 +385,8 @@ unsafe extern "C" fn make_g1e_gout(
 #[inline(never)]
 pub unsafe fn CINTgout1e(
     gout: *mut f64,
-    g: *mut f64,
-    idx: *mut i32,
+    g: *const f64,
+    idx: *const i32,
     envs: &CINTEnvVars,
     empty: i32,
 ) {
@@ -404,7 +404,6 @@ pub unsafe fn CINTgout1e(
             *gout.offset(n as isize) =
                 *g.offset(ix as isize) * *g.offset(iy as isize) * *g.offset(iz as isize);
             n += 1;
-            n;
         }
     } else {
         n = 0;
@@ -415,7 +414,6 @@ pub unsafe fn CINTgout1e(
             *gout.offset(n as isize) +=
                 *g.offset(ix as isize) * *g.offset(iy as isize) * *g.offset(iz as isize);
             n += 1;
-            n;
         }
     };
 }
@@ -488,10 +486,10 @@ pub unsafe extern "C" fn int1e_ovlp_sph(
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe fn(*mut f64, *mut f64, *mut i32, &CINTEnvVars, i32) -> ()>,
+        Option<unsafe fn(*mut f64, *const f64, *const i32, &CINTEnvVars, i32) -> ()>,
         Option<unsafe fn() -> ()>,
     >(Some(
-        CINTgout1e as unsafe fn(*mut f64, *mut f64, *mut i32, &CINTEnvVars, i32) -> (),
+        CINTgout1e as unsafe fn(*mut f64, *const f64, *const i32, &CINTEnvVars, i32) -> (),
     ));
     return CINT1e_drv(
         out,
@@ -525,10 +523,10 @@ pub unsafe fn int1e_ovlp_cart(
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe fn(*mut f64, *mut f64, *mut i32, &CINTEnvVars, i32) -> ()>,
+        Option<unsafe fn(*mut f64, *const f64, *const i32, &CINTEnvVars, i32) -> ()>,
         Option<unsafe fn() -> ()>,
     >(Some(
-        CINTgout1e as unsafe fn(*mut f64, *mut f64, *mut i32, &CINTEnvVars, i32) -> (),
+        CINTgout1e as unsafe fn(*mut f64, *const f64, *const i32, &CINTEnvVars, i32) -> (),
     ));
     return CINT1e_drv(
         out,
