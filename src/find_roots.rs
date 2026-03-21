@@ -1,10 +1,14 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![allow(
+    dead_code,
+    mutable_transmutes,
+    non_camel_case_types,
+    non_snake_case,
+    non_upper_case_globals,
+    unused_assignments,
+    unused_mut
+)]
 
-unsafe extern "C" fn R_dnode(
-    mut a: *mut f64,
-    mut roots: *mut f64,
-    mut order: i32,
-) -> i32 {
+unsafe extern "C" fn R_dnode(mut a: *mut f64, mut roots: *mut f64, mut order: i32) -> i32 {
     let accrt: f64 = 1e-15f64;
     let mut x0: f64 = 0.;
     let mut x1: f64 = 0.;
@@ -33,7 +37,10 @@ unsafe extern "C" fn R_dnode(
         }
         if !(p1init == 0 as f64) {
             if p0 * p1init > 0 as f64 {
-                eprintln!("ROOT NUMBER {} WAS NOT FOUND FOR POLYNOMIAL OF ORDER {}", m, order);
+                eprintln!(
+                    "ROOT NUMBER {} WAS NOT FOUND FOR POLYNOMIAL OF ORDER {}",
+                    m, order
+                );
                 return 1 as i32;
             }
             if x0 <= x1init {
@@ -140,7 +147,11 @@ unsafe extern "C" fn _qr_step(
         k += 1;
         k;
     }
-    m3 = if n1 < n0 + 3 as i32 { n1 } else { n0 + 3 as i32 };
+    m3 = if n1 < n0 + 3 as i32 {
+        n1
+    } else {
+        n0 + 3 as i32
+    };
     k = 0 as i32;
     while k < m3 {
         x = *A.offset((k * nroots + n0) as isize);
@@ -190,10 +201,7 @@ unsafe extern "C" fn _qr_step(
         j;
     }
 }
-unsafe extern "C" fn _hessenberg_qr(
-    mut A: *mut f64,
-    mut nroots: i32,
-) -> i32 {
+unsafe extern "C" fn _hessenberg_qr(mut A: *mut f64, mut nroots: i32) -> i32 {
     let mut eps: f64 = 1e-15f64;
     let mut maxits: i32 = 30 as i32;
     let mut n0: i32 = 0 as i32;
@@ -207,15 +215,8 @@ unsafe extern "C" fn _hessenberg_qr(
         k = n0;
         while (k + 1 as i32) < n1 {
             let mut s: f64 = (*A.offset((k * nroots + k) as isize)).abs()
-                + (
-                    *A
-                        .offset(
-                            ((k + 1 as i32) * nroots + k + 1 as i32)
-                                as isize,
-                        )
-                ).abs();
-            if (*A.offset(((k + 1 as i32) * nroots + k) as isize)).abs() < eps * s
-            {
+                + (*A.offset(((k + 1 as i32) * nroots + k + 1 as i32) as isize)).abs();
+            if (*A.offset(((k + 1 as i32) * nroots + k) as isize)).abs() < eps * s {
                 break;
             }
             k += 1 as i32;
@@ -240,10 +241,9 @@ unsafe extern "C" fn _hessenberg_qr(
             let mut shift: f64 = 0.;
             let mut t: f64 = a11 + a22;
             let mut s_0: f64 = (a11 - a22) * (a11 - a22);
-            s_0
-                += 4 as f64
-                    * *A.offset((m1 * nroots + m2) as isize)
-                    * *A.offset((m2 * nroots + m1) as isize);
+            s_0 += 4 as f64
+                * *A.offset((m1 * nroots + m2) as isize)
+                * *A.offset((m2 * nroots + m1) as isize);
             if s_0 > 0 as f64 {
                 s_0 = (s_0).sqrt();
                 let mut a: f64 = (t + s_0) * 0.5f64;
@@ -280,62 +280,30 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
     mut nroots: i32,
 ) -> i32 {
     if nroots == 1 as i32 {
-        *roots
-            .offset(
-                0 as isize,
-            ) = -*cs.offset(2 as isize)
-            / *cs.offset(3 as isize);
+        *roots.offset(0 as isize) = -*cs.offset(2 as isize) / *cs.offset(3 as isize);
         return 0 as i32;
     } else if nroots == 2 as i32 {
-        let mut dum: f64 = (
-            *cs.offset((2 as i32 * 3 as i32 + 1 as i32) as isize)
-                * *cs
-                    .offset(
-                        (2 as i32 * 3 as i32 + 1 as i32) as isize,
-                    )
-                - 4 as f64
-                    * *cs
-                        .offset(
-                            (2 as i32 * 3 as i32 + 0 as i32)
-                                as isize,
-                        )
-                    * *cs
-                        .offset(
-                            (2 as i32 * 3 as i32 + 2 as i32)
-                                as isize,
-                        )
-        ).sqrt();
-        *roots
-            .offset(
-                0 as isize,
-            ) = (-*cs
-            .offset((2 as i32 * 3 as i32 + 1 as i32) as isize)
-            - dum)
-            / *cs
-                .offset(
-                    (2 as i32 * 3 as i32 + 2 as i32) as isize,
-                ) / 2 as f64;
-        *roots
-            .offset(
-                1 as isize,
-            ) = (-*cs
-            .offset((2 as i32 * 3 as i32 + 1 as i32) as isize)
-            + dum)
-            / *cs
-                .offset(
-                    (2 as i32 * 3 as i32 + 2 as i32) as isize,
-                ) / 2 as f64;
+        let mut dum: f64 = (*cs.offset((2 as i32 * 3 as i32 + 1 as i32) as isize)
+            * *cs.offset((2 as i32 * 3 as i32 + 1 as i32) as isize)
+            - 4 as f64
+                * *cs.offset((2 as i32 * 3 as i32 + 0 as i32) as isize)
+                * *cs.offset((2 as i32 * 3 as i32 + 2 as i32) as isize))
+        .sqrt();
+        *roots.offset(0 as isize) = (-*cs.offset((2 as i32 * 3 as i32 + 1 as i32) as isize) - dum)
+            / *cs.offset((2 as i32 * 3 as i32 + 2 as i32) as isize)
+            / 2 as f64;
+        *roots.offset(1 as isize) = (-*cs.offset((2 as i32 * 3 as i32 + 1 as i32) as isize) + dum)
+            / *cs.offset((2 as i32 * 3 as i32 + 2 as i32) as isize)
+            / 2 as f64;
         return 0 as i32;
     }
     let mut A: [f64; 1024] = [0.; 1024];
     let mut nroots1: i32 = nroots + 1 as i32;
     let mut i: i32 = 0;
-    let mut fac: f64 = -1.0f64
-        / *cs.offset((nroots * nroots1 + nroots) as isize);
+    let mut fac: f64 = -1.0f64 / *cs.offset((nroots * nroots1 + nroots) as isize);
     i = 0 as i32;
     while i < nroots {
-        A[(nroots - 1 as i32 - i)
-            as usize] = *cs.offset((nroots * nroots1 + i) as isize) * fac;
+        A[(nroots - 1 as i32 - i) as usize] = *cs.offset((nroots * nroots1 + i) as isize) * fac;
         i += 1;
         i;
     }
@@ -355,10 +323,7 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
     if err == 0 as i32 {
         i = 0 as i32;
         while i < nroots {
-            *roots
-                .offset(
-                    (nroots - 1 as i32 - i) as isize,
-                ) = A[(i * nroots + i) as usize];
+            *roots.offset((nroots - 1 as i32 - i) as isize) = A[(i * nroots + i) as usize];
             i += 1;
             i;
         }
@@ -366,28 +331,17 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
         let mut k: i32 = 0;
         let mut order: i32 = 0;
         let mut a: *mut f64 = 0 as *mut f64;
-        let mut dum_0: f64 = (
-            *cs.offset((2 as i32 * nroots1 + 1 as i32) as isize)
-                * *cs.offset((2 as i32 * nroots1 + 1 as i32) as isize)
-                - 4 as f64
-                    * *cs
-                        .offset((2 as i32 * nroots1 + 0 as i32) as isize)
-                    * *cs
-                        .offset((2 as i32 * nroots1 + 2 as i32) as isize)
-        ).sqrt();
-        *roots
-            .offset(
-                0 as isize,
-            ) = 0.5f64
-            * (-*cs.offset((2 as i32 * nroots1 + 1 as i32) as isize)
-                - dum_0)
+        let mut dum_0: f64 = (*cs.offset((2 as i32 * nroots1 + 1 as i32) as isize)
+            * *cs.offset((2 as i32 * nroots1 + 1 as i32) as isize)
+            - 4 as f64
+                * *cs.offset((2 as i32 * nroots1 + 0 as i32) as isize)
+                * *cs.offset((2 as i32 * nroots1 + 2 as i32) as isize))
+        .sqrt();
+        *roots.offset(0 as isize) = 0.5f64
+            * (-*cs.offset((2 as i32 * nroots1 + 1 as i32) as isize) - dum_0)
             / *cs.offset((2 as i32 * nroots1 + 2 as i32) as isize);
-        *roots
-            .offset(
-                1 as isize,
-            ) = 0.5f64
-            * (-*cs.offset((2 as i32 * nroots1 + 1 as i32) as isize)
-                + dum_0)
+        *roots.offset(1 as isize) = 0.5f64
+            * (-*cs.offset((2 as i32 * nroots1 + 1 as i32) as isize) + dum_0)
             / *cs.offset((2 as i32 * nroots1 + 2 as i32) as isize);
         i = 2 as i32;
         while i < nroots {
