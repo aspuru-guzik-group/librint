@@ -6,7 +6,7 @@ use librint::utils::{read_basis, load_expected, write_expected};
 use librint::scf::{nmol, angl};
 
 use librint::cint_bas::CINTcgto_cart;
-use librint::cint1e::cint1e_ovlp_cart;
+use librint::intor1::cint1e_kin_cart;
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -14,8 +14,8 @@ pub const BAS_SLOTS: usize = 8;
 pub const epsilon: f64 = 1e-12;
 
 #[no_mangle]
-#[autodiff_reverse(dS_rev, Duplicated, Const, Const, Duplicated)]
-#[autodiff_forward(dS_for, Dual, Const, Const, Dual)]
+#[autodiff_reverse(dT_rev, Duplicated, Const, Const, Duplicated)]
+#[autodiff_forward(dT_for, Dual, Const, Const, Dual)]
 pub fn matrix(
     out: &mut Vec<f64>,
     atm: &mut Vec<i32>,
@@ -37,7 +37,7 @@ pub fn matrix(
             let dj = CINTcgto_cart(j, &bas) as usize;
 
             let mut buf = vec![0.0; di * dj];
-            cint1e_ovlp_cart(&mut buf, &mut shls_buf, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+            cint1e_kin_cart(&mut buf, &mut shls_buf, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
 
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
@@ -110,7 +110,7 @@ pub fn test_path_rev(
 
         let mut denv = vec![0.0; m];
 
-        dS_rev(&mut out, &mut dout, &mut atm, &mut bas, &mut env, &mut denv);
+        dT_rev(&mut out, &mut dout, &mut atm, &mut bas, &mut env, &mut denv);
 
         for l in 0..m {
             J[k * m + l] = denv[l];
@@ -150,7 +150,7 @@ pub fn test_path_for(
         dout.fill(0.0);
         denv[l] = 1.0;
 
-        dS_for(&mut out, &mut dout, &mut atm, &mut bas, &mut env, &mut denv);
+        dT_for(&mut out, &mut dout, &mut atm, &mut bas, &mut env, &mut denv);
 
         for k in 0..n {
             J[k * m + l] = dout[k];
@@ -176,73 +176,73 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_overlap_h2() {
+    fn test_kinetic_h2() {
         let path = "molecules/h2/sto3g.txt".to_string();
-        let exp = "checks/truth/h2/sto3g_S.txt".to_string();
+        let exp = "checks/truth/h2/sto3g_T.txt".to_string();
 
         test_path(&path, &exp);
     }
 
     #[test]
-    fn test_overlap_h2o() {
+    fn test_kinetic_h2o() {
         let path = "molecules/h2o/sto3g.txt".to_string();
-        let exp = "checks/truth/h2o/sto3g_S.txt".to_string();
+        let exp = "checks/truth/h2o/sto3g_T.txt".to_string();
 
         test_path(&path, &exp);
     }
 
     #[test]
-    fn test_overlap_c6h6() {
+    fn test_kinetic_c6h6() {
         let path = "molecules/c6h6/631g.txt".to_string();
-        let exp = "checks/truth/c6h6/631g_S.txt".to_string();
+        let exp = "checks/truth/c6h6/631g_T.txt".to_string();
 
         test_path(&path, &exp);
     }
 
     #[test]
-    fn test_overlap_rev_h2() {
+    fn test_kinetic_rev_h2() {
         let path = "molecules/h2/sto3g.txt".to_string();
-        let exp = "checks/truth/h2/sto3g_dS_rev.txt".to_string();
+        let exp = "checks/truth/h2/sto3g_dT_rev.txt".to_string();
 
         test_path_rev(&path, &exp);
     }
 
     #[test]
-    fn test_overlap_rev_h2o() {
+    fn test_kinetic_rev_h2o() {
         let path = "molecules/h2o/sto3g.txt".to_string();
-        let exp = "checks/truth/h2o/sto3g_dS_rev.txt".to_string();
+        let exp = "checks/truth/h2o/sto3g_dT_rev.txt".to_string();
 
         test_path_rev(&path, &exp);
     }
 
     // #[test]
-    // fn tests_overlap_rev_c6h6() {
+    // fn tests_kinetic_rev_c6h6() {
     //     let path = "molecules/c6h6/631g.txt".to_string();
-    //     let exp = "checks/truth/c6h6/631g_dS_rev.txt".to_string();
+    //     let exp = "checks/truth/c6h6/631g_dT_rev.txt".to_string();
     //
     //     test_path_rev(&path, &exp);
     // }
 
     #[test]
-    fn test_overlap_for_h2() {
+    fn test_kinetic_for_h2() {
         let path = "molecules/h2/sto3g.txt".to_string();
-        let exp = "checks/truth/h2/sto3g_dS_for.txt".to_string();
+        let exp = "checks/truth/h2/sto3g_dT_for.txt".to_string();
 
         test_path_for(&path, &exp);
     }
 
     #[test]
-    fn test_overlap_for_h2o() {
+    fn test_kinetic_for_h2o() {
         let path = "molecules/h2o/sto3g.txt".to_string();
-        let exp = "checks/truth/h2o/sto3g_dS_for.txt".to_string();
+        let exp = "checks/truth/h2o/sto3g_dT_for.txt".to_string();
 
         test_path_for(&path, &exp);
     }
 
     #[test]
-    fn test_overlap_for_c6h6() {
+    fn test_kinetic_for_c6h6() {
         let path = "molecules/c6h6/631g.txt".to_string();
-        let exp = "checks/truth/c6h6/631g_dS_for.txt".to_string();
+        let exp = "checks/truth/c6h6/631g_dT_for.txt".to_string();
 
         test_path_for(&path, &exp);
     }
