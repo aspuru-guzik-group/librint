@@ -3,6 +3,13 @@ import pyscf
 
 NORMALIZE_GTO = True
 
+PTR_COORD = 1
+
+NPRIM_OF = 2
+NCTR_OF = 3
+PTR_EXP = 5
+PTR_COEFF = 6
+
 def prep(mol):
     atm = np.asarray(mol._atm, dtype=np.int32, order='C')
     bas = np.asarray(mol._bas, dtype=np.int32, order='C')
@@ -88,6 +95,32 @@ def basis_atm(bas: np.ndarray, env: np.ndarray):
         
         new_env = norm([basis_add])
         env[b1:b2+s] = new_env
+
+
+def coords_exp_coeff(atm: np.array, bas: np.array, env: np.ndarray):
+    natm = atm.shape[0]
+    
+    coords = []
+    exps = []
+    coeff = []
+
+    for ia in range(atm):
+        ptr = atm[ia, PTR_COORD]
+        xyz = env[ptr:ptr+3]
+        coords.append(xyz)
+
+    for ib in range(bas.shape[0]):
+        nprim = bas[ib, NPRIM_OF]
+        nctr = bas[ib, NCTR_OF]
+
+        ptr = bas[ib, PTR_COEFF]
+
+        exps.append(env[ptr:ptr + nprim])
+
+        c = env[ptr:ptr + nprim*nctr]
+        coeffs.append(c.reshape(nctr, nprim))
+
+    return np.array(coords), np.array(exps), np.array(coeff)
 
 if __name__ == '__main__':
     basi = ['sto-3g', 'def2-svp']
