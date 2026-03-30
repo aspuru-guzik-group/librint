@@ -80,6 +80,40 @@ pub fn read_basis(
     Ok(())
 }
 
+pub fn write_expected(
+    path: &str,
+    data: &Vec<f64>,
+) {
+    if let Some(parent) = std::path::Path::new(path).parent() {
+        std::fs::create_dir_all(parent).expect("Failed to create directories");
+    }
+    let file = File::create(path).expect("Failed to create file");
+    let mut writer = BufWriter::new(file);
+
+    for value in data {
+        writeln!(writer, "{}", value).expect("Faile to write");
+    }
+}
+
+pub fn load_expected(
+    path: &str
+) -> Vec<f64> {
+    let file = File::open(path).expect("Failed to open file");
+    let reader = BufReader::new(file);
+
+    let mut vector = Vec::new();
+
+    for line in reader.lines() {
+        let line = line.expect("Failed to read line");
+
+        if let Ok(value) = line.trim().parse::<f64>() {
+            vector.push(value);
+        }
+    }
+
+    return vector;
+}
+
 pub fn save_arr(
     path: &str,
     a: &mut [f64],

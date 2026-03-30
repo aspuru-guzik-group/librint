@@ -21,9 +21,9 @@ lto = "fat"
 debug = 0
 #rustflags = ["-Z", "autodiff=Enable"]
 
-[lib]
-crate-type = ["cdylib"]
-name = "rint"
+# [lib]
+# crate-type = ["cdylib"]
+# name = "rint"
 
 #[[bin]]
 #name = "int"
@@ -33,10 +33,22 @@ name = "rint"
 #name = "dint"
 #path = "enzyme/integral.rs"
 
-[[bin]]
-name = "simple"
-path = "tests/simple.rs"
+# [[bin]]
+# name = "simple"
+# path = "tests/simple.rs"
+#
+# [[bin]]
+# name = "contracted"
+# path = "tests/contracted.rs"
 
-[[bin]]
-name = "contracted"
-path = "tests/contracted.rs"
+[[test]]
+name = "ovlp"
+path = "checks/overlap.rs"
+
+[[test]]
+name = "nuc"
+path = "checks/nuclear.rs"
+
+[[test]]
+name = "kin"
+path = "checks/kinetic.rs"
