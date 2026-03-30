@@ -15,7 +15,7 @@ pub const epsilon: f64 = 1e-12;
 
 #[no_mangle]
 #[autodiff_reverse(dS_rev, Duplicated, Const, Const, Duplicated)]
-// #[autodiff_forward(dS_for, Dual, Const, Const, Dual)]
+#[autodiff_forward(dS_for, Dual, Const, Const, Dual)]
 pub fn S_matrix(
     out: &mut Vec<f64>,
     atm: &mut Vec<i32>,
@@ -129,6 +129,46 @@ pub fn test_path_rev(
     }
 }
 
+pub fn test_path_for(
+    path: &str,
+    exp: &str,
+) {
+    let (nshells, mut atm, mut bas, mut env) = set_molecule(path);
+    let J_exp = load_expected(exp);
+
+    let n = nshells * nshells;
+    let m = env.len();
+
+    let mut J = vec![0.0; n * m];
+
+    let mut out = vec![0.0; n];
+    let mut dout = vec![0.0; n];
+    let mut denv = vec![0.0; m];
+
+    for l in 0..m {
+        dout.fill(0.0);
+        denv[l] = 1.0;
+
+        dS_for(&mut out, &mut dout, &mut atm, &mut bas, &mut env, &mut denv);
+
+        for k in 0..n {
+            J[k * m + l] = dout[k];
+        }
+        denv[l] = 0.0;
+    }
+
+    if J_exp.len() != J.len() {
+        write_expected(exp, &J);
+        panic!("Different sizes exp={} actual={}", J_exp.len(), J.len());
+    }
+
+    for (a, b) in J.iter().zip(J_exp.iter()) {
+        if (a - b).abs() > epsilon {
+            panic!("Test failed for molecule '{}' exp={} actual={}", path, b, a);
+        }
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -159,10 +199,18 @@ mod tests {
     }
 
     #[test]
-    fn test_doverlap_h2() {
+    fn test_overlap_rev_h2() {
         let path = "molecules/h2/sto3g.txt".to_string();
-        let exp = "checks/truth/h2/sto3g_dS.txt".to_string();
+        let exp = "checks/truth/h2/sto3g_dS_rev.txt".to_string();
 
         test_path_rev(&path, &exp);
+    }
+
+    #[test]
+    fn test_overlap_for_h2() {
+        let path = "molecules/h2/sto3g.txt".to_string();
+        let exp = "checks/truth/h2/sto3g_dS_for.txt".to_string();
+
+        test_path_for(&path, &exp);
     }
 }
