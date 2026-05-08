@@ -52,3 +52,11 @@ path = "checks/nuclear.rs"
 [[test]]
 name = "kin"
 path = "checks/kinetic.rs"
+
+[[test]]
+name = "two"
+path = "checks/twoelec.rs"
+
+[[test]]
+name = "energy"
+path = "checks/energy.rs"
