@@ -11,3 +11,12 @@ wheels/
 # Virtual environments
 .venv
 target/
+
+# Research scratch / generated outputs (pyscf_comp benchmarks)
+python/pyscf_comp/*.json
+python/pyscf_comp/*.pdf
+python/pyscf_comp/*.png
+python/pyscf_comp/*_run1/
+
+# Stale binary backups
+*.pre-*-bak

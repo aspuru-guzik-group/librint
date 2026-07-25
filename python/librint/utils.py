@@ -22,12 +22,14 @@ def pmat(A: np.ndarray):
         print()
 
 def angl(bas: np.ndarray, coord: int) -> int:
+    # bas[:,3] = NCTR_OF: contracted functions per shell (general
+    # contraction); 1 for segmented bases.
     nshells = 0
     for b in bas:
         if coord == 0:
-            nshells += int((b[1] + 1) * (b[1] + 2) / 2)
+            nshells += int((b[1] + 1) * (b[1] + 2) / 2) * int(b[3])
         elif coord == 1:
-            nshells += (2*b[1] + 1)
+            nshells += (2 * int(b[1]) + 1) * int(b[3])
     return nshells
 
 def nparams(atm, bas):

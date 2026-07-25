@@ -21,9 +21,33 @@ lto = "fat"
 debug = 0
 #rustflags = ["-Z", "autodiff=Enable"]
 
-# [lib]
-# crate-type = ["cdylib"]
-# name = "rint"
+[lib]
+# cdylib only: autodiff needs fat LTO, which cargo won't apply to a cdylib+rlib mix
+crate-type = ["cdylib"]
+name = "rint"
+
+# Enzyme-reverse cost profiler (needs the rlib/name flip above; the SLURM job
+# slurm/ssubmit_prof.sh does the flip on a /tmp copy of the tree)
+#[[bin]]
+#name = "prof_dtwo"
+#path = "checks/prof_dtwo.rs"
+
+# Harness-free nuc test runner (cargo test x Enzyme broken on this nightly, see checks/nuc_bin.rs).
+# To run: set crate-type = ["rlib"] and name = "librint" above, then
+#   RUSTFLAGS="-Z autodiff=Enable,LooseTypes" cargo run --release --bin nuc_check
+# (bins can't link a cdylib-only lib; revert to ["cdylib"] + "rint" for the .so)
+# Diagnostic for the fused-Enzyme gradient bug (needs the rlib/name flip above)
+#[[bin]]
+#name = "diag_denergy"
+#path = "checks/diag_denergy.rs"
+
+#[[bin]]
+#name = "all_checks"
+#path = "checks/all_bin.rs"
+
+#[[bin]]
+#name = "nuc_check"
+#path = "checks/nuc_bin.rs"
 
 #[[bin]]
 #name = "int"

@@ -5,9 +5,8 @@ use std::autodiff::*;
 use crate::cint_bas::CINTcgto_cart;
 use crate::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart};
 use crate::intor1::cint1e_kin_cart;
-use crate::cint2e::cint2e_cart;
 
-use crate::scf::{nmol, angl, integral1e, integral2e, calc_F, energy, energyfast};
+use crate::scf::{nmol, angl, integral1e, integral2e_fock, energy, energyfast};
 use crate::utils::{split, combine};
 use crate::linalg::matmult;
 
@@ -29,7 +28,7 @@ pub fn ovlp(
 
 #[no_mangle]
 #[autodiff_reverse(dkin, Duplicated, Const, Const, Const, Const, Duplicated)]
-fn kin(
+pub fn kin(
     out: &mut Vec<f64>, 
     shls: &mut Vec<i32>, 
     atm: &mut Vec<i32>,
@@ -44,7 +43,7 @@ fn kin(
 
 #[no_mangle]
 #[autodiff_reverse(dnuc, Duplicated, Const, Const, Const, Const, Duplicated)]
-fn nuc(
+pub fn nuc(
     out: &mut Vec<f64>, 
     shls: &mut Vec<i32>, 
     atm: &mut Vec<i32>,
@@ -57,19 +56,20 @@ fn nuc(
     cint1e_nuc_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
 }
 
+// 2e integral block on the AD-friendly rys kernel (src/eri.rs) -- the memory-
+// safe path for the Enzyme reverse (dtwo_ad): one shell quartet per reverse.
 #[no_mangle]
-#[autodiff_reverse(dtwo, Duplicated, Const, Const, Const, Const, Duplicated)]
-fn two(
-    out: &mut Vec<f64>, 
-    shls: &mut Vec<i32>, 
+#[autodiff_reverse(dtwo_ad, Duplicated, Const, Const, Const, Const, Duplicated)]
+pub fn two_ad(
+    out: &mut Vec<f64>,
+    shls: &mut Vec<i32>,
     atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>, 
+    bas: &mut Vec<i32>,
     env1: &mut Vec<f64>,
     env2: &mut Vec<f64>,
 ) {
-    let (natm, nbas) = nmol(atm, bas);
-    let mut env: Vec<f64> = combine(&env1, &env2);
-    cint2e_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
+    let env: Vec<f64> = combine(&env1, &env2);
+    crate::eri::eri_cart(out, shls, atm, bas, &env);
 }
 
 #[no_mangle]
@@ -161,20 +161,18 @@ fn dSf(
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
 
+            // batched adjoint seed with Q-weights (see dTf)
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
-                    dbuf[c] = 1.0;
-
-                    denv = vec![0.0; env2.len()];
-                    dovlp(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
-                    for l in 0..env2.len() {
-                        dS[l] += Q[nuj * nshells + mui] * denv[l];
-                    }
-                    
-                    dbuf[c] = 0.0;
+                    dbuf[c] = Q[nuj * nshells + mui];
                     c += 1;
                 }
+            }
+            denv = vec![0.0; env2.len()];
+            dovlp(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
+            for l in 0..env2.len() {
+                dS[l] += denv[l];
             }
             nu += dj;
         }
@@ -215,21 +213,21 @@ fn dTf(
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
-            
+
+            // batched adjoint: seed the whole shell-pair block with its
+            // P-weights and run ONE reverse pass; by linearity denv is the
+            // already-contracted sum_c P_c dT_c/denv
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
-                    dbuf[c] = 1.0;
-
-                    denv = vec![0.0; env2.len()];
-                    dkin(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
-                    for l in 0..env2.len() {
-                        dT[l] += P[nuj * nshells + mui] * denv[l];
-                    }
-                    
-                    dbuf[c] = 0.0;
+                    dbuf[c] = P[nuj * nshells + mui];
                     c += 1;
                 }
+            }
+            denv = vec![0.0; env2.len()];
+            dkin(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
+            for l in 0..env2.len() {
+                dT[l] += denv[l];
             }
             nu += dj;
         }
@@ -269,21 +267,19 @@ fn dVf(
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
-            
+
+            // batched adjoint seed (see dTf)
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
-                    dbuf[c] = 1.0;
-
-                    denv = vec![0.0; env2.len()];
-                    dnuc(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
-                    for l in 0..env2.len() {
-                        dV[l] += P[nuj * nshells + mui] * denv[l];
-                    }
-                    
-                    dbuf[c] = 0.0;
+                    dbuf[c] = P[nuj * nshells + mui];
                     c += 1;
                 }
+            }
+            denv = vec![0.0; env2.len()];
+            dnuc(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
+            for l in 0..env2.len() {
+                dV[l] += denv[l];
             }
             nu += dj;
         }
@@ -324,18 +320,18 @@ pub fn getF(
     env: &mut Vec<f64>,
     P: &Vec<f64>,
 ) -> Vec<f64> {
-    let nshells = angl(&bas, 0);
-
+    // F = H + G, with G the 2e Fock part accumulated directly in O(n^2) by
+    // integral2e_fock. The frozen-P gradient needs F only to form Q=PFP, and
+    // building the full n^4 ERI tensor for that was the old memory wall.
     let T = integral1e(atm, bas, env, 0, 1);
     let V = integral1e(atm, bas, env, 0, 2);
-    let two = integral2e(atm, bas, env, 0);
+    let G = integral2e_fock(atm, bas, env, P, 0);
 
-    let mut H = vec![0.0; T.len()];
-    for i in 0..H.len() {
-        H[i] = T[i] + V[i];
+    let mut F = vec![0.0; T.len()];
+    for i in 0..F.len() {
+        F[i] = T[i] + V[i] + G[i];
     }
 
-    let F = calc_F(nshells, P, &two, &H);
     return F;
 }
 
@@ -371,65 +367,115 @@ pub fn dRf(
     env2: &mut Vec<f64>,
     P: &Vec<f64>,
 ) -> Vec<f64> {
+    // 8-fold permutational symmetry: only canonical quartets (i>=j, k>=l,
+    // (i,j)>=(k,l)) are differentiated; each element seed sums the energy-
+    // expression weight over the quartet's permutation images, so by adjoint
+    // linearity this equals the full nbas^4 loop with ~8x fewer reverse passes.
+    // Seeds stay OUTSIDE the reverse -- one cint call per reverse is the only
+    // shape Enzyme compiles correctly.
     let (_, nbas) = nmol(&atm, &bas);
     let nshells = angl(&bas, 0);
 
     let mut dR = vec![0.0; env2.len()];
 
+    let mut offs = vec![0usize; nbas + 1];
+    for s in 0..nbas {
+        offs[s + 1] = offs[s] + CINTcgto_cart(s, &bas) as usize;
+    }
+
+    let w = |a: usize, b: usize, c: usize, d: usize| -> f64 {
+        0.5 * (P[a * nshells + b] * P[c * nshells + d]
+            - 0.5 * P[a * nshells + c] * P[b * nshells + d])
+    };
+
+    let mut shls = vec![0; 4];
     let mut buf;
     let mut dbuf;
     let mut denv;
-    let mut shls = vec![0; 4];
 
-    let mut mu;
-    let mut nu;
-    let mut sig;
-    let mut lam;
-
-    mu = 0;
     for i in 0..nbas {
-        shls[0] = i as i32; let di = CINTcgto_cart(i, &bas) as usize;
-        nu = 0;
-        for j in 0..nbas {
-            shls[1] = j as i32; let dj = CINTcgto_cart(j, &bas) as usize;
-            sig = 0;
-            for k in 0..nbas {
-                shls[2] = k as i32; let dk = CINTcgto_cart(k, &bas) as usize;
-                lam = 0;
-                for l in 0..nbas {
-                    shls[3] = l as i32; let dl = CINTcgto_cart(l, &bas) as usize;
+        let di = offs[i + 1] - offs[i];
+        let mu = offs[i];
+        shls[0] = i as i32;
+        for j in 0..=i {
+            let dj = offs[j + 1] - offs[j];
+            let nu = offs[j];
+            shls[1] = j as i32;
+            for k in 0..=i {
+                let dk = offs[k + 1] - offs[k];
+                let sig = offs[k];
+                shls[2] = k as i32;
+                let lmax = if k == i { j } else { k };
+                for l in 0..=lmax {
+                    let dl = offs[l + 1] - offs[l];
+                    let lam = offs[l];
+                    shls[3] = l as i32;
+
+                    // the 8 permutation images of (i, j, k, l); keep only the
+                    // first occurrence of each distinct ordered tuple so
+                    // degenerate quartets (i==j, k==l, ij==kl) are not
+                    // double-counted
+                    let imgs = [
+                        (i, j, k, l), (j, i, k, l), (i, j, l, k), (j, i, l, k),
+                        (k, l, i, j), (l, k, i, j), (k, l, j, i), (l, k, j, i),
+                    ];
+                    let mut keep = [true; 8];
+                    for a in 1..8 {
+                        for b in 0..a {
+                            if imgs[a] == imgs[b] {
+                                keep[a] = false;
+                                break;
+                            }
+                        }
+                    }
 
                     buf = vec![0.0; di * dj * dk * dl];
                     dbuf = vec![0.0; di * dj * dk * dl];
-                    
+
                     let mut c: usize = 0;
                     for laml in lam..(lam + dl) {
                         for sigk in sig..(sig + dk) {
                             for nuj in nu..(nu + dj) {
                                 for mui in mu..(mu + di) {
-                                    dbuf[c] = 1.0;
-
-                                    denv = vec![0.0; env2.len()];
-                                    dtwo(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
-                                    for l in 0..env2.len() {
-                                        dR[l] += 0.5 * (P[mui*nshells + nuj] * P[sigk*nshells + laml] - 0.5 * P[mui*nshells + sigk] * P[nuj*nshells + laml]) * denv[l];
-                                    }
-                                    
-                                    dbuf[c] = 0.0;
+                                    let mut ws = 0.0;
+                                    if keep[0] { ws += w(mui, nuj, sigk, laml); }
+                                    if keep[1] { ws += w(nuj, mui, sigk, laml); }
+                                    if keep[2] { ws += w(mui, nuj, laml, sigk); }
+                                    if keep[3] { ws += w(nuj, mui, laml, sigk); }
+                                    if keep[4] { ws += w(sigk, laml, mui, nuj); }
+                                    if keep[5] { ws += w(laml, sigk, mui, nuj); }
+                                    if keep[6] { ws += w(sigk, laml, nuj, mui); }
+                                    if keep[7] { ws += w(laml, sigk, nuj, mui); }
+                                    dbuf[c] = ws;
                                     c += 1;
                                 }
                             }
                         }
                     }
-                    lam += dl;
+                    denv = vec![0.0; env2.len()];
+                    // The only memory-safe 2e reverse is the eri.rs rys kernel
+                    // (cartesian, l <= LMAX, any nctr, omega == 0). Outside that
+                    // domain the c2rust reverse corrupts memory, so fail loud
+                    // rather than smash the heap (primal keeps the full domain).
+                    let lmax_sh = (bas[8 * i + 1])
+                        .max(bas[8 * j + 1]).max(bas[8 * k + 1]).max(bas[8 * l + 1]);
+                    if lmax_sh as usize > crate::eri::LMAX || env1[8] != 0.0 {
+                        panic!(
+                            "2e gradient unsupported for this quartet (max l = {}, \
+                             omega = {}): the memory-safe reverse (eri.rs) covers \
+                             only cartesian l <= {}, no range separation.",
+                            lmax_sh, env1[8], crate::eri::LMAX,
+                        );
+                    }
+                    dtwo_ad(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
+                    for t in 0..env2.len() {
+                        dR[t] += denv[t];
+                    }
                 }
-                sig += dk;
             }
-            nu += dj;
         }
-        mu += di;
     }
-    
+
     return dR;
 }
 
@@ -488,14 +534,15 @@ pub fn gradenergy(
     env: &mut Vec<f64>,
     P: &mut Vec<f64>,
 ) -> Vec<f64> {
-    let (s1, s2) = split(bas);
-
-    let mut env1: Vec<f64> = env[0..s1].to_vec();
-    let mut env2: Vec<f64> = env[s1..s2].to_vec();
-
-    let mut denv: Vec<f64> = vec![0.0; s2-s1];
-    let _ = denergy(atm, bas, &mut env1, &mut env2, &mut denv, P, 1.0);
-
+    // Same target function as gradenergyfast: 1/2 tr(P(H+F)) = tr(PH) + 1/2 tr(PGP).
+    // The fused Enzyme reverse (denergy) is miscompiled on nightly-2026-05-13
+    // (see checks/diag_denergy.rs) -- assemble from batched part-wise adjoints.
+    let dH = dHcoreg(atm, bas, env, P);
+    let dR = dRg(atm, bas, env, P);
+    let mut denv = vec![0.0; dH.len()];
+    for i in 0..denv.len() {
+        denv[i] = dH[i] + dR[i];
+    }
     return denv;
 }
 
@@ -555,7 +602,15 @@ pub fn denergyfast(
     env: &mut Vec<f64>,
     P: &mut Vec<f64>,
 ) -> Vec<f64> {
-    let denergy = gradenergyfast(atm, bas, env, P);
+    // NOTE: the fused whole-energy reverse (denergyf) is miscompiled by Enzyme
+    // (wrong gradients for any multi-shell system); assemble from the part-wise
+    // batched adjoints (dHcoreg/dRg/dSg) instead, which are FD-exact.
+    let dH = dHcoreg(atm, bas, env, P);
+    let dR = dRg(atm, bas, env, P);
+    let mut denergy = vec![0.0; dH.len()];
+    for i in 0..denergy.len() {
+        denergy[i] = dH[i] + dR[i];
+    }
     let dS = dSg(atm, bas, env, P);
 
     let mut dtotal = vec![0.0; denergy.len()];
