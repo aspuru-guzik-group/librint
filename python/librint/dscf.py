@@ -4,7 +4,27 @@ import numpy as np
 from librint import library
 from librint import utils
 
+# The 2e analytic gradient (Enzyme reverse) is memory-safe only on the eri.rs
+# kernel: cartesian shells, l <= GRAD_LMAX, any contraction, no range
+# separation. Reject out-of-domain molecules with a catchable error here so the
+# Rust guard's panic never aborts the process.
+GRAD_LMAX = 4
+
+
+def _require_grad_domain(mol):
+    lmax = max(int(mol._bas[i, 1]) for i in range(mol.nbas))
+    omega = float(mol._env[8]) if len(mol._env) > 8 else 0.0
+    if lmax > GRAD_LMAX or omega != 0.0:
+        raise ValueError(
+            f"librint analytic 2e gradient supports only cartesian shells with "
+            f"l <= {GRAD_LMAX} and no range separation (got max l = {lmax}, "
+            f"omega = {omega}); the primal integrals (scf.int2e etc.) cover the "
+            f"full domain."
+        )
+
+
 def grad(mol, P: np.ndarray) -> np.ndarray:
+    _require_grad_domain(mol)
     atm, bas, env, nelec = utils.prep(mol)
 
     atm_ctypes = atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
@@ -62,6 +82,7 @@ def dHcoref(mol, P: np.ndarray) -> np.ndarray:
     return dH # return dH.reshape(2, 2, 6).transpose(2, 0, 1)
 
 def dRf(mol, P: np.ndarray) -> np.ndarray:
+    _require_grad_domain(mol)
     atm, bas, env, nelec = utils.prep(mol)
 
     atm_ctypes = atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
@@ -76,6 +97,7 @@ def dRf(mol, P: np.ndarray) -> np.ndarray:
     return dR # .reshape(2, 2, 2, 2, 6).transpose(4, 0, 1, 2, 3) #(4, 3, 2, 0, 1)
 
 def danalyticalf(mol, P: np.ndarray) -> np.ndarray:
+    _require_grad_domain(mol)
     atm, bas, env, nelec = utils.prep(mol)
 
     atm_ctypes = atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
@@ -90,6 +112,7 @@ def danalyticalf(mol, P: np.ndarray) -> np.ndarray:
     return dR
 
 def denergyf(mol, P: np.ndarray) -> np.ndarray:
+    _require_grad_domain(mol)
     atm, bas, env, nelec = utils.prep(mol)
 
     atm_ctypes = atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int))

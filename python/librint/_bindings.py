@@ -15,7 +15,10 @@ def _dylib_suffix():
         return ".dll"
     return ".so"
 
-so_path = os.path.join(current_dir, "librint" + _dylib_suffix())
+# LIBRINT_SO overrides the bundled library (e.g. a fresh target/release/librint.so)
+so_path = os.environ.get(
+    "LIBRINT_SO", os.path.join(current_dir, "librint" + _dylib_suffix())
+)
 
 library = None
 

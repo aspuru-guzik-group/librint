@@ -4,7 +4,8 @@ use crate::cint::CINTOpt;
 use crate::cint_bas::{CINTcgto_cart, CINTcgto_spheric};
 use crate::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart, cint1e_ovlp_sph, cint1e_nuc_sph};
 use crate::intor1::{cint1e_kin_cart, cint1e_kin_sph};
-use crate::cint2e::{cint2e_cart, cint2e_sph};
+use crate::cint2e::{cint2e_cart, cint2e_sph, cint2e_cart_optimizer};
+use crate::optimizer::CINTdel_optimizer;
 
 use crate::linalg::{matmult, dcopya, transpose, sort};
 
@@ -41,10 +42,13 @@ pub fn angl(
     let mut nshells: usize = 0;
     for i in (0..bas.len()).step_by(BAS_SLOTS) {
         let l = bas[i + 1] as usize;
+        // nctr contracted functions per shell (general contraction); for
+        // segmented bases bas[i+3] == 1 and this reduces to the old count.
+        let nctr = bas[i + 3] as usize;
         if coord == 0 {
-            nshells += (l + 1) * (l + 2) / 2;
+            nshells += (l + 1) * (l + 2) / 2 * nctr;
         } else if coord == 1 {
-            nshells += 2*l + 1;
+            nshells += (2 * l + 1) * nctr;
         }
     }
     return nshells;
@@ -170,6 +174,13 @@ pub fn integral2e(
         std::process::exit(1);
     }
 
+    // CINTOpt built once and shared by every quartet (primal only -- see
+    // integral2e_sym for why it must not enter differentiated calls)
+    let mut opt: *mut CINTOpt = std::ptr::null_mut();
+    unsafe {
+        cint2e_cart_optimizer(&mut opt, atm.as_mut_ptr(), natm as i32, bas.as_mut_ptr(), nbas as i32, env.as_mut_ptr());
+    }
+
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
@@ -184,15 +195,15 @@ pub fn integral2e(
             for k in 0..nbas {
                 shls[2] = k as i32;
                 dk = intcgto(k, &bas) as usize;
-                
+
                 lam = 0;
                 for l in 0..nbas {
                     shls[3] = l as i32;
                     dl = intcgto(l, &bas) as usize;
-                    
+
                     buf = vec![0.0; di * dj * dk * dl];
-        
-                    func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+
+                    func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, opt);
                     let mut c: usize = 0;
                     for laml in lam..(lam + dl) {
                         for sigk in sig..(sig + dk) {
@@ -214,7 +225,105 @@ pub fn integral2e(
         mu += di;
     }
 
+    unsafe {
+        CINTdel_optimizer(&mut opt);
+    }
+
     return R;
+}
+
+// G = two-electron Fock matrix, built directly in O(n^2) memory -- the full
+// n^4 ERI tensor is never allocated, so the frozen-P gradient's Q=PFP build is
+// O(n^2) not O(n^4). F = H + G at the caller. Primal only (reused CINTOpt fine).
+pub fn integral2e_fock(
+    atm: &mut Vec<i32>,
+    bas: &mut Vec<i32>,
+    env: &mut Vec<f64>,
+    P: &[f64],
+    coord: i32,
+) -> Vec<f64> {
+    let (natm, nbas) = nmol(atm, bas);
+    let n = angl(bas, coord);
+
+    let mut G = vec![0.0; n * n];
+
+    let mut buf: Vec<f64>;
+    let mut shls: [i32; 4] = [0, 0, 0, 0];
+
+    let intcgto: cgto;
+    let func: inte;
+
+    if coord == 0 {
+        intcgto = CINTcgto_cart;
+        func = cint2e_cart;
+    } else if coord == 1 {
+        intcgto = CINTcgto_spheric;
+        func = cint2e_sph;
+    } else {
+        std::process::exit(1);
+    }
+
+    let mut opt: *mut CINTOpt = std::ptr::null_mut();
+    unsafe {
+        cint2e_cart_optimizer(&mut opt, atm.as_mut_ptr(), natm as i32, bas.as_mut_ptr(), nbas as i32, env.as_mut_ptr());
+    }
+
+    // Full nbas^4 quartet loop (no permutational symmetry): every ERI slot is
+    // visited exactly once, so accumulating the per-slot Coulomb/exchange
+    // contributions gives G with no double-counting. (8-fold canonical would
+    // need per-shell degeneracy factors; not worth it for this once-per-
+    // gradient primal build -- minor vs the dRf reverse.)
+    let mut mu = 0usize;
+    for i in 0..nbas {
+        shls[0] = i as i32;
+        let di = intcgto(i, &bas) as usize;
+        let mut nu = 0usize;
+        for j in 0..nbas {
+            shls[1] = j as i32;
+            let dj = intcgto(j, &bas) as usize;
+            let mut sig = 0usize;
+            for k in 0..nbas {
+                shls[2] = k as i32;
+                let dk = intcgto(k, &bas) as usize;
+                let mut lam = 0usize;
+                for l in 0..nbas {
+                    shls[3] = l as i32;
+                    let dl = intcgto(l, &bas) as usize;
+
+                    buf = vec![0.0; di * dj * dk * dl];
+                    func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, opt);
+
+                    let mut c: usize = 0;
+                    for laml in lam..(lam + dl) {
+                        for sigk in sig..(sig + dk) {
+                            for nuj in nu..(nu + dj) {
+                                for mui in mu..(mu + di) {
+                                    let v = buf[c];
+                                    c += 1;
+                                    // slot (mui nuj | sigk laml):
+                                    //   Coulomb  -> G[mui,nuj] += P[laml,sigk]*v
+                                    //   exchange -> G[mui,laml] += -0.5*P[nuj,sigk]*v
+                                    G[mui * n + nuj] += P[laml * n + sigk] * v;
+                                    G[mui * n + laml] += -0.5 * P[nuj * n + sigk] * v;
+                                }
+                            }
+                        }
+                    }
+
+                    lam += dl;
+                }
+                sig += dk;
+            }
+            nu += dj;
+        }
+        mu += di;
+    }
+
+    unsafe {
+        CINTdel_optimizer(&mut opt);
+    }
+
+    return G;
 }
 
 fn integrals(

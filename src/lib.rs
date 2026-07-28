@@ -3,8 +3,8 @@
 
 pub mod scf;
 
-// pub mod dscf;
-// pub mod p2c;
+pub mod dscf;
+pub mod p2c;
 
 pub mod utils;
 pub mod linalg;
@@ -15,6 +15,8 @@ pub mod cart2sph;
 pub mod cint1e;
 pub mod cint2e;
 pub mod cint_bas;
+pub mod eri;
+pub mod rys_tab;
 pub mod eigh;
 pub mod fblas;
 pub mod find_roots;
