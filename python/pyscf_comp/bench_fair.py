@@ -6,8 +6,10 @@ Fairness measures:
   * T1 compares the SAME function both sides: gradient of the frozen-density
     HF energy E[P] w.r.t. basis exponents+contractions (jax gets an explicit
     frozen-P energy, not a full SCF), both consuming the same converged P.
-  * jax cold (trace+compile) reported separately from warm; peak RSS (VmHWM)
-    per worker, OOM recorded not fatal.
+  * jax's first call ("warm1") reported separately from the steady-state
+    median. It is NOT trace+compile -- nothing here is jitted, pyscfad's intor
+    is a custom_vjp over pyscf's C code -- it is first-call warmup/caching.
+    Peak RSS (VmHWM) per worker, OOM recorded not fatal.
 
 Tiers:
   T0  primal integrals: librint int1e+int2e vs pyscf mol.intor
@@ -177,16 +179,14 @@ def worker_t1_librint(geo, basis, out):
     _, mol = _build_pyscf_mol(geo, basis)
     P = _load_or_make_P(geo, basis, mol)
 
-    # danalyticalf is the validated gradient (5e-8 vs reconverged-SCF FD);
-    # denergyf (fused Enzyme pass) is faster but returns wrong values and
-    # its huge tape OOMs first -- time it last, emit partial results before.
+    # danalyticalf is the validated gradient (5e-8 vs reconverged-SCF FD).
+    # dscf.denergyf is not a second method to time: denergy_c routes to
+    # denergyfast, which assembles the same dHcoreg/dRg/dSg expression as
+    # danalyticalg and returns bitwise-identical values.
     g = librint.dscf.danalyticalf(mol, P)
     ts = _time_n(lambda: librint.dscf.danalyticalf(mol, P), 3)
     out.update(median=_median(ts), grad_sorted=np.sort(g).tolist())
     out["peak_kb"] = _vmhwm_kb()
-    print("BENCH_JSON " + json.dumps(out), flush=True)  # partial, pre-denergyf
-    ts_den = _time_n(lambda: librint.dscf.denergyf(mol, P), 3)
-    out.update(median_denergy=_median(ts_den))
 
 
 def worker_t1_jax(geo, basis, out):
@@ -391,8 +391,6 @@ def spawn(kind, geo, basis, threads, timeout=900, p_file=None):
             res = json.loads(line[len("BENCH_JSON "):])  # keep last (most complete)
     if res is not None:
         res.update(status="ok", wall=wall)
-        if proc.returncode in (137, -9):
-            res["note"] = "denergyf OOM after partial results"
         return res
     status = "OOM" if proc.returncode in (137, -9) else f"FAIL rc={proc.returncode}"
     tail = "\n".join((proc.stderr or "").splitlines()[-3:])
@@ -492,8 +490,8 @@ def main():
         if tier not in tiers:
             continue
         print(f"\n=== {tier.upper()} {desc}; median of 3; librint = danalyticalf ===")
-        print(f"{'system':16s} {'librint@1c':>11s} {'lib-dene':>9s} {'jax@1c':>9s} "
-              f"{'jax cold':>9s} {'jax@free':>9s} {'lib peak':>9s} {'jax peak':>9s} "
+        print(f"{'system':16s} {'librint@1c':>11s} {'jax@1c':>9s} "
+              f"{'jax warm1':>9s} {'jax@free':>9s} {'lib peak':>9s} {'jax peak':>9s} "
               f"{'max|Δg|':>9s}")
         for basis, geo in mols:
             tag = f"{geo}/{basis}"
@@ -503,9 +501,7 @@ def main():
             rj = results[key(tier, "jax", tag, "pin")]
             rf = results[key(tier, "jax", tag, "free")]
             cold = fmt_t(rj, "cold") if rj.get("status") == "ok" else "-"
-            dene = (f"{rl['median_denergy']:.3f}" if rl.get("median_denergy")
-                    else ("OOM" if rl.get("note") else "-"))
-            print(f"{tag:16s} {fmt_t(rl):>11s} {dene:>9s} {fmt_t(rj):>9s} {cold:>9s} "
+            print(f"{tag:16s} {fmt_t(rl):>11s} {fmt_t(rj):>9s} {cold:>9s} "
                   f"{fmt_t(rf):>9s} {fmt_mem(rl):>9s} {fmt_mem(rj):>9s} "
                   f"{grad_err(rl, rj):>9s}")
 
