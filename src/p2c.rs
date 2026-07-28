@@ -27,7 +27,30 @@ fn c2r_arr(
     let env_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(env_p, env_l) };
     let env: Vec<f64> = env_slice.to_vec();
 
-    return (atm, bas, env); 
+    return (atm, bas, env);
+}
+
+// Hand a Vec to the caller as a bare pointer. The allocation stays alive until
+// free_c is called on it -- as a boxed slice, so capacity == len and free_c can
+// reconstruct the Vec exactly. Callers that drop the pointer leak the whole
+// buffer, which for int2e_c is nao^4 doubles per call.
+fn leak_vec(v: Vec<f64>) -> *mut f64 {
+    let mut b = v.into_boxed_slice();
+    let ptr = b.as_mut_ptr();
+    std::mem::forget(b);
+    return ptr;
+}
+
+/// Release a buffer returned by any of the `*_c` entry points. `len` must be
+/// the element count that entry point produced.
+#[no_mangle]
+pub extern "C" fn free_c(ptr: *mut f64, len: usize) {
+    if ptr.is_null() {
+        return;
+    }
+    unsafe {
+        drop(Vec::from_raw_parts(ptr, len, len));
+    }
 }
 
 #[no_mangle]
@@ -42,11 +65,9 @@ pub extern "C" fn int1e_c(
     typec: i32,
 ) -> *mut f64 {
     let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
-    let mut R: Vec<f64> = integral1e(&mut atm, &mut bas, &mut env, coord, typec);
+    let R: Vec<f64> = integral1e(&mut atm, &mut bas, &mut env, coord, typec);
 
-    let R_ptr = R.as_mut_ptr();
-    std::mem::forget(R);
-    return R_ptr;
+    return leak_vec(R);
 }
 
 #[no_mangle]
@@ -61,11 +82,9 @@ pub extern "C" fn int2e_c(
 ) -> *mut f64 {
     let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
 
-    let mut R: Vec<f64> = integral2e(&mut atm, &mut bas, &mut env, coord);
+    let R: Vec<f64> = integral2e(&mut atm, &mut bas, &mut env, coord);
 
-    let R_ptr = R.as_mut_ptr();
-    std::mem::forget(R);
-    return R_ptr;
+    return leak_vec(R);
 }
 
 #[no_mangle]
@@ -79,11 +98,9 @@ pub extern "C" fn dS_u(
 ) -> *mut f64 {
     let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
 
-    let mut dS = dS_uncontracted(&mut atm, &mut bas, &mut env);
+    let dS = dS_uncontracted(&mut atm, &mut bas, &mut env);
 
-    let dS_ptr = dS.as_mut_ptr();
-    std::mem::forget(dS);
-    return dS_ptr;
+    return leak_vec(dS);
 }
 
 #[no_mangle]
@@ -100,11 +117,17 @@ pub extern "C" fn density_c(
 ) -> *mut f64 {
     let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
 
-    let mut P: Vec<f64> = density(&mut atm, &mut bas, &mut env, nelec, imax, conv);
-    
-    let P_ptr = P.as_mut_ptr();
-    std::mem::forget(P);
-    return P_ptr;
+    // NULL on failure -- python raises. Never hand back a placeholder density:
+    // downstream gradients of a bogus P look like ordinary numbers.
+    let P: Vec<f64> = match density(&mut atm, &mut bas, &mut env, nelec, imax, conv) {
+        Ok(P) => P,
+        Err(msg) => {
+            eprintln!("librint: {}", msg);
+            return std::ptr::null_mut();
+        }
+    };
+
+    return leak_vec(P);
 }
 
 #[no_mangle]
@@ -140,8 +163,14 @@ pub extern "C" fn scf_c(
     conv: f64,
 ) -> f64 {
     let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
-    let E: f64 = scf(&mut atm, &mut bas, &mut env, nelec, imax, conv);
-    return E;
+    // NaN on failure (see density_c); python turns it into an exception.
+    return match scf(&mut atm, &mut bas, &mut env, nelec, imax, conv) {
+        Ok(E) => E,
+        Err(msg) => {
+            eprintln!("librint: {}", msg);
+            f64::NAN
+        }
+    };
 }
 
 #[no_mangle]
@@ -160,11 +189,9 @@ pub extern "C" fn grad_c(
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
 
-    let mut denv: Vec<f64> = gradenergy(&mut atm, &mut bas, &mut env, &mut P);
+    let denv: Vec<f64> = gradenergy(&mut atm, &mut bas, &mut env, &mut P);
 
-    let denv_ptr = denv.as_mut_ptr();
-    std::mem::forget(denv);
-    return denv_ptr;
+    return leak_vec(denv);
 }
 
 #[no_mangle]
@@ -183,11 +210,9 @@ pub extern "C" fn dS_c(
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
 
-    let mut dS = dSg(&mut atm, &mut bas, &mut env, &mut P);
+    let dS = dSg(&mut atm, &mut bas, &mut env, &mut P);
 
-    let dS_ptr = dS.as_mut_ptr();
-    std::mem::forget(dS);
-    return dS_ptr;
+    return leak_vec(dS);
 }
 
 #[no_mangle]
@@ -206,11 +231,9 @@ pub extern "C" fn dHcore_c(
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
 
-    let mut dH = dHcoreg(&mut atm, &mut bas, &mut env, &mut P);
+    let dH = dHcoreg(&mut atm, &mut bas, &mut env, &mut P);
 
-    let dH_ptr = dH.as_mut_ptr();
-    std::mem::forget(dH);
-    return dH_ptr;
+    return leak_vec(dH);
 }
 
 #[no_mangle]
@@ -229,11 +252,9 @@ pub extern "C" fn dR_c(
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
 
-    let mut dR = dRg(&mut atm, &mut bas, &mut env, &mut P);
+    let dR = dRg(&mut atm, &mut bas, &mut env, &mut P);
 
-    let dR_ptr = dR.as_mut_ptr();
-    std::mem::forget(dR);
-    return dR_ptr;
+    return leak_vec(dR);
 }
 
 #[no_mangle]
@@ -252,11 +273,9 @@ pub extern "C" fn danalytical_c(
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
 
-    let mut dR = danalyticalg(&mut atm, &mut bas, &mut env, &mut P);
+    let dR = danalyticalg(&mut atm, &mut bas, &mut env, &mut P);
 
-    let dR_ptr = dR.as_mut_ptr();
-    std::mem::forget(dR);
-    return dR_ptr;
+    return leak_vec(dR);
 }
 
 #[no_mangle]
@@ -275,9 +294,7 @@ pub extern "C" fn denergy_c(
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
 
-    let mut dR = denergyfast(&mut atm, &mut bas, &mut env, &mut P);
+    let dR = denergyfast(&mut atm, &mut bas, &mut env, &mut P);
 
-    let dR_ptr = dR.as_mut_ptr();
-    std::mem::forget(dR);
-    return dR_ptr;
+    return leak_vec(dR);
 }

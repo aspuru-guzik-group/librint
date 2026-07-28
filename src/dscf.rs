@@ -6,7 +6,7 @@ use crate::cint_bas::CINTcgto_cart;
 use crate::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart};
 use crate::intor1::cint1e_kin_cart;
 
-use crate::scf::{nmol, angl, integral1e, integral2e_fock, energy, energyfast};
+use crate::scf::{nmol, angl, integral1e, integral2e_fock};
 use crate::utils::{split, combine};
 use crate::linalg::matmult;
 
@@ -514,18 +514,13 @@ pub fn danalyticalg(
     return dtotal;
 }
 
-#[no_mangle]
-#[autodiff_reverse(denergy, Const, Const, Const, Duplicated, Const, Active)]
-pub fn energywrap(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    P: &mut Vec<f64>,
-) -> f64 {
-    let mut env: Vec<f64> = combine(&env1, &env2);
-    return energy(atm, bas, &mut env, P);
-}
+// The fused whole-energy Enzyme reverses (of `energywrap` and `energyf`) used
+// to live here. They were miscompiled on nightly-2026-05-13 -- wrong gradients
+// for any multi-shell system -- so every caller was moved to the part-wise
+// batched adjoints below, and the fused primals were left behind with no
+// callers while Enzyme kept differentiating them on every build. They are gone
+// now; `python -c "librint.dscf.denergyf"` is denergy_c -> denergyfast, an
+// assembled path, and shares nothing but a name with the old reverse.
 
 #[no_mangle]
 pub fn gradenergy(
@@ -534,9 +529,8 @@ pub fn gradenergy(
     env: &mut Vec<f64>,
     P: &mut Vec<f64>,
 ) -> Vec<f64> {
-    // Same target function as gradenergyfast: 1/2 tr(P(H+F)) = tr(PH) + 1/2 tr(PGP).
-    // The fused Enzyme reverse (denergy) is miscompiled on nightly-2026-05-13
-    // (see checks/diag_denergy.rs) -- assemble from batched part-wise adjoints.
+    // 1/2 tr(P(H+F)) = tr(PH) + 1/2 tr(PGP), assembled from the batched
+    // part-wise adjoints (each of which IS an Enzyme reverse).
     let dH = dHcoreg(atm, bas, env, P);
     let dR = dRg(atm, bas, env, P);
     let mut denv = vec![0.0; dH.len()];
@@ -547,76 +541,15 @@ pub fn gradenergy(
 }
 
 #[no_mangle]
-pub fn denergyg(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &mut Vec<f64>,
-) -> Vec<f64> {
-    let denergy = gradenergy(atm, bas, env, P);
-    let dS = dSg(atm, bas, env, P);
-
-    let mut dtotal = vec![0.0; denergy.len()];
-    for i in 0..dtotal.len() {
-        dtotal[i] = denergy[i] - 0.5 * dS[i];
-    }
-
-    return dtotal;
-}
-
-#[no_mangle]
-#[autodiff_reverse(denergyf, Const, Const, Const, Duplicated, Const, Active)]
-pub fn energyf(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    P: &mut Vec<f64>,
-) -> f64 {
-    let mut env: Vec<f64> = combine(&env1, &env2);
-    return energyfast(atm, bas, &mut env, P);
-}
-
-#[no_mangle]
-pub fn gradenergyfast(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &mut Vec<f64>,
-) -> Vec<f64> {
-    let (s1, s2) = split(bas);
-
-    let mut env1: Vec<f64> = env[0..s1].to_vec();
-    let mut env2: Vec<f64> = env[s1..s2].to_vec();
-
-    let mut denv: Vec<f64> = vec![0.0; s2-s1];
-    let _ = denergyf(atm, bas, &mut env1, &mut env2, &mut denv, P, 1.0);
-
-    return denv;
-}
-
-#[no_mangle]
 pub fn denergyfast(
     atm: &mut Vec<i32>,
     bas: &mut Vec<i32>,
     env: &mut Vec<f64>,
     P: &mut Vec<f64>,
 ) -> Vec<f64> {
-    // NOTE: the fused whole-energy reverse (denergyf) is miscompiled by Enzyme
-    // (wrong gradients for any multi-shell system); assemble from the part-wise
-    // batched adjoints (dHcoreg/dRg/dSg) instead, which are FD-exact.
-    let dH = dHcoreg(atm, bas, env, P);
-    let dR = dRg(atm, bas, env, P);
-    let mut denergy = vec![0.0; dH.len()];
-    for i in 0..denergy.len() {
-        denergy[i] = dH[i] + dR[i];
-    }
-    let dS = dSg(atm, bas, env, P);
-
-    let mut dtotal = vec![0.0; denergy.len()];
-    for i in 0..dtotal.len() {
-        dtotal[i] = denergy[i] - 0.5 * dS[i];
-    }
-
-    return dtotal;
+    // Kept as a separate C entry point (denergy_c) for compatibility only: it
+    // had inlined the same dH + dR - 0.5 dS expression as danalyticalg, in the
+    // same order, so the two returned bitwise-identical values. Delegate rather
+    // than maintain the duplicate.
+    return danalyticalg(atm, bas, env, P);
 }

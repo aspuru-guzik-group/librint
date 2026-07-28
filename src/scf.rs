@@ -9,7 +9,7 @@ use crate::optimizer::CINTdel_optimizer;
 
 use crate::linalg::{matmult, dcopya, transpose, sort};
 
-use faer::{mat, linalg::solvers::Eigendecomposition, complex_native::c64};
+use faer::{mat, linalg::solvers::SelfAdjointEigendecomposition, Side};
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -438,12 +438,61 @@ fn integrals(
     return (S, H, two);
 }
 
+// Smallest overlap eigenvalue still considered a usable basis in find_X.
+const S_EIG_MIN: f64 = 1e-8;
+// Tolerance on tr(PS) = nelec and on the S-metric idempotency PSP = 2P.
+const P_TOL: f64 = 1e-6;
+
+// A converged fixed point is not automatically a valid density: if the
+// orthogonalizer loses C^dag S C = 1, the iteration can settle on a P that is
+// neither N-electron nor idempotent, and its energy is then not variational
+// (CH4/sto-3g returned tr(PS) = 10.69, E = -40.305 vs the true -39.727).
+fn check_density(
+    n: usize,
+    nelec: usize,
+    P: &[f64],
+    S: &[f64],
+) -> Result<(), String> {
+    let mut trace: f64 = 0.0;
+    for mu in 0..n {
+        for nu in 0..n {
+            trace += P[mu * n + nu] * S[nu * n + mu];
+        }
+    }
+    if (trace - nelec as f64).abs() > P_TOL {
+        return Err(format!(
+            "converged density has tr(PS) = {:.6}, expected {} electrons",
+            trace, nelec
+        ));
+    }
+
+    let PS = matmult(n, P, S);
+    let PSP = matmult(n, &PS, P);
+    let mut idem: f64 = 0.0;
+    for k in 0..(n * n) {
+        idem = idem.max((PSP[k] - 2.0 * P[k]).abs());
+    }
+    if idem > P_TOL {
+        return Err(format!(
+            "converged density is not idempotent: max|PSP - 2P| = {:.3e}",
+            idem
+        ));
+    }
+
+    return Ok(());
+}
+
+// S is symmetric, so the eigendecomposition MUST use the self-adjoint solver.
+// faer's general Eigendecomposition returns a basis that is not orthonormal
+// across a degenerate eigenvalue, which silently breaks C^dag S C = 1 further
+// down: CH4/sto-3g (Td, 4 degenerate pairs) converged to tr(PS) = 10.69 with
+// |PSP - 2P| = 1.95, and CH4/def2-svp (18 pairs) never converged at all.
 fn find_X(
     n: usize,
     S: &[f64],
-) -> (Vec<f64>, Vec<f64>) {
+) -> Result<(Vec<f64>, Vec<f64>), String> {
     let s_mat = mat::from_column_major_slice::<f64>(&S, n, n);
-    let eig_decomp: Eigendecomposition<c64> = Eigendecomposition::new_from_real(s_mat);
+    let eig_decomp = SelfAdjointEigendecomposition::<f64>::new(s_mat, Side::Lower);
     let eigenvalues = eig_decomp.s();
     let eigenvectors = eig_decomp.u();
 
@@ -451,32 +500,38 @@ fn find_X(
 
     for i in 0..eigenvectors.nrows() {
         for j in 0..eigenvectors.ncols() {
-            U[i * n + j] = eigenvectors.read(i, j).re();
+            U[i * n + j] = eigenvectors.read(i, j);
         }
     }
 
     let eign = eigenvalues.column_vector();
     let mut eig = vec![0.0; n];
     for i in 0..n {
-        eig[i] = eign.read(i).re();
+        eig[i] = eign.read(i);
     }
 
     sort(n, &mut eig, &mut U);
-    
+
+    // s^-1/2 diverges on a (near-)linearly dependent basis. Dropping those
+    // vectors -- canonical orthogonalization -- would change the dimension of
+    // every downstream matrix, so refuse rather than return a garbage X.
+    if eig[0] < S_EIG_MIN {
+        return Err(format!(
+            "overlap matrix is near-singular at this geometry: smallest \
+             eigenvalue {:.3e} < {:.0e} (linearly dependent basis)",
+            eig[0], S_EIG_MIN
+        ));
+    }
+
     let mut lamb = vec![0.0; n * n];
     for i in 0..n {
-        for j in 0..n {
-            if i == j {
-                let li: f64 = eig[i];
-                lamb[i * n + j] = li.powf(-0.5);
-            }
-        }
+        lamb[i * n + i] = eig[i].powf(-0.5);
     }
 
     let X = matmult(n, &U, &lamb);
     let Xdag = transpose(n, &X);
 
-    return (X, Xdag);
+    return Ok((X, Xdag));
 }
 
 pub fn calc_F(
@@ -516,38 +571,37 @@ fn calc_Fprime(
     return Fprime;
 }
 
+// F' = X^dag F X is symmetric; same self-adjoint requirement as find_X. With
+// the general solver the occupied block of a degenerate Fock matrix comes back
+// non-orthonormal, so calc_P's C C^dag is no longer a projector.
 fn diag_F(
     n: usize,
     Fprime: &[f64],
     X: &[f64],
 ) -> Vec<f64> {
     let fprime_mat = mat::from_column_major_slice::<f64>(&Fprime, n, n);
-    let eig_decomp: Eigendecomposition<c64> = Eigendecomposition::new_from_real(fprime_mat);
+    let eig_decomp = SelfAdjointEigendecomposition::<f64>::new(fprime_mat, Side::Lower);
     let eigenvalues = eig_decomp.s();
     let eigenvectors = eig_decomp.u();
 
     let mut U = vec![0.0; n * n];
     for i in 0..eigenvectors.nrows() {
         for j in 0..eigenvectors.ncols() {
-            U[i * n + j] = eigenvectors.read(i, j).re();
+            U[i * n + j] = eigenvectors.read(i, j);
         }
     }
 
     let eign = eigenvalues.column_vector();
     let mut eig = vec![0.0; n];
     for i in 0..n {
-        eig[i] = eign.read(i).re();
+        eig[i] = eign.read(i);
     }
 
+    // ascending eigenvalues -> calc_P's first nelec/2 columns are the aufbau
+    // occupied set
     sort(n, &mut eig, &mut U);
 
-    let Udag = transpose(n, &U);
-    let inter = matmult(n, &Udag, Fprime); 
-    let f = matmult(n, &inter, &U);
-    let Cprime = dcopya(n, &U);
-
-    let _epsilon = dcopya(n, &f);
-    let C = matmult(n, X, &Cprime);
+    let C = matmult(n, X, &U);
 
     return C;
 }
@@ -609,12 +663,12 @@ pub fn density(
     nelec: usize,
     imax: i32,
     conv: f64,
-) -> Vec<f64> {
+) -> Result<Vec<f64>, String> {
     let (natm, nbas) = nmol(atm, bas);
     let nshells = angl(bas, 0);
 
     let (S, H, two) = integrals(natm, nbas, nshells, atm, bas, env);
-    let (X, Xdag) = find_X(nshells, &S);
+    let (X, Xdag) = find_X(nshells, &S)?;
 
     let mut P = vec![0.0; nshells * nshells];
     for i in 0..nshells {
@@ -645,16 +699,19 @@ pub fn density(
         i += 1;
     }
 
-    if delta > conv && i == imax {
-        println!("did not converge");
-        for i in 0..nshells {
-            for j in 0..nshells {
-                P[i*nshells + j] = 0.0;
-            }
-        }
+    // Returning a zeroed P here (the old behaviour) is indistinguishable from
+    // success at the ctypes boundary: the benchmark recorded gradients of the
+    // zero density as ok. Fail instead.
+    if delta > conv {
+        return Err(format!(
+            "SCF did not converge in {} cycles: |dP| = {:.3e} > {:.3e}",
+            imax, delta, conv
+        ));
     }
 
-    return P;
+    check_density(nshells, nelec, &P, &S)?;
+
+    return Ok(P);
 }
 
 #[no_mangle]
@@ -796,8 +853,8 @@ pub fn scf(
     nelec: usize,
     imax: i32,
     conv: f64,
-) -> f64 {
-    let mut P = density(atm, bas, env, nelec, imax, conv);
+) -> Result<f64, String> {
+    let mut P = density(atm, bas, env, nelec, imax, conv)?;
     let Etot = energyfast(atm, bas, env, &mut P);
-    return Etot;
+    return Ok(Etot);
 }

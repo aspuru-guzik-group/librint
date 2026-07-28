@@ -1,7 +1,22 @@
 import numpy as np
 import pyscf
 
+from librint import library
+
 NORMALIZE_GTO = True
+
+
+def take(ptr, shape) -> np.ndarray:
+    """Copy a librint return buffer into numpy, then free the Rust allocation.
+
+    The `*_c` entry points hand back an allocation they have deliberately
+    leaked; without the matching free_c it is never released (int2e_c is
+    nao**4 doubles per call).
+    """
+    shape = tuple(int(s) for s in shape)
+    out = np.array(np.ctypeslib.as_array(ptr, shape=shape), copy=True)
+    library.free_c(ptr, int(np.prod(shape)))
+    return out
 
 def prep(mol):
     atm = np.asarray(mol._atm, dtype=np.int32, order='C')
