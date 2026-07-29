@@ -49,7 +49,7 @@ unsafe fn c2r_arr(
 // free_c is called on it -- as a boxed slice, so capacity == len and free_c can
 // reconstruct the Vec exactly. Callers that drop the pointer leak the whole
 // buffer, which for int2e_c is nao^4 doubles per call.
-fn leak_vec(v: Vec<f64>) -> *mut f64 {
+pub(crate) fn leak_vec(v: Vec<f64>) -> *mut f64 {
     let mut b = v.into_boxed_slice();
     let ptr = b.as_mut_ptr();
     std::mem::forget(b);
