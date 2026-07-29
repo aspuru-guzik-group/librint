@@ -1,3 +1,11 @@
+"""Per-molecule gradient/timing dumps under grad/ and timing/, plotted by
+plot_gradient.py and plot_timing.py.
+
+The committed dumps were deleted: they dated from 2026-03, months before
+src/eri.rs and the batched dRg landed, and recorded a "denergy" column that no
+longer exists as a separate method (see src/dscf.rs). Re-run this script to
+regenerate them against the current build rather than reading the old numbers.
+"""
 import os
 import timeit
 

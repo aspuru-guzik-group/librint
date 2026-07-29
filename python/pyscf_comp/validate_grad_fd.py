@@ -71,17 +71,18 @@ def main():
             mol._env[j] += H
             g_true[j - s1] = (ep - em) / (2 * H)
 
-        g_den = librint.dscf.denergyf(mol, P)
         g_ana = librint.dscf.danalyticalf(mol, P)
-        e_den = np.abs(g_true - g_den).max()
         e_ana = np.abs(g_true - g_ana).max()
-        e_dd = np.abs(g_den - g_ana).max()
-        ok = e_den < 1e-5 and e_ana < 1e-5
+        # denergyf is the same assembled path (denergy_c -> denergyfast), so
+        # this is a wiring guard that the two entry points stay in sync, not an
+        # independent gradient check.
+        wired = np.array_equal(librint.dscf.denergyf(mol, P), g_ana)
+        ok = e_ana < 1e-5 and wired
         failures += 0 if ok else 1
         print(
             f"{geo}/{basis:9s} params={s2-s1:3d} |grad|={np.linalg.norm(g_true):9.4f} "
-            f"|true-denergyf|={e_den:.2e} |true-danalyticalf|={e_ana:.2e} "
-            f"|den-ana|={e_dd:.2e}  {'OK' if ok else 'FAIL'}",
+            f"|true-danalyticalf|={e_ana:.2e} denergyf_same_path={wired}"
+            f"  {'OK' if ok else 'FAIL'}",
             flush=True,
         )
     if failures:

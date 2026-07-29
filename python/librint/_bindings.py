@@ -169,3 +169,11 @@ library.denergy_c.argtypes =(
     ctypes.c_size_t,
 )
 library.denergy_c.restype = ctypes.POINTER(ctypes.c_double)
+
+# Releases any buffer returned by the entry points above; len is the element
+# count that call produced. utils.take() copies then calls this.
+library.free_c.argtypes = (
+    ctypes.POINTER(ctypes.c_double),
+    ctypes.c_size_t,
+)
+library.free_c.restype = None

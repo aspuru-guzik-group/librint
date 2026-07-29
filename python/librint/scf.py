@@ -32,8 +32,7 @@ def int1e(mol, typei: str = 'ovlp', coord: str = 'cart') -> np.ndarray:
     nshells = utils.angl(bas, c)
 
     R_c = library.int1e_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), c, flag)
-    R = np.ctypeslib.as_array(R_c, shape=(nshells, nshells))
-    return R
+    return utils.take(R_c, (nshells, nshells))
 
 
 def int2e(mol, coord: str = 'cart') -> np.ndarray:
@@ -54,8 +53,7 @@ def int2e(mol, coord: str = 'cart') -> np.ndarray:
     nshells = utils.angl(bas, c)
 
     R_c = library.int2e_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), c)
-    R = np.ctypeslib.as_array(R_c, shape=(nshells, nshells, nshells, nshells))
-    return R
+    return utils.take(R_c, (nshells, nshells, nshells, nshells))
 
 
 def density(mol, imax: int = 200, conv: float = 1e-6) -> np.ndarray:
@@ -68,8 +66,12 @@ def density(mol, imax: int = 200, conv: float = 1e-6) -> np.ndarray:
     nshells = utils.angl(bas, 0)
 
     P_c = library.density_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), nelec, imax, conv)
-    P = np.ctypeslib.as_array(P_c, shape=(nshells, nshells))
-    return P
+    if not P_c:
+        raise RuntimeError(
+            "librint SCF failed to produce a valid density (see stderr for the "
+            "reason: non-convergence, tr(PS) != nelec, or PSP != 2P)"
+        )
+    return utils.take(P_c, (nshells, nshells))
 
 
 def energy(mol, P: np.ndarray) -> float:
@@ -88,4 +90,10 @@ def scf(mol, imax: int = 200, conv: float = 1e-6) -> float:
     atm_ctypes = atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
     bas_ctypes = bas.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
     env_ctypes = env.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
-    return library.scf_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), nelec, imax, conv)
+    E = library.scf_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), nelec, imax, conv)
+    if np.isnan(E):
+        raise RuntimeError(
+            "librint SCF failed (see stderr for the reason: non-convergence, "
+            "tr(PS) != nelec, or PSP != 2P)"
+        )
+    return E

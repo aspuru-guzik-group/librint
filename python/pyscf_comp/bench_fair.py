@@ -6,8 +6,10 @@ Fairness measures:
   * T1 compares the SAME function both sides: gradient of the frozen-density
     HF energy E[P] w.r.t. basis exponents+contractions (jax gets an explicit
     frozen-P energy, not a full SCF), both consuming the same converged P.
-  * jax cold (trace+compile) reported separately from warm; peak RSS (VmHWM)
-    per worker, OOM recorded not fatal.
+  * jax's first call ("warm1") reported separately from the steady-state
+    median. It is NOT trace+compile -- nothing here is jitted, pyscfad's intor
+    is a custom_vjp over pyscf's C code -- it is first-call warmup/caching.
+    Peak RSS (VmHWM) per worker, OOM recorded not fatal.
 
 Tiers:
   T0  primal integrals: librint int1e+int2e vs pyscf mol.intor
@@ -20,6 +22,7 @@ Results: printed table + bench_fair_results.json
 import argparse
 import json
 import os
+import platform
 import subprocess
 import sys
 import threading
@@ -74,6 +77,34 @@ def _start_sampler(state):
             state["peak_kb"] = _vmhwm_kb()
             time.sleep(0.25)
     threading.Thread(target=loop, daemon=True).start()
+
+
+def _mem_limit_kb():
+    """Bytes this job may actually use, as KiB: the cgroup cap if one is set
+    (SLURM --mem), else physical RAM. Recorded so the figure's OOM ceiling is
+    the run's real limit rather than a hardcoded guess."""
+    for p in ("/sys/fs/cgroup/memory.max",
+              "/sys/fs/cgroup/memory/memory.limit_in_bytes"):
+        try:
+            v = open(p).read().strip()
+        except OSError:
+            continue
+        if v != "max" and v.isdigit() and int(v) < (1 << 62):
+            return int(v) // 1024
+    for line in open("/proc/meminfo"):
+        if line.startswith("MemTotal"):
+            return int(line.split()[1])
+    return -1
+
+
+def _cpu_model():
+    try:
+        for line in open("/proc/cpuinfo"):
+            if line.startswith("model name"):
+                return line.split(":", 1)[1].strip()
+    except OSError:
+        pass
+    return "?"
 
 
 def _median(xs):
@@ -177,16 +208,14 @@ def worker_t1_librint(geo, basis, out):
     _, mol = _build_pyscf_mol(geo, basis)
     P = _load_or_make_P(geo, basis, mol)
 
-    # danalyticalf is the validated gradient (5e-8 vs reconverged-SCF FD);
-    # denergyf (fused Enzyme pass) is faster but returns wrong values and
-    # its huge tape OOMs first -- time it last, emit partial results before.
+    # danalyticalf is the validated gradient (5e-8 vs reconverged-SCF FD).
+    # dscf.denergyf is not a second method to time: denergy_c routes to
+    # denergyfast, which assembles the same dHcoreg/dRg/dSg expression as
+    # danalyticalg and returns bitwise-identical values.
     g = librint.dscf.danalyticalf(mol, P)
     ts = _time_n(lambda: librint.dscf.danalyticalf(mol, P), 3)
     out.update(median=_median(ts), grad_sorted=np.sort(g).tolist())
     out["peak_kb"] = _vmhwm_kb()
-    print("BENCH_JSON " + json.dumps(out), flush=True)  # partial, pre-denergyf
-    ts_den = _time_n(lambda: librint.dscf.denergyf(mol, P), 3)
-    out.update(median_denergy=_median(ts_den))
 
 
 def worker_t1_jax(geo, basis, out):
@@ -334,6 +363,10 @@ def run_worker(argv):
     out = {}
     WORKERS[kind](geo, basis, out)
     out["peak_kb"] = max(state["peak_kb"], _vmhwm_kb())
+    # measured after the affinity call, so this is the core count the run
+    # really had -- the figure labels its curves from this, never from a
+    # hardcoded number
+    out["ncores"] = len(os.sched_getaffinity(0))
     print("BENCH_JSON " + json.dumps(out), flush=True)
 
 
@@ -391,11 +424,18 @@ def spawn(kind, geo, basis, threads, timeout=900, p_file=None):
             res = json.loads(line[len("BENCH_JSON "):])  # keep last (most complete)
     if res is not None:
         res.update(status="ok", wall=wall)
-        if proc.returncode in (137, -9):
-            res["note"] = "denergyf OOM after partial results"
         return res
-    status = "OOM" if proc.returncode in (137, -9) else f"FAIL rc={proc.returncode}"
     tail = "\n".join((proc.stderr or "").splitlines()[-3:])
+    # Distinguish the two ways a run dies of memory from every other crash:
+    # OOM = the kernel killed it, OOM_ALLOC = it asked for a buffer that could
+    # never fit and numpy refused up front. Both belong on the memory ceiling;
+    # a plain FAIL does not, and must not be drawn as one.
+    if proc.returncode in (137, -9):
+        status = "OOM"
+    elif "ArrayMemoryError" in tail or "Unable to allocate" in tail:
+        status = "OOM_ALLOC"
+    else:
+        status = f"FAIL rc={proc.returncode}"
     return {"status": status, "wall": wall, "stderr_tail": tail}
 
 
@@ -441,7 +481,12 @@ def main():
         mols = [m for m in MOLECULES if not args.quick or m[0] == "sto-3g"]
         tiers = ("t1", "t2")
         out_json = "bench_fair_results.json"
-    results = {}
+    # provenance of THIS run, so plots read the node's real core count and
+    # memory ceiling out of the results instead of assuming them
+    results = {"_meta": {"node": platform.node(),
+                         "ncores": len(os.sched_getaffinity(0)),
+                         "mem_limit_kb": _mem_limit_kb(),
+                         "cpu_model": _cpu_model()}}
 
     def key(*parts):
         return "|".join(parts)
@@ -449,8 +494,12 @@ def main():
     for basis, geo in mols:
         tag = f"{geo}/{basis}"
         print(f"── {tag}", flush=True)
-        results[key("t0", tag)] = spawn("t0", geo, basis, "pin",
-                                        timeout=args.timeout)
+        # T0 materializes the full nao^4 ERI on both sides (32 GB at C6H6/
+        # def2-tzvp) and the scaling figure only uses T1, so the alkane ladder
+        # skips it rather than spending the job on integrals nobody plots.
+        if args.suite != "alkanes":
+            results[key("t0", tag)] = spawn("t0", geo, basis, "pin",
+                                            timeout=args.timeout)
         # shared frozen-P density, precomputed out-of-process; T1 workers load
         # it so their peak RSS is the gradient's footprint, not pyscf's setup
         pf = make_P_file(geo, basis, args.timeout) if "t1" in tiers else None
@@ -475,11 +524,14 @@ def main():
             json.dump(results, f, indent=1)
 
     # ── tables ──
-    print("\n=== T0 primal integrals (S,T,V + full 2e; 1 core; median of 5) ===")
-    print(f"{'system':16s} {'librint':>9s} {'libcint':>9s} {'ratio':>7s} {'max|Δ|':>9s}")
+    if any(k.startswith("t0|") for k in results):
+        print("\n=== T0 primal integrals (S,T,V + full 2e; 1 core; median of 5) ===")
+        print(f"{'system':16s} {'librint':>9s} {'libcint':>9s} {'ratio':>7s} {'max|Δ|':>9s}")
     for basis, geo in mols:
         tag = f"{geo}/{basis}"
-        r = results[key("t0", tag)]
+        r = results.get(key("t0", tag))
+        if r is None:
+            continue
         if r.get("status") != "ok":
             print(f"{tag:16s} {r['status']}")
             continue
@@ -492,8 +544,8 @@ def main():
         if tier not in tiers:
             continue
         print(f"\n=== {tier.upper()} {desc}; median of 3; librint = danalyticalf ===")
-        print(f"{'system':16s} {'librint@1c':>11s} {'lib-dene':>9s} {'jax@1c':>9s} "
-              f"{'jax cold':>9s} {'jax@free':>9s} {'lib peak':>9s} {'jax peak':>9s} "
+        print(f"{'system':16s} {'librint@1c':>11s} {'jax@1c':>9s} "
+              f"{'jax warm1':>9s} {'jax@free':>9s} {'lib peak':>9s} {'jax peak':>9s} "
               f"{'max|Δg|':>9s}")
         for basis, geo in mols:
             tag = f"{geo}/{basis}"
@@ -503,9 +555,7 @@ def main():
             rj = results[key(tier, "jax", tag, "pin")]
             rf = results[key(tier, "jax", tag, "free")]
             cold = fmt_t(rj, "cold") if rj.get("status") == "ok" else "-"
-            dene = (f"{rl['median_denergy']:.3f}" if rl.get("median_denergy")
-                    else ("OOM" if rl.get("note") else "-"))
-            print(f"{tag:16s} {fmt_t(rl):>11s} {dene:>9s} {fmt_t(rj):>9s} {cold:>9s} "
+            print(f"{tag:16s} {fmt_t(rl):>11s} {fmt_t(rj):>9s} {cold:>9s} "
                   f"{fmt_t(rf):>9s} {fmt_mem(rl):>9s} {fmt_mem(rj):>9s} "
                   f"{grad_err(rl, rj):>9s}")
 
