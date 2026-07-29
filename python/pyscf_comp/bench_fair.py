@@ -447,8 +447,12 @@ def main():
     for basis, geo in mols:
         tag = f"{geo}/{basis}"
         print(f"── {tag}", flush=True)
-        results[key("t0", tag)] = spawn("t0", geo, basis, "pin",
-                                        timeout=args.timeout)
+        # T0 materializes the full nao^4 ERI on both sides (32 GB at C6H6/
+        # def2-tzvp) and the scaling figure only uses T1, so the alkane ladder
+        # skips it rather than spending the job on integrals nobody plots.
+        if args.suite != "alkanes":
+            results[key("t0", tag)] = spawn("t0", geo, basis, "pin",
+                                            timeout=args.timeout)
         # shared frozen-P density, precomputed out-of-process; T1 workers load
         # it so their peak RSS is the gradient's footprint, not pyscf's setup
         pf = make_P_file(geo, basis, args.timeout) if "t1" in tiers else None
@@ -473,11 +477,14 @@ def main():
             json.dump(results, f, indent=1)
 
     # ── tables ──
-    print("\n=== T0 primal integrals (S,T,V + full 2e; 1 core; median of 5) ===")
-    print(f"{'system':16s} {'librint':>9s} {'libcint':>9s} {'ratio':>7s} {'max|Δ|':>9s}")
+    if any(k.startswith("t0|") for k in results):
+        print("\n=== T0 primal integrals (S,T,V + full 2e; 1 core; median of 5) ===")
+        print(f"{'system':16s} {'librint':>9s} {'libcint':>9s} {'ratio':>7s} {'max|Δ|':>9s}")
     for basis, geo in mols:
         tag = f"{geo}/{basis}"
-        r = results[key("t0", tag)]
+        r = results.get(key("t0", tag))
+        if r is None:
+            continue
         if r.get("status") != "ok":
             print(f"{tag:16s} {r['status']}")
             continue

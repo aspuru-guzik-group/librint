@@ -3,8 +3,11 @@
 Reads bench_alkanes_results.json (bench_fair.py --suite alkanes) and draws a
 2x2 log-log grid: rows = wall time / peak memory, columns = def2-SVP /
 def2-TZVP, x = number of cartesian basis functions. jax OOM entries appear as
-open markers pinned at the job memory limit. The C6H6/def2-TZVP point from the
-dedicated one-off (job 30056475) is folded into the TZVP column.
+open markers pinned at the job memory limit.
+
+Every plotted point comes from the results JSON, and both engines' points must
+come from the SAME run of that suite -- do not splice timings from one job with
+peak RSS from another.
 
 Usage:  python plot_alkanes.py [--json bench_alkanes_results.json]
                                [--out alkane_scaling] [--no-benzene]
@@ -35,15 +38,6 @@ NBF = {
 }
 CLABEL = {"CH4": "C1", "C2H6": "C2", "C3H8": "C3", "C4H10": "C4", "C6H6": "C6"}
 
-# benzene fallback (used only if the results JSON lacks a C6H6 entry): the
-# fixed getF's flat peak (0.095G), not the old ~30G n^4-ERI-tensor peak. jax
-# OOMs here (its frozen-P vjp needs ~1TB).
-BENZENE = {
-    "geo": "C6H6", "basis": "def2-tzvp",
-    "librint": {"median": 746.366, "peak_kb": 99576},
-    "jax_oom": True,
-}
-
 SERIES = [  # key-parts, legend label, style
     (("librint", "pin"), "librint (1 core)",
      dict(color="#1a7f37", marker="o", ls="-")),
@@ -68,12 +62,11 @@ def collect(results, basis, eng, threads, with_benzene):
     xs, ts, ms, oom = [], [], [], []
     geos = SYSTEMS + (["C6H6"] if basis == "def2-tzvp" and with_benzene else [])
     for geo in geos:
+        # Every point on this figure is a measurement from the results JSON.
+        # A missing entry is plotted as nothing, not as an assumed OOM: an
+        # earlier revision injected inferred OOM markers for C4H10 and C6H6
+        # that no run had produced.
         r = entry(results, eng, geo, basis, threads)
-        if not r and geo == "C6H6":  # fallback: pre-isolation one-off numbers
-            if eng == "librint":
-                r = dict(BENZENE["librint"], status="ok")
-            elif BENZENE["jax_oom"]:
-                r = {"status": "OOM"}
         n = NBF[(geo, basis)]
         if r.get("status") == "ok":
             xs.append(n)
