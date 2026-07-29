@@ -32,11 +32,14 @@
 
 use rayon::prelude::*;
 
+use crate::cint::CINTOpt;
+use crate::cint2e::{cint2e_cart, cint2e_cart_optimizer};
 use crate::cint_bas::CINTcgto_cart;
-use crate::dscf::{dkin, dnuc, dovlp, dtwo_ad, getF};
+use crate::dscf::{dkin, dnuc, dovlp, dtwo_ad};
 use crate::linalg::matmult;
+use crate::optimizer::CINTdel_optimizer;
 use crate::p2c::leak_vec;
-use crate::scf::{angl, nmol};
+use crate::scf::{angl, integral1e, nmol};
 use crate::utils::split;
 
 /// Per-task state: the mutable copies the autodiff wrappers require, plus the
@@ -333,12 +336,169 @@ pub fn dR_par(
     in_pool(nthreads, || dR_par_in(atm, bas, env1, env2, P))
 }
 
+/// libcint's shell-quartet optimizer, shared read-only across worker threads.
+///
+/// `CINTOpt` is built once and then only read while integrals are evaluated:
+/// every `(*opt).` access in the cint2e evaluation path loads into a local,
+/// none store back. This is the same contract that lets pyscf hand a single
+/// `CINTOpt` to every OpenMP thread. Per-task optimizers would be the
+/// conservative alternative, but its tables are O(nbas^2) and would be rebuilt
+/// once per work chunk, which at 64 threads costs more memory than the whole
+/// rest of the gradient.
+struct SharedOpt(*mut CINTOpt);
+unsafe impl Send for SharedOpt {}
+unsafe impl Sync for SharedOpt {}
+
+impl SharedOpt {
+    /// Read the pointer through a method, not the field. Closures capture
+    /// disjoint fields, so `shared.0` inside one would capture the bare
+    /// `*mut CINTOpt` -- which is not `Sync` -- and lose this wrapper entirely.
+    fn get(&self) -> *mut CINTOpt {
+        self.0
+    }
+}
+
+/// Per-task state for the primal Fock build.
+struct FockTask {
+    atm: Vec<i32>,
+    bas: Vec<i32>,
+    env: Vec<f64>,
+    shls: Vec<i32>,
+    G: Vec<f64>,
+}
+
+/// Threaded `scf::integral2e_fock` (cartesian only, which is what `getF` uses).
+///
+/// Each task accumulates into its own `G`: the Coulomb term writes
+/// `G[mui, nuj]`, which is disjoint across `j`, but the exchange term writes
+/// `G[mui, laml]` with `l` running over every shell, so two `(i, j)` tasks
+/// sharing an `i` collide. Private accumulators plus a sum reduction avoid
+/// that without atomics or locking; the cost is one `nao^2` buffer per work
+/// chunk.
+fn fock2e_par_in(
+    atm: &[i32],
+    bas: &[i32],
+    env: &[f64],
+    P: &[f64],
+) -> Vec<f64> {
+    let (natm, nbas) = nmol(atm, bas);
+    let n = angl(bas, 0);
+    let offs = shell_offsets(nbas, bas);
+
+    // The optimizer's tables may reference these, so they outlive the loop.
+    let mut atm_o = atm.to_vec();
+    let mut bas_o = bas.to_vec();
+    let mut env_o = env.to_vec();
+    let mut opt: *mut CINTOpt = std::ptr::null_mut();
+    unsafe {
+        cint2e_cart_optimizer(
+            &mut opt, atm_o.as_mut_ptr(), natm as i32,
+            bas_o.as_mut_ptr(), nbas as i32, env_o.as_mut_ptr(),
+        );
+    }
+    let shared = SharedOpt(opt);
+
+    // Full nbas^2 pair list (no permutational reduction here, matching the
+    // serial build), heaviest pairs first so the tail is cheap filler.
+    let mut pairs: Vec<(usize, usize)> =
+        (0..nbas).flat_map(|i| (0..nbas).map(move |j| (i, j))).collect();
+    pairs.sort_by_key(|&(i, j)| {
+        std::cmp::Reverse((offs[i + 1] - offs[i]) * (offs[j + 1] - offs[j]))
+    });
+
+    let G = pairs
+        .par_iter()
+        .fold(
+            || FockTask {
+                atm: atm.to_vec(),
+                bas: bas.to_vec(),
+                env: env.to_vec(),
+                shls: vec![0i32; 4],
+                G: vec![0.0; n * n],
+            },
+            |mut st, &(i, j)| {
+                let (di, dj) = (offs[i + 1] - offs[i], offs[j + 1] - offs[j]);
+                let (mu, nu) = (offs[i], offs[j]);
+                st.shls[0] = i as i32;
+                st.shls[1] = j as i32;
+
+                for k in 0..nbas {
+                    let dk = offs[k + 1] - offs[k];
+                    let sig = offs[k];
+                    st.shls[2] = k as i32;
+                    for l in 0..nbas {
+                        let dl = offs[l + 1] - offs[l];
+                        let lam = offs[l];
+                        st.shls[3] = l as i32;
+
+                        let mut buf = vec![0.0; di * dj * dk * dl];
+                        cint2e_cart(
+                            &mut buf, &mut st.shls, &mut st.atm, natm as i32,
+                            &mut st.bas, nbas as i32, &mut st.env, shared.get(),
+                        );
+
+                        let mut c: usize = 0;
+                        for laml in lam..(lam + dl) {
+                            for sigk in sig..(sig + dk) {
+                                for nuj in nu..(nu + dj) {
+                                    for mui in mu..(mu + di) {
+                                        let v = buf[c];
+                                        c += 1;
+                                        st.G[mui * n + nuj] += P[laml * n + sigk] * v;
+                                        st.G[mui * n + laml] +=
+                                            -0.5 * P[nuj * n + sigk] * v;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                st
+            },
+        )
+        .map(|st| st.G)
+        .reduce(
+            || vec![0.0; n * n],
+            |mut a, b| {
+                for t in 0..a.len() {
+                    a[t] += b[t];
+                }
+                a
+            },
+        );
+
+    unsafe {
+        CINTdel_optimizer(&mut opt);
+    }
+    G
+}
+
+/// Threaded `dscf::getF`. The two 1e builds stay serial: they are `nbas^2`
+/// primals next to an `nbas^4` one.
+fn getF_par_in(
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
+    P: &[f64],
+) -> Vec<f64> {
+    let T = integral1e(atm, bas, env, 0, 1);
+    let V = integral1e(atm, bas, env, 0, 2);
+    let G = fock2e_par_in(atm, bas, env, P);
+
+    let mut F = vec![0.0; T.len()];
+    for i in 0..F.len() {
+        F[i] = T[i] + V[i] + G[i];
+    }
+    F
+}
+
 /// Threaded `dscf::danalyticalg`: the whole frozen-P basis-parameter gradient,
 /// `dHcore + dR - 0.5 dS`, on one pool.
 ///
-/// `getF` (and so `integral2e_fock`) still runs serially, as it does in the
-/// serial path; it is a primal `nbas^4` build, and whether it needs threading
-/// too is an empirical question -- see python/pyscf_comp/bench_grad_breakdown.py.
+/// Every `nbas^4` term is threaded, including the primal Fock build that `dSg`
+/// hides inside `getF` -- that one is not an Enzyme reverse, but it is the same
+/// order of work and leaving it serial caps the whole gradient by Amdahl. See
+/// python/pyscf_comp/bench_grad_breakdown.py for the measured split.
 pub fn danalytical_par(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -348,12 +508,6 @@ pub fn danalytical_par(
 ) -> Vec<f64> {
     let nshells = angl(bas, 0);
 
-    // Q = P F P, the energy-weighted density that seeds the overlap term.
-    // dscf::dSg builds this internally; hoisted here so F is built once.
-    let F = getF(atm, bas, env, P);
-    let pf = matmult(nshells, P, &F);
-    let Q = matmult(nshells, &pf, P);
-
     let (s1, s2) = split(bas);
     let env1: Vec<f64> = env[0..s1].to_vec();
     let env2: Vec<f64> = env[s1..s2].to_vec();
@@ -361,6 +515,13 @@ pub fn danalytical_par(
     let bas_r: Vec<i32> = bas.to_vec();
 
     let (dH, dR, dS) = in_pool(nthreads, || {
+        // Q = P F P, the energy-weighted density that seeds the overlap term.
+        // dscf::dSg builds this internally; hoisted here so F is built once
+        // and so the Fock build shares this pool instead of running serially.
+        let F = getF_par_in(atm, bas, env, P);
+        let pf = matmult(nshells, P, &F);
+        let Q = matmult(nshells, &pf, P);
+
         let dH = dHcore_par_in(&atm_r, &bas_r, &env1, &env2, P);
         let dR = dR_par_in(&atm_r, &bas_r, &env1, &env2, P);
         let dS = pair_1e_in(&atm_r, &bas_r, &env1, &env2, &Q, dovlp);
