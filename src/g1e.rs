@@ -175,7 +175,7 @@ pub unsafe extern "C" fn CINTg1e_ovlp(mut g: *mut f64, mut envs: *mut CINTEnvVar
     let mut j: i32 = 0;
     let mut n: i32 = 0;
     let mut ptr: i32 = 0;
-    let mut rx: *mut f64 = 0 as *mut f64;
+    let mut rx: *mut f64 = std::ptr::null_mut::<f64>();
     if (*envs).li_ceil > (*envs).lj_ceil {
         lj = (*envs).lj_ceil;
         di = (*envs).g_stride_i;
@@ -266,7 +266,7 @@ pub unsafe extern "C" fn CINTg1e_nuc(
     let mut gz: *mut f64 = g.offset(((*envs).g_size * 2 as i32) as isize);
     let mut u: [f64; 32] = [0.; 32];
     let mut w: *mut f64 = gz;
-    let mut cr: *mut f64 = 0 as *mut f64;
+    let mut cr: *mut f64 = std::ptr::null_mut::<f64>();
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut n: i32 = 0;
@@ -312,19 +312,19 @@ pub unsafe extern "C" fn CINTg1e_nuc(
     if nmax == 0 as i32 {
         return 1 as i32;
     }
-    let mut p0x: *mut f64 = 0 as *mut f64;
-    let mut p0y: *mut f64 = 0 as *mut f64;
-    let mut p0z: *mut f64 = 0 as *mut f64;
-    let mut p1x: *mut f64 = 0 as *mut f64;
-    let mut p1y: *mut f64 = 0 as *mut f64;
-    let mut p1z: *mut f64 = 0 as *mut f64;
-    let mut p2x: *mut f64 = 0 as *mut f64;
-    let mut p2y: *mut f64 = 0 as *mut f64;
-    let mut p2z: *mut f64 = 0 as *mut f64;
+    let mut p0x: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut p0y: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut p0z: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut p1x: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut p1y: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut p1z: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut p2x: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut p2y: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut p2z: *mut f64 = std::ptr::null_mut::<f64>();
     let mut lj: i32 = 0;
     let mut di: i32 = 0;
     let mut dj: i32 = 0;
-    let mut rx: *mut f64 = 0 as *mut f64;
+    let mut rx: *mut f64 = std::ptr::null_mut::<f64>();
     if (*envs).li_ceil > (*envs).lj_ceil {
         lj = (*envs).lj_ceil;
         di = (*envs).g_stride_i;

@@ -39,12 +39,12 @@ pub unsafe extern "C" fn CINTinit_2e_optimizer(
 ) {
     let mut opt0: *mut CINTOpt =
         malloc(::core::mem::size_of::<CINTOpt>() as libc::c_ulong) as *mut CINTOpt;
-    (*opt0).index_xyz_array = 0 as *mut *mut i32;
-    (*opt0).non0ctr = 0 as *mut *mut i32;
-    (*opt0).sortedidx = 0 as *mut *mut i32;
+    (*opt0).index_xyz_array = std::ptr::null_mut::<*mut i32>();
+    (*opt0).non0ctr = std::ptr::null_mut::<*mut i32>();
+    (*opt0).sortedidx = std::ptr::null_mut::<*mut i32>();
     (*opt0).nbas = nbas;
-    (*opt0).log_max_coeff = 0 as *mut *mut f64;
-    (*opt0).pairdata = 0 as *mut *mut PairData;
+    (*opt0).log_max_coeff = std::ptr::null_mut::<*mut f64>();
+    (*opt0).pairdata = std::ptr::null_mut::<*mut PairData>();
     *opt = opt0;
 }
 #[no_mangle]
@@ -80,7 +80,7 @@ pub unsafe extern "C" fn CINTdel_2e_optimizer(mut opt: *mut *mut CINTOpt) {
     }
     CINTdel_pairdata_optimizer(opt0);
     free(opt0 as *mut libc::c_void);
-    *opt = 0 as *mut CINTOpt;
+    *opt = std::ptr::null_mut::<CINTOpt>();
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTdel_optimizer(mut opt: *mut *mut CINTOpt) {
@@ -95,7 +95,7 @@ pub unsafe extern "C" fn CINTno_optimizer(
     _nbas: i32,
     _env: *mut f64,
 ) {
-    *opt = 0 as *mut CINTOpt;
+    *opt = std::ptr::null_mut::<CINTOpt>();
 }
 unsafe extern "C" fn _make_fakebas(
     mut fakebas: *mut i32,
@@ -161,7 +161,7 @@ unsafe extern "C" fn _allocate_index_xyz(
     i = 1 as i32;
     while (i as libc::c_ulong) < ll {
         let ref mut fresh1 = *ppbuf.offset(i as isize);
-        *fresh1 = 0 as *mut i32;
+        *fresh1 = std::ptr::null_mut::<i32>();
         i += 1;
         i;
     }
@@ -726,7 +726,7 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
     let mut i: i32 = 0;
     let mut iprim: i32 = 0;
     let mut ictr: i32 = 0;
-    let mut ci: *mut f64 = 0 as *mut f64;
+    let mut ci: *mut f64 = std::ptr::null_mut::<f64>();
     let mut tot_prim: u64 = 0 as u64;
     i = 0 as i32;
     while i < nbas {
@@ -799,7 +799,7 @@ pub unsafe extern "C" fn CINTset_pairdata(
             log_rr_ij += lij as f64 * (dist_ij + 1.0f64).ln();
         }
     }
-    let mut pdata: *mut PairData = 0 as *mut PairData;
+    let mut pdata: *mut PairData = std::ptr::null_mut::<PairData>();
     let mut empty: i32 = 1 as i32;
     n = 0 as i32;
     jp = 0 as i32;
@@ -856,10 +856,10 @@ pub unsafe extern "C" fn CINTOpt_setij(
     let mut jprim: i32 = 0;
     let mut li: i32 = 0;
     let mut lj: i32 = 0;
-    let mut ai: *mut f64 = 0 as *mut f64;
-    let mut aj: *mut f64 = 0 as *mut f64;
-    let mut ri: *mut f64 = 0 as *mut f64;
-    let mut rj: *mut f64 = 0 as *mut f64;
+    let mut ai: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut aj: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut ri: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut rj: *mut f64 = std::ptr::null_mut::<f64>();
     let mut expcutoff: f64 = 0.;
     if *env.offset(0 as isize) == 0 as f64 {
         expcutoff = 60 as f64;
@@ -874,8 +874,8 @@ pub unsafe extern "C" fn CINTOpt_setij(
         CINTOpt_set_log_maxc(opt, atm, natm, bas, nbas, env);
     }
     let mut log_max_coeff: *mut *mut f64 = (*opt).log_max_coeff;
-    let mut log_maxci: *mut f64 = 0 as *mut f64;
-    let mut log_maxcj: *mut f64 = 0 as *mut f64;
+    let mut log_maxci: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut log_maxcj: *mut f64 = std::ptr::null_mut::<f64>();
     let mut tot_prim: u64 = 0 as u64;
     i = 0 as i32;
     while i < nbas {
@@ -912,7 +912,7 @@ pub unsafe extern "C" fn CINTOpt_setij(
     }
     let mut empty: i32 = 0;
     let mut rr: f64 = 0.;
-    let mut pdata0: *mut PairData = 0 as *mut PairData;
+    let mut pdata0: *mut PairData = std::ptr::null_mut::<PairData>();
     i = 0 as i32;
     while i < nbas {
         ri = env.offset(*atm.offset(
@@ -1004,7 +1004,7 @@ pub unsafe extern "C" fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
     if !cintopt.is_null() && !((*cintopt).pairdata).is_null() {
         free(*((*cintopt).pairdata).offset(0 as isize) as *mut libc::c_void);
         free((*cintopt).pairdata as *mut libc::c_void);
-        (*cintopt).pairdata = 0 as *mut *mut PairData;
+        (*cintopt).pairdata = std::ptr::null_mut::<*mut PairData>();
     }
 }
 #[no_mangle]
@@ -1063,7 +1063,7 @@ pub unsafe extern "C" fn CINTOpt_set_non0coeff(
     let mut i: i32 = 0;
     let mut iprim: i32 = 0;
     let mut ictr: i32 = 0;
-    let mut ci: *mut f64 = 0 as *mut f64;
+    let mut ci: *mut f64 = std::ptr::null_mut::<f64>();
     let mut tot_prim: u64 = 0 as u64;
     let mut tot_prim_ctr: u64 = 0 as u64;
     i = 0 as i32;

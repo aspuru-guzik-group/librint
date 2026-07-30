@@ -3266,8 +3266,8 @@ unsafe extern "C" fn naive_jacobi_moments(
     let mut k: i32 = 0;
     let mut s: f64 = 0.;
     let mut fmt: [f64; 64] = [0.; 64];
-    let mut coef: *mut f64 = 0 as *mut f64;
-    let mut order: *mut i32 = 0 as *mut i32;
+    let mut coef: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut order: *mut i32 = std::ptr::null_mut::<i32>();
     fmt_erfc_like(fmt.as_mut_ptr(), t, lower, n - 1 as i32);
     i = 0 as i32;
     while i < n {
@@ -3352,7 +3352,7 @@ unsafe extern "C" fn wheeler_recursion(
     let mut s0: *mut f64 = moments;
     let mut sm: *mut f64 = buf.as_mut_ptr();
     let mut sk: *mut f64 = buf.as_mut_ptr().offset((n * 2 as i32) as isize);
-    let mut swap: *mut f64 = 0 as *mut f64;
+    let mut swap: *mut f64 = std::ptr::null_mut::<f64>();
     i = 2 as i32;
     while i < n * 2 as i32 {
         *sm.offset(i as isize) = 0.0f64;
@@ -3514,8 +3514,8 @@ unsafe extern "C" fn lnaive_jacobi_moments(
     let mut k: i32 = 0;
     let mut s: f64 = 0.0f64;
     let mut fmt: [f64; 64] = [0.0f64; 64];
-    let mut coef: *mut f64 = 0 as *mut f64;
-    let mut order: *mut i32 = 0 as *mut i32;
+    let mut coef: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut order: *mut i32 = std::ptr::null_mut::<i32>();
     fmt_lerfc_like(fmt.as_mut_ptr(), t, lower, n - 1 as i32);
     i = 0 as i32;
     while i < n {
@@ -3598,7 +3598,7 @@ unsafe extern "C" fn lwheeler_recursion(
     let mut s0: *mut f64 = moments;
     let mut sm: *mut f64 = buf.as_mut_ptr();
     let mut sk: *mut f64 = buf.as_mut_ptr().offset((n * 2 as i32) as isize);
-    let mut swap: *mut f64 = 0 as *mut f64;
+    let mut swap: *mut f64 = std::ptr::null_mut::<f64>();
     i = 2 as i32;
     while i < n * 2 as i32 {
         *sm.offset(i as isize) = 0.0f64;

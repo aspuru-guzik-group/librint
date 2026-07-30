@@ -270,7 +270,7 @@ pub fn cint1e_kin_cart(
     unsafe {
         int1e_kin_cart(
             out.as_mut_ptr(),
-            0 as *mut i32,
+            std::ptr::null_mut::<i32>(),
             shls.as_mut_ptr(),
             atm.as_mut_ptr(),
             natm,
@@ -278,7 +278,7 @@ pub fn cint1e_kin_cart(
             nbas,
             env.as_mut_ptr(),
             opt,
-            0 as *mut f64,
+            std::ptr::null_mut::<f64>(),
         )
     }
 }
@@ -297,7 +297,7 @@ pub fn cint1e_kin_sph(
     unsafe {
         int1e_kin_sph(
             out.as_mut_ptr(),
-            0 as *mut i32,
+            std::ptr::null_mut::<i32>(),
             shls.as_mut_ptr(),
             atm.as_mut_ptr(),
             natm,
@@ -305,7 +305,7 @@ pub fn cint1e_kin_sph(
             nbas,
             env.as_mut_ptr(),
             opt,
-            0 as *mut f64,
+            std::ptr::null_mut::<f64>(),
         )
     }
 }

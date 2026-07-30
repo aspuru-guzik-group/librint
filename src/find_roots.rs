@@ -330,7 +330,7 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
     } else {
         let mut k: i32 = 0;
         let mut order: i32 = 0;
-        let mut a: *mut f64 = 0 as *mut f64;
+        let mut a: *mut f64 = std::ptr::null_mut::<f64>();
         let mut dum_0: f64 = (*cs.offset((2 as i32 * nroots1 + 1 as i32) as isize)
             * *cs.offset((2 as i32 * nroots1 + 1 as i32) as isize)
             - 4 as f64

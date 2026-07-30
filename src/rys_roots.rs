@@ -7203,7 +7203,7 @@ unsafe extern "C" fn _rdk_rys_roots(
     let mut nroots1: i32 = nroots + 1 as i32;
     let mut rt: [f64; 1056] = [0.; 1056];
     let mut cs: *mut f64 = rt.as_mut_ptr().offset(nroots1 as isize);
-    let mut a: *mut f64 = 0 as *mut f64;
+    let mut a: *mut f64 = std::ptr::null_mut::<f64>();
     let mut root: f64 = 0.;
     let mut poly: f64 = 0.;
     let mut dum: f64 = 0.;
@@ -7391,7 +7391,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
     let mut qcs: *mut f64 = fmt_ints.as_mut_ptr().offset((nroots1 * 2 as i32) as isize);
     let mut rt: [f64; 1056] = [0.; 1056];
     let mut cs: *mut f64 = rt.as_mut_ptr().offset(nroots as isize);
-    let mut a: *mut f64 = 0 as *mut f64;
+    let mut a: *mut f64 = std::ptr::null_mut::<f64>();
     let mut root: f64 = 0.;
     let mut poly: f64 = 0.;
     let mut dum: f64 = 0.;

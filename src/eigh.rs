@@ -487,15 +487,15 @@ unsafe extern "C" fn _dlasq2(
     let mut dn: [f64; 3] = [0.0f64, 0.0f64, 0.0f64];
     let mut sigma: f64 = 0.;
     let mut tau: f64 = 0.;
-    let mut qvec: *mut f64 = 0 as *mut f64;
-    let mut qvec1: *mut f64 = 0 as *mut f64;
-    let mut evec: *mut f64 = 0 as *mut f64;
-    let mut evec1: *mut f64 = 0 as *mut f64;
-    let mut qvecp: *mut f64 = 0 as *mut f64;
-    let mut qvec1p: *mut f64 = 0 as *mut f64;
-    let mut evecp: *mut f64 = 0 as *mut f64;
-    let mut evec1p: *mut f64 = 0 as *mut f64;
-    let mut swap: *mut f64 = 0 as *mut f64;
+    let mut qvec: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut qvec1: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut evec: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut evec1: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut qvecp: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut qvec1p: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut evecp: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut evec1p: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut swap: *mut f64 = std::ptr::null_mut::<f64>();
     qvec = work;
     qvec1 = work.offset((n * 1 as i32) as isize);
     evec = work.offset((n * 2 as i32) as isize);
@@ -1360,14 +1360,14 @@ unsafe extern "C" fn _compute_eigenvectors(
     let mut rqcorr: f64 = 0.;
     let mut resid_tol: f64 = 0.;
     let mut rqcorr_tol: f64 = 0.;
-    let mut buf_w: *mut f64 = 0 as *mut f64;
-    let mut buf_ld: *mut f64 = 0 as *mut f64;
-    let mut buf_lld: *mut f64 = 0 as *mut f64;
-    let mut buf_wrk: *mut f64 = 0 as *mut f64;
-    let mut twist_indices: *mut i32 = 0 as *mut i32;
-    let mut swap: *mut i32 = 0 as *mut i32;
-    let mut old_cluster_range: *mut i32 = 0 as *mut i32;
-    let mut new_cluster_range: *mut i32 = 0 as *mut i32;
+    let mut buf_w: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut buf_ld: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut buf_lld: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut buf_wrk: *mut f64 = std::ptr::null_mut::<f64>();
+    let mut twist_indices: *mut i32 = std::ptr::null_mut::<i32>();
+    let mut swap: *mut i32 = std::ptr::null_mut::<i32>();
+    let mut old_cluster_range: *mut i32 = std::ptr::null_mut::<i32>();
+    let mut new_cluster_range: *mut i32 = std::ptr::null_mut::<i32>();
     if n <= 0 as i32 {
         return 0 as i32;
     }
