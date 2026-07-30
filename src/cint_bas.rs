@@ -9,23 +9,23 @@
 )]
 #[no_mangle]
 pub unsafe extern "C" fn CINTlen_cart(l: i32) -> i32 {
-    (l + 1 as i32) * (l + 2 as i32) / 2 as i32
+    (l + 1_i32) * (l + 2_i32) / 2_i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTlen_spinor(bas_id: i32, mut bas: *const i32) -> i32 {
-    if 0 as i32 == *bas.offset((8 as i32 * bas_id + 4 as i32) as isize) {
-        4 as i32 * *bas.offset((8 as i32 * bas_id + 1 as i32) as isize) + 2 as i32
-    } else if *bas.offset((8 as i32 * bas_id + 4 as i32) as isize) < 0 as i32 {
-        2 as i32 * *bas.offset((8 as i32 * bas_id + 1 as i32) as isize) + 2 as i32
+    if 0_i32 == *bas.offset((8_i32 * bas_id + 4_i32) as isize) {
+        4_i32 * *bas.offset((8_i32 * bas_id + 1_i32) as isize) + 2_i32
+    } else if *bas.offset((8_i32 * bas_id + 4_i32) as isize) < 0_i32 {
+        2_i32 * *bas.offset((8_i32 * bas_id + 1_i32) as isize) + 2_i32
     } else {
-        2 as i32 * *bas.offset((8 as i32 * bas_id + 1 as i32) as isize)
+        2_i32 * *bas.offset((8_i32 * bas_id + 1_i32) as isize)
     }
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTcgtos_cart(bas_id: i32, mut bas: *const i32) -> i32 {
-    let mut l: i32 = *bas.offset((8 as i32 * bas_id + 1 as i32) as isize);
-    (l + 1 as i32) * (l + 2 as i32) / 2 as i32
-        * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize)
+    let mut l: i32 = *bas.offset((8_i32 * bas_id + 1_i32) as isize);
+    (l + 1_i32) * (l + 2_i32) / 2_i32
+        * *bas.offset((8_i32 * bas_id + 3_i32) as isize)
 }
 
 // #[no_mangle]
@@ -47,8 +47,8 @@ pub fn CINTcgto_cart(bas_id: usize, bas: &[i32]) -> i32 {
 
 #[no_mangle]
 pub unsafe extern "C" fn CINTcgtos_spheric(bas_id: i32, mut bas: *const i32) -> i32 {
-    (*bas.offset((8 as i32 * bas_id + 1 as i32) as isize) * 2 as i32 + 1 as i32)
-        * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize)
+    (*bas.offset((8_i32 * bas_id + 1_i32) as isize) * 2_i32 + 1_i32)
+        * *bas.offset((8_i32 * bas_id + 3_i32) as isize)
 }
 
 // #[no_mangle]
@@ -68,20 +68,20 @@ pub fn CINTcgto_spheric(bas_id: usize, bas: &[i32]) -> i32 {
 
 #[no_mangle]
 pub unsafe extern "C" fn CINTcgtos_spinor(bas_id: i32, mut bas: *const i32) -> i32 {
-    CINTlen_spinor(bas_id, bas) * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize)
+    CINTlen_spinor(bas_id, bas) * *bas.offset((8_i32 * bas_id + 3_i32) as isize)
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTcgto_spinor(bas_id: i32, mut bas: *const i32) -> i32 {
-    CINTlen_spinor(bas_id, bas) * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize)
+    CINTlen_spinor(bas_id, bas) * *bas.offset((8_i32 * bas_id + 3_i32) as isize)
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTtot_pgto_spheric(mut bas: *const i32, nbas: i32) -> i32 {
     let mut i: i32 = 0;
-    let mut s: i32 = 0 as i32;
-    i = 0 as i32;
+    let mut s: i32 = 0_i32;
+    i = 0_i32;
     while i < nbas {
-        s += (*bas.offset((8 as i32 * i + 1 as i32) as isize) * 2 as i32 + 1 as i32)
-            * *bas.offset((8 as i32 * i + 2 as i32) as isize);
+        s += (*bas.offset((8_i32 * i + 1_i32) as isize) * 2_i32 + 1_i32)
+            * *bas.offset((8_i32 * i + 2_i32) as isize);
         i += 1;
         i;
     }
@@ -90,10 +90,10 @@ pub unsafe extern "C" fn CINTtot_pgto_spheric(mut bas: *const i32, nbas: i32) ->
 #[no_mangle]
 pub unsafe extern "C" fn CINTtot_pgto_spinor(mut bas: *const i32, nbas: i32) -> i32 {
     let mut i: i32 = 0;
-    let mut s: i32 = 0 as i32;
-    i = 0 as i32;
+    let mut s: i32 = 0_i32;
+    i = 0_i32;
     while i < nbas {
-        s += CINTlen_spinor(i, bas) * *bas.offset((8 as i32 * i + 2 as i32) as isize);
+        s += CINTlen_spinor(i, bas) * *bas.offset((8_i32 * i + 2_i32) as isize);
         i += 1;
         i;
     }
@@ -105,8 +105,8 @@ unsafe extern "C" fn tot_cgto_accum(
     nbas: i32,
 ) -> i32 {
     let mut i: i32 = 0;
-    let mut s: i32 = 0 as i32;
-    i = 0 as i32;
+    let mut s: i32 = 0_i32;
+    i = 0_i32;
     while i < nbas {
         s += ::core::mem::transmute::<_, fn(_, _) -> i32>(
             (Some(f.expect("non-null function pointer"))).expect("non-null function pointer"),
@@ -184,13 +184,13 @@ unsafe extern "C" fn shells_cgto_offset(
     nbas: i32,
 ) {
     let mut i: i32 = 0;
-    *ao_loc.offset(0 as isize) = 0 as i32;
-    i = 1 as i32;
+    *ao_loc.offset(0_isize) = 0_i32;
+    i = 1_i32;
     while i < nbas {
-        *ao_loc.offset(i as isize) = *ao_loc.offset((i - 1 as i32) as isize)
+        *ao_loc.offset(i as isize) = *ao_loc.offset((i - 1_i32) as isize)
             + ::core::mem::transmute::<_, fn(_, _) -> i32>(
                 (Some(f.expect("non-null function pointer"))).expect("non-null function pointer"),
-            )(i - 1 as i32, bas);
+            )(i - 1_i32, bas);
         i += 1;
         i;
     }
@@ -272,14 +272,14 @@ pub unsafe extern "C" fn CINTcart_comp(
     mut nz: *mut i32,
     lmax: i32,
 ) {
-    let mut inc: i32 = 0 as i32;
+    let mut inc: i32 = 0_i32;
     let mut lx: i32 = 0;
     let mut ly: i32 = 0;
     let mut lz: i32 = 0;
     lx = lmax;
-    while lx >= 0 as i32 {
+    while lx >= 0_i32 {
         ly = lmax - lx;
-        while ly >= 0 as i32 {
+        while ly >= 0_i32 {
             lz = lmax - lx - ly;
             *nx.offset(inc as isize) = lx;
             *ny.offset(inc as isize) = ly;
