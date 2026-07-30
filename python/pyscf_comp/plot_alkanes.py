@@ -57,10 +57,16 @@ NBF = {
 }
 CLABEL = {"CH4": "C1", "C2H6": "C2", "C3H8": "C3", "C4H10": "C4", "C6H6": "C6"}
 
+# 1 core and a fixed 32 for both engines. The "free" (whole-allocation) series
+# are measured but not drawn: these nodes are 48 cores x 2 SMT threads, so a
+# free run is 96 threads on 48 cores and its speedup mixes core scaling with
+# SMT gain. A fixed width, pinned one thread per physical core, is the number
+# that means what the axis label says -- and it stays comparable across nodes.
 SERIES = [  # key-parts, style; legend labels are built from the run's own data
     (("librint", "pin"), dict(color="#1a7f37", marker="o", ls="-")),
+    (("librint", "32"), dict(color="#57ab5a", marker="D", ls="-.")),
     (("jax", "pin"), dict(color="#cf222e", marker="s", ls="--")),
-    (("jax", "free"), dict(color="#e16f24", marker="^", ls=":")),
+    (("jax", "32"), dict(color="#e16f24", marker="^", ls=":")),
 ]
 
 
@@ -83,7 +89,9 @@ def cores_of(results, eng, threads):
     if n:
         return None                                    # inconsistent -> say so
     meta = results.get("_meta") or {}                   # pre-`ncores` results
-    return 1 if threads != "free" else meta.get("ncores")
+    if threads == "free":
+        return meta.get("ncores")
+    return int(threads) if threads.isdigit() else 1
 
 
 def label_of(results, eng, threads):
@@ -176,10 +184,12 @@ def main():
         top.tick_params(length=0, labelsize=8)
         if any_oom:
             ax_m.axhline(limit_g, color="0.5", lw=0.8, ls="--")
-            # low-left: the only corner both engines' curves stay out of
+            # the band between librint's flat ~0.2-0.7G and jax's 6G+ is the
+            # only stripe both engines leave empty; the low corner does not
+            # work, librint's curves run through it
             ax_m.annotate(f"job limit {limit_g:.0f}G (open = out of memory)",
-                          (0.02, 0.22), xycoords="axes fraction",
-                          fontsize=7, color="0.35", va="top")
+                          (0.02, 0.46), xycoords="axes fraction",
+                          fontsize=7, color="0.35", va="center")
         ax_m.set_xlabel("cartesian basis functions")
     axes[0][0].set_ylabel("wall time per gradient (s)")
     axes[1][0].set_ylabel("peak RSS (GiB)")
@@ -191,10 +201,16 @@ def main():
     xj, tj, mj, _, _ = collect(results, "def2-tzvp", "jax", "pin", with_bz)
     if mj.size >= 2:
         guide(axes[1][1], xj[0], mj[0] * 0.5, 4)
-    axes[0][0].legend(fontsize=8, loc="upper left", framealpha=0.9)
+    # one row under the whole figure. Five series on log-log axes leave no
+    # in-axes corner free -- an upper-left legend sat on top of the jax curves
+    # NOT `labels` -- that name holds the per-series label dict used below
+    handles, leg_labels = axes[0][0].get_legend_handles_labels()
+    fig.legend(handles, leg_labels, loc="lower center", ncol=len(handles),
+               fontsize=8, frameon=False, bbox_to_anchor=(0.5, 0.0),
+               columnspacing=1.4, handlelength=2.4)
     fig.suptitle("Basis-parameter gradient of frozen-P HF energy "
                  r"(T1): $\mathrm{C}_n\mathrm{H}_{2n+2}$ ladder", fontsize=11)
-    fig.tight_layout(rect=(0, 0, 1, 0.97))
+    fig.tight_layout(rect=(0, 0.05, 1, 0.97))
     for ext in ("pdf", "png"):
         fig.savefig(f"{args.out}.{ext}", dpi=300)
     print(f"wrote {args.out}.pdf/.png")
@@ -202,19 +218,23 @@ def main():
     # text summary + gradient agreement
     meta = results.get("_meta") or {}
     if meta:
+        smt = ""
+        if meta.get("ncpus") and meta.get("ncores"):
+            smt = f" ({meta['ncpus']} hw threads)"
         print(f"\nrun: {meta.get('node', '?')}  {meta.get('ncores', '?')} cores"
-              f"  {(meta.get('mem_limit_kb') or 0) / 1048576:.0f}G"
+              f"{smt}  {(meta.get('mem_limit_kb') or 0) / 1048576:.0f}G"
               f"  {meta.get('cpu_model', '')}")
-    hdr = [labels[("librint", "pin")], labels[("jax", "pin")],
-           labels[("jax", "free")]]
-    print(f"\n{'system':18s} {hdr[0]:>16s} {hdr[1]:>16s} "
-          f"{hdr[2]:>17s} {'lib mem':>8s} {'jax mem':>8s} {'max|dg|':>9s}")
+    hdr = [labels[("librint", "pin")], labels[("librint", "32")],
+           labels[("jax", "pin")], labels[("jax", "32")]]
+    print(f"\n{'system':18s} {hdr[0]:>16s} {hdr[1]:>17s} {hdr[2]:>16s} "
+          f"{hdr[3]:>17s} {'lib mem':>8s} {'jax mem':>8s} {'max|dg|':>9s}")
     for basis in BASES:
         for geo in SYSTEMS + (["C6H6"] if basis == "def2-tzvp" and with_bz
                               else []):
             rl = entry(results, "librint", geo, basis, "pin")
+            rl32 = entry(results, "librint", geo, basis, "32")
             rj = entry(results, "jax", geo, basis, "pin")
-            rf = entry(results, "jax", geo, basis, "free")
+            rj32 = entry(results, "jax", geo, basis, "32")
 
             def t(r):
                 if r.get("status") == "ok":
@@ -236,8 +256,9 @@ def main():
                 b = np.array(rj["grad_sorted"])
                 dg = (f"{np.abs(a - b).max():.1e}" if a.shape == b.shape
                       else "len!")
-            print(f"{geo + '/' + basis:18s} {t(rl):>16s} {t(rj):>16s} "
-                  f"{t(rf):>17s} {m(rl):>8s} {m(rj):>8s} {dg:>9s}")
+            print(f"{geo + '/' + basis:18s} {t(rl):>16s} {t(rl32):>17s} "
+                  f"{t(rj):>16s} {t(rj32):>17s} "
+                  f"{m(rl):>8s} {m(rj):>8s} {dg:>9s}")
 
 
 if __name__ == "__main__":
