@@ -71,8 +71,7 @@ pub unsafe fn CINTgout1e_int1e_kin(
         n;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn int1e_kin_optimizer(
+pub unsafe fn int1e_kin_optimizer(
     opt: *mut *mut CINTOpt,
     atm: *mut i32,
     natm: i32,
@@ -83,8 +82,7 @@ pub unsafe extern "C" fn int1e_kin_optimizer(
     let ng: [i32; 8] = [0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32];
     CINTall_1e_optimizer(opt, &ng, atm, natm, bas, nbas, env);
 }
-#[no_mangle]
-pub unsafe extern "C" fn int1e_kin_cart(
+pub unsafe fn int1e_kin_cart(
     out: *mut f64,
     dims: *mut i32,
     shls: *mut i32,
@@ -107,31 +105,16 @@ pub unsafe extern "C" fn int1e_kin_cart(
         &mut envs,
         cache,
         ::core::mem::transmute::<
-            Option<
-                unsafe extern "C" fn(
-                    *mut f64,
-                    *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
-                    *mut f64,
-                ) -> (),
-            >,
-            Option<unsafe extern "C" fn() -> ()>,
+            Option<unsafe fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, *mut f64) -> ()>,
+            Option<unsafe fn() -> ()>,
         >(Some(
             c2s_cart_1e
-                as unsafe extern "C" fn(
-                    *mut f64,
-                    *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
-                    *mut f64,
-                ) -> (),
+                as unsafe fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, *mut f64) -> (),
         )),
         0_i32,
     )
 }
-#[no_mangle]
-pub unsafe extern "C" fn int1e_kin_sph(
+pub unsafe fn int1e_kin_sph(
     out: *mut f64,
     dims: *mut i32,
     shls: *mut i32,
@@ -154,31 +137,15 @@ pub unsafe extern "C" fn int1e_kin_sph(
         &mut envs,
         cache,
         ::core::mem::transmute::<
-            Option<
-                unsafe extern "C" fn(
-                    *mut f64,
-                    *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
-                    *mut f64,
-                ) -> (),
-            >,
-            Option<unsafe extern "C" fn() -> ()>,
+            Option<unsafe fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, *mut f64) -> ()>,
+            Option<unsafe fn() -> ()>,
         >(Some(
-            c2s_sph_1e
-                as unsafe extern "C" fn(
-                    *mut f64,
-                    *mut f64,
-                    *mut i32,
-                    *mut CINTEnvVars,
-                    *mut f64,
-                ) -> (),
+            c2s_sph_1e as unsafe fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, *mut f64) -> (),
         )),
         0_i32,
     )
 }
-#[no_mangle]
-pub unsafe extern "C" fn int1e_kin_spinor(
+pub unsafe fn int1e_kin_spinor(
     _out: *mut f64,
     _dims: *mut i32,
     shls: *mut i32,
@@ -198,7 +165,6 @@ pub unsafe extern "C" fn int1e_kin_spinor(
     panic!("Reached end of non-void function without returning");
 }
 
-#[no_mangle]
 pub fn cint1e_kin_cart(
     out: &mut [f64],
     shls: &mut [i32],
@@ -225,7 +191,6 @@ pub fn cint1e_kin_cart(
     }
 }
 
-#[no_mangle]
 pub fn cint1e_kin_sph(
     out: &mut [f64],
     shls: &mut [i32],

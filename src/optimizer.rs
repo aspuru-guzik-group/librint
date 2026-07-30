@@ -27,8 +27,7 @@ extern "C" {
     fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn CINTinit_2e_optimizer(
+pub unsafe fn CINTinit_2e_optimizer(
     opt: *mut *mut CINTOpt,
     _atm: *mut i32,
     _natm: i32,
@@ -46,8 +45,7 @@ pub unsafe extern "C" fn CINTinit_2e_optimizer(
     (*opt0).pairdata = std::ptr::null_mut::<*mut PairData>();
     *opt = opt0;
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTinit_optimizer(
+pub unsafe fn CINTinit_optimizer(
     opt: *mut *mut CINTOpt,
     atm: *mut i32,
     natm: i32,
@@ -57,8 +55,7 @@ pub unsafe extern "C" fn CINTinit_optimizer(
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTdel_2e_optimizer(opt: *mut *mut CINTOpt) {
+pub unsafe fn CINTdel_2e_optimizer(opt: *mut *mut CINTOpt) {
     let opt0: *mut CINTOpt = *opt;
     if opt0.is_null() {
         return;
@@ -81,12 +78,10 @@ pub unsafe extern "C" fn CINTdel_2e_optimizer(opt: *mut *mut CINTOpt) {
     free(opt0 as *mut libc::c_void);
     *opt = std::ptr::null_mut::<CINTOpt>();
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTdel_optimizer(opt: *mut *mut CINTOpt) {
+pub unsafe fn CINTdel_optimizer(opt: *mut *mut CINTOpt) {
     CINTdel_2e_optimizer(opt);
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTno_optimizer(
+pub unsafe fn CINTno_optimizer(
     opt: *mut *mut CINTOpt,
     _atm: *mut i32,
     _natm: i32,
@@ -96,12 +91,7 @@ pub unsafe extern "C" fn CINTno_optimizer(
 ) {
     *opt = std::ptr::null_mut::<CINTOpt>();
 }
-unsafe extern "C" fn _make_fakebas(
-    fakebas: *mut i32,
-    bas: *mut i32,
-    nbas: i32,
-    _env: *mut f64,
-) -> i32 {
+unsafe fn _make_fakebas(fakebas: *mut i32, bas: *mut i32, nbas: i32, _env: *mut f64) -> i32 {
     let mut i: i32 = 0;
     let mut max_l: i32 = 0_i32;
     i = 0_i32;
@@ -129,12 +119,7 @@ unsafe extern "C" fn _make_fakebas(
     }
     max_l
 }
-unsafe extern "C" fn _allocate_index_xyz(
-    opt: *mut CINTOpt,
-    max_l: i32,
-    l_allow: i32,
-    order: i32,
-) -> *mut i32 {
+unsafe fn _allocate_index_xyz(opt: *mut CINTOpt, max_l: i32, l_allow: i32, order: i32) -> *mut i32 {
     let mut i: i32 = 0;
     let cumcart: i32 = (l_allow + 1_i32) * (l_allow + 2_i32) * (l_allow + 3_i32) / 6_i32;
     let mut ll: u64 = (max_l + 1_i32) as u64;
@@ -166,10 +151,10 @@ unsafe extern "C" fn _allocate_index_xyz(
     (*opt).index_xyz_array = ppbuf;
     buf
 }
-unsafe extern "C" fn gen_idx(
+unsafe fn gen_idx(
     opt: *mut CINTOpt,
-    finit: Option<unsafe extern "C" fn() -> ()>,
-    findex_xyz: Option<unsafe extern "C" fn() -> ()>,
+    finit: Option<unsafe fn() -> ()>,
+    findex_xyz: Option<unsafe fn() -> ()>,
     order: i32,
     mut l_allow: i32,
     ng: &[i32; 8],
@@ -307,8 +292,7 @@ unsafe extern "C" fn gen_idx(
         }
     };
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTall_1e_optimizer(
+pub unsafe fn CINTall_1e_optimizer(
     opt: *mut *mut CINTOpt,
     ng: &[i32; 8],
     atm: *mut i32,
@@ -324,7 +308,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
         *opt,
         ::core::mem::transmute::<
             Option<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut CINTEnvVars,
                     &[i32; 8],
                     *mut i32,
@@ -335,10 +319,10 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
                     *mut f64,
                 ) -> (),
             >,
-            Option<unsafe extern "C" fn() -> ()>,
+            Option<unsafe fn() -> ()>,
         >(Some(
             CINTinit_int1e_EnvVars
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut CINTEnvVars,
                     &[i32; 8],
                     *mut i32,
@@ -350,10 +334,10 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
                 ) -> (),
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> ()>,
-            Option<unsafe extern "C" fn() -> ()>,
+            Option<unsafe fn(*mut i32, *mut CINTEnvVars) -> ()>,
+            Option<unsafe fn() -> ()>,
         >(Some(
-            CINTg1e_index_xyz as unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> (),
+            CINTg1e_index_xyz as unsafe fn(*mut i32, *mut CINTEnvVars) -> (),
         )),
         2_i32,
         15_i32,
@@ -365,8 +349,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
         env,
     );
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTall_2e_optimizer(
+pub unsafe fn CINTall_2e_optimizer(
     opt: *mut *mut CINTOpt,
     ng: &[i32; 8],
     atm: *mut i32,
@@ -382,7 +365,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
         *opt,
         ::core::mem::transmute::<
             Option<
-                unsafe extern "C" fn(
+                unsafe fn(
                     *mut CINTEnvVars,
                     &[i32; 8],
                     *mut i32,
@@ -393,10 +376,10 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
                     *mut f64,
                 ) -> (),
             >,
-            Option<unsafe extern "C" fn() -> ()>,
+            Option<unsafe fn() -> ()>,
         >(Some(
             CINTinit_int2e_EnvVars
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut CINTEnvVars,
                     &[i32; 8],
                     *mut i32,
@@ -408,10 +391,10 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
                 ) -> (),
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> ()>,
-            Option<unsafe extern "C" fn() -> ()>,
+            Option<unsafe fn(*mut i32, *const CINTEnvVars) -> ()>,
+            Option<unsafe fn() -> ()>,
         >(Some(
-            CINTg2e_index_xyz as unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> (),
+            CINTg2e_index_xyz as unsafe fn(*mut i32, *const CINTEnvVars) -> (),
         )),
         4_i32,
         6_i32,
@@ -675,8 +658,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 //         env,
 //     );
 // }
-#[no_mangle]
-pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
+pub unsafe fn CINTOpt_log_max_pgto_coeff(
     log_maxc: *mut f64,
     coeff: *mut f64,
     nprim: i32,
@@ -703,8 +685,7 @@ pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
         ip;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTOpt_set_log_maxc(
+pub unsafe fn CINTOpt_set_log_maxc(
     opt: *mut CINTOpt,
     _atm: *mut i32,
     _natm: i32,
@@ -748,8 +729,7 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
         i;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTset_pairdata(
+pub unsafe fn CINTset_pairdata(
     pairdata: *mut PairData,
     ai: *mut f64,
     aj: *mut f64,
@@ -826,8 +806,7 @@ pub unsafe extern "C" fn CINTset_pairdata(
     }
     empty
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTOpt_setij(
+pub unsafe fn CINTOpt_setij(
     opt: *mut CINTOpt,
     ng: &[i32; 8],
     atm: *mut i32,
@@ -986,16 +965,14 @@ pub unsafe extern "C" fn CINTOpt_setij(
         i;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTdel_pairdata_optimizer(cintopt: *mut CINTOpt) {
+pub unsafe fn CINTdel_pairdata_optimizer(cintopt: *mut CINTOpt) {
     if !cintopt.is_null() && !((*cintopt).pairdata).is_null() {
         free(*((*cintopt).pairdata).offset(0_isize) as *mut libc::c_void);
         free((*cintopt).pairdata as *mut libc::c_void);
         (*cintopt).pairdata = std::ptr::null_mut::<*mut PairData>();
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
+pub unsafe fn CINTOpt_non0coeff_byshell(
     mut sortedidx: *mut i32,
     non0ctr: *mut i32,
     ci: *mut f64,
@@ -1038,8 +1015,7 @@ pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
         ip;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTOpt_set_non0coeff(
+pub unsafe fn CINTOpt_set_non0coeff(
     opt: *mut CINTOpt,
     _atm: *mut i32,
     _natm: i32,

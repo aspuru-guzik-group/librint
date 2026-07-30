@@ -3111,7 +3111,7 @@ static mut JACOBI_COEF_ORDER: [i32; 2080] = [
     37_i32, 52_i32, 38_i32, 51_i32, 39_i32, 50_i32, 40_i32, 49_i32, 41_i32, 48_i32, 42_i32, 47_i32,
     43_i32, 46_i32, 44_i32, 45_i32,
 ];
-unsafe extern "C" fn laguerre_moments(
+unsafe fn laguerre_moments(
     n: i32,
     t: f64,
     lower: f64,
@@ -3173,7 +3173,7 @@ unsafe extern "C" fn laguerre_moments(
         }
     };
 }
-unsafe extern "C" fn naive_jacobi_moments(n: i32, t: f64, lower: f64, mus: *mut f64) {
+unsafe fn naive_jacobi_moments(n: i32, t: f64, lower: f64, mus: *mut f64) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -3203,7 +3203,7 @@ unsafe extern "C" fn naive_jacobi_moments(n: i32, t: f64, lower: f64, mus: *mut 
         i;
     }
 }
-unsafe extern "C" fn flocke_jacobi_moments(n: i32, t: f64, mus: *mut f64) {
+unsafe fn flocke_jacobi_moments(n: i32, t: f64, mus: *mut f64) {
     if t < 3e-7f64 {
         return naive_jacobi_moments(n, t, 0.0f64, mus);
     }
@@ -3240,7 +3240,7 @@ unsafe extern "C" fn flocke_jacobi_moments(n: i32, t: f64, mus: *mut f64) {
         i;
     }
 }
-unsafe extern "C" fn wheeler_recursion(
+unsafe fn wheeler_recursion(
     n: i32,
     alpha: *mut f64,
     beta: *mut f64,
@@ -3295,7 +3295,7 @@ unsafe extern "C" fn wheeler_recursion(
         i;
     }
 }
-unsafe extern "C" fn rys_wheeler_partial(
+unsafe fn rys_wheeler_partial(
     n: i32,
     alpha: *mut f64,
     beta: *mut f64,
@@ -3346,7 +3346,7 @@ unsafe extern "C" fn rys_wheeler_partial(
     }
     error
 }
-unsafe extern "C" fn llaguerre_moments(
+unsafe fn llaguerre_moments(
     n: i32,
     t: f64,
     lower: f64,
@@ -3408,7 +3408,7 @@ unsafe extern "C" fn llaguerre_moments(
         }
     };
 }
-unsafe extern "C" fn lnaive_jacobi_moments(n: i32, t: f64, lower: f64, mus: *mut f64) {
+unsafe fn lnaive_jacobi_moments(n: i32, t: f64, lower: f64, mus: *mut f64) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -3438,7 +3438,7 @@ unsafe extern "C" fn lnaive_jacobi_moments(n: i32, t: f64, lower: f64, mus: *mut
         i;
     }
 }
-unsafe extern "C" fn lflocke_jacobi_moments(n: i32, t: f64, mus: *mut f64) {
+unsafe fn lflocke_jacobi_moments(n: i32, t: f64, mus: *mut f64) {
     if t < 3e-7f64 {
         return lnaive_jacobi_moments(n, t, 0.0f64, mus);
     }
@@ -3475,7 +3475,7 @@ unsafe extern "C" fn lflocke_jacobi_moments(n: i32, t: f64, mus: *mut f64) {
         i;
     }
 }
-unsafe extern "C" fn lwheeler_recursion(
+unsafe fn lwheeler_recursion(
     n: i32,
     alpha: *mut f64,
     beta: *mut f64,
@@ -3530,7 +3530,7 @@ unsafe extern "C" fn lwheeler_recursion(
         i;
     }
 }
-unsafe extern "C" fn lrys_wheeler_partial(
+unsafe fn lrys_wheeler_partial(
     n: i32,
     alpha: *mut f64,
     beta: *mut f64,
@@ -3585,8 +3585,7 @@ unsafe extern "C" fn lrys_wheeler_partial(
     }
     error
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTrys_laguerre(
+pub unsafe fn CINTrys_laguerre(
     n: i32,
     x: f64,
     lower: f64,
@@ -3599,8 +3598,7 @@ pub unsafe extern "C" fn CINTrys_laguerre(
     laguerre_moments(n * 2_i32, x, lower, alpha, beta, moments.as_mut_ptr());
     rys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights)
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTrys_jacobi(
+pub unsafe fn CINTrys_jacobi(
     n: i32,
     x: f64,
     lower: f64,
@@ -3617,8 +3615,7 @@ pub unsafe extern "C" fn CINTrys_jacobi(
     }
     rys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights)
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTlrys_laguerre(
+pub unsafe fn CINTlrys_laguerre(
     n: i32,
     x: f64,
     lower: f64,
@@ -3631,8 +3628,7 @@ pub unsafe extern "C" fn CINTlrys_laguerre(
     llaguerre_moments(n * 2_i32, x, lower, alpha, beta, moments.as_mut_ptr());
     lrys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights)
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTlrys_jacobi(
+pub unsafe fn CINTlrys_jacobi(
     n: i32,
     x: f64,
     lower: f64,

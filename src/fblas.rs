@@ -6,8 +6,7 @@
     non_upper_case_globals,
     unused_assignments
 )]
-#[no_mangle]
-pub unsafe extern "C" fn CINTdset0(n: i32, x: *mut f64) {
+pub unsafe fn CINTdset0(n: i32, x: *mut f64) {
     let mut i: i32 = 0;
     i = 0_i32;
     while i < n {
@@ -16,8 +15,7 @@ pub unsafe extern "C" fn CINTdset0(n: i32, x: *mut f64) {
         i;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTdaxpy2v(n: i32, a: f64, x: *mut f64, y: *mut f64, v: *mut f64) {
+pub unsafe fn CINTdaxpy2v(n: i32, a: f64, x: *mut f64, y: *mut f64, v: *mut f64) {
     let mut i: i32 = 0;
     i = 0_i32;
     while i < n {
@@ -26,8 +24,7 @@ pub unsafe extern "C" fn CINTdaxpy2v(n: i32, a: f64, x: *mut f64, y: *mut f64, v
         i;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTdmat_transpose(a_t: *mut f64, a: *mut f64, m: i32, n: i32) {
+pub unsafe fn CINTdmat_transpose(a_t: *mut f64, a: *mut f64, m: i32, n: i32) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let _k: i32 = 0;
@@ -78,8 +75,7 @@ pub unsafe extern "C" fn CINTdmat_transpose(a_t: *mut f64, a: *mut f64, m: i32, 
         _ => {}
     };
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTdplus_transpose(a_t: *mut f64, a: *mut f64, m: i32, n: i32) {
+pub unsafe fn CINTdplus_transpose(a_t: *mut f64, a: *mut f64, m: i32, n: i32) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let _k: i32 = 0;
@@ -130,8 +126,7 @@ pub unsafe extern "C" fn CINTdplus_transpose(a_t: *mut f64, a: *mut f64, m: i32,
         _ => {}
     };
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTdgemm_NN1(
+pub unsafe fn CINTdgemm_NN1(
     m: i32,
     n: i32,
     k: i32,
@@ -168,26 +163,10 @@ pub unsafe extern "C" fn CINTdgemm_NN1(
         j;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTdgemm_NN(
-    m: i32,
-    n: i32,
-    k: i32,
-    a: *mut f64,
-    b: *mut f64,
-    c: *mut f64,
-) {
+pub unsafe fn CINTdgemm_NN(m: i32, n: i32, k: i32, a: *mut f64, b: *mut f64, c: *mut f64) {
     CINTdgemm_NN1(m, n, k, a, b, c, m);
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTdgemm_TN(
-    m: i32,
-    n: i32,
-    k: i32,
-    a: *mut f64,
-    b: *mut f64,
-    c: *mut f64,
-) {
+pub unsafe fn CINTdgemm_TN(m: i32, n: i32, k: i32, a: *mut f64, b: *mut f64, c: *mut f64) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut kp: i32 = 0;
@@ -211,15 +190,7 @@ pub unsafe extern "C" fn CINTdgemm_TN(
         j;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTdgemm_NT(
-    m: i32,
-    n: i32,
-    k: i32,
-    a: *mut f64,
-    b: *mut f64,
-    c: *mut f64,
-) {
+pub unsafe fn CINTdgemm_NT(m: i32, n: i32, k: i32, a: *mut f64, b: *mut f64, c: *mut f64) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut kp: i32 = 0;

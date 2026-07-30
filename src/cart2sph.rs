@@ -88365,7 +88365,7 @@ static mut g_trans_cart2jI: [f64; 34580] = [
     0 as f64,
     0 as f64,
 ];
-unsafe extern "C" fn _len_spinor(kappa: i32, l: i32) -> i32 {
+unsafe fn _len_spinor(kappa: i32, l: i32) -> i32 {
     if 0_i32 == kappa {
         4_i32 * l + 2_i32
     } else if kappa < 0_i32 {
@@ -88384,18 +88384,13 @@ static mut g_c2s: [cart2sp_t; 16] = [cart2sp_t {
     cart2j_gt_lR: std::ptr::null_mut::<f64>(),
     cart2j_gt_lI: std::ptr::null_mut::<f64>(),
 }; 16];
-unsafe extern "C" fn a_bra_cart2spheric(
-    gsph: *mut f64,
-    nket: i32,
-    gcart: *mut f64,
-    l: i32,
-) -> *mut f64 {
+unsafe fn a_bra_cart2spheric(gsph: *mut f64, nket: i32, gcart: *mut f64, l: i32) -> *mut f64 {
     let nf: i32 = _len_cart[l as usize];
     let nd: i32 = l * 2_i32 + 1_i32;
     CINTdgemm_TN(nd, nket, nf, g_c2s[l as usize].cart2sph, gcart, gsph);
     gsph
 }
-unsafe extern "C" fn a_ket_cart2spheric(
+unsafe fn a_ket_cart2spheric(
     gsph: *mut f64,
     gcart: *mut f64,
     lds: i32,
@@ -88407,15 +88402,10 @@ unsafe extern "C" fn a_ket_cart2spheric(
     CINTdgemm_NN1(nbra, nd, nf, gcart, g_c2s[l as usize].cart2sph, gsph, lds);
     gsph
 }
-unsafe extern "C" fn s_bra_cart2spheric(
-    _gsph: *mut f64,
-    _nket: i32,
-    gcart: *mut f64,
-    _l: i32,
-) -> *mut f64 {
+unsafe fn s_bra_cart2spheric(_gsph: *mut f64, _nket: i32, gcart: *mut f64, _l: i32) -> *mut f64 {
     gcart
 }
-unsafe extern "C" fn s_ket_cart2spheric(
+unsafe fn s_ket_cart2spheric(
     _gsph: *mut f64,
     gcart: *mut f64,
     _lds: i32,
@@ -88424,7 +88414,7 @@ unsafe extern "C" fn s_ket_cart2spheric(
 ) -> *mut f64 {
     gcart
 }
-unsafe extern "C" fn s_ket_cart2spheric_copy(
+unsafe fn s_ket_cart2spheric_copy(
     gsph: *mut f64,
     gcart: *mut f64,
     _lds: i32,
@@ -88440,15 +88430,10 @@ unsafe extern "C" fn s_ket_cart2spheric_copy(
     }
     gsph
 }
-unsafe extern "C" fn p_bra_cart2spheric(
-    _gsph: *mut f64,
-    _nket: i32,
-    gcart: *mut f64,
-    _l: i32,
-) -> *mut f64 {
+unsafe fn p_bra_cart2spheric(_gsph: *mut f64, _nket: i32, gcart: *mut f64, _l: i32) -> *mut f64 {
     gcart
 }
-unsafe extern "C" fn p_ket_cart2spheric(
+unsafe fn p_ket_cart2spheric(
     _gsph: *mut f64,
     gcart: *mut f64,
     _lds: i32,
@@ -88457,7 +88442,7 @@ unsafe extern "C" fn p_ket_cart2spheric(
 ) -> *mut f64 {
     gcart
 }
-unsafe extern "C" fn p_ket_cart2spheric_copy(
+unsafe fn p_ket_cart2spheric_copy(
     gsph: *mut f64,
     gcart: *mut f64,
     lds: i32,
@@ -88475,7 +88460,7 @@ unsafe extern "C" fn p_ket_cart2spheric_copy(
     }
     gsph
 }
-unsafe extern "C" fn d_bra_cart2spheric(
+unsafe fn d_bra_cart2spheric(
     mut gsph: *mut f64,
     nket: i32,
     mut gcart: *mut f64,
@@ -88501,7 +88486,7 @@ unsafe extern "C" fn d_bra_cart2spheric(
     }
     pgsph
 }
-unsafe extern "C" fn d_ket_cart2spheric(
+unsafe fn d_ket_cart2spheric(
     gsph: *mut f64,
     gcart: *mut f64,
     lds: i32,
@@ -88551,7 +88536,7 @@ unsafe extern "C" fn d_ket_cart2spheric(
     }
     pgsph
 }
-unsafe extern "C" fn f_bra_cart2spheric(
+unsafe fn f_bra_cart2spheric(
     mut gsph: *mut f64,
     nket: i32,
     mut gcart: *mut f64,
@@ -88585,7 +88570,7 @@ unsafe extern "C" fn f_bra_cart2spheric(
     }
     pgsph
 }
-unsafe extern "C" fn f_ket_cart2spheric(
+unsafe fn f_ket_cart2spheric(
     gsph: *mut f64,
     gcart: *mut f64,
     lds: i32,
@@ -88655,7 +88640,7 @@ unsafe extern "C" fn f_ket_cart2spheric(
     }
     pgsph
 }
-unsafe extern "C" fn g_bra_cart2spheric(
+unsafe fn g_bra_cart2spheric(
     mut gsph: *mut f64,
     nket: i32,
     mut gcart: *mut f64,
@@ -88701,7 +88686,7 @@ unsafe extern "C" fn g_bra_cart2spheric(
     }
     pgsph
 }
-unsafe extern "C" fn g_ket_cart2spheric(
+unsafe fn g_ket_cart2spheric(
     gsph: *mut f64,
     gcart: *mut f64,
     lds: i32,
@@ -88795,250 +88780,148 @@ unsafe extern "C" fn g_ket_cart2spheric(
     }
     pgsph
 }
-#[no_mangle]
-pub static mut c2s_bra_sph: [Option<unsafe extern "C" fn() -> *mut f64>; 16] = unsafe {
+pub static mut c2s_bra_sph: [Option<unsafe fn() -> *mut f64>; 16] = unsafe {
     [
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            s_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            s_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            p_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            p_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            d_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            d_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            f_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            f_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            g_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            g_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
-            Option<unsafe extern "C" fn() -> *mut f64>,
+            Option<unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64>,
+            Option<unsafe fn() -> *mut f64>,
         >(Some(
-            a_bra_cart2spheric as unsafe extern "C" fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
+            a_bra_cart2spheric as unsafe fn(*mut f64, i32, *mut f64, i32) -> *mut f64,
         )),
     ]
 };
-#[no_mangle]
-pub static mut c2s_ket_sph: [Option<
-    unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
->; 16] = unsafe {
+pub static mut c2s_ket_sph: [Option<unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64>; 16] = unsafe {
     [
-        Some(
-            s_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            p_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            d_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            f_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            g_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
+        Some(s_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(p_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(d_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(f_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(g_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
     ]
 };
-#[no_mangle]
-pub static mut c2s_ket_sph1: [Option<
-    unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
->; 16] = unsafe {
+pub static mut c2s_ket_sph1: [Option<unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64>;
+    16] = unsafe {
     [
-        Some(
-            s_ket_cart2spheric_copy
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            p_ket_cart2spheric_copy
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            d_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            f_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            g_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
-        Some(
-            a_ket_cart2spheric
-                as unsafe extern "C" fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64,
-        ),
+        Some(s_ket_cart2spheric_copy as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(p_ket_cart2spheric_copy as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(d_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(f_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(g_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
+        Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
     ]
 };
-unsafe extern "C" fn a_bra_cart2spinor_si(
+unsafe fn a_bra_cart2spinor_si(
     gspR: *mut f64,
     gspI: *mut f64,
     gx: *mut f64,
@@ -89115,7 +88998,7 @@ unsafe extern "C" fn a_bra_cart2spinor_si(
         j;
     }
 }
-unsafe extern "C" fn a_bra_cart2spinor_sf(
+unsafe fn a_bra_cart2spinor_sf(
     gspR: *mut f64,
     gspI: *mut f64,
     _gx: *mut f64,
@@ -89186,7 +89069,7 @@ unsafe extern "C" fn a_bra_cart2spinor_sf(
         j;
     }
 }
-unsafe extern "C" fn a_bra1_cart2spinor_si(
+unsafe fn a_bra1_cart2spinor_si(
     gspR: *mut f64,
     gspI: *mut f64,
     gx: *mut f64,
@@ -89272,7 +89155,7 @@ unsafe extern "C" fn a_bra1_cart2spinor_si(
         j;
     }
 }
-unsafe extern "C" fn a_bra1_cart2spinor_sf(
+unsafe fn a_bra1_cart2spinor_sf(
     gspR: *mut f64,
     gspI: *mut f64,
     _gx: *mut f64,
@@ -89348,7 +89231,7 @@ unsafe extern "C" fn a_bra1_cart2spinor_sf(
         j;
     }
 }
-unsafe extern "C" fn a_bra1_cart2spinor_zi(
+unsafe fn a_bra1_cart2spinor_zi(
     gspR: *mut f64,
     gspI: *mut f64,
     gx: *mut f64,
@@ -89466,7 +89349,7 @@ unsafe extern "C" fn a_bra1_cart2spinor_zi(
         j;
     }
 }
-unsafe extern "C" fn a_bra1_cart2spinor_zf(
+unsafe fn a_bra1_cart2spinor_zf(
     gspR: *mut f64,
     gspI: *mut f64,
     _gx: *mut f64,
@@ -89546,7 +89429,7 @@ unsafe extern "C" fn a_bra1_cart2spinor_zf(
         j;
     }
 }
-unsafe extern "C" fn a_ket_cart2spinor(
+unsafe fn a_ket_cart2spinor(
     gspR: *mut f64,
     gspI: *mut f64,
     gcartR: *mut f64,
@@ -89627,7 +89510,7 @@ unsafe extern "C" fn a_ket_cart2spinor(
         i;
     }
 }
-unsafe extern "C" fn a_iket_cart2spinor(
+unsafe fn a_iket_cart2spinor(
     gspR: *mut f64,
     gspI: *mut f64,
     gcartR: *mut f64,
@@ -89646,7 +89529,7 @@ unsafe extern "C" fn a_iket_cart2spinor(
         i;
     }
 }
-unsafe extern "C" fn a_ket1_cart2spinor(
+unsafe fn a_ket1_cart2spinor(
     gspR: *mut f64,
     gspI: *mut f64,
     gcartR: *mut f64,
@@ -89731,7 +89614,7 @@ unsafe extern "C" fn a_ket1_cart2spinor(
         i;
     }
 }
-unsafe extern "C" fn a_iket1_cart2spinor(
+unsafe fn a_iket1_cart2spinor(
     gspR: *mut f64,
     gspI: *mut f64,
     gcartR: *mut f64,
@@ -89751,7 +89634,7 @@ unsafe extern "C" fn a_iket1_cart2spinor(
         i;
     }
 }
-unsafe extern "C" fn dcopy_ij(out: *mut f64, gctr: *mut f64, ni: i32, _nj: i32, mi: i32, mj: i32) {
+unsafe fn dcopy_ij(out: *mut f64, gctr: *mut f64, ni: i32, _nj: i32, mi: i32, mj: i32) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     j = 0_i32;
@@ -89766,7 +89649,7 @@ unsafe extern "C" fn dcopy_ij(out: *mut f64, gctr: *mut f64, ni: i32, _nj: i32, 
         j;
     }
 }
-unsafe extern "C" fn dcopy_grids_ij(
+unsafe fn dcopy_grids_ij(
     mut out: *mut f64,
     mut gctr: *const f64,
     ngrids: i32,
@@ -89800,7 +89683,7 @@ unsafe extern "C" fn dcopy_grids_ij(
         j;
     }
 }
-unsafe extern "C" fn dcopy_iklj(
+unsafe fn dcopy_iklj(
     mut fijkl: *mut f64,
     mut gctr: *const f64,
     ni: i32,
@@ -90004,8 +89887,7 @@ unsafe extern "C" fn dcopy_iklj(
         }
     };
 }
-#[no_mangle]
-pub unsafe extern "C" fn c2s_dset0(mut out: *mut f64, dims: *mut i32, counts: *mut i32) {
+pub unsafe fn c2s_dset0(mut out: *mut f64, dims: *mut i32, counts: *mut i32) {
     let ni: i32 = *dims.offset(0_isize);
     let nj: i32 = *dims.offset(1_isize);
     let nk: i32 = *dims.offset(2_isize);
@@ -90053,8 +89935,7 @@ pub unsafe extern "C" fn c2s_dset0(mut out: *mut f64, dims: *mut i32, counts: *m
         l;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn c2s_grids_dset0(out: *mut f64, dims: *mut i32, counts: *mut i32) {
+pub unsafe fn c2s_grids_dset0(out: *mut f64, dims: *mut i32, counts: *mut i32) {
     let mut counts1: [i32; 4] = [
         *counts.offset(2_isize),
         *counts.offset(0_isize),
@@ -90069,7 +89950,7 @@ pub unsafe extern "C" fn c2s_grids_dset0(out: *mut f64, dims: *mut i32, counts: 
     ];
     c2s_dset0(out, dims1.as_mut_ptr(), counts1.as_mut_ptr());
 }
-unsafe extern "C" fn sph2e_inner(
+unsafe fn sph2e_inner(
     gsph: *mut f64,
     gcart: *mut f64,
     l: i32,
@@ -90140,8 +90021,7 @@ unsafe extern "C" fn sph2e_inner(
     }
     gsph
 }
-#[no_mangle]
-pub unsafe extern "C" fn c2s_sph_1e(
+pub unsafe fn c2s_sph_1e(
     opij: *mut f64,
     mut gctr: *mut f64,
     dims: *mut i32,
@@ -90316,8 +90196,7 @@ pub unsafe extern "C" fn c2s_sph_1e(
 //         grids_offset += 104 as i32;
 //     }
 // }
-#[no_mangle]
-pub unsafe extern "C" fn c2s_sph_2e1(
+pub unsafe fn c2s_sph_2e1(
     out: *mut f64,
     mut gctr: *mut f64,
     dims: *mut i32,
@@ -90660,8 +90539,7 @@ pub unsafe extern "C" fn c2s_sph_2e1(
 //         i;
 //     }
 // }
-#[no_mangle]
-pub unsafe extern "C" fn c2s_cart_1e(
+pub unsafe fn c2s_cart_1e(
     opij: *mut f64,
     mut gctr: *mut f64,
     dims: *mut i32,
@@ -90693,8 +90571,7 @@ pub unsafe extern "C" fn c2s_cart_1e(
         jc;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn c2s_cart_2e1(
+pub unsafe fn c2s_cart_2e1(
     fijkl: *mut f64,
     mut gctr: *mut f64,
     dims: *mut i32,
@@ -91052,7 +90929,7 @@ pub unsafe extern "C" fn c2s_cart_2e1(
 //     CINTdgemm_NT(nbra, nf, nd, gsph, g_c2s[l as usize].cart2sph, gcart);
 //     return gcart;
 // }
-unsafe extern "C" fn run_static_initializers() {
+unsafe fn run_static_initializers() {
     g_c2s = [
         {
             cart2sp_t {
@@ -91204,4 +91081,4 @@ unsafe extern "C" fn run_static_initializers() {
 #[cfg_attr(target_os = "linux", link_section = ".init_array")]
 #[cfg_attr(target_os = "windows", link_section = ".CRT$XIB")]
 #[cfg_attr(target_os = "macos", link_section = "__DATA,__mod_init_func")]
-static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+static INIT_ARRAY: [unsafe fn(); 1] = [run_static_initializers];

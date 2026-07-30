@@ -7,7 +7,7 @@
     unused_assignments
 )]
 
-unsafe extern "C" fn R_dnode(a: *mut f64, roots: *mut f64, order: i32) -> i32 {
+unsafe fn R_dnode(a: *mut f64, roots: *mut f64, order: i32) -> i32 {
     let accrt: f64 = 1e-15f64;
     let mut x0: f64 = 0.;
     let mut x1: f64 = 0.;
@@ -111,7 +111,7 @@ unsafe extern "C" fn R_dnode(a: *mut f64, roots: *mut f64, order: i32) -> i32 {
     }
     0_i32
 }
-unsafe extern "C" fn _qr_step(A: *mut f64, nroots: i32, n0: i32, n1: i32, shift: f64) {
+unsafe fn _qr_step(A: *mut f64, nroots: i32, n0: i32, n1: i32, shift: f64) {
     let m1: i32 = n0 + 1_i32;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -190,7 +190,7 @@ unsafe extern "C" fn _qr_step(A: *mut f64, nroots: i32, n0: i32, n1: i32, shift:
         j;
     }
 }
-unsafe extern "C" fn _hessenberg_qr(A: *mut f64, nroots: i32) -> i32 {
+unsafe fn _hessenberg_qr(A: *mut f64, nroots: i32) -> i32 {
     let eps: f64 = 1e-15f64;
     let maxits: i32 = 30_i32;
     let mut n0: i32 = 0_i32;
@@ -262,8 +262,7 @@ unsafe extern "C" fn _hessenberg_qr(A: *mut f64, nroots: i32) -> i32 {
     eprintln!("hessenberg_qr failed");
     1_i32
 }
-#[no_mangle]
-pub unsafe extern "C" fn _CINT_polynomial_roots(roots: *mut f64, cs: *mut f64, nroots: i32) -> i32 {
+pub unsafe fn _CINT_polynomial_roots(roots: *mut f64, cs: *mut f64, nroots: i32) -> i32 {
     if nroots == 1_i32 {
         *roots.offset(0_isize) = -*cs.offset(2_isize) / *cs.offset(3_isize);
         return 0_i32;

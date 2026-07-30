@@ -6,12 +6,10 @@
     non_upper_case_globals,
     unused_assignments
 )]
-#[no_mangle]
-pub unsafe extern "C" fn CINTlen_cart(l: i32) -> i32 {
+pub unsafe fn CINTlen_cart(l: i32) -> i32 {
     (l + 1_i32) * (l + 2_i32) / 2_i32
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTlen_spinor(bas_id: i32, bas: *const i32) -> i32 {
+pub unsafe fn CINTlen_spinor(bas_id: i32, bas: *const i32) -> i32 {
     if 0_i32 == *bas.offset((8_i32 * bas_id + 4_i32) as isize) {
         4_i32 * *bas.offset((8_i32 * bas_id + 1_i32) as isize) + 2_i32
     } else if *bas.offset((8_i32 * bas_id + 4_i32) as isize) < 0_i32 {
@@ -20,8 +18,7 @@ pub unsafe extern "C" fn CINTlen_spinor(bas_id: i32, bas: *const i32) -> i32 {
         2_i32 * *bas.offset((8_i32 * bas_id + 1_i32) as isize)
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTcgtos_cart(bas_id: i32, bas: *const i32) -> i32 {
+pub unsafe fn CINTcgtos_cart(bas_id: i32, bas: *const i32) -> i32 {
     let l: i32 = *bas.offset((8_i32 * bas_id + 1_i32) as isize);
     (l + 1_i32) * (l + 2_i32) / 2_i32 * *bas.offset((8_i32 * bas_id + 3_i32) as isize)
 }
@@ -37,14 +34,12 @@ pub unsafe extern "C" fn CINTcgtos_cart(bas_id: i32, bas: *const i32) -> i32 {
 //         * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize);
 // }
 
-#[no_mangle]
 pub fn CINTcgto_cart(bas_id: usize, bas: &[i32]) -> i32 {
     let l: i32 = bas[8 * bas_id + 1];
     (l + 1) * (l + 2) / 2 * bas[8 * bas_id + 3]
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn CINTcgtos_spheric(bas_id: i32, bas: *const i32) -> i32 {
+pub unsafe fn CINTcgtos_spheric(bas_id: i32, bas: *const i32) -> i32 {
     (*bas.offset((8_i32 * bas_id + 1_i32) as isize) * 2_i32 + 1_i32)
         * *bas.offset((8_i32 * bas_id + 3_i32) as isize)
 }
@@ -59,21 +54,17 @@ pub unsafe extern "C" fn CINTcgtos_spheric(bas_id: i32, bas: *const i32) -> i32 
 //         * *bas.offset((8 as i32 * bas_id + 3 as i32) as isize);
 // }
 
-#[no_mangle]
 pub fn CINTcgto_spheric(bas_id: usize, bas: &[i32]) -> i32 {
     (bas[8 * bas_id + 1] * 2 + 1) * bas[8 * bas_id + 3]
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn CINTcgtos_spinor(bas_id: i32, bas: *const i32) -> i32 {
+pub unsafe fn CINTcgtos_spinor(bas_id: i32, bas: *const i32) -> i32 {
     CINTlen_spinor(bas_id, bas) * *bas.offset((8_i32 * bas_id + 3_i32) as isize)
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTcgto_spinor(bas_id: i32, bas: *const i32) -> i32 {
+pub unsafe fn CINTcgto_spinor(bas_id: i32, bas: *const i32) -> i32 {
     CINTlen_spinor(bas_id, bas) * *bas.offset((8_i32 * bas_id + 3_i32) as isize)
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTtot_pgto_spheric(bas: *const i32, nbas: i32) -> i32 {
+pub unsafe fn CINTtot_pgto_spheric(bas: *const i32, nbas: i32) -> i32 {
     let mut i: i32 = 0;
     let mut s: i32 = 0_i32;
     i = 0_i32;
@@ -85,8 +76,7 @@ pub unsafe extern "C" fn CINTtot_pgto_spheric(bas: *const i32, nbas: i32) -> i32
     }
     s
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTtot_pgto_spinor(bas: *const i32, nbas: i32) -> i32 {
+pub unsafe fn CINTtot_pgto_spinor(bas: *const i32, nbas: i32) -> i32 {
     let mut i: i32 = 0;
     let mut s: i32 = 0_i32;
     i = 0_i32;
@@ -140,8 +130,7 @@ unsafe fn tot_cgto_accum(f: impl Fn(i32, *const i32) -> i32, bas: *const i32, nb
 //         nbas,
 //     );
 // }
-#[no_mangle]
-pub unsafe extern "C" fn CINTtot_cgto_spinor(bas: *const i32, nbas: i32) -> i32 {
+pub unsafe fn CINTtot_cgto_spinor(bas: *const i32, nbas: i32) -> i32 {
     tot_cgto_accum(|id, b| CINTcgto_spinor(id, b), bas, nbas)
 }
 // #[no_mangle]
@@ -239,12 +228,10 @@ unsafe fn shells_cgto_offset(
 //         nbas,
 //     );
 // }
-#[no_mangle]
-pub unsafe extern "C" fn CINTshells_spinor_offset(ao_loc: *mut i32, bas: *const i32, nbas: i32) {
+pub unsafe fn CINTshells_spinor_offset(ao_loc: *mut i32, bas: *const i32, nbas: i32) {
     shells_cgto_offset(|id, b| CINTcgto_spinor(id, b), ao_loc, bas, nbas);
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTcart_comp(nx: *mut i32, ny: *mut i32, nz: *mut i32, lmax: i32) {
+pub unsafe fn CINTcart_comp(nx: *mut i32, ny: *mut i32, nz: *mut i32, lmax: i32) {
     let mut inc: i32 = 0_i32;
     let mut lx: i32 = 0;
     let mut ly: i32 = 0;

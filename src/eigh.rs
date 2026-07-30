@@ -11,7 +11,7 @@ extern "C" {
     fn fabs(_: f64) -> f64;
 }
 
-unsafe extern "C" fn _dlarrk(
+unsafe fn _dlarrk(
     n: i32,
     iw: i32,
     gl: f64,
@@ -87,7 +87,7 @@ unsafe extern "C" fn _dlarrk(
     *werr = fabs(right - left) * 0.5f64;
     info
 }
-unsafe extern "C" fn _dlarrc(
+unsafe fn _dlarrc(
     n: i32,
     vl: f64,
     vu: f64,
@@ -131,7 +131,7 @@ unsafe extern "C" fn _dlarrc(
     *lcnt = left_count;
     *rcnt = right_count;
 }
-unsafe extern "C" fn _dlasq4(
+unsafe fn _dlasq4(
     i0: i32,
     n0: i32,
     n0init: i32,
@@ -383,7 +383,7 @@ unsafe extern "C" fn _dlasq4(
     *tau = s;
     0_i32
 }
-unsafe extern "C" fn _dlasq5(
+unsafe fn _dlasq5(
     i0: i32,
     n0: i32,
     qvecp: *mut f64,
@@ -438,7 +438,7 @@ unsafe extern "C" fn _dlasq5(
         *dn.offset(0_isize)
     };
 }
-unsafe extern "C" fn _dlasq2(n: i32, work: *mut f64, diag: *mut f64, diag_off: *mut f64) -> i32 {
+unsafe fn _dlasq2(n: i32, work: *mut f64, diag: *mut f64, diag_off: *mut f64) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut itry: i32 = 0;
@@ -705,7 +705,7 @@ unsafe extern "C" fn _dlasq2(n: i32, work: *mut f64, diag: *mut f64, diag_off: *
     }
     0_i32
 }
-unsafe extern "C" fn _compute_eigenvalues(
+unsafe fn _compute_eigenvalues(
     n: i32,
     diag: *mut f64,
     diag_off1: *mut f64,
@@ -967,7 +967,7 @@ unsafe extern "C" fn _compute_eigenvalues(
     };
     0_i32
 }
-unsafe extern "C" fn _dlarrf(
+unsafe fn _dlarrf(
     n: i32,
     diag: *mut f64,
     diag_off1: *mut f64,
@@ -1028,13 +1028,7 @@ unsafe extern "C" fn _dlarrf(
     }
     0_i32
 }
-unsafe extern "C" fn _dlaneg(
-    n: i32,
-    diag: *mut f64,
-    lld: *mut f64,
-    sigma: f64,
-    twist_index: i32,
-) -> i32 {
+unsafe fn _dlaneg(n: i32, diag: *mut f64, lld: *mut f64, sigma: f64, twist_index: i32) -> i32 {
     let mut j: i32 = 0;
     let mut negcnt: i32 = 0;
     let mut p: f64 = 0.;
@@ -1072,7 +1066,7 @@ unsafe extern "C" fn _dlaneg(
     }
     negcnt
 }
-unsafe extern "C" fn _dlarrb(
+unsafe fn _dlarrb(
     n: i32,
     diag: *mut f64,
     lld: *mut f64,
@@ -1170,7 +1164,7 @@ unsafe extern "C" fn _dlarrb(
     }
     0_i32
 }
-unsafe extern "C" fn _dlar1v(
+unsafe fn _dlar1v(
     n: i32,
     lambda: f64,
     diag: *mut f64,
@@ -1287,7 +1281,7 @@ unsafe extern "C" fn _dlar1v(
     *resid = fabs(mingma) * nrminv;
     *rqcorr = mingma * tmp;
 }
-unsafe extern "C" fn _compute_eigenvectors(
+unsafe fn _compute_eigenvectors(
     n: i32,
     diag: *mut f64,
     diag_off1: *mut f64,
@@ -1656,12 +1650,7 @@ unsafe extern "C" fn _compute_eigenvectors(
     }
     0_i32
 }
-unsafe extern "C" fn _dlaev2(
-    eig: *mut f64,
-    vec: *mut f64,
-    diag: *mut f64,
-    diag_off1: *mut f64,
-) -> i32 {
+unsafe fn _dlaev2(eig: *mut f64, vec: *mut f64, diag: *mut f64, diag_off1: *mut f64) -> i32 {
     let a: f64 = *diag.offset(0_isize);
     let b: f64 = *diag_off1.offset(0_isize);
     let c: f64 = *diag.offset(1_isize);
@@ -1728,8 +1717,7 @@ unsafe extern "C" fn _dlaev2(
     *vec.offset(3_isize) = sn1;
     0_i32
 }
-#[no_mangle]
-pub unsafe extern "C" fn _CINTdiagonalize(
+pub unsafe fn _CINTdiagonalize(
     n: i32,
     diag: *mut f64,
     diag_off1: *mut f64,
