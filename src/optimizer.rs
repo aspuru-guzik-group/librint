@@ -200,8 +200,7 @@ unsafe extern "C" fn gen_idx(
                 shls[0_usize] = i;
                 shls[1_usize] = j;
                 ::core::mem::transmute::<_, fn(_, _, _, _, _, _, _, _)>(
-                    (Some(finit.expect("non-null function pointer")))
-                        .expect("non-null function pointer"),
+                    finit.expect("non-null function pointer"),
                 )(
                     &mut envs,
                     ng,
@@ -216,8 +215,7 @@ unsafe extern "C" fn gen_idx(
                 let ref mut fresh2 = *((*opt).index_xyz_array).offset(ptr as isize);
                 *fresh2 = buf;
                 ::core::mem::transmute::<_, fn(_, _)>(
-                    (Some(findex_xyz.expect("non-null function pointer")))
-                        .expect("non-null function pointer"),
+                    findex_xyz.expect("non-null function pointer"),
                 )(buf, &mut envs);
                 buf = buf.offset((envs.nf * 3_i32) as isize);
                 j += 1;
@@ -237,8 +235,7 @@ unsafe extern "C" fn gen_idx(
                     shls[1_usize] = j;
                     shls[2_usize] = k;
                     ::core::mem::transmute::<_, fn(_, _, _, _, _, _, _, _)>(
-                        (Some(finit.expect("non-null function pointer")))
-                            .expect("non-null function pointer"),
+                        finit.expect("non-null function pointer"),
                     )(
                         &mut envs,
                         ng,
@@ -253,8 +250,7 @@ unsafe extern "C" fn gen_idx(
                     let ref mut fresh3 = *((*opt).index_xyz_array).offset(ptr as isize);
                     *fresh3 = buf;
                     ::core::mem::transmute::<_, fn(_, _)>(
-                        (Some(findex_xyz.expect("non-null function pointer")))
-                            .expect("non-null function pointer"),
+                        findex_xyz.expect("non-null function pointer"),
                     )(buf, &mut envs);
                     buf = buf.offset((envs.nf * 3_i32) as isize);
                     k += 1;
@@ -280,8 +276,7 @@ unsafe extern "C" fn gen_idx(
                         shls[2_usize] = k;
                         shls[3_usize] = l;
                         ::core::mem::transmute::<_, fn(_, _, _, _, _, _, _, _)>(
-                            (Some(finit.expect("non-null function pointer")))
-                                .expect("non-null function pointer"),
+                            finit.expect("non-null function pointer"),
                         )(
                             &mut envs,
                             ng,
@@ -299,8 +294,7 @@ unsafe extern "C" fn gen_idx(
                         let ref mut fresh4 = *((*opt).index_xyz_array).offset(ptr as isize);
                         *fresh4 = buf;
                         ::core::mem::transmute::<_, fn(_, _)>(
-                            (Some(findex_xyz.expect("non-null function pointer")))
-                                .expect("non-null function pointer"),
+                            findex_xyz.expect("non-null function pointer"),
                         )(buf, &mut envs);
                         buf = buf.offset((envs.nf * 3_i32) as isize);
                         l += 1;

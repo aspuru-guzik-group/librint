@@ -108,7 +108,7 @@ unsafe extern "C" fn tot_cgto_accum(
     i = 0_i32;
     while i < nbas {
         s += ::core::mem::transmute::<_, fn(_, _) -> i32>(
-            (Some(f.expect("non-null function pointer"))).expect("non-null function pointer"),
+            f.expect("non-null function pointer"),
         )(i, bas);
         i += 1;
         i;
@@ -188,7 +188,7 @@ unsafe extern "C" fn shells_cgto_offset(
     while i < nbas {
         *ao_loc.offset(i as isize) = *ao_loc.offset((i - 1_i32) as isize)
             + ::core::mem::transmute::<_, fn(_, _) -> i32>(
-                (Some(f.expect("non-null function pointer"))).expect("non-null function pointer"),
+                f.expect("non-null function pointer"),
             )(i - 1_i32, bas);
         i += 1;
         i;

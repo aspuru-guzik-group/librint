@@ -6573,8 +6573,7 @@ pub unsafe extern "C" fn CINTg0_2e(
         irys;
     }
     ::core::mem::transmute::<_, fn(_, _, _)>(
-        (Some(((*envs).f_g0_2d4d).expect("non-null function pointer")))
-            .expect("non-null function pointer"),
+        ((*envs).f_g0_2d4d).expect("non-null function pointer"),
     )(g, &mut bc, envs);
     1_i32
 }

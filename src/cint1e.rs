@@ -362,8 +362,7 @@ pub unsafe extern "C" fn CINT1e_drv(
         n = 0_i32;
         while n < n_comp {
             ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                (Some(f_c2s.expect("non-null function pointer")))
-                    .expect("non-null function pointer"),
+                f_c2s.expect("non-null function pointer"),
             )(
                 out.offset((nout * n) as isize),
                 gctr.offset((nc * n) as isize),
@@ -400,15 +399,13 @@ unsafe extern "C" fn make_g1e_gout(
         0 => {
             CINTg1e_ovlp(g, envs);
             ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                (Some(((*envs).f_gout).expect("non-null function pointer")))
-                    .expect("non-null function pointer"),
+                ((*envs).f_gout).expect("non-null function pointer"),
             )(gout, g, idx, envs, empty);
         }
         1 => {
             CINTg1e_nuc(g, envs, -1_i32);
             ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                (Some(((*envs).f_gout).expect("non-null function pointer")))
-                    .expect("non-null function pointer"),
+                ((*envs).f_gout).expect("non-null function pointer"),
             )(gout, g, idx, envs, empty);
         }
         2 => {
@@ -416,8 +413,7 @@ unsafe extern "C" fn make_g1e_gout(
             while ia < (*envs).natm {
                 CINTg1e_nuc(g, envs, ia);
                 ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                    (Some(((*envs).f_gout).expect("non-null function pointer")))
-                        .expect("non-null function pointer"),
+                    ((*envs).f_gout).expect("non-null function pointer"),
                 )(gout, g, idx, envs, (empty != 0 && ia == 0_i32) as i32);
                 ia += 1;
                 ia;

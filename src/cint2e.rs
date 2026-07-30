@@ -319,14 +319,12 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
                             }
                             (*envs).fac[0_usize] = fac1i;
                             if ::core::mem::transmute::<_, fn(_, _, _, _, _) -> i32>(
-                                (Some(((*envs).f_g0_2e).expect("non-null function pointer")))
-                                    .expect("non-null function pointer"),
+                                ((*envs).f_g0_2e).expect("non-null function pointer"),
                             )(g, rij, rkl.as_mut_ptr(), cutoff, envs)
                                 != 0
                             {
                                 ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    (Some(((*envs).f_gout).expect("non-null function pointer")))
-                                        .expect("non-null function pointer"),
+                                    ((*envs).f_gout).expect("non-null function pointer"),
                                 )(gout, g, idx, envs, *gempty);
                                 if i_ctr > 1_i32 {
                                     if *iempty != 0 {
@@ -677,14 +675,12 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
                             (*envs).fac[0_usize] = fac1i;
                             cutoff = eijcutoff - (*pdata_ij).cceij;
                             if ::core::mem::transmute::<_, fn(_, _, _, _, _) -> i32>(
-                                (Some(((*envs).f_g0_2e).expect("non-null function pointer")))
-                                    .expect("non-null function pointer"),
+                                ((*envs).f_g0_2e).expect("non-null function pointer"),
                             )(g, rij, rkl, cutoff, envs)
                                 != 0
                             {
                                 ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    (Some(((*envs).f_gout).expect("non-null function pointer")))
-                                        .expect("non-null function pointer"),
+                                    ((*envs).f_gout).expect("non-null function pointer"),
                                 )(gout, g, idx, envs, *gempty);
                                 *gempty = 0_i32;
                             }
@@ -934,16 +930,12 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
                                 fac1i = fac1j * expij * expkl;
                                 (*envs).fac[0_usize] = fac1i;
                                 if ::core::mem::transmute::<_, fn(_, _, _, _, _) -> i32>(
-                                    (Some(((*envs).f_g0_2e).expect("non-null function pointer")))
-                                        .expect("non-null function pointer"),
+                                    ((*envs).f_g0_2e).expect("non-null function pointer"),
                                 )(g, rij, rkl, cutoff, envs)
                                     != 0
                                 {
                                     ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                        (Some(
-                                            ((*envs).f_gout).expect("non-null function pointer"),
-                                        ))
-                                        .expect("non-null function pointer"),
+                                        ((*envs).f_gout).expect("non-null function pointer"),
                                     )(
                                         gout, g, idx, envs, 1_i32
                                     );
@@ -1221,14 +1213,12 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
                             fac1i = fac1j * *ci.offset(ip as isize) * expij * expkl;
                             (*envs).fac[0_usize] = fac1i;
                             if ::core::mem::transmute::<_, fn(_, _, _, _, _) -> i32>(
-                                (Some(((*envs).f_g0_2e).expect("non-null function pointer")))
-                                    .expect("non-null function pointer"),
+                                ((*envs).f_g0_2e).expect("non-null function pointer"),
                             )(g, rij, rkl, cutoff, envs)
                                 != 0
                             {
                                 ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    (Some(((*envs).f_gout).expect("non-null function pointer")))
-                                        .expect("non-null function pointer"),
+                                    ((*envs).f_gout).expect("non-null function pointer"),
                                 )(gout, g, idx, envs, *iempty);
                                 *iempty = 0_i32;
                             }
@@ -1506,14 +1496,12 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
                             fac1i = fac1j * *ci.offset(ip as isize) * expij * expkl;
                             (*envs).fac[0_usize] = fac1i;
                             if ::core::mem::transmute::<_, fn(_, _, _, _, _) -> i32>(
-                                (Some(((*envs).f_g0_2e).expect("non-null function pointer")))
-                                    .expect("non-null function pointer"),
+                                ((*envs).f_g0_2e).expect("non-null function pointer"),
                             )(g, rij, rkl, cutoff, envs)
                                 != 0
                             {
                                 ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    (Some(((*envs).f_gout).expect("non-null function pointer")))
-                                        .expect("non-null function pointer"),
+                                    ((*envs).f_gout).expect("non-null function pointer"),
                                 )(gout, g, idx, envs, *jempty);
                                 *jempty = 0_i32;
                             }
@@ -1791,14 +1779,12 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
                             fac1i = fac1j * *ci.offset(ip as isize) * expij * expkl;
                             (*envs).fac[0_usize] = fac1i;
                             if ::core::mem::transmute::<_, fn(_, _, _, _, _) -> i32>(
-                                (Some(((*envs).f_g0_2e).expect("non-null function pointer")))
-                                    .expect("non-null function pointer"),
+                                ((*envs).f_g0_2e).expect("non-null function pointer"),
                             )(g, rij, rkl, cutoff, envs)
                                 != 0
                             {
                                 ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    (Some(((*envs).f_gout).expect("non-null function pointer")))
-                                        .expect("non-null function pointer"),
+                                    ((*envs).f_gout).expect("non-null function pointer"),
                                 )(gout, g, idx, envs, *kempty);
                                 *kempty = 0_i32;
                             }
@@ -2139,14 +2125,12 @@ pub unsafe extern "C" fn CINT2e_loop(
                             }
                             (*envs).fac[0_usize] = fac1i;
                             if ::core::mem::transmute::<_, fn(_, _, _, _, _) -> i32>(
-                                (Some(((*envs).f_g0_2e).expect("non-null function pointer")))
-                                    .expect("non-null function pointer"),
+                                ((*envs).f_g0_2e).expect("non-null function pointer"),
                             )(g, rij, rkl, cutoff, envs)
                                 != 0
                             {
                                 ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    (Some(((*envs).f_gout).expect("non-null function pointer")))
-                                        .expect("non-null function pointer"),
+                                    ((*envs).f_gout).expect("non-null function pointer"),
                                 )(gout, g, idx, envs, *gempty);
                                 if i_ctr > 1_i32 {
                                     if *iempty != 0 {
@@ -2524,8 +2508,7 @@ pub unsafe extern "C" fn CINT2e_drv(
         n = 0_i32;
         while n < n_comp {
             ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                (Some(f_c2s.expect("non-null function pointer")))
-                    .expect("non-null function pointer"),
+                f_c2s.expect("non-null function pointer"),
             )(
                 out.offset((nout * n) as isize),
                 gctr.offset(nc.wrapping_mul(n as u64) as isize),
