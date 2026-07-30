@@ -94,8 +94,8 @@ pub fn two_ad(
 }
 
 pub fn dS_uncontracted(atm: &mut [i32], bas: &mut [i32], env: &mut [f64]) -> Vec<f64> {
-    let (_, nbas) = nmol(&atm, &bas);
-    let nshells = angl(&bas, 0);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let (s1, s2) = split(bas);
 
@@ -115,11 +115,11 @@ pub fn dS_uncontracted(atm: &mut [i32], bas: &mut [i32], env: &mut [f64]) -> Vec
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        let di = CINTcgto_cart(i, &bas) as usize;
+        let di = CINTcgto_cart(i, bas) as usize;
         nu = 0;
         for j in 0..nbas {
             shls[1] = j as i32;
-            let dj = CINTcgto_cart(j, &bas) as usize;
+            let dj = CINTcgto_cart(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
@@ -157,8 +157,8 @@ fn dSf(
     env2: &mut [f64],
     Q: &[f64],
 ) -> Vec<f64> {
-    let (_, nbas) = nmol(&atm, &bas);
-    let nshells = angl(&bas, 0);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dS = vec![0.0; env2.len()];
 
@@ -173,11 +173,11 @@ fn dSf(
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        let di = CINTcgto_cart(i, &bas) as usize;
+        let di = CINTcgto_cart(i, bas) as usize;
         nu = 0;
         for j in 0..nbas {
             shls[1] = j as i32;
-            let dj = CINTcgto_cart(j, &bas) as usize;
+            let dj = CINTcgto_cart(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
@@ -212,8 +212,8 @@ fn dTf(
     env2: &mut [f64],
     P: &[f64],
 ) -> Vec<f64> {
-    let (_, nbas) = nmol(&atm, &bas);
-    let nshells = angl(&bas, 0);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dT = vec![0.0; env2.len()];
 
@@ -228,11 +228,11 @@ fn dTf(
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        let di = CINTcgto_cart(i, &bas) as usize;
+        let di = CINTcgto_cart(i, bas) as usize;
         nu = 0;
         for j in 0..nbas {
             shls[1] = j as i32;
-            let dj = CINTcgto_cart(j, &bas) as usize;
+            let dj = CINTcgto_cart(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
@@ -269,8 +269,8 @@ fn dVf(
     env2: &mut [f64],
     P: &[f64],
 ) -> Vec<f64> {
-    let (_, nbas) = nmol(&atm, &bas);
-    let nshells = angl(&bas, 0);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dV = vec![0.0; env2.len()];
 
@@ -285,11 +285,11 @@ fn dVf(
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        let di = CINTcgto_cart(i, &bas) as usize;
+        let di = CINTcgto_cart(i, bas) as usize;
         nu = 0;
         for j in 0..nbas {
             shls[1] = j as i32;
-            let dj = CINTcgto_cart(j, &bas) as usize;
+            let dj = CINTcgto_cart(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
@@ -330,8 +330,8 @@ pub fn dHcoreg(
 
     let mut dHcore = vec![0.0; env2.len()];
 
-    let dT = dTf(atm, bas, &mut env1, &mut env2, &P);
-    let dV = dVf(atm, bas, &mut env1, &mut env2, &P);
+    let dT = dTf(atm, bas, &mut env1, &mut env2, P);
+    let dV = dVf(atm, bas, &mut env1, &mut env2, P);
 
     for i in 0..env2.len() {
         dHcore[i] = dT[i] + dV[i];
@@ -357,7 +357,7 @@ pub fn getF(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec
 }
 
 pub fn dSg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
-    let nshells = angl(&bas, 0);
+    let nshells = angl(bas, 0);
 
     let F = getF(atm, bas, env, P);
 
@@ -387,14 +387,14 @@ pub fn dRf(
     // linearity this equals the full nbas^4 loop with ~8x fewer reverse passes.
     // Seeds stay OUTSIDE the reverse -- one cint call per reverse is the only
     // shape Enzyme compiles correctly.
-    let (_, nbas) = nmol(&atm, &bas);
-    let nshells = angl(&bas, 0);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dR = vec![0.0; env2.len()];
 
     let mut offs = vec![0usize; nbas + 1];
     for s in 0..nbas {
-        offs[s + 1] = offs[s] + CINTcgto_cart(s, &bas) as usize;
+        offs[s + 1] = offs[s] + CINTcgto_cart(s, bas) as usize;
     }
 
     let w = |a: usize, b: usize, c: usize, d: usize| -> f64 {

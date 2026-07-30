@@ -104,12 +104,12 @@ pub fn integral1e(
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        di = intcgto(i, &bas) as usize;
+        di = intcgto(i, bas) as usize;
 
         nu = 0;
         for j in 0..nbas {
             shls[1] = j as i32;
-            dj = intcgto(j, &bas) as usize;
+            dj = intcgto(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
 
@@ -193,22 +193,22 @@ pub fn integral2e(
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        di = intcgto(i, &bas) as usize;
+        di = intcgto(i, bas) as usize;
 
         nu = 0;
         for j in 0..nbas {
             shls[1] = j as i32;
-            dj = intcgto(j, &bas) as usize;
+            dj = intcgto(j, bas) as usize;
 
             sig = 0;
             for k in 0..nbas {
                 shls[2] = k as i32;
-                dk = intcgto(k, &bas) as usize;
+                dk = intcgto(k, bas) as usize;
 
                 lam = 0;
                 for l in 0..nbas {
                     shls[3] = l as i32;
-                    dl = intcgto(l, &bas) as usize;
+                    dl = intcgto(l, bas) as usize;
 
                     buf = vec![0.0; di * dj * dk * dl];
 
@@ -304,19 +304,19 @@ pub fn integral2e_fock(
     let mut mu = 0usize;
     for i in 0..nbas {
         shls[0] = i as i32;
-        let di = intcgto(i, &bas) as usize;
+        let di = intcgto(i, bas) as usize;
         let mut nu = 0usize;
         for j in 0..nbas {
             shls[1] = j as i32;
-            let dj = intcgto(j, &bas) as usize;
+            let dj = intcgto(j, bas) as usize;
             let mut sig = 0usize;
             for k in 0..nbas {
                 shls[2] = k as i32;
-                let dk = intcgto(k, &bas) as usize;
+                let dk = intcgto(k, bas) as usize;
                 let mut lam = 0usize;
                 for l in 0..nbas {
                     shls[3] = l as i32;
-                    let dl = intcgto(l, &bas) as usize;
+                    let dl = intcgto(l, bas) as usize;
 
                     buf = vec![0.0; di * dj * dk * dl];
                     func(
@@ -395,14 +395,14 @@ fn integrals(
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        di = CINTcgto_cart(i, &bas) as usize;
+        di = CINTcgto_cart(i, bas) as usize;
 
         nu = 0;
         for j in 0..nbas {
             sig = 0;
 
             shls[1] = j as i32;
-            dj = CINTcgto_cart(j, &bas) as usize;
+            dj = CINTcgto_cart(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
 
@@ -468,12 +468,12 @@ fn integrals(
 
             for k in 0..nbas {
                 shls[2] = k as i32;
-                dk = CINTcgto_cart(k, &bas) as usize;
+                dk = CINTcgto_cart(k, bas) as usize;
 
                 lam = 0;
                 for l in 0..nbas {
                     shls[3] = l as i32;
-                    dl = CINTcgto_cart(l, &bas) as usize;
+                    dl = CINTcgto_cart(l, bas) as usize;
 
                     buf = vec![0.0; di * dj * dk * dl];
 
@@ -559,7 +559,7 @@ fn check_density(n: usize, nelec: usize, P: &[f64], S: &[f64]) -> Result<(), Str
 // down: CH4/sto-3g (Td, 4 degenerate pairs) converged to tr(PS) = 10.69 with
 // |PSP - 2P| = 1.95, and CH4/def2-svp (18 pairs) never converged at all.
 fn find_X(n: usize, S: &[f64]) -> Result<(Vec<f64>, Vec<f64>), String> {
-    let s_mat = mat::from_column_major_slice::<f64>(&S, n, n);
+    let s_mat = mat::from_column_major_slice::<f64>(S, n, n);
     let eig_decomp = SelfAdjointEigendecomposition::<f64>::new(s_mat, Side::Lower);
     let eigenvalues = eig_decomp.s();
     let eigenvectors = eig_decomp.u();
@@ -624,7 +624,7 @@ pub fn calc_F(n: usize, P: &[f64], two: &[f64], H: &[f64]) -> Vec<f64> {
 }
 
 fn calc_Fprime(n: usize, F: &[f64], X: &[f64], Xdag: &[f64]) -> Vec<f64> {
-    let inter = matmult(n, &Xdag, &F);
+    let inter = matmult(n, Xdag, F);
     let Fprime = matmult(n, &inter, X);
     Fprime
 }
@@ -633,7 +633,7 @@ fn calc_Fprime(n: usize, F: &[f64], X: &[f64], Xdag: &[f64]) -> Vec<f64> {
 // the general solver the occupied block of a degenerate Fock matrix comes back
 // non-orthonormal, so calc_P's C C^dag is no longer a projector.
 fn diag_F(n: usize, Fprime: &[f64], X: &[f64]) -> Vec<f64> {
-    let fprime_mat = mat::from_column_major_slice::<f64>(&Fprime, n, n);
+    let fprime_mat = mat::from_column_major_slice::<f64>(Fprime, n, n);
     let eig_decomp = SelfAdjointEigendecomposition::<f64>::new(fprime_mat, Side::Lower);
     let eigenvalues = eig_decomp.s();
     let eigenvectors = eig_decomp.u();
@@ -802,11 +802,11 @@ pub fn energyfast(
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        let di = CINTcgto_cart(i, &bas) as usize;
+        let di = CINTcgto_cart(i, bas) as usize;
         nu = 0;
         for j in 0..nbas {
             shls[1] = j as i32;
-            let dj = CINTcgto_cart(j, &bas) as usize;
+            let dj = CINTcgto_cart(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
 
@@ -853,19 +853,19 @@ pub fn energyfast(
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        let di = CINTcgto_cart(i, &bas) as usize;
+        let di = CINTcgto_cart(i, bas) as usize;
         nu = 0;
         for j in 0..nbas {
             shls[1] = j as i32;
-            let dj = CINTcgto_cart(j, &bas) as usize;
+            let dj = CINTcgto_cart(j, bas) as usize;
             sig = 0;
             for k in 0..nbas {
                 shls[2] = k as i32;
-                let dk = CINTcgto_cart(k, &bas) as usize;
+                let dk = CINTcgto_cart(k, bas) as usize;
                 lam = 0;
                 for l in 0..nbas {
                     shls[3] = l as i32;
-                    let dl = CINTcgto_cart(l, &bas) as usize;
+                    let dl = CINTcgto_cart(l, bas) as usize;
 
                     buf = vec![0.0; di * dj * dk * dl];
 
