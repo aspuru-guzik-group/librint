@@ -97,18 +97,20 @@ pub unsafe extern "C" fn CINTtot_pgto_spinor(bas: *const i32, nbas: i32) -> i32 
     }
     s
 }
-unsafe extern "C" fn tot_cgto_accum(
-    f: Option<unsafe extern "C" fn() -> i32>,
-    bas: *const i32,
-    nbas: i32,
-) -> i32 {
+/// Sum a per-shell count over all `nbas` shells.
+///
+/// Takes the counter as a generic callable rather than the erased
+/// `Option<unsafe extern "C" fn() -> i32>` that c2rust produced: the C original
+/// passed a real `int (*)(int, const int *)`, but the translation dropped the
+/// parameter list, so every call site had to `transmute` the true signature back
+/// before calling. The generic keeps the signature checked by the compiler and
+/// gets monomorphised, so there is no indirect call left to inline through.
+unsafe fn tot_cgto_accum(f: impl Fn(i32, *const i32) -> i32, bas: *const i32, nbas: i32) -> i32 {
     let mut i: i32 = 0;
     let mut s: i32 = 0_i32;
     i = 0_i32;
     while i < nbas {
-        s += ::core::mem::transmute::<_, fn(_, _) -> i32>(f.expect("non-null function pointer"))(
-            i, bas,
-        );
+        s += f(i, bas);
         i += 1;
         i;
     }
@@ -140,16 +142,7 @@ unsafe extern "C" fn tot_cgto_accum(
 // }
 #[no_mangle]
 pub unsafe extern "C" fn CINTtot_cgto_spinor(bas: *const i32, nbas: i32) -> i32 {
-    tot_cgto_accum(
-        ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(i32, *const i32) -> i32>,
-            Option<unsafe extern "C" fn() -> i32>,
-        >(Some(
-            CINTcgto_spinor as unsafe extern "C" fn(i32, *const i32) -> i32,
-        )),
-        bas,
-        nbas,
-    )
+    tot_cgto_accum(|id, b| CINTcgto_spinor(id, b), bas, nbas)
 }
 // #[no_mangle]
 // pub unsafe extern "C" fn CINTtot_cgto_cart(
@@ -175,8 +168,12 @@ pub unsafe extern "C" fn CINTtot_cgto_spinor(bas: *const i32, nbas: i32) -> i32 
 //         nbas,
 //     );
 // }
-unsafe extern "C" fn shells_cgto_offset(
-    f: Option<unsafe extern "C" fn() -> i32>,
+/// Prefix-sum the per-shell counts into `ao_loc`.
+///
+/// Same reasoning as [`tot_cgto_accum`]: the counter is a checked generic
+/// callable instead of an erased function pointer plus a `transmute`.
+unsafe fn shells_cgto_offset(
+    f: impl Fn(i32, *const i32) -> i32,
     ao_loc: *mut i32,
     bas: *const i32,
     nbas: i32,
@@ -185,11 +182,7 @@ unsafe extern "C" fn shells_cgto_offset(
     *ao_loc.offset(0_isize) = 0_i32;
     i = 1_i32;
     while i < nbas {
-        *ao_loc.offset(i as isize) = *ao_loc.offset((i - 1_i32) as isize)
-            + ::core::mem::transmute::<_, fn(_, _) -> i32>(f.expect("non-null function pointer"))(
-                i - 1_i32,
-                bas,
-            );
+        *ao_loc.offset(i as isize) = *ao_loc.offset((i - 1_i32) as isize) + f(i - 1_i32, bas);
         i += 1;
         i;
     }
@@ -248,17 +241,7 @@ unsafe extern "C" fn shells_cgto_offset(
 // }
 #[no_mangle]
 pub unsafe extern "C" fn CINTshells_spinor_offset(ao_loc: *mut i32, bas: *const i32, nbas: i32) {
-    shells_cgto_offset(
-        ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(i32, *const i32) -> i32>,
-            Option<unsafe extern "C" fn() -> i32>,
-        >(Some(
-            CINTcgto_spinor as unsafe extern "C" fn(i32, *const i32) -> i32,
-        )),
-        ao_loc,
-        bas,
-        nbas,
-    );
+    shells_cgto_offset(|id, b| CINTcgto_spinor(id, b), ao_loc, bas, nbas);
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTcart_comp(nx: *mut i32, ny: *mut i32, nz: *mut i32, lmax: i32) {
