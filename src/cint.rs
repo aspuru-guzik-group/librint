@@ -152,7 +152,9 @@ impl CINTEnvVars {
             ri: std::ptr::null_mut::<f64>(),
             rj: std::ptr::null_mut::<f64>(),
             rk: std::ptr::null_mut::<f64>(),
-            c2rust_unnamed_1: C2RustUnnamed { rl: std::ptr::null_mut::<f64>() },
+            c2rust_unnamed_1: C2RustUnnamed {
+                rl: std::ptr::null_mut::<f64>(),
+            },
             f_g0_2e: None,
             f_g0_2d4d: None,
             f_gout: None,

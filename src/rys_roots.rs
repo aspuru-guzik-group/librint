@@ -3034,12 +3034,7 @@ unsafe extern "C" fn segment_solve(
     error
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTrys_roots(
-    nroots: i32,
-    x: f64,
-    u: *mut f64,
-    w: *mut f64,
-) {
+pub unsafe extern "C" fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut f64) {
     if x <= 3e-7f64 {
         let off: i32 = nroots * (nroots - 1_i32) / 2_i32;
         let mut i: i32 = 0;
@@ -7217,8 +7212,8 @@ unsafe extern "C" fn _rdk_rys_roots(
         return 0_i32;
     }
     if nroots == 1_i32 {
-        *roots.offset(0_isize) = *fmt_ints.offset(1_isize)
-            / (*fmt_ints.offset(0_isize) - *fmt_ints.offset(1_isize));
+        *roots.offset(0_isize) =
+            *fmt_ints.offset(1_isize) / (*fmt_ints.offset(0_isize) - *fmt_ints.offset(1_isize));
         *weights.offset(0_isize) = *fmt_ints.offset(0_isize);
         return 0_i32;
     }
@@ -7398,12 +7393,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
     if lower == 0 as f64 {
         lgamma_inc_like(fmt_ints.as_mut_ptr(), x, nroots * 2_i32);
     } else {
-        fmt_lerfc_like(
-            fmt_ints.as_mut_ptr(),
-            x,
-            lower,
-            nroots * 2_i32,
-        );
+        fmt_lerfc_like(fmt_ints.as_mut_ptr(), x, lower, nroots * 2_i32);
     }
     if fmt_ints[0_usize] == 0.0f64 {
         k = 0_i32;

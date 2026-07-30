@@ -90,8 +90,7 @@ pub unsafe extern "C" fn gamma_inc_like(f: *mut f64, t: f64, m: i32) {
     } else {
         let mut i: i32 = 0;
         let tt: f64 = sqrt(t);
-        *f.offset(0_isize) =
-            0.886_226_925_452_758_f64 / tt * erf(tt);
+        *f.offset(0_isize) = 0.886_226_925_452_758_f64 / tt * erf(tt);
         if m > 0_i32 {
             let e: f64 = exp(-t);
             let b: f64 = 0.5f64 / t;
@@ -135,8 +134,7 @@ pub unsafe extern "C" fn lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
     } else {
         let mut i: i32 = 0;
         let tt: f64 = sqrtl(t);
-        *f.offset(0_isize) =
-            0.886_226_925_452_758 / tt * erfl(tt);
+        *f.offset(0_isize) = 0.886_226_925_452_758 / tt * erfl(tt);
         if m > 0_i32 {
             let e: f64 = expl(-t);
             let b: f64 = 0.5f64 / t;
@@ -233,9 +231,7 @@ pub unsafe extern "C" fn fmt_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) 
         fmt1_erfc_like(f, t, lower, m);
     } else {
         let tt: f64 = sqrt(t);
-        let mut val: f64 = 0.886_226_925_452_758_f64
-            / tt
-            * (erfc(lower * tt) - erfc(tt));
+        let mut val: f64 = 0.886_226_925_452_758_f64 / tt * (erfc(lower * tt) - erfc(tt));
         *f.offset(0_isize) = val;
         if m > 0_i32 {
             let e: f64 = exp(-t);
@@ -272,9 +268,7 @@ pub unsafe extern "C" fn fmt_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32)
         fmt1_lerfc_like(f, t, lower, m);
     } else {
         let tt: f64 = sqrtl(t);
-        let mut val: f64 = 0.886_226_925_452_758
-            / tt
-            * (erfcl(lower * tt) - erfcl(tt));
+        let mut val: f64 = 0.886_226_925_452_758 / tt * (erfcl(lower * tt) - erfcl(tt));
         *f.offset(0_isize) = val;
         if m > 0_i32 {
             let e: f64 = expl(-t);

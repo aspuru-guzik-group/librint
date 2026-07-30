@@ -89751,14 +89751,7 @@ unsafe extern "C" fn a_iket1_cart2spinor(
         i;
     }
 }
-unsafe extern "C" fn dcopy_ij(
-    out: *mut f64,
-    gctr: *mut f64,
-    ni: i32,
-    _nj: i32,
-    mi: i32,
-    mj: i32,
-) {
+unsafe extern "C" fn dcopy_ij(out: *mut f64, gctr: *mut f64, ni: i32, _nj: i32, mi: i32, mj: i32) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     j = 0_i32;
@@ -89862,12 +89855,12 @@ unsafe extern "C" fn dcopy_iklj(
                     pgctr = gctr.offset((k * mi) as isize);
                     j = 0_i32;
                     while j < mj {
-                        *pijkl.offset((ni * j) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(0_u64) as isize);
-                        *pijkl.offset((ni * j + 1_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(1_u64) as isize);
-                        *pijkl.offset((ni * j + 2_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(2_u64) as isize);
+                        *pijkl.offset((ni * j) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(0_u64) as isize);
+                        *pijkl.offset((ni * j + 1_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(1_u64) as isize);
+                        *pijkl.offset((ni * j + 2_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(2_u64) as isize);
                         j += 1;
                         j;
                     }
@@ -89889,16 +89882,16 @@ unsafe extern "C" fn dcopy_iklj(
                     pgctr = gctr.offset((k * mi) as isize);
                     j = 0_i32;
                     while j < mj {
-                        *pijkl.offset((ni * j) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(0_u64) as isize);
-                        *pijkl.offset((ni * j + 1_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(1_u64) as isize);
-                        *pijkl.offset((ni * j + 2_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(2_u64) as isize);
-                        *pijkl.offset((ni * j + 3_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(3_u64) as isize);
-                        *pijkl.offset((ni * j + 4_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(4_u64) as isize);
+                        *pijkl.offset((ni * j) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(0_u64) as isize);
+                        *pijkl.offset((ni * j + 1_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(1_u64) as isize);
+                        *pijkl.offset((ni * j + 2_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(2_u64) as isize);
+                        *pijkl.offset((ni * j + 3_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(3_u64) as isize);
+                        *pijkl.offset((ni * j + 4_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(4_u64) as isize);
                         j += 1;
                         j;
                     }
@@ -89920,18 +89913,18 @@ unsafe extern "C" fn dcopy_iklj(
                     pgctr = gctr.offset((k * mi) as isize);
                     j = 0_i32;
                     while j < mj {
-                        *pijkl.offset((ni * j) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(0_u64) as isize);
-                        *pijkl.offset((ni * j + 1_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(1_u64) as isize);
-                        *pijkl.offset((ni * j + 2_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(2_u64) as isize);
-                        *pijkl.offset((ni * j + 3_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(3_u64) as isize);
-                        *pijkl.offset((ni * j + 4_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(4_u64) as isize);
-                        *pijkl.offset((ni * j + 5_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(5_u64) as isize);
+                        *pijkl.offset((ni * j) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(0_u64) as isize);
+                        *pijkl.offset((ni * j + 1_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(1_u64) as isize);
+                        *pijkl.offset((ni * j + 2_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(2_u64) as isize);
+                        *pijkl.offset((ni * j + 3_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(3_u64) as isize);
+                        *pijkl.offset((ni * j + 4_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(4_u64) as isize);
+                        *pijkl.offset((ni * j + 5_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(5_u64) as isize);
                         j += 1;
                         j;
                     }
@@ -89953,20 +89946,20 @@ unsafe extern "C" fn dcopy_iklj(
                     pgctr = gctr.offset((k * mi) as isize);
                     j = 0_i32;
                     while j < mj {
-                        *pijkl.offset((ni * j) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(0_u64) as isize);
-                        *pijkl.offset((ni * j + 1_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(1_u64) as isize);
-                        *pijkl.offset((ni * j + 2_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(2_u64) as isize);
-                        *pijkl.offset((ni * j + 3_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(3_u64) as isize);
-                        *pijkl.offset((ni * j + 4_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(4_u64) as isize);
-                        *pijkl.offset((ni * j + 5_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(5_u64) as isize);
-                        *pijkl.offset((ni * j + 6_i32) as isize) = *pgctr
-                            .offset(mikl.wrapping_mul(j as u64).wrapping_add(6_u64) as isize);
+                        *pijkl.offset((ni * j) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(0_u64) as isize);
+                        *pijkl.offset((ni * j + 1_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(1_u64) as isize);
+                        *pijkl.offset((ni * j + 2_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(2_u64) as isize);
+                        *pijkl.offset((ni * j + 3_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(3_u64) as isize);
+                        *pijkl.offset((ni * j + 4_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(4_u64) as isize);
+                        *pijkl.offset((ni * j + 5_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(5_u64) as isize);
+                        *pijkl.offset((ni * j + 6_i32) as isize) =
+                            *pgctr.offset(mikl.wrapping_mul(j as u64).wrapping_add(6_u64) as isize);
                         j += 1;
                         j;
                     }
@@ -90061,11 +90054,7 @@ pub unsafe extern "C" fn c2s_dset0(mut out: *mut f64, dims: *mut i32, counts: *m
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn c2s_grids_dset0(
-    out: *mut f64,
-    dims: *mut i32,
-    counts: *mut i32,
-) {
+pub unsafe extern "C" fn c2s_grids_dset0(out: *mut f64, dims: *mut i32, counts: *mut i32) {
     let mut counts1: [i32; 4] = [
         *counts.offset(2_isize),
         *counts.offset(0_isize),
@@ -91066,7 +91055,6 @@ pub unsafe extern "C" fn c2s_cart_2e1(
 unsafe extern "C" fn run_static_initializers() {
     g_c2s = [
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr(),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr(),
@@ -91076,7 +91064,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(1_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(4_isize),
@@ -91086,7 +91073,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(10_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(40_isize),
@@ -91096,7 +91082,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(40_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(160_isize),
@@ -91106,7 +91091,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(110_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(440_isize),
@@ -91116,7 +91100,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(245_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(980_isize),
@@ -91126,7 +91109,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(476_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(1904_isize),
@@ -91136,7 +91118,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(840_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(3360_isize),
@@ -91146,7 +91127,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(1380_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(5520_isize),
@@ -91156,7 +91136,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(2145_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(8580_isize),
@@ -91166,7 +91145,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(3190_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(12760_isize),
@@ -91176,7 +91154,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(4576_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(18304_isize),
@@ -91186,7 +91163,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(6370_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(25480_isize),
@@ -91196,7 +91172,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(8645_isize),
                 cart2j_lt_lR: std::ptr::null_mut::<f64>(),
@@ -91206,7 +91181,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(11480_isize),
                 cart2j_lt_lR: std::ptr::null_mut::<f64>(),
@@ -91216,7 +91190,6 @@ unsafe extern "C" fn run_static_initializers() {
             }
         },
         {
-            
             cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(14960_isize),
                 cart2j_lt_lR: std::ptr::null_mut::<f64>(),

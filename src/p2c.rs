@@ -93,8 +93,7 @@ pub unsafe extern "C" fn int1e_c(
     coord: i32,
     typec: i32,
 ) -> *mut f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
     let R: Vec<f64> = integral1e(&mut atm, &mut bas, &mut env, coord, typec);
 
     leak_vec(R)
@@ -116,8 +115,7 @@ pub unsafe extern "C" fn int2e_c(
     env_l: usize,
     coord: i32,
 ) -> *mut f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
 
     let R: Vec<f64> = integral2e(&mut atm, &mut bas, &mut env, coord);
 
@@ -138,8 +136,7 @@ pub unsafe extern "C" fn dS_u(
     env_p: *mut f64,
     env_l: usize,
 ) -> *mut f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
 
     let dS = dS_uncontracted(&mut atm, &mut bas, &mut env);
 
@@ -164,8 +161,7 @@ pub unsafe extern "C" fn density_c(
     imax: i32,
     conv: f64,
 ) -> *mut f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
 
     // NULL on failure -- python raises. Never hand back a placeholder density:
     // downstream gradients of a bogus P look like ordinary numbers.
@@ -197,8 +193,7 @@ pub unsafe extern "C" fn energy_c(
     P_p: *mut f64,
     P_l: usize,
 ) -> f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
 
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
@@ -223,8 +218,7 @@ pub unsafe extern "C" fn scf_c(
     imax: i32,
     conv: f64,
 ) -> f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
     // NaN on failure (see density_c); python turns it into an exception.
     match scf(&mut atm, &mut bas, &mut env, nelec, imax, conv) {
         Ok(E) => E,
@@ -253,8 +247,7 @@ pub unsafe extern "C" fn grad_c(
     P_p: *mut f64,
     P_l: usize,
 ) -> *mut f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
 
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
@@ -281,8 +274,7 @@ pub unsafe extern "C" fn dS_c(
     P_p: *mut f64,
     P_l: usize,
 ) -> *mut f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
 
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
@@ -309,8 +301,7 @@ pub unsafe extern "C" fn dHcore_c(
     P_p: *mut f64,
     P_l: usize,
 ) -> *mut f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
 
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
@@ -337,8 +328,7 @@ pub unsafe extern "C" fn dR_c(
     P_p: *mut f64,
     P_l: usize,
 ) -> *mut f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
 
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
@@ -365,8 +355,7 @@ pub unsafe extern "C" fn danalytical_c(
     P_p: *mut f64,
     P_l: usize,
 ) -> *mut f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
 
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();
@@ -394,8 +383,7 @@ pub unsafe extern "C" fn denergy_c(
     P_p: *mut f64,
     P_l: usize,
 ) -> *mut f64 {
-    let (mut atm, mut bas, mut env) =
-        unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
+    let (mut atm, mut bas, mut env) = unsafe { c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l) };
 
     let P_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(P_p, P_l) };
     let mut P: Vec<f64> = P_slice.to_vec();

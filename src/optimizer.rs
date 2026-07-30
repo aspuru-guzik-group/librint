@@ -136,8 +136,7 @@ unsafe extern "C" fn _allocate_index_xyz(
     order: i32,
 ) -> *mut i32 {
     let mut i: i32 = 0;
-    let cumcart: i32 =
-        (l_allow + 1_i32) * (l_allow + 2_i32) * (l_allow + 3_i32) / 6_i32;
+    let cumcart: i32 = (l_allow + 1_i32) * (l_allow + 2_i32) * (l_allow + 3_i32) / 6_i32;
     let mut ll: u64 = (max_l + 1_i32) as u64;
     let mut cc: u64 = cumcart as u64;
     i = 1_i32;
@@ -287,10 +286,7 @@ unsafe extern "C" fn gen_idx(
                             fakenbas,
                             env,
                         );
-                        ptr = i * 16_i32 * 16_i32 * 16_i32
-                            + j * 16_i32 * 16_i32
-                            + k * 16_i32
-                            + l;
+                        ptr = i * 16_i32 * 16_i32 * 16_i32 + j * 16_i32 * 16_i32 + k * 16_i32 + l;
                         let fresh4 = &mut *((*opt).index_xyz_array).offset(ptr as isize);
                         *fresh4 = buf;
                         ::core::mem::transmute::<_, fn(_, _)>(
@@ -906,18 +902,18 @@ pub unsafe extern "C" fn CINTOpt_setij(
     let mut pdata0: *mut PairData = std::ptr::null_mut::<PairData>();
     i = 0_i32;
     while i < nbas {
-        ri = env.offset(*atm.offset(
-            (6_i32 * *bas.offset((8_i32 * i) as isize) + 1_i32) as isize,
-        ) as isize);
+        ri = env.offset(
+            *atm.offset((6_i32 * *bas.offset((8_i32 * i) as isize) + 1_i32) as isize) as isize,
+        );
         ai = env.offset(*bas.offset((8_i32 * i + 5_i32) as isize) as isize);
         iprim = *bas.offset((8_i32 * i + 2_i32) as isize);
         li = *bas.offset((8_i32 * i + 1_i32) as isize);
         log_maxci = *log_max_coeff.offset(i as isize);
         j = 0_i32;
         while j <= i {
-            rj = env.offset(*atm.offset(
-                (6_i32 * *bas.offset((8_i32 * j) as isize) + 1_i32) as isize,
-            ) as isize);
+            rj = env.offset(
+                *atm.offset((6_i32 * *bas.offset((8_i32 * j) as isize) + 1_i32) as isize) as isize,
+            );
             aj = env.offset(*bas.offset((8_i32 * j + 5_i32) as isize) as isize);
             jprim = *bas.offset((8_i32 * j + 2_i32) as isize);
             lj = *bas.offset((8_i32 * j + 1_i32) as isize);
@@ -1062,8 +1058,8 @@ pub unsafe extern "C" fn CINTOpt_set_non0coeff(
         tot_prim = (tot_prim as libc::c_ulong)
             .wrapping_add(*bas.offset((8_i32 * i + 2_i32) as isize) as libc::c_ulong);
         tot_prim_ctr = (tot_prim_ctr as libc::c_ulong).wrapping_add(
-            (*bas.offset((8_i32 * i + 2_i32) as isize)
-                * *bas.offset((8_i32 * i + 3_i32) as isize)) as libc::c_ulong,
+            (*bas.offset((8_i32 * i + 2_i32) as isize) * *bas.offset((8_i32 * i + 3_i32) as isize))
+                as libc::c_ulong,
         );
         i += 1;
         i;

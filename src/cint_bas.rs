@@ -23,8 +23,7 @@ pub unsafe extern "C" fn CINTlen_spinor(bas_id: i32, bas: *const i32) -> i32 {
 #[no_mangle]
 pub unsafe extern "C" fn CINTcgtos_cart(bas_id: i32, bas: *const i32) -> i32 {
     let l: i32 = *bas.offset((8_i32 * bas_id + 1_i32) as isize);
-    (l + 1_i32) * (l + 2_i32) / 2_i32
-        * *bas.offset((8_i32 * bas_id + 3_i32) as isize)
+    (l + 1_i32) * (l + 2_i32) / 2_i32 * *bas.offset((8_i32 * bas_id + 3_i32) as isize)
 }
 
 // #[no_mangle]
@@ -107,9 +106,9 @@ unsafe extern "C" fn tot_cgto_accum(
     let mut s: i32 = 0_i32;
     i = 0_i32;
     while i < nbas {
-        s += ::core::mem::transmute::<_, fn(_, _) -> i32>(
-            f.expect("non-null function pointer"),
-        )(i, bas);
+        s += ::core::mem::transmute::<_, fn(_, _) -> i32>(f.expect("non-null function pointer"))(
+            i, bas,
+        );
         i += 1;
         i;
     }
@@ -187,9 +186,10 @@ unsafe extern "C" fn shells_cgto_offset(
     i = 1_i32;
     while i < nbas {
         *ao_loc.offset(i as isize) = *ao_loc.offset((i - 1_i32) as isize)
-            + ::core::mem::transmute::<_, fn(_, _) -> i32>(
-                f.expect("non-null function pointer"),
-            )(i - 1_i32, bas);
+            + ::core::mem::transmute::<_, fn(_, _) -> i32>(f.expect("non-null function pointer"))(
+                i - 1_i32,
+                bas,
+            );
         i += 1;
         i;
     }
@@ -247,11 +247,7 @@ unsafe extern "C" fn shells_cgto_offset(
 //     );
 // }
 #[no_mangle]
-pub unsafe extern "C" fn CINTshells_spinor_offset(
-    ao_loc: *mut i32,
-    bas: *const i32,
-    nbas: i32,
-) {
+pub unsafe extern "C" fn CINTshells_spinor_offset(ao_loc: *mut i32, bas: *const i32, nbas: i32) {
     shells_cgto_offset(
         ::core::mem::transmute::<
             Option<unsafe extern "C" fn(i32, *const i32) -> i32>,
@@ -265,12 +261,7 @@ pub unsafe extern "C" fn CINTshells_spinor_offset(
     );
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTcart_comp(
-    nx: *mut i32,
-    ny: *mut i32,
-    nz: *mut i32,
-    lmax: i32,
-) {
+pub unsafe extern "C" fn CINTcart_comp(nx: *mut i32, ny: *mut i32, nz: *mut i32, lmax: i32) {
     let mut inc: i32 = 0_i32;
     let mut lx: i32 = 0;
     let mut ly: i32 = 0;

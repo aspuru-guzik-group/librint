@@ -58,14 +58,12 @@ pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
     }
     (*envs).li_ceil = (*envs).i_l + ng[0];
     (*envs).lj_ceil = (*envs).j_l + ng[1];
-    (*envs).ri =
-        env.offset(*atm.offset(
-            (6_i32 * *bas.offset((8_i32 * i_sh) as isize) + 1_i32) as isize,
-        ) as isize);
-    (*envs).rj =
-        env.offset(*atm.offset(
-            (6_i32 * *bas.offset((8_i32 * j_sh) as isize) + 1_i32) as isize,
-        ) as isize);
+    (*envs).ri = env.offset(
+        *atm.offset((6_i32 * *bas.offset((8_i32 * i_sh) as isize) + 1_i32) as isize) as isize,
+    );
+    (*envs).rj = env.offset(
+        *atm.offset((6_i32 * *bas.offset((8_i32 * j_sh) as isize) + 1_i32) as isize) as isize,
+    );
     (*envs).gbits = ng[4];
     (*envs).ncomp_e1 = ng[5];
     (*envs).ncomp_tensor = ng[7];
@@ -157,10 +155,9 @@ pub unsafe extern "C" fn CINTg1e_ovlp(g: *mut f64, envs: *mut CINTEnvVars) -> i3
     let aij: f64 = (*envs).ai[0_usize] + (*envs).aj[0_usize];
     *gx.offset(0_isize) = 1_f64;
     *gy.offset(0_isize) = 1_f64;
-    *gz.offset(0_isize) = (*envs).fac[0_usize]
-        * 1.772_453_850_905_516_f64
-        * 3.141_592_653_589_793_f64
-        / (aij * (aij).sqrt());
+    *gz.offset(0_isize) =
+        (*envs).fac[0_usize] * 1.772_453_850_905_516_f64 * 3.141_592_653_589_793_f64
+            / (aij * (aij).sqrt());
     let nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
     if nmax == 0_i32 {
         return 1_i32;
@@ -230,12 +227,7 @@ pub unsafe extern "C" fn CINTg1e_ovlp(g: *mut f64, envs: *mut CINTEnvVars) -> i3
     1_i32
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTnuc_mod(
-    aij: f64,
-    nuc_id: i32,
-    atm: *mut i32,
-    env: *mut f64,
-) -> f64 {
+pub unsafe extern "C" fn CINTnuc_mod(aij: f64, nuc_id: i32, atm: *mut i32, env: *mut f64) -> f64 {
     let mut zeta: f64 = 0.;
     if nuc_id < 0_i32 {
         zeta = *env.offset(7_isize);
@@ -251,11 +243,7 @@ pub unsafe extern "C" fn CINTnuc_mod(
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg1e_nuc(
-    g: *mut f64,
-    envs: *mut CINTEnvVars,
-    nuc_id: i32,
-) -> i32 {
+pub unsafe extern "C" fn CINTg1e_nuc(g: *mut f64, envs: *mut CINTEnvVars, nuc_id: i32) -> i32 {
     let nrys_roots: i32 = (*envs).nrys_roots;
     let atm: *mut i32 = (*envs).atm;
     let env: *mut f64 = (*envs).env;
@@ -441,14 +429,11 @@ pub unsafe extern "C" fn CINTnabla1i_1e(
             *fz.offset(ptr as isize) = ai2 * *gz.offset((ptr + 1_i32) as isize);
             i = 1_i32;
             while i <= li {
-                *fx.offset((ptr + i) as isize) = i as f64
-                    * *gx.offset((ptr + i - 1_i32) as isize)
+                *fx.offset((ptr + i) as isize) = i as f64 * *gx.offset((ptr + i - 1_i32) as isize)
                     + ai2 * *gx.offset((ptr + i + 1_i32) as isize);
-                *fy.offset((ptr + i) as isize) = i as f64
-                    * *gy.offset((ptr + i - 1_i32) as isize)
+                *fy.offset((ptr + i) as isize) = i as f64 * *gy.offset((ptr + i - 1_i32) as isize)
                     + ai2 * *gy.offset((ptr + i + 1_i32) as isize);
-                *fz.offset((ptr + i) as isize) = i as f64
-                    * *gz.offset((ptr + i - 1_i32) as isize)
+                *fz.offset((ptr + i) as isize) = i as f64 * *gz.offset((ptr + i - 1_i32) as isize)
                     + ai2 * *gz.offset((ptr + i + 1_i32) as isize);
                 i += 1;
                 i;
@@ -602,12 +587,12 @@ pub unsafe extern "C" fn CINTx1i_1e(
             ptr = dj * j + dk * k;
             i = ptr;
             while i <= ptr + li {
-                *fx.offset(i as isize) = *gx.offset((i + 1_i32) as isize)
-                    + *ri.offset(0_isize) * *gx.offset(i as isize);
-                *fy.offset(i as isize) = *gy.offset((i + 1_i32) as isize)
-                    + *ri.offset(1_isize) * *gy.offset(i as isize);
-                *fz.offset(i as isize) = *gz.offset((i + 1_i32) as isize)
-                    + *ri.offset(2_isize) * *gz.offset(i as isize);
+                *fx.offset(i as isize) =
+                    *gx.offset((i + 1_i32) as isize) + *ri.offset(0_isize) * *gx.offset(i as isize);
+                *fy.offset(i as isize) =
+                    *gy.offset((i + 1_i32) as isize) + *ri.offset(1_isize) * *gy.offset(i as isize);
+                *fz.offset(i as isize) =
+                    *gz.offset((i + 1_i32) as isize) + *ri.offset(2_isize) * *gz.offset(i as isize);
                 i += 1;
                 i;
             }

@@ -139,12 +139,7 @@ pub fn integral1e(
     R
 }
 
-pub fn integral2e(
-    atm: &mut [i32],
-    bas: &mut [i32],
-    env: &mut [f64],
-    coord: i32,
-) -> Vec<f64> {
+pub fn integral2e(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], coord: i32) -> Vec<f64> {
     let (natm, nbas) = nmol(atm, bas);
     let nshells = angl(bas, coord);
 
@@ -625,7 +620,7 @@ pub fn calc_F(n: usize, P: &[f64], two: &[f64], H: &[f64]) -> Vec<f64> {
 
 fn calc_Fprime(n: usize, F: &[f64], X: &[f64], Xdag: &[f64]) -> Vec<f64> {
     let inter = matmult(n, Xdag, F);
-    
+
     matmult(n, &inter, X)
 }
 
@@ -654,8 +649,6 @@ fn diag_F(n: usize, Fprime: &[f64], X: &[f64]) -> Vec<f64> {
     // ascending eigenvalues -> calc_P's first nelec/2 columns are the aufbau
     // occupied set
     sort(n, &mut eig, &mut U);
-
-    
 
     matmult(n, X, &U)
 }
@@ -780,12 +773,7 @@ pub fn energy(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> f
     E0 + Enuc
 }
 
-pub fn energyfast(
-    atm: &mut [i32],
-    bas: &mut [i32],
-    env: &mut [f64],
-    P: &[f64],
-) -> f64 {
+pub fn energyfast(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> f64 {
     let (natm, nbas) = nmol(atm, bas);
     let nshells = angl(bas, 0);
 

@@ -144,8 +144,8 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
             let omega2: f64 = omega * omega;
             let lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
             if lij > 0_i32 {
-                let aij: f64 = *ai.offset((i_prim - 1_i32) as isize)
-                    + *aj.offset((j_prim - 1_i32) as isize);
+                let aij: f64 =
+                    *ai.offset((i_prim - 1_i32) as isize) + *aj.offset((j_prim - 1_i32) as isize);
                 let dist_ij: f64 = (rr_ij).sqrt();
                 let theta: f64 = omega2 / (omega2 + aij);
                 expcutoff +=
@@ -196,8 +196,7 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
     CINTOpt_non0coeff_byshell(non0idxk, non0ctrk, ck, k_prim, k_ctr);
     CINTOpt_non0coeff_byshell(non0idxl, non0ctrl, cl, l_prim, l_ctr);
     let nc: i32 = i_ctr * j_ctr * k_ctr * l_ctr;
-    let leng: u64 =
-        ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
+    let leng: u64 = ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
     let lenl: u64 = nf.wrapping_mul(nc as u64).wrapping_mul(n_comp as u64);
     let lenk: u64 = nf
         .wrapping_mul(i_ctr as u64)
@@ -632,8 +631,7 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
         }
     }
     let nc: i32 = 1_i32;
-    let leng: u64 =
-        ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
+    let leng: u64 = ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
     let len0: u64 = nf.wrapping_mul(n_comp as u64);
     let len: u64 = leng.wrapping_add(len0);
     let mut gout: *mut f64 = std::ptr::null_mut::<f64>();
@@ -881,8 +879,7 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
         }
     }
     let nc: i32 = i_ctr;
-    let leng: u64 =
-        ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
+    let leng: u64 = ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
     let leni: u64 = nf.wrapping_mul(i_ctr as u64).wrapping_mul(n_comp as u64);
     let len0: u64 = nf.wrapping_mul(n_comp as u64);
     let len: u64 = leng.wrapping_add(leni).wrapping_add(len0);
@@ -936,9 +933,7 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
                                 {
                                     ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
                                         ((*envs).f_gout).expect("non-null function pointer"),
-                                    )(
-                                        gout, g, idx, envs, 1_i32
-                                    );
+                                    )(gout, g, idx, envs, 1_i32);
                                     if i_ctr > 1_i32 {
                                         if *iempty != 0 {
                                             CINTprim_to_ctr_0(
@@ -1164,8 +1159,7 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
         }
     }
     let nc: i32 = j_ctr;
-    let leng: u64 =
-        ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
+    let leng: u64 = ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
     let lenj: u64 = nf.wrapping_mul(j_ctr as u64).wrapping_mul(n_comp as u64);
     let len0: u64 = nf.wrapping_mul(n_comp as u64);
     let len: u64 = leng.wrapping_add(lenj).wrapping_add(len0);
@@ -1447,8 +1441,7 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
         }
     }
     let nc: i32 = k_ctr;
-    let leng: u64 =
-        ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
+    let leng: u64 = ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
     let lenk: u64 = nf.wrapping_mul(k_ctr as u64).wrapping_mul(n_comp as u64);
     let len0: u64 = nf.wrapping_mul(n_comp as u64);
     let len: u64 = leng.wrapping_add(lenk).wrapping_add(len0);
@@ -1730,8 +1723,7 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
         }
     }
     let nc: i32 = l_ctr;
-    let leng: u64 =
-        ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
+    let leng: u64 = ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
     let lenl: u64 = nf.wrapping_mul(l_ctr as u64).wrapping_mul(n_comp as u64);
     let len0: u64 = nf.wrapping_mul(n_comp as u64);
     let len: u64 = leng.wrapping_add(lenl).wrapping_add(len0);
@@ -2013,8 +2005,7 @@ pub unsafe extern "C" fn CINT2e_loop(
         }
     }
     let nc: i32 = i_ctr * j_ctr * k_ctr * l_ctr;
-    let leng: u64 =
-        ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
+    let leng: u64 = ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
     let lenl: u64 = nf.wrapping_mul(nc as u64).wrapping_mul(n_comp as u64);
     let lenk: u64 = nf
         .wrapping_mul(i_ctr as u64)
@@ -2361,24 +2352,18 @@ pub unsafe extern "C" fn CINT2e_drv(
     if out.is_null() {
         let bas: *mut i32 = (*envs).bas;
         let shls: *mut i32 = (*envs).shls;
-        let i_prim: i32 =
-            *bas.offset((8_i32 * *shls.offset(0_isize) + 2_i32) as isize);
-        let j_prim: i32 =
-            *bas.offset((8_i32 * *shls.offset(1_isize) + 2_i32) as isize);
-        let k_prim: i32 =
-            *bas.offset((8_i32 * *shls.offset(2_isize) + 2_i32) as isize);
-        let l_prim: i32 =
-            *bas.offset((8_i32 * *shls.offset(3_isize) + 2_i32) as isize);
+        let i_prim: i32 = *bas.offset((8_i32 * *shls.offset(0_isize) + 2_i32) as isize);
+        let j_prim: i32 = *bas.offset((8_i32 * *shls.offset(1_isize) + 2_i32) as isize);
+        let k_prim: i32 = *bas.offset((8_i32 * *shls.offset(2_isize) + 2_i32) as isize);
+        let l_prim: i32 = *bas.offset((8_i32 * *shls.offset(3_isize) + 2_i32) as isize);
         let pdata_size: u64 = (((i_prim * j_prim + k_prim * l_prim) * 5_i32
             + i_prim * *x_ctr.offset(0_isize)
             + j_prim * *x_ctr.offset(1_isize)
             + k_prim * *x_ctr.offset(2_isize)
             + l_prim * *x_ctr.offset(3_isize)
-            + (i_prim + j_prim + k_prim + l_prim) * 2_i32)
-            as u64)
+            + (i_prim + j_prim + k_prim + l_prim) * 2_i32) as u64)
             .wrapping_add(nf.wrapping_mul(3_u64));
-        let leng: u64 =
-            ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
+        let leng: u64 = ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
         let len0: u64 = nf.wrapping_mul(n_comp as u64);
         let mut cache_size: u64 = if leng
             .wrapping_add(len0)
@@ -2407,14 +2392,10 @@ pub unsafe extern "C" fn CINT2e_drv(
     if cache.is_null() {
         let bas_0: *mut i32 = (*envs).bas;
         let shls_0: *mut i32 = (*envs).shls;
-        let i_prim_0: i32 =
-            *bas_0.offset((8_i32 * *shls_0.offset(0_isize) + 2_i32) as isize);
-        let j_prim_0: i32 =
-            *bas_0.offset((8_i32 * *shls_0.offset(1_isize) + 2_i32) as isize);
-        let k_prim_0: i32 =
-            *bas_0.offset((8_i32 * *shls_0.offset(2_isize) + 2_i32) as isize);
-        let l_prim_0: i32 =
-            *bas_0.offset((8_i32 * *shls_0.offset(3_isize) + 2_i32) as isize);
+        let i_prim_0: i32 = *bas_0.offset((8_i32 * *shls_0.offset(0_isize) + 2_i32) as isize);
+        let j_prim_0: i32 = *bas_0.offset((8_i32 * *shls_0.offset(1_isize) + 2_i32) as isize);
+        let k_prim_0: i32 = *bas_0.offset((8_i32 * *shls_0.offset(2_isize) + 2_i32) as isize);
+        let l_prim_0: i32 = *bas_0.offset((8_i32 * *shls_0.offset(3_isize) + 2_i32) as isize);
         let pdata_size_0: u64 = (((i_prim_0 * j_prim_0 + k_prim_0 * l_prim_0) * 5_i32
             + i_prim_0 * *x_ctr.offset(0_isize)
             + j_prim_0 * *x_ctr.offset(1_isize)
@@ -2423,8 +2404,7 @@ pub unsafe extern "C" fn CINT2e_drv(
             + (i_prim_0 + j_prim_0 + k_prim_0 + l_prim_0) * 2_i32)
             as u64)
             .wrapping_add(nf.wrapping_mul(3_u64));
-        let leng_0: u64 =
-            ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
+        let leng_0: u64 = ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
         let len0_0: u64 = nf.wrapping_mul(n_comp as u64);
         let cache_size_0: u64 = if leng_0
             .wrapping_add(len0_0)
@@ -2986,9 +2966,7 @@ pub unsafe extern "C" fn int2e_sph(
     opt: *mut CINTOpt,
     cache: *mut f64,
 ) -> i32 {
-    let ng: [i32; 8] = [
-        0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32,
-    ];
+    let ng: [i32; 8] = [0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int2e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs.f_gout = ::core::mem::transmute::<
@@ -3036,9 +3014,7 @@ pub unsafe extern "C" fn int2e_optimizer(
     nbas: i32,
     env: *mut f64,
 ) {
-    let ng: [i32; 8] = [
-        0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32,
-    ];
+    let ng: [i32; 8] = [0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32];
     CINTall_2e_optimizer(opt, &ng, atm, natm, bas, nbas, env);
 }
 #[no_mangle]
@@ -3054,9 +3030,7 @@ pub unsafe extern "C" fn int2e_cart(
     opt: *mut CINTOpt,
     cache: *mut f64,
 ) -> i32 {
-    let ng: [i32; 8] = [
-        0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32,
-    ];
+    let ng: [i32; 8] = [0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int2e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs.f_gout = ::core::mem::transmute::<

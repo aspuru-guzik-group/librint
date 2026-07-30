@@ -317,12 +317,7 @@ fn dVf(
     dV
 }
 
-pub fn dHcoreg(
-    atm: &mut [i32],
-    bas: &mut [i32],
-    env: &mut [f64],
-    P: &[f64],
-) -> Vec<f64> {
+pub fn dHcoreg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     let (s1, s2) = split(bas);
 
     let mut env1: Vec<f64> = env[0..s1].to_vec();
@@ -368,8 +363,6 @@ pub fn dSg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<
 
     let mut env1: Vec<f64> = env[0..s1].to_vec();
     let mut env2: Vec<f64> = env[s1..s2].to_vec();
-
-    
 
     dSf(atm, bas, &mut env1, &mut env2, &Q)
 }
@@ -527,16 +520,10 @@ pub fn dRg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<
     let mut env1: Vec<f64> = env[0..s1].to_vec();
     let mut env2: Vec<f64> = env[s1..s2].to_vec();
 
-    
     dRf(atm, bas, &mut env1, &mut env2, P)
 }
 
-pub fn danalyticalg(
-    atm: &mut [i32],
-    bas: &mut [i32],
-    env: &mut [f64],
-    P: &[f64],
-) -> Vec<f64> {
+pub fn danalyticalg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     let dH = dHcoreg(atm, bas, env, P);
     let dR = dRg(atm, bas, env, P);
     let dS = dSg(atm, bas, env, P);
@@ -557,12 +544,7 @@ pub fn danalyticalg(
 // now; `python -c "librint.dscf.denergyf"` is denergy_c -> denergyfast, an
 // assembled path, and shares nothing but a name with the old reverse.
 
-pub fn gradenergy(
-    atm: &mut [i32],
-    bas: &mut [i32],
-    env: &mut [f64],
-    P: &[f64],
-) -> Vec<f64> {
+pub fn gradenergy(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     // 1/2 tr(P(H+F)) = tr(PH) + 1/2 tr(PGP), assembled from the batched
     // part-wise adjoints (each of which IS an Enzyme reverse).
     let dH = dHcoreg(atm, bas, env, P);
@@ -574,12 +556,7 @@ pub fn gradenergy(
     denv
 }
 
-pub fn denergyfast(
-    atm: &mut [i32],
-    bas: &mut [i32],
-    env: &mut [f64],
-    P: &[f64],
-) -> Vec<f64> {
+pub fn denergyfast(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     // Kept as a separate C entry point (denergy_c) for compatibility only: it
     // had inlined the same dH + dR - 0.5 dS expression as danalyticalg, in the
     // same order, so the two returned bitwise-identical values. Delegate rather

@@ -153,14 +153,11 @@ unsafe extern "C" fn _dlasq4(
     if n0init == n0 {
         if *dmin.offset(0_isize) == *dn.offset(0_isize) {
             if *dmin.offset(1_isize) == *dn.offset(1_isize) {
-                b1 = (*qvecp.offset((n0 - 1_i32) as isize)
-                    * *evecp.offset((n0 - 2_i32) as isize))
-                .sqrt();
-                b2 = (*qvecp.offset((n0 - 2_i32) as isize)
-                    * *evecp.offset((n0 - 3_i32) as isize))
-                .sqrt();
-                a2 = *qvecp.offset((n0 - 2_i32) as isize)
-                    + *evecp.offset((n0 - 2_i32) as isize);
+                b1 = (*qvecp.offset((n0 - 1_i32) as isize) * *evecp.offset((n0 - 2_i32) as isize))
+                    .sqrt();
+                b2 = (*qvecp.offset((n0 - 2_i32) as isize) * *evecp.offset((n0 - 3_i32) as isize))
+                    .sqrt();
+                a2 = *qvecp.offset((n0 - 2_i32) as isize) + *evecp.offset((n0 - 2_i32) as isize);
                 gap2 = *dmin.offset(2_isize) - a2 - *dmin.offset(2_isize) * 0.25f64;
                 if gap2 > b2 {
                     gap1 = a2 - *dn.offset(0_isize) - b2 / gap2 * b2;
@@ -168,9 +165,7 @@ unsafe extern "C" fn _dlasq4(
                     gap1 = a2 - *dn.offset(0_isize) - (b1 + b2);
                 }
                 if gap1 > b1 {
-                    s = if *dn.offset(0_isize) - b1 / gap1 * b1
-                        > *dmin.offset(0_isize) * 0.5f64
-                    {
+                    s = if *dn.offset(0_isize) - b1 / gap1 * b1 > *dmin.offset(0_isize) * 0.5f64 {
                         *dn.offset(0_isize) - b1 / gap1 * b1
                     } else {
                         *dmin.offset(0_isize) * 0.5f64
@@ -194,12 +189,10 @@ unsafe extern "C" fn _dlasq4(
                     };
                 }
             } else {
-                if *evecp.offset((n0 - 2_i32) as isize) > *qvecp.offset((n0 - 2_i32) as isize)
-                {
+                if *evecp.offset((n0 - 2_i32) as isize) > *qvecp.offset((n0 - 2_i32) as isize) {
                     return 0_i32;
                 }
-                b2 = *evecp.offset((n0 - 2_i32) as isize)
-                    / *qvecp.offset((n0 - 2_i32) as isize);
+                b2 = *evecp.offset((n0 - 2_i32) as isize) / *qvecp.offset((n0 - 2_i32) as isize);
                 a2 = b2;
                 i = n0 - 3_i32;
                 while i >= i0 {
@@ -228,8 +221,7 @@ unsafe extern "C" fn _dlasq4(
             {
                 return 0_i32;
             }
-            a2 =
-                *evec1p.offset((n0 - 2_i32) as isize) / *qvec1p.offset((n0 - 1_i32) as isize);
+            a2 = *evec1p.offset((n0 - 2_i32) as isize) / *qvec1p.offset((n0 - 1_i32) as isize);
             b2 = *evecp.offset((n0 - 3_i32) as isize) / *qvecp.offset((n0 - 3_i32) as isize);
             a2 += b2;
             i = n0 - 4_i32;
@@ -257,19 +249,15 @@ unsafe extern "C" fn _dlasq4(
             }
         } else if *dmin.offset(0_isize) == *dn.offset(2_isize) {
             if *evec1p.offset((n0 - 3_i32) as isize) > *qvec1p.offset((n0 - 2_i32) as isize)
-                || *evec1p.offset((n0 - 2_i32) as isize)
-                    > *qvec1p.offset((n0 - 1_i32) as isize)
+                || *evec1p.offset((n0 - 2_i32) as isize) > *qvec1p.offset((n0 - 1_i32) as isize)
             {
                 return 0_i32;
             }
-            a2 = *evec1p.offset((n0 - 3_i32) as isize)
-                / *qvec1p.offset((n0 - 2_i32) as isize)
-                * (*evec1p.offset((n0 - 2_i32) as isize)
-                    / *qvec1p.offset((n0 - 1_i32) as isize)
+            a2 = *evec1p.offset((n0 - 3_i32) as isize) / *qvec1p.offset((n0 - 2_i32) as isize)
+                * (*evec1p.offset((n0 - 2_i32) as isize) / *qvec1p.offset((n0 - 1_i32) as isize)
                     + 1.0f64);
             if n0 - i0 > 3_i32 {
-                b2 = *evecp.offset((n0 - 4_i32) as isize)
-                    / *qvecp.offset((n0 - 4_i32) as isize);
+                b2 = *evecp.offset((n0 - 4_i32) as isize) / *qvecp.offset((n0 - 4_i32) as isize);
                 a2 += b2;
                 i = n0 - 5_i32;
                 while i >= i0 {
@@ -344,8 +332,7 @@ unsafe extern "C" fn _dlasq4(
         }
     } else if n0init == n0 + 2_i32 {
         if *dmin.offset(2_isize) == *dn.offset(2_isize)
-            && *evecp.offset((n0 - 2_i32) as isize) * 2.0f64
-                < *qvecp.offset((n0 - 2_i32) as isize)
+            && *evecp.offset((n0 - 2_i32) as isize) * 2.0f64 < *qvecp.offset((n0 - 2_i32) as isize)
         {
             if *evecp.offset((n0 - 2_i32) as isize) > *qvecp.offset((n0 - 2_i32) as isize) {
                 return 0_i32;
@@ -355,13 +342,10 @@ unsafe extern "C" fn _dlasq4(
             if b2 != 0.0f64 {
                 i = n0 - 2_i32;
                 while i > i0 {
-                    if *evecp.offset((i - 1_i32) as isize)
-                        > *qvecp.offset((i - 1_i32) as isize)
-                    {
+                    if *evecp.offset((i - 1_i32) as isize) > *qvecp.offset((i - 1_i32) as isize) {
                         return 0_i32;
                     }
-                    b1 *= *evecp.offset((i - 1_i32) as isize)
-                        / *qvecp.offset((i - 1_i32) as isize);
+                    b1 *= *evecp.offset((i - 1_i32) as isize) / *qvecp.offset((i - 1_i32) as isize);
                     b2 += b1;
                     if b1 * 100.0f64 < b2 {
                         break;
@@ -373,11 +357,9 @@ unsafe extern "C" fn _dlasq4(
             s = *dmin.offset(2_isize) * 0.333f64;
             a2 = *dmin.offset(2_isize) / (b2 * 1.05f64 + 1.0f64);
             b2 = (b2 * 1.05f64).sqrt();
-            gap2 = *qvecp.offset((n0 - 2_i32) as isize)
-                + *evecp.offset((n0 - 3_i32) as isize)
-                - (*qvecp.offset((n0 - 3_i32) as isize)
-                    * *evecp.offset((n0 - 3_i32) as isize))
-                .sqrt()
+            gap2 = *qvecp.offset((n0 - 2_i32) as isize) + *evecp.offset((n0 - 3_i32) as isize)
+                - (*qvecp.offset((n0 - 3_i32) as isize) * *evecp.offset((n0 - 3_i32) as isize))
+                    .sqrt()
                 - a2;
             if gap2 > 0.0f64 && gap2 > b2 * a2 {
                 s = if s > a2 * (1.0f64 - a2 * 1.01f64 * (b2 / gap2) * b2) {
@@ -456,12 +438,7 @@ unsafe extern "C" fn _dlasq5(
         *dn.offset(0_isize)
     };
 }
-unsafe extern "C" fn _dlasq2(
-    n: i32,
-    work: *mut f64,
-    diag: *mut f64,
-    diag_off: *mut f64,
-) -> i32 {
+unsafe extern "C" fn _dlasq2(n: i32, work: *mut f64, diag: *mut f64, diag_off: *mut f64) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut itry: i32 = 0;
@@ -976,12 +953,11 @@ unsafe extern "C" fn _compute_eigenvalues(
         i += 1;
         i;
     }
-    *wgap.offset(-1_i32 as isize) =
-        if 0.0f64 > *w.offset(0_isize) - *werr.offset(0_isize) - gl {
-            0.0f64
-        } else {
-            *w.offset(0_isize) - *werr.offset(0_isize) - gl
-        };
+    *wgap.offset(-1_i32 as isize) = if 0.0f64 > *w.offset(0_isize) - *werr.offset(0_isize) - gl {
+        0.0f64
+    } else {
+        *w.offset(0_isize) - *werr.offset(0_isize) - gl
+    };
     *wgap.offset((n - 1_i32) as isize) = if 0.0f64
         > gu - sigma - (*w.offset((n - 1_i32) as isize) + *werr.offset((n - 1_i32) as isize))
     {
@@ -1039,10 +1015,10 @@ unsafe extern "C" fn _dlarrf(
             return 0_i32;
         }
         lsigma -= if clgapl * 0.25f64 < *wgap.offset(clstrt as isize) {
-                clgapl * 0.25f64
-            } else {
-                *wgap.offset(clstrt as isize)
-            };
+            clgapl * 0.25f64
+        } else {
+            *wgap.offset(clstrt as isize)
+        };
         ktry += 1;
         ktry;
     }
@@ -1504,8 +1480,7 @@ unsafe extern "C" fn _compute_eigenvectors(
                             k;
                         }
                         *new_cluster_range.offset((ncluster * 2_i32) as isize) = newfst;
-                        *new_cluster_range.offset((ncluster * 2_i32 + 1_i32) as isize) =
-                            newlst;
+                        *new_cluster_range.offset((ncluster * 2_i32 + 1_i32) as isize) = newlst;
                         ncluster += 1;
                         ncluster;
                     } else {

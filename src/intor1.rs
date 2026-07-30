@@ -35,68 +35,36 @@ pub unsafe extern "C" fn CINTgout1e_int1e_kin(
     let g2: *mut f64 = g1.offset(((*envs).g_size * 3_i32) as isize);
     let g3: *mut f64 = g2.offset(((*envs).g_size * 3_i32) as isize);
     let mut s: [f64; 9] = [0.; 9];
-    CINTnabla1j_1e(
-        g1,
-        g0,
-        (*envs).i_l,
-        (*envs).j_l,
-        0_i32,
-        envs,
-    );
-    CINTnabla1j_1e(
-        g2,
-        g0,
-        (*envs).i_l,
-        (*envs).j_l + 1_i32,
-        0_i32,
-        envs,
-    );
-    CINTnabla1j_1e(
-        g3,
-        g2,
-        (*envs).i_l,
-        (*envs).j_l,
-        0_i32,
-        envs,
-    );
+    CINTnabla1j_1e(g1, g0, (*envs).i_l, (*envs).j_l, 0_i32, envs);
+    CINTnabla1j_1e(g2, g0, (*envs).i_l, (*envs).j_l + 1_i32, 0_i32, envs);
+    CINTnabla1j_1e(g3, g2, (*envs).i_l, (*envs).j_l, 0_i32, envs);
     n = 0_i32;
     while n < nf {
         ix = *idx.offset((n * 3_i32) as isize);
         iy = *idx.offset((1_i32 + n * 3_i32) as isize);
         iz = *idx.offset((2_i32 + n * 3_i32) as isize);
-        s[0_i32 as usize] = *g3.offset(ix as isize)
-            * *g0.offset(iy as isize)
-            * *g0.offset(iz as isize);
-        s[1_i32 as usize] = *g2.offset(ix as isize)
-            * *g1.offset(iy as isize)
-            * *g0.offset(iz as isize);
-        s[2_i32 as usize] = *g2.offset(ix as isize)
-            * *g0.offset(iy as isize)
-            * *g1.offset(iz as isize);
-        s[3_i32 as usize] = *g1.offset(ix as isize)
-            * *g2.offset(iy as isize)
-            * *g0.offset(iz as isize);
-        s[4_i32 as usize] = *g0.offset(ix as isize)
-            * *g3.offset(iy as isize)
-            * *g0.offset(iz as isize);
-        s[5_i32 as usize] = *g0.offset(ix as isize)
-            * *g2.offset(iy as isize)
-            * *g1.offset(iz as isize);
-        s[6_i32 as usize] = *g1.offset(ix as isize)
-            * *g0.offset(iy as isize)
-            * *g2.offset(iz as isize);
-        s[7_i32 as usize] = *g0.offset(ix as isize)
-            * *g1.offset(iy as isize)
-            * *g2.offset(iz as isize);
-        s[8_i32 as usize] = *g0.offset(ix as isize)
-            * *g0.offset(iy as isize)
-            * *g3.offset(iz as isize);
+        s[0_i32 as usize] =
+            *g3.offset(ix as isize) * *g0.offset(iy as isize) * *g0.offset(iz as isize);
+        s[1_i32 as usize] =
+            *g2.offset(ix as isize) * *g1.offset(iy as isize) * *g0.offset(iz as isize);
+        s[2_i32 as usize] =
+            *g2.offset(ix as isize) * *g0.offset(iy as isize) * *g1.offset(iz as isize);
+        s[3_i32 as usize] =
+            *g1.offset(ix as isize) * *g2.offset(iy as isize) * *g0.offset(iz as isize);
+        s[4_i32 as usize] =
+            *g0.offset(ix as isize) * *g3.offset(iy as isize) * *g0.offset(iz as isize);
+        s[5_i32 as usize] =
+            *g0.offset(ix as isize) * *g2.offset(iy as isize) * *g1.offset(iz as isize);
+        s[6_i32 as usize] =
+            *g1.offset(ix as isize) * *g0.offset(iy as isize) * *g2.offset(iz as isize);
+        s[7_i32 as usize] =
+            *g0.offset(ix as isize) * *g1.offset(iy as isize) * *g2.offset(iz as isize);
+        s[8_i32 as usize] =
+            *g0.offset(ix as isize) * *g0.offset(iy as isize) * *g3.offset(iz as isize);
         if gout_empty != 0 {
-            *gout.offset(n as isize) =
-                -s[0_usize] - s[4_usize] - s[8_usize];
+            *gout.offset(n as isize) = -s[0_usize] - s[4_usize] - s[8_usize];
         } else {
-            *gout.offset(n as isize) +=
-                -s[0_usize] - s[4_usize] - s[8_usize];
+            *gout.offset(n as isize) += -s[0_usize] - s[4_usize] - s[8_usize];
         }
         n += 1;
         n;
@@ -111,9 +79,7 @@ pub unsafe extern "C" fn int1e_kin_optimizer(
     nbas: i32,
     env: *mut f64,
 ) {
-    let ng: [i32; 8] = [
-        0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32,
-    ];
+    let ng: [i32; 8] = [0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32];
     CINTall_1e_optimizer(opt, &ng, atm, natm, bas, nbas, env);
 }
 #[no_mangle]
@@ -129,9 +95,7 @@ pub unsafe extern "C" fn int1e_kin_cart(
     _opt: *mut CINTOpt,
     cache: *mut f64,
 ) -> i32 {
-    let ng: [i32; 8] = [
-        0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32,
-    ];
+    let ng: [i32; 8] = [0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs.f_gout = ::core::mem::transmute::<
@@ -184,9 +148,7 @@ pub unsafe extern "C" fn int1e_kin_sph(
     _opt: *mut CINTOpt,
     cache: *mut f64,
 ) -> i32 {
-    let ng: [i32; 8] = [
-        0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32,
-    ];
+    let ng: [i32; 8] = [0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs.f_gout = ::core::mem::transmute::<
@@ -239,9 +201,7 @@ pub unsafe extern "C" fn int1e_kin_spinor(
     _opt: *mut CINTOpt,
     _cache: *mut f64,
 ) -> i32 {
-    let ng: [i32; 8] = [
-        0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32,
-    ];
+    let ng: [i32; 8] = [0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
     envs.f_gout = ::core::mem::transmute::<
