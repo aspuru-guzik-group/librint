@@ -14,18 +14,119 @@ use faer::{linalg::solvers::SelfAdjointEigendecomposition, mat, Side};
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
-type inte = fn(
-    buf: &mut [f64],
-    shls: &mut [i32],
-    atm: &mut [i32],
-    natm: i32,
-    bas: &mut [i32],
-    nbas: i32,
-    env: &mut [f64],
-    *mut CINTOpt,
-) -> i32;
+/// An out-of-range `coord`/`typec` code is a caller bug: the C boundary passes
+/// them as bare ints with no type safety. Aborting preserves the historical
+/// behaviour (and the rule in `p2c.rs` about never returning a placeholder
+/// result), but now says why first instead of exiting silently.
+///
+/// TODO: these should become a `Result` propagated out through `p2c.rs`, the way
+/// `density`/`scf` already report failure in band. A library should not call
+/// `process::exit` on its host.
+fn invalid_code(what: &str, code: i32) -> ! {
+    eprintln!("librint: invalid {} code {}", what, code);
+    std::process::exit(1);
+}
 
-type cgto = fn(bas_id: usize, bas: &[i32]) -> i32;
+/// Which angular-momentum convention the AO matrices are built in. Selected by
+/// the `coord` code at the C boundary: 0 cartesian, 1 spherical.
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum Basis {
+    Cartesian,
+    Spherical,
+}
+
+/// Which one-electron operator to integrate. Selected by the `typec` code at
+/// the C boundary: 0 overlap, 1 kinetic, 2 nuclear attraction.
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum Op1e {
+    Overlap,
+    Kinetic,
+    Nuclear,
+}
+
+impl Basis {
+    pub fn from_code(coord: i32) -> Self {
+        match coord {
+            0 => Basis::Cartesian,
+            1 => Basis::Spherical,
+            _ => invalid_code("coord", coord),
+        }
+    }
+
+    /// Contracted gaussians per shell in this convention.
+    fn cgto(self, bas_id: usize, bas: &[i32]) -> i32 {
+        match self {
+            Basis::Cartesian => CINTcgto_cart(bas_id, bas),
+            Basis::Spherical => CINTcgto_spheric(bas_id, bas),
+        }
+    }
+
+    /// One-electron integral block for a single shell pair.
+    #[allow(clippy::too_many_arguments)]
+    fn int1e(
+        self,
+        op: Op1e,
+        buf: &mut [f64],
+        shls: &mut [i32],
+        atm: &mut [i32],
+        natm: i32,
+        bas: &mut [i32],
+        nbas: i32,
+        env: &mut [f64],
+    ) -> i32 {
+        let opt = std::ptr::null_mut();
+        match (self, op) {
+            (Basis::Cartesian, Op1e::Overlap) => {
+                cint1e_ovlp_cart(buf, shls, atm, natm, bas, nbas, env, opt)
+            }
+            (Basis::Cartesian, Op1e::Kinetic) => {
+                cint1e_kin_cart(buf, shls, atm, natm, bas, nbas, env, opt)
+            }
+            (Basis::Cartesian, Op1e::Nuclear) => {
+                cint1e_nuc_cart(buf, shls, atm, natm, bas, nbas, env, opt)
+            }
+            (Basis::Spherical, Op1e::Overlap) => {
+                cint1e_ovlp_sph(buf, shls, atm, natm, bas, nbas, env, opt)
+            }
+            (Basis::Spherical, Op1e::Kinetic) => {
+                cint1e_kin_sph(buf, shls, atm, natm, bas, nbas, env, opt)
+            }
+            (Basis::Spherical, Op1e::Nuclear) => {
+                cint1e_nuc_sph(buf, shls, atm, natm, bas, nbas, env, opt)
+            }
+        }
+    }
+
+    /// Two-electron integral block for a single shell quartet.
+    #[allow(clippy::too_many_arguments)]
+    fn int2e(
+        self,
+        buf: &mut [f64],
+        shls: &mut [i32],
+        atm: &mut [i32],
+        natm: i32,
+        bas: &mut [i32],
+        nbas: i32,
+        env: &mut [f64],
+        opt: *mut CINTOpt,
+    ) -> i32 {
+        match self {
+            Basis::Cartesian => cint2e_cart(buf, shls, atm, natm, bas, nbas, env, opt),
+            Basis::Spherical => cint2e_sph(buf, shls, atm, natm, bas, nbas, env, opt),
+        }
+    }
+}
+
+impl Op1e {
+    pub fn from_code(typec: i32) -> Self {
+        match typec {
+            0 => Op1e::Overlap,
+            1 => Op1e::Kinetic,
+            2 => Op1e::Nuclear,
+            _ => invalid_code("typec", typec),
+        }
+    }
+}
 
 pub fn nmol(atm: &[i32], bas: &[i32]) -> (usize, usize) {
     let natm: usize = atm.len() / ATM_SLOTS;
@@ -70,50 +171,23 @@ pub fn integral1e(
     let mut di;
     let mut dj;
 
-    let intcgto: cgto;
-    let func: inte;
-
-    if coord == 0 {
-        intcgto = CINTcgto_cart;
-
-        if typec == 0 {
-            func = cint1e_ovlp_cart;
-        } else if typec == 1 {
-            func = cint1e_kin_cart;
-        } else if typec == 2 {
-            func = cint1e_nuc_cart;
-        } else {
-            std::process::exit(1);
-        }
-    } else if coord == 1 {
-        intcgto = CINTcgto_spheric;
-
-        if typec == 0 {
-            func = cint1e_ovlp_sph;
-        } else if typec == 1 {
-            func = cint1e_kin_sph;
-        } else if typec == 2 {
-            func = cint1e_nuc_sph;
-        } else {
-            std::process::exit(1);
-        }
-    } else {
-        std::process::exit(1);
-    }
+    let basis = Basis::from_code(coord);
+    let op = Op1e::from_code(typec);
 
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        di = intcgto(i, bas) as usize;
+        di = basis.cgto(i, bas) as usize;
 
         nu = 0;
         for j in 0..nbas {
             shls[1] = j as i32;
-            dj = intcgto(j, bas) as usize;
+            dj = basis.cgto(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
 
-            func(
+            basis.int1e(
+                op,
                 &mut buf,
                 &mut shls,
                 atm,
@@ -121,7 +195,6 @@ pub fn integral1e(
                 bas,
                 nbas as i32,
                 env,
-                std::ptr::null_mut(),
             );
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
@@ -158,18 +231,7 @@ pub fn integral2e(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], coord: i32)
     let mut dk;
     let mut dl;
 
-    let intcgto: cgto;
-    let func: inte;
-
-    if coord == 0 {
-        intcgto = CINTcgto_cart;
-        func = cint2e_cart;
-    } else if coord == 1 {
-        intcgto = CINTcgto_spheric;
-        func = cint2e_sph;
-    } else {
-        std::process::exit(1);
-    }
+    let basis = Basis::from_code(coord);
 
     // CINTOpt built once and shared by every quartet (primal only -- see
     // integral2e_sym for why it must not enter differentiated calls)
@@ -188,26 +250,26 @@ pub fn integral2e(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], coord: i32)
     mu = 0;
     for i in 0..nbas {
         shls[0] = i as i32;
-        di = intcgto(i, bas) as usize;
+        di = basis.cgto(i, bas) as usize;
 
         nu = 0;
         for j in 0..nbas {
             shls[1] = j as i32;
-            dj = intcgto(j, bas) as usize;
+            dj = basis.cgto(j, bas) as usize;
 
             sig = 0;
             for k in 0..nbas {
                 shls[2] = k as i32;
-                dk = intcgto(k, bas) as usize;
+                dk = basis.cgto(k, bas) as usize;
 
                 lam = 0;
                 for l in 0..nbas {
                     shls[3] = l as i32;
-                    dl = intcgto(l, bas) as usize;
+                    dl = basis.cgto(l, bas) as usize;
 
                     buf = vec![0.0; di * dj * dk * dl];
 
-                    func(
+                    basis.int2e(
                         &mut buf,
                         &mut shls,
                         atm,
@@ -266,18 +328,7 @@ pub fn integral2e_fock(
     let mut buf: Vec<f64>;
     let mut shls: [i32; 4] = [0, 0, 0, 0];
 
-    let intcgto: cgto;
-    let func: inte;
-
-    if coord == 0 {
-        intcgto = CINTcgto_cart;
-        func = cint2e_cart;
-    } else if coord == 1 {
-        intcgto = CINTcgto_spheric;
-        func = cint2e_sph;
-    } else {
-        std::process::exit(1);
-    }
+    let basis = Basis::from_code(coord);
 
     let mut opt: *mut CINTOpt = std::ptr::null_mut();
     unsafe {
@@ -299,22 +350,22 @@ pub fn integral2e_fock(
     let mut mu = 0usize;
     for i in 0..nbas {
         shls[0] = i as i32;
-        let di = intcgto(i, bas) as usize;
+        let di = basis.cgto(i, bas) as usize;
         let mut nu = 0usize;
         for j in 0..nbas {
             shls[1] = j as i32;
-            let dj = intcgto(j, bas) as usize;
+            let dj = basis.cgto(j, bas) as usize;
             let mut sig = 0usize;
             for k in 0..nbas {
                 shls[2] = k as i32;
-                let dk = intcgto(k, bas) as usize;
+                let dk = basis.cgto(k, bas) as usize;
                 let mut lam = 0usize;
                 for l in 0..nbas {
                     shls[3] = l as i32;
-                    let dl = intcgto(l, bas) as usize;
+                    let dl = basis.cgto(l, bas) as usize;
 
                     buf = vec![0.0; di * dj * dk * dl];
-                    func(
+                    basis.int2e(
                         &mut buf,
                         &mut shls,
                         atm,
