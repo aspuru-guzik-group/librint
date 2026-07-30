@@ -2520,8 +2520,10 @@ pub unsafe extern "C" fn CINT2e_drv(
     }
     (empty == 0) as i32
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTgout2e(
+// Plain Rust fn, not `#[no_mangle] extern "C"`: the only caller is the `Gout`
+// dispatch in cint.rs, and external linkage would stop fat LTO internalising
+// and inlining this into the innermost primitive loop.
+pub unsafe fn CINTgout2e(
     gout: *mut f64,
     g: *mut f64,
     mut idx: *mut i32,

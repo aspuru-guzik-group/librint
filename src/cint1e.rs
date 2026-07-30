@@ -429,8 +429,8 @@ unsafe extern "C" fn make_g1e_gout(
         _ => {}
     };
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTgout1e(
+// Plain Rust fn: see the note on CINTgout2e in cint2e.rs.
+pub unsafe fn CINTgout1e(
     gout: *mut f64,
     g: *mut f64,
     idx: *mut i32,
@@ -466,8 +466,8 @@ pub unsafe extern "C" fn CINTgout1e(
         }
     };
 }
-#[no_mangle]
-pub unsafe extern "C" fn CINTgout1e_nuc(
+// Plain Rust fn: see the note on CINTgout2e in cint2e.rs.
+pub unsafe fn CINTgout1e_nuc(
     gout: *mut f64,
     g: *mut f64,
     idx: *mut i32,

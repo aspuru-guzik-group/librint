@@ -18,8 +18,8 @@ use crate::cint::CINTEnvVars;
 use crate::cint::CINTOpt;
 use crate::cint::Gout;
 
-#[no_mangle]
-pub unsafe extern "C" fn CINTgout1e_int1e_kin(
+// Plain Rust fn: see the note on CINTgout2e in cint2e.rs.
+pub unsafe fn CINTgout1e_int1e_kin(
     gout: *mut f64,
     g: *mut f64,
     idx: *mut i32,
