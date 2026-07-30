@@ -28,14 +28,14 @@ type inte = fn(
 type cgto = fn(bas_id: usize, bas: &[i32]) -> i32;
 
 #[no_mangle]
-pub fn nmol(atm: &Vec<i32>, bas: &Vec<i32>) -> (usize, usize) {
+pub fn nmol(atm: &[i32], bas: &[i32]) -> (usize, usize) {
     let natm: usize = atm.len() / ATM_SLOTS;
     let nbas: usize = bas.len() / BAS_SLOTS;
     (natm, nbas)
 }
 
 #[no_mangle]
-pub fn angl(bas: &Vec<i32>, coord: i32) -> usize {
+pub fn angl(bas: &[i32], coord: i32) -> usize {
     let mut nshells: usize = 0;
     for i in (0..bas.len()).step_by(BAS_SLOTS) {
         let l = bas[i + 1] as usize;
@@ -53,9 +53,9 @@ pub fn angl(bas: &Vec<i32>, coord: i32) -> usize {
 
 #[no_mangle]
 pub fn integral1e(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
     coord: i32,
     typec: i32,
 ) -> Vec<f64> {
@@ -144,9 +144,9 @@ pub fn integral1e(
 
 #[no_mangle]
 pub fn integral2e(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
     coord: i32,
 ) -> Vec<f64> {
     let (natm, nbas) = nmol(atm, bas);
@@ -261,9 +261,9 @@ pub fn integral2e(
 // n^4 ERI tensor is never allocated, so the frozen-P gradient's Q=PFP build is
 // O(n^2) not O(n^4). F = H + G at the caller. Primal only (reused CINTOpt fine).
 pub fn integral2e_fock(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
     P: &[f64],
     coord: i32,
 ) -> Vec<f64> {
@@ -702,9 +702,9 @@ pub fn norm(atm: &mut [i32], env: &mut [f64], i: usize, j: usize) -> f64 {
 
 #[no_mangle]
 pub fn density(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
     nelec: usize,
     imax: i32,
     conv: f64,
@@ -760,7 +760,7 @@ pub fn density(
 }
 
 #[no_mangle]
-pub fn energy(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &mut Vec<f64>) -> f64 {
+pub fn energy(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> f64 {
     let (natm, nbas) = nmol(atm, bas);
     let nshells = angl(bas, 0);
 
@@ -788,10 +788,10 @@ pub fn energy(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &mu
 
 #[no_mangle]
 pub fn energyfast(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &mut Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
+    P: &[f64],
 ) -> f64 {
     let (natm, nbas) = nmol(atm, bas);
     let nshells = angl(bas, 0);
@@ -925,9 +925,9 @@ pub fn energyfast(
 
 #[no_mangle]
 pub fn scf(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
     nelec: usize,
     imax: i32,
     conv: f64,

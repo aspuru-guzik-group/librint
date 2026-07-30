@@ -13,15 +13,15 @@ use crate::utils::{combine, split};
 #[no_mangle]
 #[autodiff_reverse(dovlp, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn ovlp(
-    out: &mut Vec<f64>,
-    shls: &mut Vec<i32>,
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
 ) {
     let (natm, nbas) = nmol(atm, bas);
-    let mut env: Vec<f64> = combine(&env1, &env2);
+    let mut env: Vec<f64> = combine(env1, env2);
     cint1e_ovlp_cart(
         out,
         shls,
@@ -37,15 +37,15 @@ pub fn ovlp(
 #[no_mangle]
 #[autodiff_reverse(dkin, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn kin(
-    out: &mut Vec<f64>,
-    shls: &mut Vec<i32>,
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
 ) {
     let (natm, nbas) = nmol(atm, bas);
-    let mut env: Vec<f64> = combine(&env1, &env2);
+    let mut env: Vec<f64> = combine(env1, env2);
     cint1e_kin_cart(
         out,
         shls,
@@ -61,15 +61,15 @@ pub fn kin(
 #[no_mangle]
 #[autodiff_reverse(dnuc, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn nuc(
-    out: &mut Vec<f64>,
-    shls: &mut Vec<i32>,
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
 ) {
     let (natm, nbas) = nmol(atm, bas);
-    let mut env: Vec<f64> = combine(&env1, &env2);
+    let mut env: Vec<f64> = combine(env1, env2);
     cint1e_nuc_cart(
         out,
         shls,
@@ -87,19 +87,19 @@ pub fn nuc(
 #[no_mangle]
 #[autodiff_reverse(dtwo_ad, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn two_ad(
-    out: &mut Vec<f64>,
-    shls: &mut Vec<i32>,
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
 ) {
-    let env: Vec<f64> = combine(&env1, &env2);
+    let env: Vec<f64> = combine(env1, env2);
     crate::eri::eri_cart(out, shls, atm, bas, &env);
 }
 
 #[no_mangle]
-pub fn dS_uncontracted(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>) -> Vec<f64> {
+pub fn dS_uncontracted(atm: &mut [i32], bas: &mut [i32], env: &mut [f64]) -> Vec<f64> {
     let (_, nbas) = nmol(&atm, &bas);
     let nshells = angl(&bas, 0);
 
@@ -158,11 +158,11 @@ pub fn dS_uncontracted(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64
 
 #[no_mangle]
 fn dSf(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    Q: &Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
+    Q: &[f64],
 ) -> Vec<f64> {
     let (_, nbas) = nmol(&atm, &bas);
     let nshells = angl(&bas, 0);
@@ -214,11 +214,11 @@ fn dSf(
 
 #[no_mangle]
 fn dTf(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    P: &Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
+    P: &[f64],
 ) -> Vec<f64> {
     let (_, nbas) = nmol(&atm, &bas);
     let nshells = angl(&bas, 0);
@@ -272,11 +272,11 @@ fn dTf(
 
 #[no_mangle]
 fn dVf(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    P: &Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
+    P: &[f64],
 ) -> Vec<f64> {
     let (_, nbas) = nmol(&atm, &bas);
     let nshells = angl(&bas, 0);
@@ -328,10 +328,10 @@ fn dVf(
 
 #[no_mangle]
 pub fn dHcoreg(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
+    P: &[f64],
 ) -> Vec<f64> {
     let (s1, s2) = split(bas);
 
@@ -351,7 +351,7 @@ pub fn dHcoreg(
 }
 
 #[no_mangle]
-pub fn getF(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &Vec<f64>) -> Vec<f64> {
+pub fn getF(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     // F = H + G, with G the 2e Fock part accumulated directly in O(n^2) by
     // integral2e_fock. The frozen-P gradient needs F only to form Q=PFP, and
     // building the full n^4 ERI tensor for that was the old memory wall.
@@ -368,7 +368,7 @@ pub fn getF(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &Vec<
 }
 
 #[no_mangle]
-pub fn dSg(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &Vec<f64>) -> Vec<f64> {
+pub fn dSg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     let nshells = angl(&bas, 0);
 
     let F = getF(atm, bas, env, P);
@@ -388,11 +388,11 @@ pub fn dSg(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &Vec<f
 
 #[no_mangle]
 pub fn dRf(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    P: &Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
+    P: &[f64],
 ) -> Vec<f64> {
     // 8-fold permutational symmetry: only canonical quartets (i>=j, k>=l,
     // (i,j)>=(k,l)) are differentiated; each element seed sums the energy-
@@ -535,7 +535,7 @@ pub fn dRf(
 }
 
 #[no_mangle]
-pub fn dRg(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &Vec<f64>) -> Vec<f64> {
+pub fn dRg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     let (s1, s2) = split(bas);
 
     let mut env1: Vec<f64> = env[0..s1].to_vec();
@@ -547,10 +547,10 @@ pub fn dRg(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &Vec<f
 
 #[no_mangle]
 pub fn danalyticalg(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
+    P: &[f64],
 ) -> Vec<f64> {
     let dH = dHcoreg(atm, bas, env, P);
     let dR = dRg(atm, bas, env, P);
@@ -574,10 +574,10 @@ pub fn danalyticalg(
 
 #[no_mangle]
 pub fn gradenergy(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &mut Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
+    P: &[f64],
 ) -> Vec<f64> {
     // 1/2 tr(P(H+F)) = tr(PH) + 1/2 tr(PGP), assembled from the batched
     // part-wise adjoints (each of which IS an Enzyme reverse).
@@ -592,10 +592,10 @@ pub fn gradenergy(
 
 #[no_mangle]
 pub fn denergyfast(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &mut Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env: &mut [f64],
+    P: &[f64],
 ) -> Vec<f64> {
     // Kept as a separate C entry point (denergy_c) for compatibility only: it
     // had inlined the same dH + dR - 0.5 dS expression as danalyticalg, in the
