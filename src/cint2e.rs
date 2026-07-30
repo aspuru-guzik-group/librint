@@ -4,8 +4,7 @@
     non_camel_case_types,
     non_snake_case,
     non_upper_case_globals,
-    unused_assignments,
-    unused_mut
+    unused_assignments
 )]
 
 use crate::cart2sph::c2s_cart_2e1;
@@ -35,41 +34,41 @@ extern "C" {
 
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_loop_nopt(
-    mut gctr: *mut f64,
-    mut envs: *mut CINTEnvVars,
+    gctr: *mut f64,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
-    mut empty: *mut i32,
+    empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
-    let mut i_sh: i32 = *shls.offset(0_isize);
-    let mut j_sh: i32 = *shls.offset(1_isize);
-    let mut k_sh: i32 = *shls.offset(2_isize);
-    let mut l_sh: i32 = *shls.offset(3_isize);
-    let mut i_ctr: i32 = (*envs).x_ctr[0_usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1_usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2_usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3_usize];
-    let mut i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
-    let mut j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
-    let mut k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
-    let mut l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
-    let mut rk: *mut f64 = (*envs).rk;
-    let mut rl: *mut f64 = (*envs).c2rust_unnamed_1.rl;
-    let mut ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
-    let mut aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
-    let mut ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
-    let mut al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
-    let mut ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
-    let mut cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
-    let mut ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
-    let mut cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
+    let shls: *mut i32 = (*envs).shls;
+    let bas: *mut i32 = (*envs).bas;
+    let env: *mut f64 = (*envs).env;
+    let i_sh: i32 = *shls.offset(0_isize);
+    let j_sh: i32 = *shls.offset(1_isize);
+    let k_sh: i32 = *shls.offset(2_isize);
+    let l_sh: i32 = *shls.offset(3_isize);
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
+    let k_ctr: i32 = (*envs).x_ctr[2_usize];
+    let l_ctr: i32 = (*envs).x_ctr[3_usize];
+    let i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
+    let j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
+    let k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
+    let l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
+    let rk: *mut f64 = (*envs).rk;
+    let rl: *mut f64 = (*envs).c2rust_unnamed_1.rl;
+    let ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
+    let aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
+    let ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
+    let al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
+    let ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
+    let cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
+    let ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
+    let cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
     let mut expcutoff: f64 = (*envs).expcutoff;
-    let mut rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
+    let rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
         + (*envs).rirj[1_usize] * (*envs).rirj[1_usize]
         + (*envs).rirj[2_usize] * (*envs).rirj[2_usize];
-    let mut rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
+    let rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
         + (*envs).rkrl[1_usize] * (*envs).rkrl[1_usize]
         + (*envs).rkrl[2_usize] * (*envs).rkrl[2_usize];
     let mut log_maxci: *mut f64 = std::ptr::null_mut::<f64>();
@@ -110,8 +109,8 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
     }
     CINTOpt_log_max_pgto_coeff(log_maxck, ck, k_prim, k_ctr);
     CINTOpt_log_max_pgto_coeff(log_maxcl, cl, l_prim, l_ctr);
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
-    let mut nf: u64 = (*envs).nf as u64;
+    let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
+    let nf: u64 = (*envs).nf as u64;
     let mut fac1i: f64 = 0.;
     let mut fac1j: f64 = 0.;
     let mut fac1k: f64 = 0.;
@@ -126,7 +125,7 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
     let mut kempty: *mut i32 = _empty.as_mut_ptr().offset(2_isize);
     let mut lempty: *mut i32 = _empty.as_mut_ptr().offset(3_isize);
     let mut gempty: *mut i32 = _empty.as_mut_ptr().offset(4_isize);
-    let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
     let mut akl: f64 = 0.;
     let mut ekl: f64 = 0.;
     let mut expijkl: f64 = 0.;
@@ -138,22 +137,22 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
     let mut rij: *mut f64 = std::ptr::null_mut::<f64>();
     akl = *ak.offset((k_prim - 1_i32) as isize) + *al.offset((l_prim - 1_i32) as isize);
     log_rr_kl = 1.7f64 - 1.5f64 * (akl).ln();
-    let mut omega: f64 = *env.offset(8_isize);
+    let omega: f64 = *env.offset(8_isize);
     if omega < 0 as f64 {
         if (*envs).rys_order > 1_i32 {
-            let mut r_guess: f64 = 8.0f64;
-            let mut omega2: f64 = omega * omega;
-            let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+            let r_guess: f64 = 8.0f64;
+            let omega2: f64 = omega * omega;
+            let lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
             if lij > 0_i32 {
-                let mut aij: f64 = *ai.offset((i_prim - 1_i32) as isize)
+                let aij: f64 = *ai.offset((i_prim - 1_i32) as isize)
                     + *aj.offset((j_prim - 1_i32) as isize);
-                let mut dist_ij: f64 = (rr_ij).sqrt();
-                let mut theta: f64 = omega2 / (omega2 + aij);
+                let dist_ij: f64 = (rr_ij).sqrt();
+                let theta: f64 = omega2 / (omega2 + aij);
                 expcutoff +=
                     lij as f64 * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
             }
             if lkl > 0_i32 {
-                let mut theta_0: f64 = omega2 / (omega2 + akl);
+                let theta_0: f64 = omega2 / (omega2 + akl);
                 log_rr_kl += lkl as f64 * ((rr_kl).sqrt() + theta_0 * r_guess + 1.0f64).ln();
             }
         }
@@ -196,22 +195,22 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
     CINTOpt_non0coeff_byshell(non0idxj, non0ctrj, cj, j_prim, j_ctr);
     CINTOpt_non0coeff_byshell(non0idxk, non0ctrk, ck, k_prim, k_ctr);
     CINTOpt_non0coeff_byshell(non0idxl, non0ctrl, cl, l_prim, l_ctr);
-    let mut nc: i32 = i_ctr * j_ctr * k_ctr * l_ctr;
-    let mut leng: u64 =
+    let nc: i32 = i_ctr * j_ctr * k_ctr * l_ctr;
+    let leng: u64 =
         ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
-    let mut lenl: u64 = nf.wrapping_mul(nc as u64).wrapping_mul(n_comp as u64);
-    let mut lenk: u64 = nf
+    let lenl: u64 = nf.wrapping_mul(nc as u64).wrapping_mul(n_comp as u64);
+    let lenk: u64 = nf
         .wrapping_mul(i_ctr as u64)
         .wrapping_mul(j_ctr as u64)
         .wrapping_mul(k_ctr as u64)
         .wrapping_mul(n_comp as u64);
-    let mut lenj: u64 = nf
+    let lenj: u64 = nf
         .wrapping_mul(i_ctr as u64)
         .wrapping_mul(j_ctr as u64)
         .wrapping_mul(n_comp as u64);
-    let mut leni: u64 = nf.wrapping_mul(i_ctr as u64).wrapping_mul(n_comp as u64);
-    let mut len0: u64 = nf.wrapping_mul(n_comp as u64);
-    let mut len: u64 = leng
+    let leni: u64 = nf.wrapping_mul(i_ctr as u64).wrapping_mul(n_comp as u64);
+    let len0: u64 = nf.wrapping_mul(n_comp as u64);
+    let len: u64 = leng
         .wrapping_add(lenl)
         .wrapping_add(lenk)
         .wrapping_add(lenj)
@@ -468,19 +467,19 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_1111_loop(
-    mut gctr: *mut f64,
-    mut envs: *mut CINTEnvVars,
+    gctr: *mut f64,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
-    mut empty: *mut i32,
+    empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
-    let mut i_sh: i32 = *shls.offset(0_isize);
-    let mut j_sh: i32 = *shls.offset(1_isize);
-    let mut k_sh: i32 = *shls.offset(2_isize);
-    let mut l_sh: i32 = *shls.offset(3_isize);
-    let mut opt: *mut CINTOpt = (*envs).opt;
+    let shls: *mut i32 = (*envs).shls;
+    let bas: *mut i32 = (*envs).bas;
+    let env: *mut f64 = (*envs).env;
+    let i_sh: i32 = *shls.offset(0_isize);
+    let j_sh: i32 = *shls.offset(1_isize);
+    let k_sh: i32 = *shls.offset(2_isize);
+    let l_sh: i32 = *shls.offset(3_isize);
+    let opt: *mut CINTOpt = (*envs).opt;
     if !((*opt).pairdata).is_null()
         && (*((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize)
             == 0xffffffffffffffff_u64 as *mut libc::c_void as *mut PairData
@@ -493,23 +492,23 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
     let _j_ctr: i32 = (*envs).x_ctr[1_usize];
     let _k_ctr: i32 = (*envs).x_ctr[2_usize];
     let _l_ctr: i32 = (*envs).x_ctr[3_usize];
-    let mut i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
-    let mut j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
-    let mut k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
-    let mut l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
-    let mut ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
-    let mut aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
-    let mut ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
-    let mut al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
-    let mut ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
-    let mut cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
-    let mut ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
-    let mut cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
+    let i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
+    let j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
+    let k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
+    let l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
+    let ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
+    let aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
+    let ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
+    let al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
+    let ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
+    let cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
+    let ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
+    let cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
     let mut expcutoff: f64 = (*envs).expcutoff;
-    let mut rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
+    let rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
         + (*envs).rirj[1_usize] * (*envs).rirj[1_usize]
         + (*envs).rirj[2_usize] * (*envs).rirj[2_usize];
-    let mut rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
+    let rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
         + (*envs).rkrl[1_usize] * (*envs).rkrl[1_usize]
         + (*envs).rkrl[2_usize] * (*envs).rkrl[2_usize];
     let mut _pdata_ij: *mut PairData = std::ptr::null_mut::<PairData>();
@@ -520,8 +519,8 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
         _pdata_ij = *((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize);
         _pdata_kl = *((*opt).pairdata).offset((k_sh * (*opt).nbas + l_sh) as isize);
     } else {
-        let mut log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
-        let mut log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
+        let log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
+        let log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
         _pdata_ij = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
             as *mut libc::c_void as *mut PairData;
         cache = _pdata_ij.offset((i_prim * j_prim + k_prim * l_prim) as isize) as *mut f64;
@@ -544,8 +543,8 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
         {
             return 0_i32;
         }
-        let mut log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
-        let mut log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
+        let log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
+        let log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
         _pdata_kl = _pdata_ij.offset((i_prim * j_prim) as isize);
         if CINTset_pairdata(
             _pdata_kl,
@@ -567,8 +566,8 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
             return 0_i32;
         }
     }
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
-    let mut nf: u64 = (*envs).nf as u64;
+    let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
+    let nf: u64 = (*envs).nf as u64;
     let mut fac1i: f64 = 0.;
     let mut fac1j: f64 = 0.;
     let mut fac1k: f64 = 0.;
@@ -611,34 +610,34 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
         cache = idx.offset(nf.wrapping_mul(3_u64) as isize) as *mut f64;
         CINTg2e_index_xyz(idx, envs);
     }
-    let mut omega: f64 = *env.offset(8_isize);
+    let omega: f64 = *env.offset(8_isize);
     if omega < 0 as f64 && (*envs).rys_order > 1_i32 {
-        let mut r_guess: f64 = 8.0f64;
-        let mut omega2: f64 = omega * omega;
-        let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
-        let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+        let r_guess: f64 = 8.0f64;
+        let omega2: f64 = omega * omega;
+        let lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+        let lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0_i32 {
-            let mut dist_ij: f64 = (rr_ij).sqrt();
-            let mut aij: f64 =
+            let dist_ij: f64 = (rr_ij).sqrt();
+            let aij: f64 =
                 *ai.offset((i_prim - 1_i32) as isize) + *aj.offset((j_prim - 1_i32) as isize);
-            let mut theta: f64 = omega2 / (omega2 + aij);
+            let theta: f64 = omega2 / (omega2 + aij);
             expcutoff +=
                 lij as f64 * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0_i32 {
-            let mut dist_kl: f64 = (rr_kl).sqrt();
-            let mut akl: f64 =
+            let dist_kl: f64 = (rr_kl).sqrt();
+            let akl: f64 =
                 *ak.offset((k_prim - 1_i32) as isize) + *al.offset((l_prim - 1_i32) as isize);
-            let mut theta_0: f64 = omega2 / (omega2 + akl);
+            let theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff +=
                 lkl as f64 * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
-    let mut nc: i32 = 1_i32;
-    let mut leng: u64 =
+    let nc: i32 = 1_i32;
+    let leng: u64 =
         ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
-    let mut len0: u64 = nf.wrapping_mul(n_comp as u64);
-    let mut len: u64 = leng.wrapping_add(len0);
+    let len0: u64 = nf.wrapping_mul(n_comp as u64);
+    let len: u64 = leng.wrapping_add(len0);
     let mut gout: *mut f64 = std::ptr::null_mut::<f64>();
     let mut g: *mut f64 = std::ptr::null_mut::<f64>();
     g = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
@@ -719,19 +718,19 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_n111_loop(
-    mut gctr: *mut f64,
-    mut envs: *mut CINTEnvVars,
+    gctr: *mut f64,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
-    mut empty: *mut i32,
+    empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
-    let mut i_sh: i32 = *shls.offset(0_isize);
-    let mut j_sh: i32 = *shls.offset(1_isize);
-    let mut k_sh: i32 = *shls.offset(2_isize);
-    let mut l_sh: i32 = *shls.offset(3_isize);
-    let mut opt: *mut CINTOpt = (*envs).opt;
+    let shls: *mut i32 = (*envs).shls;
+    let bas: *mut i32 = (*envs).bas;
+    let env: *mut f64 = (*envs).env;
+    let i_sh: i32 = *shls.offset(0_isize);
+    let j_sh: i32 = *shls.offset(1_isize);
+    let k_sh: i32 = *shls.offset(2_isize);
+    let l_sh: i32 = *shls.offset(3_isize);
+    let opt: *mut CINTOpt = (*envs).opt;
     if !((*opt).pairdata).is_null()
         && (*((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize)
             == 0xffffffffffffffff_u64 as *mut libc::c_void as *mut PairData
@@ -740,27 +739,27 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
     {
         return 0_i32;
     }
-    let mut i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
     let _j_ctr: i32 = (*envs).x_ctr[1_usize];
     let _k_ctr: i32 = (*envs).x_ctr[2_usize];
     let _l_ctr: i32 = (*envs).x_ctr[3_usize];
-    let mut i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
-    let mut j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
-    let mut k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
-    let mut l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
-    let mut ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
-    let mut aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
-    let mut ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
-    let mut al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
-    let mut ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
-    let mut cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
-    let mut ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
-    let mut cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
+    let i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
+    let j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
+    let k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
+    let l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
+    let ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
+    let aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
+    let ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
+    let al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
+    let ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
+    let cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
+    let ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
+    let cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
     let mut expcutoff: f64 = (*envs).expcutoff;
-    let mut rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
+    let rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
         + (*envs).rirj[1_usize] * (*envs).rirj[1_usize]
         + (*envs).rirj[2_usize] * (*envs).rirj[2_usize];
-    let mut rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
+    let rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
         + (*envs).rkrl[1_usize] * (*envs).rkrl[1_usize]
         + (*envs).rkrl[2_usize] * (*envs).rkrl[2_usize];
     let mut _pdata_ij: *mut PairData = std::ptr::null_mut::<PairData>();
@@ -771,8 +770,8 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
         _pdata_ij = *((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize);
         _pdata_kl = *((*opt).pairdata).offset((k_sh * (*opt).nbas + l_sh) as isize);
     } else {
-        let mut log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
-        let mut log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
+        let log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
+        let log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
         _pdata_ij = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
             as *mut libc::c_void as *mut PairData;
         cache = _pdata_ij.offset((i_prim * j_prim + k_prim * l_prim) as isize) as *mut f64;
@@ -795,8 +794,8 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
         {
             return 0_i32;
         }
-        let mut log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
-        let mut log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
+        let log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
+        let log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
         _pdata_kl = _pdata_ij.offset((i_prim * j_prim) as isize);
         if CINTset_pairdata(
             _pdata_kl,
@@ -818,8 +817,8 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
             return 0_i32;
         }
     }
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
-    let mut nf: u64 = (*envs).nf as u64;
+    let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
+    let nf: u64 = (*envs).nf as u64;
     let mut fac1i: f64 = 0.;
     let mut fac1j: f64 = 0.;
     let mut fac1k: f64 = 0.;
@@ -834,11 +833,11 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
     let _kempty: *mut i32 = _empty.as_mut_ptr().offset(2_isize);
     let _lempty: *mut i32 = _empty.as_mut_ptr().offset(3_isize);
     let _gempty: *mut i32 = _empty.as_mut_ptr().offset(4_isize);
-    let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
+    let non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
     let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
     let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
     let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
-    let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
+    let non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
     let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
     let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
     let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
@@ -862,35 +861,35 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
         cache = idx.offset(nf.wrapping_mul(3_u64) as isize) as *mut f64;
         CINTg2e_index_xyz(idx, envs);
     }
-    let mut omega: f64 = *env.offset(8_isize);
+    let omega: f64 = *env.offset(8_isize);
     if omega < 0 as f64 && (*envs).rys_order > 1_i32 {
-        let mut r_guess: f64 = 8.0f64;
-        let mut omega2: f64 = omega * omega;
-        let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
-        let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+        let r_guess: f64 = 8.0f64;
+        let omega2: f64 = omega * omega;
+        let lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+        let lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0_i32 {
-            let mut dist_ij: f64 = (rr_ij).sqrt();
-            let mut aij: f64 =
+            let dist_ij: f64 = (rr_ij).sqrt();
+            let aij: f64 =
                 *ai.offset((i_prim - 1_i32) as isize) + *aj.offset((j_prim - 1_i32) as isize);
-            let mut theta: f64 = omega2 / (omega2 + aij);
+            let theta: f64 = omega2 / (omega2 + aij);
             expcutoff +=
                 lij as f64 * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0_i32 {
-            let mut dist_kl: f64 = (rr_kl).sqrt();
-            let mut akl: f64 =
+            let dist_kl: f64 = (rr_kl).sqrt();
+            let akl: f64 =
                 *ak.offset((k_prim - 1_i32) as isize) + *al.offset((l_prim - 1_i32) as isize);
-            let mut theta_0: f64 = omega2 / (omega2 + akl);
+            let theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff +=
                 lkl as f64 * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
-    let mut nc: i32 = i_ctr;
-    let mut leng: u64 =
+    let nc: i32 = i_ctr;
+    let leng: u64 =
         ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
-    let mut leni: u64 = nf.wrapping_mul(i_ctr as u64).wrapping_mul(n_comp as u64);
-    let mut len0: u64 = nf.wrapping_mul(n_comp as u64);
-    let mut len: u64 = leng.wrapping_add(leni).wrapping_add(len0);
+    let leni: u64 = nf.wrapping_mul(i_ctr as u64).wrapping_mul(n_comp as u64);
+    let len0: u64 = nf.wrapping_mul(n_comp as u64);
+    let len: u64 = leng.wrapping_add(leni).wrapping_add(len0);
     let mut g: *mut f64 = std::ptr::null_mut::<f64>();
     g = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
         as *mut libc::c_void as *mut f64;
@@ -1006,19 +1005,19 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_1n11_loop(
-    mut gctr: *mut f64,
-    mut envs: *mut CINTEnvVars,
+    gctr: *mut f64,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
-    mut empty: *mut i32,
+    empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
-    let mut i_sh: i32 = *shls.offset(0_isize);
-    let mut j_sh: i32 = *shls.offset(1_isize);
-    let mut k_sh: i32 = *shls.offset(2_isize);
-    let mut l_sh: i32 = *shls.offset(3_isize);
-    let mut opt: *mut CINTOpt = (*envs).opt;
+    let shls: *mut i32 = (*envs).shls;
+    let bas: *mut i32 = (*envs).bas;
+    let env: *mut f64 = (*envs).env;
+    let i_sh: i32 = *shls.offset(0_isize);
+    let j_sh: i32 = *shls.offset(1_isize);
+    let k_sh: i32 = *shls.offset(2_isize);
+    let l_sh: i32 = *shls.offset(3_isize);
+    let opt: *mut CINTOpt = (*envs).opt;
     if !((*opt).pairdata).is_null()
         && (*((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize)
             == 0xffffffffffffffff_u64 as *mut libc::c_void as *mut PairData
@@ -1028,26 +1027,26 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
         return 0_i32;
     }
     let _i_ctr: i32 = (*envs).x_ctr[0_usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
     let _k_ctr: i32 = (*envs).x_ctr[2_usize];
     let _l_ctr: i32 = (*envs).x_ctr[3_usize];
-    let mut i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
-    let mut j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
-    let mut k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
-    let mut l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
-    let mut ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
-    let mut aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
-    let mut ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
-    let mut al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
-    let mut ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
-    let mut cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
-    let mut ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
-    let mut cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
+    let i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
+    let j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
+    let k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
+    let l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
+    let ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
+    let aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
+    let ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
+    let al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
+    let ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
+    let cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
+    let ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
+    let cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
     let mut expcutoff: f64 = (*envs).expcutoff;
-    let mut rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
+    let rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
         + (*envs).rirj[1_usize] * (*envs).rirj[1_usize]
         + (*envs).rirj[2_usize] * (*envs).rirj[2_usize];
-    let mut rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
+    let rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
         + (*envs).rkrl[1_usize] * (*envs).rkrl[1_usize]
         + (*envs).rkrl[2_usize] * (*envs).rkrl[2_usize];
     let mut _pdata_ij: *mut PairData = std::ptr::null_mut::<PairData>();
@@ -1058,8 +1057,8 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
         _pdata_ij = *((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize);
         _pdata_kl = *((*opt).pairdata).offset((k_sh * (*opt).nbas + l_sh) as isize);
     } else {
-        let mut log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
-        let mut log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
+        let log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
+        let log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
         _pdata_ij = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
             as *mut libc::c_void as *mut PairData;
         cache = _pdata_ij.offset((i_prim * j_prim + k_prim * l_prim) as isize) as *mut f64;
@@ -1082,8 +1081,8 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
         {
             return 0_i32;
         }
-        let mut log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
-        let mut log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
+        let log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
+        let log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
         _pdata_kl = _pdata_ij.offset((i_prim * j_prim) as isize);
         if CINTset_pairdata(
             _pdata_kl,
@@ -1105,8 +1104,8 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
             return 0_i32;
         }
     }
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
-    let mut nf: u64 = (*envs).nf as u64;
+    let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
+    let nf: u64 = (*envs).nf as u64;
     let mut fac1i: f64 = 0.;
     let mut fac1j: f64 = 0.;
     let mut fac1k: f64 = 0.;
@@ -1116,17 +1115,17 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
     let mut kp: i32 = 0;
     let mut lp: i32 = 0;
     let mut _empty: [i32; 5] = [1_i32, 1_i32, 1_i32, 1_i32, 1_i32];
-    let mut iempty: *mut i32 = _empty.as_mut_ptr().offset(0_isize);
+    let iempty: *mut i32 = _empty.as_mut_ptr().offset(0_isize);
     let mut jempty: *mut i32 = _empty.as_mut_ptr().offset(1_isize);
     let _kempty: *mut i32 = _empty.as_mut_ptr().offset(2_isize);
     let _lempty: *mut i32 = _empty.as_mut_ptr().offset(3_isize);
     let _gempty: *mut i32 = _empty.as_mut_ptr().offset(4_isize);
     let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
-    let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
+    let non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
     let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
     let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
     let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
-    let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
+    let non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
     let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
     let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
@@ -1149,35 +1148,35 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
         cache = idx.offset(nf.wrapping_mul(3_u64) as isize) as *mut f64;
         CINTg2e_index_xyz(idx, envs);
     }
-    let mut omega: f64 = *env.offset(8_isize);
+    let omega: f64 = *env.offset(8_isize);
     if omega < 0 as f64 && (*envs).rys_order > 1_i32 {
-        let mut r_guess: f64 = 8.0f64;
-        let mut omega2: f64 = omega * omega;
-        let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
-        let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+        let r_guess: f64 = 8.0f64;
+        let omega2: f64 = omega * omega;
+        let lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+        let lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0_i32 {
-            let mut dist_ij: f64 = (rr_ij).sqrt();
-            let mut aij: f64 =
+            let dist_ij: f64 = (rr_ij).sqrt();
+            let aij: f64 =
                 *ai.offset((i_prim - 1_i32) as isize) + *aj.offset((j_prim - 1_i32) as isize);
-            let mut theta: f64 = omega2 / (omega2 + aij);
+            let theta: f64 = omega2 / (omega2 + aij);
             expcutoff +=
                 lij as f64 * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0_i32 {
-            let mut dist_kl: f64 = (rr_kl).sqrt();
-            let mut akl: f64 =
+            let dist_kl: f64 = (rr_kl).sqrt();
+            let akl: f64 =
                 *ak.offset((k_prim - 1_i32) as isize) + *al.offset((l_prim - 1_i32) as isize);
-            let mut theta_0: f64 = omega2 / (omega2 + akl);
+            let theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff +=
                 lkl as f64 * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
-    let mut nc: i32 = j_ctr;
-    let mut leng: u64 =
+    let nc: i32 = j_ctr;
+    let leng: u64 =
         ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
-    let mut lenj: u64 = nf.wrapping_mul(j_ctr as u64).wrapping_mul(n_comp as u64);
-    let mut len0: u64 = nf.wrapping_mul(n_comp as u64);
-    let mut len: u64 = leng.wrapping_add(lenj).wrapping_add(len0);
+    let lenj: u64 = nf.wrapping_mul(j_ctr as u64).wrapping_mul(n_comp as u64);
+    let len0: u64 = nf.wrapping_mul(n_comp as u64);
+    let len: u64 = leng.wrapping_add(lenj).wrapping_add(len0);
     let mut g: *mut f64 = std::ptr::null_mut::<f64>();
     g = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
         as *mut libc::c_void as *mut f64;
@@ -1291,19 +1290,19 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_11n1_loop(
-    mut gctr: *mut f64,
-    mut envs: *mut CINTEnvVars,
+    gctr: *mut f64,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
-    mut empty: *mut i32,
+    empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
-    let mut i_sh: i32 = *shls.offset(0_isize);
-    let mut j_sh: i32 = *shls.offset(1_isize);
-    let mut k_sh: i32 = *shls.offset(2_isize);
-    let mut l_sh: i32 = *shls.offset(3_isize);
-    let mut opt: *mut CINTOpt = (*envs).opt;
+    let shls: *mut i32 = (*envs).shls;
+    let bas: *mut i32 = (*envs).bas;
+    let env: *mut f64 = (*envs).env;
+    let i_sh: i32 = *shls.offset(0_isize);
+    let j_sh: i32 = *shls.offset(1_isize);
+    let k_sh: i32 = *shls.offset(2_isize);
+    let l_sh: i32 = *shls.offset(3_isize);
+    let opt: *mut CINTOpt = (*envs).opt;
     if !((*opt).pairdata).is_null()
         && (*((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize)
             == 0xffffffffffffffff_u64 as *mut libc::c_void as *mut PairData
@@ -1314,25 +1313,25 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
     }
     let _i_ctr: i32 = (*envs).x_ctr[0_usize];
     let _j_ctr: i32 = (*envs).x_ctr[1_usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2_usize];
+    let k_ctr: i32 = (*envs).x_ctr[2_usize];
     let _l_ctr: i32 = (*envs).x_ctr[3_usize];
-    let mut i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
-    let mut j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
-    let mut k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
-    let mut l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
-    let mut ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
-    let mut aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
-    let mut ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
-    let mut al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
-    let mut ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
-    let mut cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
-    let mut ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
-    let mut cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
+    let i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
+    let j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
+    let k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
+    let l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
+    let ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
+    let aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
+    let ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
+    let al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
+    let ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
+    let cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
+    let ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
+    let cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
     let mut expcutoff: f64 = (*envs).expcutoff;
-    let mut rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
+    let rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
         + (*envs).rirj[1_usize] * (*envs).rirj[1_usize]
         + (*envs).rirj[2_usize] * (*envs).rirj[2_usize];
-    let mut rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
+    let rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
         + (*envs).rkrl[1_usize] * (*envs).rkrl[1_usize]
         + (*envs).rkrl[2_usize] * (*envs).rkrl[2_usize];
     let mut _pdata_ij: *mut PairData = std::ptr::null_mut::<PairData>();
@@ -1343,8 +1342,8 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
         _pdata_ij = *((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize);
         _pdata_kl = *((*opt).pairdata).offset((k_sh * (*opt).nbas + l_sh) as isize);
     } else {
-        let mut log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
-        let mut log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
+        let log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
+        let log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
         _pdata_ij = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
             as *mut libc::c_void as *mut PairData;
         cache = _pdata_ij.offset((i_prim * j_prim + k_prim * l_prim) as isize) as *mut f64;
@@ -1367,8 +1366,8 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
         {
             return 0_i32;
         }
-        let mut log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
-        let mut log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
+        let log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
+        let log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
         _pdata_kl = _pdata_ij.offset((i_prim * j_prim) as isize);
         if CINTset_pairdata(
             _pdata_kl,
@@ -1390,8 +1389,8 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
             return 0_i32;
         }
     }
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
-    let mut nf: u64 = (*envs).nf as u64;
+    let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
+    let nf: u64 = (*envs).nf as u64;
     let mut fac1i: f64 = 0.;
     let mut fac1j: f64 = 0.;
     let mut fac1k: f64 = 0.;
@@ -1402,17 +1401,17 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
     let mut lp: i32 = 0;
     let mut _empty: [i32; 5] = [1_i32, 1_i32, 1_i32, 1_i32, 1_i32];
     let _iempty: *mut i32 = _empty.as_mut_ptr().offset(0_isize);
-    let mut jempty: *mut i32 = _empty.as_mut_ptr().offset(1_isize);
+    let jempty: *mut i32 = _empty.as_mut_ptr().offset(1_isize);
     let mut kempty: *mut i32 = _empty.as_mut_ptr().offset(2_isize);
     let _lempty: *mut i32 = _empty.as_mut_ptr().offset(3_isize);
     let _gempty: *mut i32 = _empty.as_mut_ptr().offset(4_isize);
     let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
     let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
-    let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
+    let non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
     let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
     let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
     let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
-    let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
+    let non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
     let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
@@ -1434,35 +1433,35 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
         cache = idx.offset(nf.wrapping_mul(3_u64) as isize) as *mut f64;
         CINTg2e_index_xyz(idx, envs);
     }
-    let mut omega: f64 = *env.offset(8_isize);
+    let omega: f64 = *env.offset(8_isize);
     if omega < 0 as f64 && (*envs).rys_order > 1_i32 {
-        let mut r_guess: f64 = 8.0f64;
-        let mut omega2: f64 = omega * omega;
-        let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
-        let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+        let r_guess: f64 = 8.0f64;
+        let omega2: f64 = omega * omega;
+        let lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+        let lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0_i32 {
-            let mut dist_ij: f64 = (rr_ij).sqrt();
-            let mut aij: f64 =
+            let dist_ij: f64 = (rr_ij).sqrt();
+            let aij: f64 =
                 *ai.offset((i_prim - 1_i32) as isize) + *aj.offset((j_prim - 1_i32) as isize);
-            let mut theta: f64 = omega2 / (omega2 + aij);
+            let theta: f64 = omega2 / (omega2 + aij);
             expcutoff +=
                 lij as f64 * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0_i32 {
-            let mut dist_kl: f64 = (rr_kl).sqrt();
-            let mut akl: f64 =
+            let dist_kl: f64 = (rr_kl).sqrt();
+            let akl: f64 =
                 *ak.offset((k_prim - 1_i32) as isize) + *al.offset((l_prim - 1_i32) as isize);
-            let mut theta_0: f64 = omega2 / (omega2 + akl);
+            let theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff +=
                 lkl as f64 * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
-    let mut nc: i32 = k_ctr;
-    let mut leng: u64 =
+    let nc: i32 = k_ctr;
+    let leng: u64 =
         ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
-    let mut lenk: u64 = nf.wrapping_mul(k_ctr as u64).wrapping_mul(n_comp as u64);
-    let mut len0: u64 = nf.wrapping_mul(n_comp as u64);
-    let mut len: u64 = leng.wrapping_add(lenk).wrapping_add(len0);
+    let lenk: u64 = nf.wrapping_mul(k_ctr as u64).wrapping_mul(n_comp as u64);
+    let len0: u64 = nf.wrapping_mul(n_comp as u64);
+    let len: u64 = leng.wrapping_add(lenk).wrapping_add(len0);
     let mut g: *mut f64 = std::ptr::null_mut::<f64>();
     g = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
         as *mut libc::c_void as *mut f64;
@@ -1576,19 +1575,19 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_111n_loop(
-    mut gctr: *mut f64,
-    mut envs: *mut CINTEnvVars,
+    gctr: *mut f64,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
-    mut empty: *mut i32,
+    empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
-    let mut i_sh: i32 = *shls.offset(0_isize);
-    let mut j_sh: i32 = *shls.offset(1_isize);
-    let mut k_sh: i32 = *shls.offset(2_isize);
-    let mut l_sh: i32 = *shls.offset(3_isize);
-    let mut opt: *mut CINTOpt = (*envs).opt;
+    let shls: *mut i32 = (*envs).shls;
+    let bas: *mut i32 = (*envs).bas;
+    let env: *mut f64 = (*envs).env;
+    let i_sh: i32 = *shls.offset(0_isize);
+    let j_sh: i32 = *shls.offset(1_isize);
+    let k_sh: i32 = *shls.offset(2_isize);
+    let l_sh: i32 = *shls.offset(3_isize);
+    let opt: *mut CINTOpt = (*envs).opt;
     if !((*opt).pairdata).is_null()
         && (*((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize)
             == 0xffffffffffffffff_u64 as *mut libc::c_void as *mut PairData
@@ -1600,24 +1599,24 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
     let _i_ctr: i32 = (*envs).x_ctr[0_usize];
     let _j_ctr: i32 = (*envs).x_ctr[1_usize];
     let _k_ctr: i32 = (*envs).x_ctr[2_usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3_usize];
-    let mut i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
-    let mut j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
-    let mut k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
-    let mut l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
-    let mut ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
-    let mut aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
-    let mut ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
-    let mut al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
-    let mut ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
-    let mut cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
-    let mut ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
-    let mut cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
+    let l_ctr: i32 = (*envs).x_ctr[3_usize];
+    let i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
+    let j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
+    let k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
+    let l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
+    let ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
+    let aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
+    let ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
+    let al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
+    let ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
+    let cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
+    let ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
+    let cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
     let mut expcutoff: f64 = (*envs).expcutoff;
-    let mut rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
+    let rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
         + (*envs).rirj[1_usize] * (*envs).rirj[1_usize]
         + (*envs).rirj[2_usize] * (*envs).rirj[2_usize];
-    let mut rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
+    let rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
         + (*envs).rkrl[1_usize] * (*envs).rkrl[1_usize]
         + (*envs).rkrl[2_usize] * (*envs).rkrl[2_usize];
     let mut _pdata_ij: *mut PairData = std::ptr::null_mut::<PairData>();
@@ -1628,8 +1627,8 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
         _pdata_ij = *((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize);
         _pdata_kl = *((*opt).pairdata).offset((k_sh * (*opt).nbas + l_sh) as isize);
     } else {
-        let mut log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
-        let mut log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
+        let log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
+        let log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
         _pdata_ij = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
             as *mut libc::c_void as *mut PairData;
         cache = _pdata_ij.offset((i_prim * j_prim + k_prim * l_prim) as isize) as *mut f64;
@@ -1652,8 +1651,8 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
         {
             return 0_i32;
         }
-        let mut log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
-        let mut log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
+        let log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
+        let log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
         _pdata_kl = _pdata_ij.offset((i_prim * j_prim) as isize);
         if CINTset_pairdata(
             _pdata_kl,
@@ -1675,8 +1674,8 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
             return 0_i32;
         }
     }
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
-    let mut nf: u64 = (*envs).nf as u64;
+    let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
+    let nf: u64 = (*envs).nf as u64;
     let mut fac1i: f64 = 0.;
     let mut fac1j: f64 = 0.;
     let mut fac1k: f64 = 0.;
@@ -1688,17 +1687,17 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
     let mut _empty: [i32; 5] = [1_i32, 1_i32, 1_i32, 1_i32, 1_i32];
     let _iempty: *mut i32 = _empty.as_mut_ptr().offset(0_isize);
     let _jempty: *mut i32 = _empty.as_mut_ptr().offset(1_isize);
-    let mut kempty: *mut i32 = _empty.as_mut_ptr().offset(2_isize);
+    let kempty: *mut i32 = _empty.as_mut_ptr().offset(2_isize);
     let mut lempty: *mut i32 = _empty.as_mut_ptr().offset(3_isize);
     let _gempty: *mut i32 = _empty.as_mut_ptr().offset(4_isize);
     let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
     let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
     let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
-    let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
+    let non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
     let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
     let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
     let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
-    let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
+    let non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
     let mut eijcutoff: f64 = 0.;
@@ -1719,35 +1718,35 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
         cache = idx.offset(nf.wrapping_mul(3_u64) as isize) as *mut f64;
         CINTg2e_index_xyz(idx, envs);
     }
-    let mut omega: f64 = *env.offset(8_isize);
+    let omega: f64 = *env.offset(8_isize);
     if omega < 0 as f64 && (*envs).rys_order > 1_i32 {
-        let mut r_guess: f64 = 8.0f64;
-        let mut omega2: f64 = omega * omega;
-        let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
-        let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+        let r_guess: f64 = 8.0f64;
+        let omega2: f64 = omega * omega;
+        let lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+        let lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0_i32 {
-            let mut dist_ij: f64 = (rr_ij).sqrt();
-            let mut aij: f64 =
+            let dist_ij: f64 = (rr_ij).sqrt();
+            let aij: f64 =
                 *ai.offset((i_prim - 1_i32) as isize) + *aj.offset((j_prim - 1_i32) as isize);
-            let mut theta: f64 = omega2 / (omega2 + aij);
+            let theta: f64 = omega2 / (omega2 + aij);
             expcutoff +=
                 lij as f64 * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0_i32 {
-            let mut dist_kl: f64 = (rr_kl).sqrt();
-            let mut akl: f64 =
+            let dist_kl: f64 = (rr_kl).sqrt();
+            let akl: f64 =
                 *ak.offset((k_prim - 1_i32) as isize) + *al.offset((l_prim - 1_i32) as isize);
-            let mut theta_0: f64 = omega2 / (omega2 + akl);
+            let theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff +=
                 lkl as f64 * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
-    let mut nc: i32 = l_ctr;
-    let mut leng: u64 =
+    let nc: i32 = l_ctr;
+    let leng: u64 =
         ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
-    let mut lenl: u64 = nf.wrapping_mul(l_ctr as u64).wrapping_mul(n_comp as u64);
-    let mut len0: u64 = nf.wrapping_mul(n_comp as u64);
-    let mut len: u64 = leng.wrapping_add(lenl).wrapping_add(len0);
+    let lenl: u64 = nf.wrapping_mul(l_ctr as u64).wrapping_mul(n_comp as u64);
+    let len0: u64 = nf.wrapping_mul(n_comp as u64);
+    let len: u64 = leng.wrapping_add(lenl).wrapping_add(len0);
     let mut g: *mut f64 = std::ptr::null_mut::<f64>();
     g = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
         as *mut libc::c_void as *mut f64;
@@ -1861,19 +1860,19 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_loop(
-    mut gctr: *mut f64,
-    mut envs: *mut CINTEnvVars,
+    gctr: *mut f64,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
-    mut empty: *mut i32,
+    empty: *mut i32,
 ) -> i32 {
-    let mut shls: *mut i32 = (*envs).shls;
-    let mut bas: *mut i32 = (*envs).bas;
-    let mut env: *mut f64 = (*envs).env;
-    let mut i_sh: i32 = *shls.offset(0_isize);
-    let mut j_sh: i32 = *shls.offset(1_isize);
-    let mut k_sh: i32 = *shls.offset(2_isize);
-    let mut l_sh: i32 = *shls.offset(3_isize);
-    let mut opt: *mut CINTOpt = (*envs).opt;
+    let shls: *mut i32 = (*envs).shls;
+    let bas: *mut i32 = (*envs).bas;
+    let env: *mut f64 = (*envs).env;
+    let i_sh: i32 = *shls.offset(0_isize);
+    let j_sh: i32 = *shls.offset(1_isize);
+    let k_sh: i32 = *shls.offset(2_isize);
+    let l_sh: i32 = *shls.offset(3_isize);
+    let opt: *mut CINTOpt = (*envs).opt;
     if !((*opt).pairdata).is_null()
         && (*((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize)
             == 0xffffffffffffffff_u64 as *mut libc::c_void as *mut PairData
@@ -1882,27 +1881,27 @@ pub unsafe extern "C" fn CINT2e_loop(
     {
         return 0_i32;
     }
-    let mut i_ctr: i32 = (*envs).x_ctr[0_usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1_usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2_usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3_usize];
-    let mut i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
-    let mut j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
-    let mut k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
-    let mut l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
-    let mut ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
-    let mut aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
-    let mut ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
-    let mut al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
-    let mut ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
-    let mut cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
-    let mut ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
-    let mut cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
+    let k_ctr: i32 = (*envs).x_ctr[2_usize];
+    let l_ctr: i32 = (*envs).x_ctr[3_usize];
+    let i_prim: i32 = *bas.offset((8_i32 * i_sh + 2_i32) as isize);
+    let j_prim: i32 = *bas.offset((8_i32 * j_sh + 2_i32) as isize);
+    let k_prim: i32 = *bas.offset((8_i32 * k_sh + 2_i32) as isize);
+    let l_prim: i32 = *bas.offset((8_i32 * l_sh + 2_i32) as isize);
+    let ai: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 5_i32) as isize) as isize);
+    let aj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 5_i32) as isize) as isize);
+    let ak: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 5_i32) as isize) as isize);
+    let al: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 5_i32) as isize) as isize);
+    let ci: *mut f64 = env.offset(*bas.offset((8_i32 * i_sh + 6_i32) as isize) as isize);
+    let cj: *mut f64 = env.offset(*bas.offset((8_i32 * j_sh + 6_i32) as isize) as isize);
+    let ck: *mut f64 = env.offset(*bas.offset((8_i32 * k_sh + 6_i32) as isize) as isize);
+    let cl: *mut f64 = env.offset(*bas.offset((8_i32 * l_sh + 6_i32) as isize) as isize);
     let mut expcutoff: f64 = (*envs).expcutoff;
-    let mut rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
+    let rr_ij: f64 = (*envs).rirj[0_usize] * (*envs).rirj[0_usize]
         + (*envs).rirj[1_usize] * (*envs).rirj[1_usize]
         + (*envs).rirj[2_usize] * (*envs).rirj[2_usize];
-    let mut rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
+    let rr_kl: f64 = (*envs).rkrl[0_usize] * (*envs).rkrl[0_usize]
         + (*envs).rkrl[1_usize] * (*envs).rkrl[1_usize]
         + (*envs).rkrl[2_usize] * (*envs).rkrl[2_usize];
     let mut _pdata_ij: *mut PairData = std::ptr::null_mut::<PairData>();
@@ -1913,8 +1912,8 @@ pub unsafe extern "C" fn CINT2e_loop(
         _pdata_ij = *((*opt).pairdata).offset((i_sh * (*opt).nbas + j_sh) as isize);
         _pdata_kl = *((*opt).pairdata).offset((k_sh * (*opt).nbas + l_sh) as isize);
     } else {
-        let mut log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
-        let mut log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
+        let log_maxci: *mut f64 = *((*opt).log_max_coeff).offset(i_sh as isize);
+        let log_maxcj: *mut f64 = *((*opt).log_max_coeff).offset(j_sh as isize);
         _pdata_ij = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
             as *mut libc::c_void as *mut PairData;
         cache = _pdata_ij.offset((i_prim * j_prim + k_prim * l_prim) as isize) as *mut f64;
@@ -1937,8 +1936,8 @@ pub unsafe extern "C" fn CINT2e_loop(
         {
             return 0_i32;
         }
-        let mut log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
-        let mut log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
+        let log_maxck: *mut f64 = *((*opt).log_max_coeff).offset(k_sh as isize);
+        let log_maxcl: *mut f64 = *((*opt).log_max_coeff).offset(l_sh as isize);
         _pdata_kl = _pdata_ij.offset((i_prim * j_prim) as isize);
         if CINTset_pairdata(
             _pdata_kl,
@@ -1960,8 +1959,8 @@ pub unsafe extern "C" fn CINT2e_loop(
             return 0_i32;
         }
     }
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
-    let mut nf: u64 = (*envs).nf as u64;
+    let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
+    let nf: u64 = (*envs).nf as u64;
     let mut fac1i: f64 = 0.;
     let mut fac1j: f64 = 0.;
     let mut fac1k: f64 = 0.;
@@ -1976,14 +1975,14 @@ pub unsafe extern "C" fn CINT2e_loop(
     let mut kempty: *mut i32 = _empty.as_mut_ptr().offset(2_isize);
     let mut lempty: *mut i32 = _empty.as_mut_ptr().offset(3_isize);
     let mut gempty: *mut i32 = _empty.as_mut_ptr().offset(4_isize);
-    let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
-    let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
-    let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
-    let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
-    let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
-    let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
-    let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
-    let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
+    let non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
+    let non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
+    let non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
+    let non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
+    let non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
+    let non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
+    let non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
+    let non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
     let mut eijcutoff: f64 = 0.;
@@ -2004,45 +2003,45 @@ pub unsafe extern "C" fn CINT2e_loop(
         cache = idx.offset(nf.wrapping_mul(3_u64) as isize) as *mut f64;
         CINTg2e_index_xyz(idx, envs);
     }
-    let mut omega: f64 = *env.offset(8_isize);
+    let omega: f64 = *env.offset(8_isize);
     if omega < 0 as f64 && (*envs).rys_order > 1_i32 {
-        let mut r_guess: f64 = 8.0f64;
-        let mut omega2: f64 = omega * omega;
-        let mut lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
-        let mut lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+        let r_guess: f64 = 8.0f64;
+        let omega2: f64 = omega * omega;
+        let lij: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+        let lkl: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
         if lij > 0_i32 {
-            let mut dist_ij: f64 = (rr_ij).sqrt();
-            let mut aij: f64 =
+            let dist_ij: f64 = (rr_ij).sqrt();
+            let aij: f64 =
                 *ai.offset((i_prim - 1_i32) as isize) + *aj.offset((j_prim - 1_i32) as isize);
-            let mut theta: f64 = omega2 / (omega2 + aij);
+            let theta: f64 = omega2 / (omega2 + aij);
             expcutoff +=
                 lij as f64 * ((dist_ij + theta * r_guess + 1.0f64) / (dist_ij + 1.0f64)).ln();
         }
         if lkl > 0_i32 {
-            let mut dist_kl: f64 = (rr_kl).sqrt();
-            let mut akl: f64 =
+            let dist_kl: f64 = (rr_kl).sqrt();
+            let akl: f64 =
                 *ak.offset((k_prim - 1_i32) as isize) + *al.offset((l_prim - 1_i32) as isize);
-            let mut theta_0: f64 = omega2 / (omega2 + akl);
+            let theta_0: f64 = omega2 / (omega2 + akl);
             expcutoff +=
                 lkl as f64 * ((dist_kl + theta_0 * r_guess + 1.0f64) / (dist_kl + 1.0f64)).ln();
         }
     }
-    let mut nc: i32 = i_ctr * j_ctr * k_ctr * l_ctr;
-    let mut leng: u64 =
+    let nc: i32 = i_ctr * j_ctr * k_ctr * l_ctr;
+    let leng: u64 =
         ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
-    let mut lenl: u64 = nf.wrapping_mul(nc as u64).wrapping_mul(n_comp as u64);
-    let mut lenk: u64 = nf
+    let lenl: u64 = nf.wrapping_mul(nc as u64).wrapping_mul(n_comp as u64);
+    let lenk: u64 = nf
         .wrapping_mul(i_ctr as u64)
         .wrapping_mul(j_ctr as u64)
         .wrapping_mul(k_ctr as u64)
         .wrapping_mul(n_comp as u64);
-    let mut lenj: u64 = nf
+    let lenj: u64 = nf
         .wrapping_mul(i_ctr as u64)
         .wrapping_mul(j_ctr as u64)
         .wrapping_mul(n_comp as u64);
-    let mut leni: u64 = nf.wrapping_mul(i_ctr as u64).wrapping_mul(n_comp as u64);
-    let mut len0: u64 = nf.wrapping_mul(n_comp as u64);
-    let mut len: u64 = leng
+    let leni: u64 = nf.wrapping_mul(i_ctr as u64).wrapping_mul(n_comp as u64);
+    let len0: u64 = nf.wrapping_mul(n_comp as u64);
+    let len: u64 = leng
         .wrapping_add(lenl)
         .wrapping_add(lenk)
         .wrapping_add(lenj)
@@ -2360,33 +2359,33 @@ static mut CINTf_2e_loop: [Option<
 };
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_drv(
-    mut out: *mut f64,
+    out: *mut f64,
     mut dims: *mut i32,
-    mut envs: *mut CINTEnvVars,
-    mut opt: *mut CINTOpt,
+    envs: *mut CINTEnvVars,
+    opt: *mut CINTOpt,
     mut cache: *mut f64,
-    mut f_c2s: Option<unsafe extern "C" fn() -> ()>,
+    f_c2s: Option<unsafe extern "C" fn() -> ()>,
 ) -> i32 {
-    let mut x_ctr: *mut i32 = ((*envs).x_ctr).as_mut_ptr();
-    let mut nf: u64 = (*envs).nf as u64;
-    let mut nc: u64 = nf
+    let x_ctr: *mut i32 = ((*envs).x_ctr).as_mut_ptr();
+    let nf: u64 = (*envs).nf as u64;
+    let nc: u64 = nf
         .wrapping_mul(*x_ctr.offset(0_isize) as u64)
         .wrapping_mul(*x_ctr.offset(1_isize) as u64)
         .wrapping_mul(*x_ctr.offset(2_isize) as u64)
         .wrapping_mul(*x_ctr.offset(3_isize) as u64);
-    let mut n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
+    let n_comp: i32 = (*envs).ncomp_e1 * (*envs).ncomp_e2 * (*envs).ncomp_tensor;
     if out.is_null() {
-        let mut bas: *mut i32 = (*envs).bas;
-        let mut shls: *mut i32 = (*envs).shls;
-        let mut i_prim: i32 =
+        let bas: *mut i32 = (*envs).bas;
+        let shls: *mut i32 = (*envs).shls;
+        let i_prim: i32 =
             *bas.offset((8_i32 * *shls.offset(0_isize) + 2_i32) as isize);
-        let mut j_prim: i32 =
+        let j_prim: i32 =
             *bas.offset((8_i32 * *shls.offset(1_isize) + 2_i32) as isize);
-        let mut k_prim: i32 =
+        let k_prim: i32 =
             *bas.offset((8_i32 * *shls.offset(2_isize) + 2_i32) as isize);
-        let mut l_prim: i32 =
+        let l_prim: i32 =
             *bas.offset((8_i32 * *shls.offset(3_isize) + 2_i32) as isize);
-        let mut pdata_size: u64 = (((i_prim * j_prim + k_prim * l_prim) * 5_i32
+        let pdata_size: u64 = (((i_prim * j_prim + k_prim * l_prim) * 5_i32
             + i_prim * *x_ctr.offset(0_isize)
             + j_prim * *x_ctr.offset(1_isize)
             + k_prim * *x_ctr.offset(2_isize)
@@ -2394,9 +2393,9 @@ pub unsafe extern "C" fn CINT2e_drv(
             + (i_prim + j_prim + k_prim + l_prim) * 2_i32)
             as u64)
             .wrapping_add(nf.wrapping_mul(3_u64));
-        let mut leng: u64 =
+        let leng: u64 =
             ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
-        let mut len0: u64 = nf.wrapping_mul(n_comp as u64);
+        let len0: u64 = nf.wrapping_mul(n_comp as u64);
         let mut cache_size: u64 = if leng
             .wrapping_add(len0)
             .wrapping_add(nc.wrapping_mul(n_comp as u64).wrapping_mul(3_u64))
@@ -2422,17 +2421,17 @@ pub unsafe extern "C" fn CINT2e_drv(
     }
     let mut stack: *mut f64 = std::ptr::null_mut::<f64>();
     if cache.is_null() {
-        let mut bas_0: *mut i32 = (*envs).bas;
-        let mut shls_0: *mut i32 = (*envs).shls;
-        let mut i_prim_0: i32 =
+        let bas_0: *mut i32 = (*envs).bas;
+        let shls_0: *mut i32 = (*envs).shls;
+        let i_prim_0: i32 =
             *bas_0.offset((8_i32 * *shls_0.offset(0_isize) + 2_i32) as isize);
-        let mut j_prim_0: i32 =
+        let j_prim_0: i32 =
             *bas_0.offset((8_i32 * *shls_0.offset(1_isize) + 2_i32) as isize);
-        let mut k_prim_0: i32 =
+        let k_prim_0: i32 =
             *bas_0.offset((8_i32 * *shls_0.offset(2_isize) + 2_i32) as isize);
-        let mut l_prim_0: i32 =
+        let l_prim_0: i32 =
             *bas_0.offset((8_i32 * *shls_0.offset(3_isize) + 2_i32) as isize);
-        let mut pdata_size_0: u64 = (((i_prim_0 * j_prim_0 + k_prim_0 * l_prim_0) * 5_i32
+        let pdata_size_0: u64 = (((i_prim_0 * j_prim_0 + k_prim_0 * l_prim_0) * 5_i32
             + i_prim_0 * *x_ctr.offset(0_isize)
             + j_prim_0 * *x_ctr.offset(1_isize)
             + k_prim_0 * *x_ctr.offset(2_isize)
@@ -2440,10 +2439,10 @@ pub unsafe extern "C" fn CINT2e_drv(
             + (i_prim_0 + j_prim_0 + k_prim_0 + l_prim_0) * 2_i32)
             as u64)
             .wrapping_add(nf.wrapping_mul(3_u64));
-        let mut leng_0: u64 =
+        let leng_0: u64 =
             ((*envs).g_size * 3_i32 * ((1_i32 << (*envs).gbits) + 1_i32)) as u64;
-        let mut len0_0: u64 = nf.wrapping_mul(n_comp as u64);
-        let mut cache_size_0: u64 = if leng_0
+        let len0_0: u64 = nf.wrapping_mul(n_comp as u64);
+        let cache_size_0: u64 = if leng_0
             .wrapping_add(len0_0)
             .wrapping_add(nc.wrapping_mul(n_comp as u64).wrapping_mul(3_u64))
             .wrapping_add(pdata_size_0)
@@ -2517,7 +2516,7 @@ pub unsafe extern "C" fn CINT2e_drv(
     if dims.is_null() {
         dims = counts.as_mut_ptr();
     }
-    let mut nout: i32 = *dims.offset(0_isize)
+    let nout: i32 = *dims.offset(0_isize)
         * *dims.offset(1_isize)
         * *dims.offset(2_isize)
         * *dims.offset(3_isize);
@@ -2552,13 +2551,13 @@ pub unsafe extern "C" fn CINT2e_drv(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTgout2e(
-    mut gout: *mut f64,
-    mut g: *mut f64,
+    gout: *mut f64,
+    g: *mut f64,
     mut idx: *mut i32,
-    mut envs: *mut CINTEnvVars,
-    mut gout_empty: i32,
+    envs: *mut CINTEnvVars,
+    gout_empty: i32,
 ) {
-    let mut nf: i32 = (*envs).nf;
+    let nf: i32 = (*envs).nf;
     let mut i: i32 = 0;
     let mut ix: i32 = 0;
     let mut iy: i32 = 0;
@@ -2993,16 +2992,16 @@ pub unsafe extern "C" fn CINTgout2e(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int2e_sph(
-    mut out: *mut f64,
-    mut dims: *mut i32,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-    mut opt: *mut CINTOpt,
-    mut cache: *mut f64,
+    out: *mut f64,
+    dims: *mut i32,
+    shls: *mut i32,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
+    opt: *mut CINTOpt,
+    cache: *mut f64,
 ) -> i32 {
     let ng: [i32; 8] = [
         0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32,
@@ -3047,30 +3046,30 @@ pub unsafe extern "C" fn int2e_sph(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int2e_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    opt: *mut *mut CINTOpt,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
-    let mut ng: [i32; 8] = [
+    let ng: [i32; 8] = [
         0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32,
     ];
     CINTall_2e_optimizer(opt, &ng, atm, natm, bas, nbas, env);
 }
 #[no_mangle]
 pub unsafe extern "C" fn int2e_cart(
-    mut out: *mut f64,
-    mut dims: *mut i32,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
-    mut opt: *mut CINTOpt,
-    mut cache: *mut f64,
+    out: *mut f64,
+    dims: *mut i32,
+    shls: *mut i32,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
+    opt: *mut CINTOpt,
+    cache: *mut f64,
 ) -> i32 {
     let ng: [i32; 8] = [
         0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32,
@@ -3139,34 +3138,34 @@ pub unsafe extern "C" fn int2e_cart(
 // }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    opt: *mut *mut CINTOpt,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
     int2e_optimizer(opt, atm, natm, bas, nbas, env);
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_sph_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    opt: *mut *mut CINTOpt,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
     int2e_optimizer(opt, atm, natm, bas, nbas, env);
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_cart_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    opt: *mut *mut CINTOpt,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
     int2e_optimizer(opt, atm, natm, bas, nbas, env);
 }
@@ -3196,16 +3195,16 @@ pub unsafe extern "C" fn cint2e_cart_optimizer(
 // }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_sph_(
-    mut out: *mut f64,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-    mut optptr_as_integer8: u64,
+    out: *mut f64,
+    shls: *mut i32,
+    atm: *mut i32,
+    natm: *mut i32,
+    bas: *mut i32,
+    nbas: *mut i32,
+    env: *mut f64,
+    optptr_as_integer8: u64,
 ) -> i32 {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+    let opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
     int2e_sph(
         out,
         std::ptr::null_mut::<i32>(),
@@ -3221,28 +3220,28 @@ pub unsafe extern "C" fn cint2e_sph_(
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_sph_optimizer_(
-    mut optptr_as_integer8: u64,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
+    optptr_as_integer8: u64,
+    atm: *mut i32,
+    natm: *mut i32,
+    bas: *mut i32,
+    nbas: *mut i32,
+    env: *mut f64,
 ) {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+    let opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
     int2e_optimizer(opt, atm, *natm, bas, *nbas, env);
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_cart_(
-    mut out: *mut f64,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
-    mut optptr_as_integer8: u64,
+    out: *mut f64,
+    shls: *mut i32,
+    atm: *mut i32,
+    natm: *mut i32,
+    bas: *mut i32,
+    nbas: *mut i32,
+    env: *mut f64,
+    optptr_as_integer8: u64,
 ) -> i32 {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+    let opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
     int2e_cart(
         out,
         std::ptr::null_mut::<i32>(),
@@ -3258,25 +3257,25 @@ pub unsafe extern "C" fn cint2e_cart_(
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_cart_optimizer_(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
+    opt: *mut *mut CINTOpt,
+    atm: *mut i32,
+    natm: *mut i32,
+    bas: *mut i32,
+    nbas: *mut i32,
+    env: *mut f64,
 ) {
     int2e_optimizer(opt, atm, *natm, bas, *nbas, env);
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_optimizer_(
-    mut optptr_as_integer8: u64,
-    mut atm: *mut i32,
-    mut natm: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: *mut i32,
-    mut env: *mut f64,
+    optptr_as_integer8: u64,
+    atm: *mut i32,
+    natm: *mut i32,
+    bas: *mut i32,
+    nbas: *mut i32,
+    env: *mut f64,
 ) {
-    let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
+    let opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
     int2e_optimizer(opt, atm, *natm, bas, *nbas, env);
 }
 

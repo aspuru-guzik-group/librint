@@ -4,8 +4,7 @@
     non_camel_case_types,
     non_snake_case,
     non_upper_case_globals,
-    unused_assignments,
-    unused_mut
+    unused_assignments
 )]
 
 use crate::g1e::CINTg1e_index_xyz;
@@ -30,14 +29,14 @@ extern "C" {
 
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_2e_optimizer(
-    mut opt: *mut *mut CINTOpt,
+    opt: *mut *mut CINTOpt,
     _atm: *mut i32,
     _natm: i32,
     _bas: *mut i32,
-    mut nbas: i32,
+    nbas: i32,
     _env: *mut f64,
 ) {
-    let mut opt0: *mut CINTOpt =
+    let opt0: *mut CINTOpt =
         malloc(::core::mem::size_of::<CINTOpt>() as libc::c_ulong) as *mut CINTOpt;
     (*opt0).index_xyz_array = std::ptr::null_mut::<*mut i32>();
     (*opt0).non0ctr = std::ptr::null_mut::<*mut i32>();
@@ -49,18 +48,18 @@ pub unsafe extern "C" fn CINTinit_2e_optimizer(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    opt: *mut *mut CINTOpt,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTdel_2e_optimizer(mut opt: *mut *mut CINTOpt) {
-    let mut opt0: *mut CINTOpt = *opt;
+pub unsafe extern "C" fn CINTdel_2e_optimizer(opt: *mut *mut CINTOpt) {
+    let opt0: *mut CINTOpt = *opt;
     if opt0.is_null() {
         return;
     }
@@ -83,12 +82,12 @@ pub unsafe extern "C" fn CINTdel_2e_optimizer(mut opt: *mut *mut CINTOpt) {
     *opt = std::ptr::null_mut::<CINTOpt>();
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTdel_optimizer(mut opt: *mut *mut CINTOpt) {
+pub unsafe extern "C" fn CINTdel_optimizer(opt: *mut *mut CINTOpt) {
     CINTdel_2e_optimizer(opt);
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTno_optimizer(
-    mut opt: *mut *mut CINTOpt,
+    opt: *mut *mut CINTOpt,
     _atm: *mut i32,
     _natm: i32,
     _bas: *mut i32,
@@ -98,9 +97,9 @@ pub unsafe extern "C" fn CINTno_optimizer(
     *opt = std::ptr::null_mut::<CINTOpt>();
 }
 unsafe extern "C" fn _make_fakebas(
-    mut fakebas: *mut i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
+    fakebas: *mut i32,
+    bas: *mut i32,
+    nbas: i32,
     _env: *mut f64,
 ) -> i32 {
     let mut i: i32 = 0;
@@ -115,7 +114,7 @@ unsafe extern "C" fn _make_fakebas(
         i += 1;
         i;
     }
-    let mut fakenbas: i32 = max_l + 1_i32;
+    let fakenbas: i32 = max_l + 1_i32;
     i = 0_i32;
     while i < 8_i32 * fakenbas {
         *fakebas.offset(i as isize) = 0_i32;
@@ -131,13 +130,13 @@ unsafe extern "C" fn _make_fakebas(
     max_l
 }
 unsafe extern "C" fn _allocate_index_xyz(
-    mut opt: *mut CINTOpt,
-    mut max_l: i32,
-    mut l_allow: i32,
-    mut order: i32,
+    opt: *mut CINTOpt,
+    max_l: i32,
+    l_allow: i32,
+    order: i32,
 ) -> *mut i32 {
     let mut i: i32 = 0;
-    let mut cumcart: i32 =
+    let cumcart: i32 =
         (l_allow + 1_i32) * (l_allow + 2_i32) * (l_allow + 3_i32) / 6_i32;
     let mut ll: u64 = (max_l + 1_i32) as u64;
     let mut cc: u64 = cumcart as u64;
@@ -148,12 +147,12 @@ unsafe extern "C" fn _allocate_index_xyz(
         i += 1;
         i;
     }
-    let mut buf: *mut i32 = malloc(
+    let buf: *mut i32 = malloc(
         (::core::mem::size_of::<i32>() as libc::c_ulong)
             .wrapping_mul(cc)
             .wrapping_mul(3 as libc::c_ulong),
     ) as *mut i32;
-    let mut ppbuf: *mut *mut i32 =
+    let ppbuf: *mut *mut i32 =
         malloc((::core::mem::size_of::<*mut i32>() as libc::c_ulong).wrapping_mul(ll))
             as *mut *mut i32;
     let ref mut fresh0 = *ppbuf.offset(0_isize);
@@ -169,17 +168,17 @@ unsafe extern "C" fn _allocate_index_xyz(
     buf
 }
 unsafe extern "C" fn gen_idx(
-    mut opt: *mut CINTOpt,
-    mut finit: Option<unsafe extern "C" fn() -> ()>,
-    mut findex_xyz: Option<unsafe extern "C" fn() -> ()>,
-    mut order: i32,
+    opt: *mut CINTOpt,
+    finit: Option<unsafe extern "C" fn() -> ()>,
+    findex_xyz: Option<unsafe extern "C" fn() -> ()>,
+    order: i32,
     mut l_allow: i32,
-    mut ng: &[i32; 8],
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    ng: &[i32; 8],
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -187,8 +186,8 @@ unsafe extern "C" fn gen_idx(
     let mut l: i32 = 0;
     let mut ptr: i32 = 0;
     let mut fakebas: [i32; 128] = [0; 128];
-    let mut max_l: i32 = _make_fakebas(fakebas.as_mut_ptr(), bas, nbas, env);
-    let mut fakenbas: i32 = max_l + 1_i32;
+    let max_l: i32 = _make_fakebas(fakebas.as_mut_ptr(), bas, nbas, env);
+    let fakenbas: i32 = max_l + 1_i32;
     l_allow = if max_l < l_allow { max_l } else { l_allow };
     let mut buf: *mut i32 = _allocate_index_xyz(opt, max_l, l_allow, order);
     let mut envs: CINTEnvVars = CINTEnvVars::new();
@@ -320,13 +319,13 @@ unsafe extern "C" fn gen_idx(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTall_1e_optimizer(
-    mut opt: *mut *mut CINTOpt,
+    opt: *mut *mut CINTOpt,
     ng: &[i32; 8],
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
     CINTOpt_set_log_maxc(*opt, atm, natm, bas, nbas, env);
@@ -378,13 +377,13 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTall_2e_optimizer(
-    mut opt: *mut *mut CINTOpt,
+    opt: *mut *mut CINTOpt,
     ng: &[i32; 8],
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
     CINTOpt_setij(*opt, ng, atm, natm, bas, nbas, env);
@@ -688,10 +687,10 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
 // }
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
-    mut log_maxc: *mut f64,
-    mut coeff: *mut f64,
-    mut nprim: i32,
-    mut nctr: i32,
+    log_maxc: *mut f64,
+    coeff: *mut f64,
+    nprim: i32,
+    nctr: i32,
 ) {
     let mut i: i32 = 0;
     let mut ip: i32 = 0;
@@ -716,12 +715,12 @@ pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_set_log_maxc(
-    mut opt: *mut CINTOpt,
+    opt: *mut CINTOpt,
     _atm: *mut i32,
     _natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
     let mut i: i32 = 0;
     let mut iprim: i32 = 0;
@@ -761,20 +760,20 @@ pub unsafe extern "C" fn CINTOpt_set_log_maxc(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTset_pairdata(
-    mut pairdata: *mut PairData,
-    mut ai: *mut f64,
-    mut aj: *mut f64,
-    mut ri: *mut f64,
-    mut rj: *mut f64,
-    mut log_maxci: *mut f64,
-    mut log_maxcj: *mut f64,
-    mut li_ceil: i32,
-    mut lj_ceil: i32,
-    mut iprim: i32,
-    mut jprim: i32,
-    mut rr_ij: f64,
-    mut expcutoff: f64,
-    mut env: *mut f64,
+    pairdata: *mut PairData,
+    ai: *mut f64,
+    aj: *mut f64,
+    ri: *mut f64,
+    rj: *mut f64,
+    log_maxci: *mut f64,
+    log_maxcj: *mut f64,
+    li_ceil: i32,
+    lj_ceil: i32,
+    iprim: i32,
+    jprim: i32,
+    rr_ij: f64,
+    expcutoff: f64,
+    env: *mut f64,
 ) -> i32 {
     let mut ip: i32 = 0;
     let mut jp: i32 = 0;
@@ -785,14 +784,14 @@ pub unsafe extern "C" fn CINTset_pairdata(
     let mut wj: f64 = 0.;
     aij = *ai.offset((iprim - 1_i32) as isize) + *aj.offset((jprim - 1_i32) as isize);
     let mut log_rr_ij: f64 = 1.7f64 - 1.5f64 * (aij).ln();
-    let mut lij: i32 = li_ceil + lj_ceil;
+    let lij: i32 = li_ceil + lj_ceil;
     if lij > 0_i32 {
-        let mut dist_ij: f64 = (rr_ij).sqrt();
-        let mut omega: f64 = *env.offset(8_isize);
+        let dist_ij: f64 = (rr_ij).sqrt();
+        let omega: f64 = *env.offset(8_isize);
         if omega < 0 as f64 {
-            let mut r_guess: f64 = 8.0f64;
-            let mut omega2: f64 = omega * omega;
-            let mut theta: f64 = omega2 / (omega2 + aij);
+            let r_guess: f64 = 8.0f64;
+            let omega2: f64 = omega * omega;
+            let theta: f64 = omega2 / (omega2 + aij);
             log_rr_ij += lij as f64 * (dist_ij + theta * r_guess + 1.0f64).ln();
         } else {
             log_rr_ij += lij as f64 * (dist_ij + 1.0f64).ln();
@@ -839,13 +838,13 @@ pub unsafe extern "C" fn CINTset_pairdata(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_setij(
-    mut opt: *mut CINTOpt,
+    opt: *mut CINTOpt,
     ng: &[i32; 8],
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -872,7 +871,7 @@ pub unsafe extern "C" fn CINTOpt_setij(
     if ((*opt).log_max_coeff).is_null() {
         CINTOpt_set_log_maxc(opt, atm, natm, bas, nbas, env);
     }
-    let mut log_max_coeff: *mut *mut f64 = (*opt).log_max_coeff;
+    let log_max_coeff: *mut *mut f64 = (*opt).log_max_coeff;
     let mut log_maxci: *mut f64 = std::ptr::null_mut::<f64>();
     let mut log_maxcj: *mut f64 = std::ptr::null_mut::<f64>();
     let mut tot_prim: u64 = 0_u64;
@@ -998,7 +997,7 @@ pub unsafe extern "C" fn CINTOpt_setij(
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
+pub unsafe extern "C" fn CINTdel_pairdata_optimizer(cintopt: *mut CINTOpt) {
     if !cintopt.is_null() && !((*cintopt).pairdata).is_null() {
         free(*((*cintopt).pairdata).offset(0_isize) as *mut libc::c_void);
         free((*cintopt).pairdata as *mut libc::c_void);
@@ -1008,10 +1007,10 @@ pub unsafe extern "C" fn CINTdel_pairdata_optimizer(mut cintopt: *mut CINTOpt) {
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
     mut sortedidx: *mut i32,
-    mut non0ctr: *mut i32,
-    mut ci: *mut f64,
-    mut iprim: i32,
-    mut ictr: i32,
+    non0ctr: *mut i32,
+    ci: *mut f64,
+    iprim: i32,
+    ictr: i32,
 ) {
     let mut ip: i32 = 0;
     let mut j: i32 = 0;
@@ -1051,12 +1050,12 @@ pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_set_non0coeff(
-    mut opt: *mut CINTOpt,
+    opt: *mut CINTOpt,
     _atm: *mut i32,
     _natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
     let mut i: i32 = 0;
     let mut iprim: i32 = 0;

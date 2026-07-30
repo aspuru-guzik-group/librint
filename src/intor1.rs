@@ -4,8 +4,7 @@
     non_camel_case_types,
     non_snake_case,
     non_upper_case_globals,
-    unused_assignments,
-    unused_mut
+    unused_assignments
 )]
 
 use crate::cart2sph::c2s_cart_1e;
@@ -20,21 +19,21 @@ use crate::cint::CINTOpt;
 
 #[no_mangle]
 pub unsafe extern "C" fn CINTgout1e_int1e_kin(
-    mut gout: *mut f64,
-    mut g: *mut f64,
-    mut idx: *mut i32,
-    mut envs: *mut CINTEnvVars,
-    mut gout_empty: i32,
+    gout: *mut f64,
+    g: *mut f64,
+    idx: *mut i32,
+    envs: *mut CINTEnvVars,
+    gout_empty: i32,
 ) {
-    let mut nf: i32 = (*envs).nf;
+    let nf: i32 = (*envs).nf;
     let mut ix: i32 = 0;
     let mut iy: i32 = 0;
     let mut iz: i32 = 0;
     let mut n: i32 = 0;
-    let mut g0: *mut f64 = g;
-    let mut g1: *mut f64 = g0.offset(((*envs).g_size * 3_i32) as isize);
-    let mut g2: *mut f64 = g1.offset(((*envs).g_size * 3_i32) as isize);
-    let mut g3: *mut f64 = g2.offset(((*envs).g_size * 3_i32) as isize);
+    let g0: *mut f64 = g;
+    let g1: *mut f64 = g0.offset(((*envs).g_size * 3_i32) as isize);
+    let g2: *mut f64 = g1.offset(((*envs).g_size * 3_i32) as isize);
+    let g3: *mut f64 = g2.offset(((*envs).g_size * 3_i32) as isize);
     let mut s: [f64; 9] = [0.; 9];
     CINTnabla1j_1e(
         g1,
@@ -105,32 +104,32 @@ pub unsafe extern "C" fn CINTgout1e_int1e_kin(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_optimizer(
-    mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    opt: *mut *mut CINTOpt,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
 ) {
-    let mut ng: [i32; 8] = [
+    let ng: [i32; 8] = [
         0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32,
     ];
     CINTall_1e_optimizer(opt, &ng, atm, natm, bas, nbas, env);
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_cart(
-    mut out: *mut f64,
-    mut dims: *mut i32,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    out: *mut f64,
+    dims: *mut i32,
+    shls: *mut i32,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
     _opt: *mut CINTOpt,
-    mut cache: *mut f64,
+    cache: *mut f64,
 ) -> i32 {
-    let mut ng: [i32; 8] = [
+    let ng: [i32; 8] = [
         0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
@@ -174,18 +173,18 @@ pub unsafe extern "C" fn int1e_kin_cart(
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_sph(
-    mut out: *mut f64,
-    mut dims: *mut i32,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    out: *mut f64,
+    dims: *mut i32,
+    shls: *mut i32,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
     _opt: *mut CINTOpt,
-    mut cache: *mut f64,
+    cache: *mut f64,
 ) -> i32 {
-    let mut ng: [i32; 8] = [
+    let ng: [i32; 8] = [
         0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
@@ -231,16 +230,16 @@ pub unsafe extern "C" fn int1e_kin_sph(
 pub unsafe extern "C" fn int1e_kin_spinor(
     _out: *mut f64,
     _dims: *mut i32,
-    mut shls: *mut i32,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    shls: *mut i32,
+    atm: *mut i32,
+    natm: i32,
+    bas: *mut i32,
+    nbas: i32,
+    env: *mut f64,
     _opt: *mut CINTOpt,
     _cache: *mut f64,
 ) -> i32 {
-    let mut ng: [i32; 8] = [
+    let ng: [i32; 8] = [
         0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32,
     ];
     let mut envs: CINTEnvVars = CINTEnvVars::new();

@@ -4,8 +4,7 @@
     non_camel_case_types,
     non_snake_case,
     non_upper_case_globals,
-    unused_assignments,
-    unused_mut
+    unused_assignments
 )]
 #![feature(extern_types)]
 extern "C" {
@@ -14,15 +13,15 @@ extern "C" {
 }
 
 unsafe extern "C" fn _dlarrk(
-    mut n: i32,
-    mut iw: i32,
-    mut gl: f64,
-    mut gu: f64,
-    mut diag: *mut f64,
-    mut e2: *mut f64,
-    mut reltol: f64,
-    mut w: *mut f64,
-    mut werr: *mut f64,
+    n: i32,
+    iw: i32,
+    gl: f64,
+    gu: f64,
+    diag: *mut f64,
+    e2: *mut f64,
+    reltol: f64,
+    w: *mut f64,
+    werr: *mut f64,
 ) -> i32 {
     let mut i: i32 = 0;
     let mut it: i32 = 0;
@@ -90,13 +89,13 @@ unsafe extern "C" fn _dlarrk(
     info
 }
 unsafe extern "C" fn _dlarrc(
-    mut n: i32,
-    mut vl: f64,
-    mut vu: f64,
-    mut diag: *mut f64,
-    mut e2: *mut f64,
-    mut lcnt: *mut i32,
-    mut rcnt: *mut i32,
+    n: i32,
+    vl: f64,
+    vu: f64,
+    diag: *mut f64,
+    e2: *mut f64,
+    lcnt: *mut i32,
+    rcnt: *mut i32,
 ) {
     let mut i: i32 = 0;
     let mut left_count: i32 = 0_i32;
@@ -134,16 +133,16 @@ unsafe extern "C" fn _dlarrc(
     *rcnt = right_count;
 }
 unsafe extern "C" fn _dlasq4(
-    mut i0: i32,
-    mut n0: i32,
-    mut n0init: i32,
-    mut qvecp: *mut f64,
-    mut qvec1p: *mut f64,
-    mut evecp: *mut f64,
-    mut evec1p: *mut f64,
-    mut dmin: *mut f64,
-    mut dn: *mut f64,
-    mut tau: *mut f64,
+    i0: i32,
+    n0: i32,
+    n0init: i32,
+    qvecp: *mut f64,
+    qvec1p: *mut f64,
+    evecp: *mut f64,
+    evec1p: *mut f64,
+    dmin: *mut f64,
+    dn: *mut f64,
+    tau: *mut f64,
 ) -> i32 {
     let mut a2: f64 = 0.;
     let mut b1: f64 = 0.;
@@ -404,16 +403,16 @@ unsafe extern "C" fn _dlasq4(
     0_i32
 }
 unsafe extern "C" fn _dlasq5(
-    mut i0: i32,
-    mut n0: i32,
-    mut qvecp: *mut f64,
-    mut qvec1p: *mut f64,
-    mut evecp: *mut f64,
-    mut evec1p: *mut f64,
-    mut tau: f64,
-    mut tol: f64,
-    mut dmin: *mut f64,
-    mut dn: *mut f64,
+    i0: i32,
+    n0: i32,
+    qvecp: *mut f64,
+    qvec1p: *mut f64,
+    evecp: *mut f64,
+    evec1p: *mut f64,
+    tau: f64,
+    tol: f64,
+    dmin: *mut f64,
+    dn: *mut f64,
 ) {
     let mut diag: f64 = *qvecp.offset(i0 as isize) - tau;
     let mut diag_min: f64 = diag;
@@ -459,10 +458,10 @@ unsafe extern "C" fn _dlasq5(
     };
 }
 unsafe extern "C" fn _dlasq2(
-    mut n: i32,
-    mut work: *mut f64,
-    mut diag: *mut f64,
-    mut diag_off: *mut f64,
+    n: i32,
+    work: *mut f64,
+    diag: *mut f64,
+    diag_off: *mut f64,
 ) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -731,12 +730,12 @@ unsafe extern "C" fn _dlasq2(
     0_i32
 }
 unsafe extern "C" fn _compute_eigenvalues(
-    mut n: i32,
-    mut diag: *mut f64,
-    mut diag_off1: *mut f64,
-    mut w: *mut f64,
-    mut werr: *mut f64,
-    mut wgap: *mut f64,
+    n: i32,
+    diag: *mut f64,
+    diag_off1: *mut f64,
+    w: *mut f64,
+    werr: *mut f64,
+    wgap: *mut f64,
     mut work: *mut f64,
 ) -> i32 {
     let mut gl: f64 = 0.;
@@ -808,7 +807,7 @@ unsafe extern "C" fn _compute_eigenvalues(
         *wgap.offset(0_isize) = 0.0f64;
         return 0_i32;
     }
-    let mut e2: *mut f64 = work;
+    let e2: *mut f64 = work;
     work = work.offset(n as isize);
     i = 0_i32;
     while i < n - 1_i32 {
@@ -994,18 +993,18 @@ unsafe extern "C" fn _compute_eigenvalues(
     0_i32
 }
 unsafe extern "C" fn _dlarrf(
-    mut n: i32,
-    mut diag: *mut f64,
-    mut diag_off1: *mut f64,
-    mut ld: *mut f64,
-    mut clstrt: i32,
-    mut w: *mut f64,
-    mut wgap: *mut f64,
-    mut werr: *mut f64,
-    mut clgapl: f64,
-    mut sigma: *mut f64,
-    mut dplus: *mut f64,
-    mut lplus: *mut f64,
+    n: i32,
+    diag: *mut f64,
+    diag_off1: *mut f64,
+    ld: *mut f64,
+    clstrt: i32,
+    w: *mut f64,
+    wgap: *mut f64,
+    werr: *mut f64,
+    clgapl: f64,
+    sigma: *mut f64,
+    dplus: *mut f64,
+    lplus: *mut f64,
 ) -> i32 {
     let mut i: i32 = 0;
     let mut ktry: i32 = 0;
@@ -1056,11 +1055,11 @@ unsafe extern "C" fn _dlarrf(
     0_i32
 }
 unsafe extern "C" fn _dlaneg(
-    mut n: i32,
-    mut diag: *mut f64,
-    mut lld: *mut f64,
-    mut sigma: f64,
-    mut twist_index: i32,
+    n: i32,
+    diag: *mut f64,
+    lld: *mut f64,
+    sigma: f64,
+    twist_index: i32,
 ) -> i32 {
     let mut j: i32 = 0;
     let mut negcnt: i32 = 0;
@@ -1100,17 +1099,17 @@ unsafe extern "C" fn _dlaneg(
     negcnt
 }
 unsafe extern "C" fn _dlarrb(
-    mut n: i32,
-    mut diag: *mut f64,
-    mut lld: *mut f64,
-    mut ifirst: i32,
-    mut ilast: i32,
-    mut rtol1: f64,
-    mut rtol2: f64,
-    mut w: *mut f64,
-    mut wgap: *mut f64,
-    mut werr: *mut f64,
-    mut twist_index: i32,
+    n: i32,
+    diag: *mut f64,
+    lld: *mut f64,
+    ifirst: i32,
+    ilast: i32,
+    rtol1: f64,
+    rtol2: f64,
+    w: *mut f64,
+    wgap: *mut f64,
+    werr: *mut f64,
+    twist_index: i32,
 ) -> i32 {
     let mut i: i32 = 0;
     let mut iter: i32 = 0;
@@ -1120,7 +1119,7 @@ unsafe extern "C" fn _dlarrb(
     let mut left: f64 = 0.;
     let mut right: f64 = 0.;
     let mut width: f64 = 0.;
-    let mut cvrgd: f64 = if rtol1 * *wgap.offset(ifirst as isize)
+    let cvrgd: f64 = if rtol1 * *wgap.offset(ifirst as isize)
         > rtol2
             * (if fabs(*w.offset(ifirst as isize)) > fabs(*w.offset((ilast - 1_i32) as isize)) {
                 fabs(*w.offset(ifirst as isize))
@@ -1198,19 +1197,19 @@ unsafe extern "C" fn _dlarrb(
     0_i32
 }
 unsafe extern "C" fn _dlar1v(
-    mut n: i32,
-    mut lambda: f64,
-    mut diag: *mut f64,
-    mut diag_off1: *mut f64,
-    mut ld: *mut f64,
-    mut lld: *mut f64,
+    n: i32,
+    lambda: f64,
+    diag: *mut f64,
+    diag_off1: *mut f64,
+    ld: *mut f64,
+    lld: *mut f64,
     _gaptol: f64,
-    mut vec: *mut f64,
-    mut negcnt: *mut i32,
-    mut twist_index: *mut i32,
-    mut resid: *mut f64,
-    mut rqcorr: *mut f64,
-    mut work: *mut f64,
+    vec: *mut f64,
+    negcnt: *mut i32,
+    twist_index: *mut i32,
+    resid: *mut f64,
+    rqcorr: *mut f64,
+    work: *mut f64,
 ) {
     let mut i: i32 = 0;
     let mut r1: i32 = 0;
@@ -1223,9 +1222,9 @@ unsafe extern "C" fn _dlar1v(
     let mut mingma: f64 = 0.;
     let mut dplus: f64 = 0.;
     let mut dminus: f64 = 0.;
-    let mut lplus: *mut f64 = work;
-    let mut uminus: *mut f64 = work.offset(n as isize);
-    let mut work_p: *mut f64 = work.offset((n * 2_i32) as isize);
+    let lplus: *mut f64 = work;
+    let uminus: *mut f64 = work.offset(n as isize);
+    let work_p: *mut f64 = work.offset((n * 2_i32) as isize);
     if *twist_index == -1_i32 {
         r1 = 0_i32;
         r2 = n;
@@ -1315,15 +1314,15 @@ unsafe extern "C" fn _dlar1v(
     *rqcorr = mingma * tmp;
 }
 unsafe extern "C" fn _compute_eigenvectors(
-    mut n: i32,
-    mut diag: *mut f64,
-    mut diag_off1: *mut f64,
-    mut w: *mut f64,
-    mut werr: *mut f64,
-    mut wgap: *mut f64,
-    mut vec: *mut f64,
-    mut work: *mut f64,
-    mut iwork: *mut i32,
+    n: i32,
+    diag: *mut f64,
+    diag_off1: *mut f64,
+    w: *mut f64,
+    werr: *mut f64,
+    wgap: *mut f64,
+    vec: *mut f64,
+    work: *mut f64,
+    iwork: *mut i32,
 ) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -1685,14 +1684,14 @@ unsafe extern "C" fn _compute_eigenvectors(
     0_i32
 }
 unsafe extern "C" fn _dlaev2(
-    mut eig: *mut f64,
-    mut vec: *mut f64,
-    mut diag: *mut f64,
-    mut diag_off1: *mut f64,
+    eig: *mut f64,
+    vec: *mut f64,
+    diag: *mut f64,
+    diag_off1: *mut f64,
 ) -> i32 {
-    let mut a: f64 = *diag.offset(0_isize);
-    let mut b: f64 = *diag_off1.offset(0_isize);
-    let mut c: f64 = *diag.offset(1_isize);
+    let a: f64 = *diag.offset(0_isize);
+    let b: f64 = *diag_off1.offset(0_isize);
+    let c: f64 = *diag.offset(1_isize);
     let mut df: f64 = 0.;
     let mut cs: f64 = 0.;
     let mut ct: f64 = 0.;
@@ -1758,11 +1757,11 @@ unsafe extern "C" fn _dlaev2(
 }
 #[no_mangle]
 pub unsafe extern "C" fn _CINTdiagonalize(
-    mut n: i32,
-    mut diag: *mut f64,
-    mut diag_off1: *mut f64,
-    mut eig: *mut f64,
-    mut vec: *mut f64,
+    n: i32,
+    diag: *mut f64,
+    diag_off1: *mut f64,
+    eig: *mut f64,
+    vec: *mut f64,
 ) -> i32 {
     if n == 0_i32 {
         return 0_i32;
@@ -1775,12 +1774,12 @@ pub unsafe extern "C" fn _CINTdiagonalize(
     }
     let mut iwork: [i32; 160] = [0; 160];
     let mut work: [f64; 289] = [0.; 289];
-    let mut buf_err: *mut f64 = work.as_mut_ptr().offset(n as isize);
-    let mut buf_gp: *mut f64 = work
+    let buf_err: *mut f64 = work.as_mut_ptr().offset(n as isize);
+    let buf_gp: *mut f64 = work
         .as_mut_ptr()
         .offset((n * 2_i32) as isize)
         .offset(1_isize);
-    let mut buf_wrk: *mut f64 = work
+    let buf_wrk: *mut f64 = work
         .as_mut_ptr()
         .offset((n * 3_i32) as isize)
         .offset(1_isize);

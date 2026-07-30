@@ -4,8 +4,7 @@
     non_camel_case_types,
     non_snake_case,
     non_upper_case_globals,
-    unused_assignments,
-    unused_mut
+    unused_assignments
 )]
 
 #[derive(Copy, Clone)]
@@ -110,7 +109,7 @@ pub union C2RustUnnamed_1 {
 
 impl CINTEnvVars {
     pub fn new() -> Self {
-        let mut envs: CINTEnvVars = CINTEnvVars {
+        let envs: CINTEnvVars = CINTEnvVars {
             atm: std::ptr::null_mut::<i32>(),
             bas: std::ptr::null_mut::<i32>(),
             env: std::ptr::null_mut::<f64>(),

@@ -4,8 +4,7 @@
     non_camel_case_types,
     non_snake_case,
     non_upper_case_globals,
-    unused_assignments,
-    unused_mut
+    unused_assignments
 )]
 
 use crate::fblas::CINTdgemm_NN1;
@@ -88366,7 +88365,7 @@ static mut g_trans_cart2jI: [f64; 34580] = [
     0 as f64,
     0 as f64,
 ];
-unsafe extern "C" fn _len_spinor(mut kappa: i32, mut l: i32) -> i32 {
+unsafe extern "C" fn _len_spinor(kappa: i32, l: i32) -> i32 {
     if 0_i32 == kappa {
         4_i32 * l + 2_i32
     } else if kappa < 0_i32 {
@@ -88386,39 +88385,39 @@ static mut g_c2s: [cart2sp_t; 16] = [cart2sp_t {
     cart2j_gt_lI: std::ptr::null_mut::<f64>(),
 }; 16];
 unsafe extern "C" fn a_bra_cart2spheric(
-    mut gsph: *mut f64,
-    mut nket: i32,
-    mut gcart: *mut f64,
-    mut l: i32,
+    gsph: *mut f64,
+    nket: i32,
+    gcart: *mut f64,
+    l: i32,
 ) -> *mut f64 {
-    let mut nf: i32 = _len_cart[l as usize];
-    let mut nd: i32 = l * 2_i32 + 1_i32;
+    let nf: i32 = _len_cart[l as usize];
+    let nd: i32 = l * 2_i32 + 1_i32;
     CINTdgemm_TN(nd, nket, nf, g_c2s[l as usize].cart2sph, gcart, gsph);
     gsph
 }
 unsafe extern "C" fn a_ket_cart2spheric(
-    mut gsph: *mut f64,
-    mut gcart: *mut f64,
-    mut lds: i32,
-    mut nbra: i32,
-    mut l: i32,
+    gsph: *mut f64,
+    gcart: *mut f64,
+    lds: i32,
+    nbra: i32,
+    l: i32,
 ) -> *mut f64 {
-    let mut nf: i32 = _len_cart[l as usize];
-    let mut nd: i32 = l * 2_i32 + 1_i32;
+    let nf: i32 = _len_cart[l as usize];
+    let nd: i32 = l * 2_i32 + 1_i32;
     CINTdgemm_NN1(nbra, nd, nf, gcart, g_c2s[l as usize].cart2sph, gsph, lds);
     gsph
 }
 unsafe extern "C" fn s_bra_cart2spheric(
     _gsph: *mut f64,
     _nket: i32,
-    mut gcart: *mut f64,
+    gcart: *mut f64,
     _l: i32,
 ) -> *mut f64 {
     gcart
 }
 unsafe extern "C" fn s_ket_cart2spheric(
     _gsph: *mut f64,
-    mut gcart: *mut f64,
+    gcart: *mut f64,
     _lds: i32,
     _nbra: i32,
     _l: i32,
@@ -88426,10 +88425,10 @@ unsafe extern "C" fn s_ket_cart2spheric(
     gcart
 }
 unsafe extern "C" fn s_ket_cart2spheric_copy(
-    mut gsph: *mut f64,
-    mut gcart: *mut f64,
+    gsph: *mut f64,
+    gcart: *mut f64,
     _lds: i32,
-    mut nbra: i32,
+    nbra: i32,
     _l: i32,
 ) -> *mut f64 {
     let mut i: i32 = 0;
@@ -88444,14 +88443,14 @@ unsafe extern "C" fn s_ket_cart2spheric_copy(
 unsafe extern "C" fn p_bra_cart2spheric(
     _gsph: *mut f64,
     _nket: i32,
-    mut gcart: *mut f64,
+    gcart: *mut f64,
     _l: i32,
 ) -> *mut f64 {
     gcart
 }
 unsafe extern "C" fn p_ket_cart2spheric(
     _gsph: *mut f64,
-    mut gcart: *mut f64,
+    gcart: *mut f64,
     _lds: i32,
     _nbra: i32,
     _l: i32,
@@ -88459,10 +88458,10 @@ unsafe extern "C" fn p_ket_cart2spheric(
     gcart
 }
 unsafe extern "C" fn p_ket_cart2spheric_copy(
-    mut gsph: *mut f64,
-    mut gcart: *mut f64,
-    mut lds: i32,
-    mut nbra: i32,
+    gsph: *mut f64,
+    gcart: *mut f64,
+    lds: i32,
+    nbra: i32,
     _l: i32,
 ) -> *mut f64 {
     let mut i: i32 = 0;
@@ -88478,12 +88477,12 @@ unsafe extern "C" fn p_ket_cart2spheric_copy(
 }
 unsafe extern "C" fn d_bra_cart2spheric(
     mut gsph: *mut f64,
-    mut nket: i32,
+    nket: i32,
     mut gcart: *mut f64,
     _l: i32,
 ) -> *mut f64 {
-    let mut coeff_c2s: *mut f64 = g_c2s[2_usize].cart2sph;
-    let mut pgsph: *mut f64 = gsph;
+    let coeff_c2s: *mut f64 = g_c2s[2_usize].cart2sph;
+    let pgsph: *mut f64 = gsph;
     let mut i: i32 = 0;
     i = 0_i32;
     while i < nket {
@@ -88503,14 +88502,14 @@ unsafe extern "C" fn d_bra_cart2spheric(
     pgsph
 }
 unsafe extern "C" fn d_ket_cart2spheric(
-    mut gsph: *mut f64,
-    mut gcart: *mut f64,
-    mut lds: i32,
-    mut nbra: i32,
+    gsph: *mut f64,
+    gcart: *mut f64,
+    lds: i32,
+    nbra: i32,
     _l: i32,
 ) -> *mut f64 {
-    let mut coeff_c2s: *mut f64 = g_c2s[2_usize].cart2sph;
-    let mut pgsph: *mut f64 = gsph;
+    let coeff_c2s: *mut f64 = g_c2s[2_usize].cart2sph;
+    let pgsph: *mut f64 = gsph;
     let mut i: i32 = 0;
     i = 0_i32;
     while i < nbra {
@@ -88554,12 +88553,12 @@ unsafe extern "C" fn d_ket_cart2spheric(
 }
 unsafe extern "C" fn f_bra_cart2spheric(
     mut gsph: *mut f64,
-    mut nket: i32,
+    nket: i32,
     mut gcart: *mut f64,
     _l: i32,
 ) -> *mut f64 {
-    let mut coeff_c2s: *mut f64 = g_c2s[3_usize].cart2sph;
-    let mut pgsph: *mut f64 = gsph;
+    let coeff_c2s: *mut f64 = g_c2s[3_usize].cart2sph;
+    let pgsph: *mut f64 = gsph;
     let mut i: i32 = 0;
     i = 0_i32;
     while i < nket {
@@ -88587,14 +88586,14 @@ unsafe extern "C" fn f_bra_cart2spheric(
     pgsph
 }
 unsafe extern "C" fn f_ket_cart2spheric(
-    mut gsph: *mut f64,
-    mut gcart: *mut f64,
-    mut lds: i32,
-    mut nbra: i32,
+    gsph: *mut f64,
+    gcart: *mut f64,
+    lds: i32,
+    nbra: i32,
     _l: i32,
 ) -> *mut f64 {
-    let mut coeff_c2s: *mut f64 = g_c2s[3_usize].cart2sph;
-    let mut pgsph: *mut f64 = gsph;
+    let coeff_c2s: *mut f64 = g_c2s[3_usize].cart2sph;
+    let pgsph: *mut f64 = gsph;
     let mut i: i32 = 0;
     i = 0_i32;
     while i < nbra {
@@ -88658,12 +88657,12 @@ unsafe extern "C" fn f_ket_cart2spheric(
 }
 unsafe extern "C" fn g_bra_cart2spheric(
     mut gsph: *mut f64,
-    mut nket: i32,
+    nket: i32,
     mut gcart: *mut f64,
     _l: i32,
 ) -> *mut f64 {
-    let mut coeff_c2s: *mut f64 = g_c2s[4_usize].cart2sph;
-    let mut pgsph: *mut f64 = gsph;
+    let coeff_c2s: *mut f64 = g_c2s[4_usize].cart2sph;
+    let pgsph: *mut f64 = gsph;
     let mut i: i32 = 0;
     i = 0_i32;
     while i < nket {
@@ -88703,14 +88702,14 @@ unsafe extern "C" fn g_bra_cart2spheric(
     pgsph
 }
 unsafe extern "C" fn g_ket_cart2spheric(
-    mut gsph: *mut f64,
-    mut gcart: *mut f64,
-    mut lds: i32,
-    mut nbra: i32,
+    gsph: *mut f64,
+    gcart: *mut f64,
+    lds: i32,
+    nbra: i32,
     _l: i32,
 ) -> *mut f64 {
-    let mut coeff_c2s: *mut f64 = g_c2s[4_usize].cart2sph;
-    let mut pgsph: *mut f64 = gsph;
+    let coeff_c2s: *mut f64 = g_c2s[4_usize].cart2sph;
+    let pgsph: *mut f64 = gsph;
     let mut i: i32 = 0;
     i = 0_i32;
     while i < nbra {
@@ -89040,22 +89039,22 @@ pub static mut c2s_ket_sph1: [Option<
     ]
 };
 unsafe extern "C" fn a_bra_cart2spinor_si(
-    mut gspR: *mut f64,
-    mut gspI: *mut f64,
-    mut gx: *mut f64,
-    mut gy: *mut f64,
-    mut gz: *mut f64,
-    mut g1: *mut f64,
-    mut nket: i32,
-    mut kappa: i32,
-    mut l: i32,
+    gspR: *mut f64,
+    gspI: *mut f64,
+    gx: *mut f64,
+    gy: *mut f64,
+    gz: *mut f64,
+    g1: *mut f64,
+    nket: i32,
+    kappa: i32,
+    l: i32,
 ) {
-    let mut nf: i32 = _len_cart[l as usize];
-    let mut nd: i32 = _len_spinor(kappa, l);
-    let mut gspaR: *mut f64 = gspR;
-    let mut gspaI: *mut f64 = gspI;
-    let mut gspbR: *mut f64 = gspR.offset((nket * nd) as isize);
-    let mut gspbI: *mut f64 = gspI.offset((nket * nd) as isize);
+    let nf: i32 = _len_cart[l as usize];
+    let nd: i32 = _len_spinor(kappa, l);
+    let gspaR: *mut f64 = gspR;
+    let gspaI: *mut f64 = gspI;
+    let gspbR: *mut f64 = gspR.offset((nket * nd) as isize);
+    let gspbI: *mut f64 = gspI.offset((nket * nd) as isize);
     let mut coeffR: *mut f64 = std::ptr::null_mut::<f64>();
     let mut coeffI: *mut f64 = std::ptr::null_mut::<f64>();
     if kappa < 0_i32 {
@@ -89117,22 +89116,22 @@ unsafe extern "C" fn a_bra_cart2spinor_si(
     }
 }
 unsafe extern "C" fn a_bra_cart2spinor_sf(
-    mut gspR: *mut f64,
-    mut gspI: *mut f64,
+    gspR: *mut f64,
+    gspI: *mut f64,
     _gx: *mut f64,
     _gy: *mut f64,
     _gz: *mut f64,
-    mut g1: *mut f64,
-    mut nket: i32,
-    mut kappa: i32,
-    mut l: i32,
+    g1: *mut f64,
+    nket: i32,
+    kappa: i32,
+    l: i32,
 ) {
-    let mut nf: i32 = _len_cart[l as usize];
-    let mut nd: i32 = _len_spinor(kappa, l);
-    let mut gspaR: *mut f64 = gspR;
-    let mut gspaI: *mut f64 = gspI;
-    let mut gspbR: *mut f64 = gspR.offset((nket * nd) as isize);
-    let mut gspbI: *mut f64 = gspI.offset((nket * nd) as isize);
+    let nf: i32 = _len_cart[l as usize];
+    let nd: i32 = _len_spinor(kappa, l);
+    let gspaR: *mut f64 = gspR;
+    let gspaI: *mut f64 = gspI;
+    let gspbR: *mut f64 = gspR.offset((nket * nd) as isize);
+    let gspbI: *mut f64 = gspI.offset((nket * nd) as isize);
     let mut coeffR: *mut f64 = std::ptr::null_mut::<f64>();
     let mut coeffI: *mut f64 = std::ptr::null_mut::<f64>();
     if kappa < 0_i32 {
@@ -89188,24 +89187,24 @@ unsafe extern "C" fn a_bra_cart2spinor_sf(
     }
 }
 unsafe extern "C" fn a_bra1_cart2spinor_si(
-    mut gspR: *mut f64,
-    mut gspI: *mut f64,
-    mut gx: *mut f64,
-    mut gy: *mut f64,
-    mut gz: *mut f64,
-    mut g1: *mut f64,
-    mut ngrids: i32,
-    mut nket: i32,
-    mut kappa: i32,
-    mut l: i32,
+    gspR: *mut f64,
+    gspI: *mut f64,
+    gx: *mut f64,
+    gy: *mut f64,
+    gz: *mut f64,
+    g1: *mut f64,
+    ngrids: i32,
+    nket: i32,
+    kappa: i32,
+    l: i32,
 ) {
-    let mut nf: i32 = _len_cart[l as usize];
-    let mut nd: i32 = _len_spinor(kappa, l);
-    let mut ndg: i32 = nd * ngrids;
-    let mut gspaR: *mut f64 = gspR;
-    let mut gspaI: *mut f64 = gspI;
-    let mut gspbR: *mut f64 = gspR.offset((nket * ndg) as isize);
-    let mut gspbI: *mut f64 = gspI.offset((nket * ndg) as isize);
+    let nf: i32 = _len_cart[l as usize];
+    let nd: i32 = _len_spinor(kappa, l);
+    let ndg: i32 = nd * ngrids;
+    let gspaR: *mut f64 = gspR;
+    let gspaI: *mut f64 = gspI;
+    let gspbR: *mut f64 = gspR.offset((nket * ndg) as isize);
+    let gspbI: *mut f64 = gspI.offset((nket * ndg) as isize);
     let mut coeffR: *mut f64 = std::ptr::null_mut::<f64>();
     let mut coeffI: *mut f64 = std::ptr::null_mut::<f64>();
     if kappa < 0_i32 {
@@ -89274,24 +89273,24 @@ unsafe extern "C" fn a_bra1_cart2spinor_si(
     }
 }
 unsafe extern "C" fn a_bra1_cart2spinor_sf(
-    mut gspR: *mut f64,
-    mut gspI: *mut f64,
+    gspR: *mut f64,
+    gspI: *mut f64,
     _gx: *mut f64,
     _gy: *mut f64,
     _gz: *mut f64,
-    mut g1: *mut f64,
-    mut ngrids: i32,
-    mut nket: i32,
-    mut kappa: i32,
-    mut l: i32,
+    g1: *mut f64,
+    ngrids: i32,
+    nket: i32,
+    kappa: i32,
+    l: i32,
 ) {
-    let mut nf: i32 = _len_cart[l as usize];
-    let mut nd: i32 = _len_spinor(kappa, l);
-    let mut ndg: i32 = nd * ngrids;
-    let mut gspaR: *mut f64 = gspR;
-    let mut gspaI: *mut f64 = gspI;
-    let mut gspbR: *mut f64 = gspR.offset((nket * ndg) as isize);
-    let mut gspbI: *mut f64 = gspI.offset((nket * ndg) as isize);
+    let nf: i32 = _len_cart[l as usize];
+    let nd: i32 = _len_spinor(kappa, l);
+    let ndg: i32 = nd * ngrids;
+    let gspaR: *mut f64 = gspR;
+    let gspaI: *mut f64 = gspI;
+    let gspbR: *mut f64 = gspR.offset((nket * ndg) as isize);
+    let gspbI: *mut f64 = gspI.offset((nket * ndg) as isize);
     let mut coeffR: *mut f64 = std::ptr::null_mut::<f64>();
     let mut coeffI: *mut f64 = std::ptr::null_mut::<f64>();
     if kappa < 0_i32 {
@@ -89350,32 +89349,32 @@ unsafe extern "C" fn a_bra1_cart2spinor_sf(
     }
 }
 unsafe extern "C" fn a_bra1_cart2spinor_zi(
-    mut gspR: *mut f64,
-    mut gspI: *mut f64,
-    mut gx: *mut f64,
-    mut gy: *mut f64,
-    mut gz: *mut f64,
-    mut g1: *mut f64,
-    mut ngrids: i32,
-    mut nket: i32,
-    mut kappa: i32,
-    mut l: i32,
+    gspR: *mut f64,
+    gspI: *mut f64,
+    gx: *mut f64,
+    gy: *mut f64,
+    gz: *mut f64,
+    g1: *mut f64,
+    ngrids: i32,
+    nket: i32,
+    kappa: i32,
+    l: i32,
 ) {
-    let mut nf: i32 = _len_cart[l as usize];
-    let mut nd: i32 = _len_spinor(kappa, l);
-    let mut ndg: i32 = nd * ngrids;
-    let mut gspaR: *mut f64 = gspR;
-    let mut gspaI: *mut f64 = gspI;
-    let mut gspbR: *mut f64 = gspR.offset((nket * ndg) as isize);
-    let mut gspbI: *mut f64 = gspI.offset((nket * ndg) as isize);
-    let mut gxR: *mut f64 = gx;
-    let mut gyR: *mut f64 = gy;
-    let mut gzR: *mut f64 = gz;
-    let mut g1R: *mut f64 = g1;
-    let mut gxI: *mut f64 = gx.offset((nket * nf * ngrids) as isize);
-    let mut gyI: *mut f64 = gy.offset((nket * nf * ngrids) as isize);
-    let mut gzI: *mut f64 = gz.offset((nket * nf * ngrids) as isize);
-    let mut g1I: *mut f64 = g1.offset((nket * nf * ngrids) as isize);
+    let nf: i32 = _len_cart[l as usize];
+    let nd: i32 = _len_spinor(kappa, l);
+    let ndg: i32 = nd * ngrids;
+    let gspaR: *mut f64 = gspR;
+    let gspaI: *mut f64 = gspI;
+    let gspbR: *mut f64 = gspR.offset((nket * ndg) as isize);
+    let gspbI: *mut f64 = gspI.offset((nket * ndg) as isize);
+    let gxR: *mut f64 = gx;
+    let gyR: *mut f64 = gy;
+    let gzR: *mut f64 = gz;
+    let g1R: *mut f64 = g1;
+    let gxI: *mut f64 = gx.offset((nket * nf * ngrids) as isize);
+    let gyI: *mut f64 = gy.offset((nket * nf * ngrids) as isize);
+    let gzI: *mut f64 = gz.offset((nket * nf * ngrids) as isize);
+    let g1I: *mut f64 = g1.offset((nket * nf * ngrids) as isize);
     let mut coeffR: *mut f64 = std::ptr::null_mut::<f64>();
     let mut coeffI: *mut f64 = std::ptr::null_mut::<f64>();
     if kappa < 0_i32 {
@@ -89468,26 +89467,26 @@ unsafe extern "C" fn a_bra1_cart2spinor_zi(
     }
 }
 unsafe extern "C" fn a_bra1_cart2spinor_zf(
-    mut gspR: *mut f64,
-    mut gspI: *mut f64,
+    gspR: *mut f64,
+    gspI: *mut f64,
     _gx: *mut f64,
     _gy: *mut f64,
     _gz: *mut f64,
-    mut g1: *mut f64,
-    mut ngrids: i32,
-    mut nket: i32,
-    mut kappa: i32,
-    mut l: i32,
+    g1: *mut f64,
+    ngrids: i32,
+    nket: i32,
+    kappa: i32,
+    l: i32,
 ) {
-    let mut nf: i32 = _len_cart[l as usize];
-    let mut nd: i32 = _len_spinor(kappa, l);
-    let mut ndg: i32 = nd * ngrids;
-    let mut gspaR: *mut f64 = gspR;
-    let mut gspaI: *mut f64 = gspI;
-    let mut gspbR: *mut f64 = gspR.offset((nket * ndg) as isize);
-    let mut gspbI: *mut f64 = gspI.offset((nket * ndg) as isize);
-    let mut g1R: *mut f64 = g1;
-    let mut g1I: *mut f64 = g1.offset((nket * nf * ngrids) as isize);
+    let nf: i32 = _len_cart[l as usize];
+    let nd: i32 = _len_spinor(kappa, l);
+    let ndg: i32 = nd * ngrids;
+    let gspaR: *mut f64 = gspR;
+    let gspaI: *mut f64 = gspI;
+    let gspbR: *mut f64 = gspR.offset((nket * ndg) as isize);
+    let gspbI: *mut f64 = gspI.offset((nket * ndg) as isize);
+    let g1R: *mut f64 = g1;
+    let g1I: *mut f64 = g1.offset((nket * nf * ngrids) as isize);
     let mut coeffR: *mut f64 = std::ptr::null_mut::<f64>();
     let mut coeffI: *mut f64 = std::ptr::null_mut::<f64>();
     if kappa < 0_i32 {
@@ -89548,17 +89547,17 @@ unsafe extern "C" fn a_bra1_cart2spinor_zf(
     }
 }
 unsafe extern "C" fn a_ket_cart2spinor(
-    mut gspR: *mut f64,
-    mut gspI: *mut f64,
-    mut gcartR: *mut f64,
-    mut gcartI: *mut f64,
-    mut nbra: i32,
-    mut kappa: i32,
-    mut l: i32,
+    gspR: *mut f64,
+    gspI: *mut f64,
+    gcartR: *mut f64,
+    gcartI: *mut f64,
+    nbra: i32,
+    kappa: i32,
+    l: i32,
 ) {
-    let mut nf: i32 = _len_cart[l as usize];
-    let mut nf2: i32 = nf * 2_i32;
-    let mut nd: i32 = _len_spinor(kappa, l);
+    let nf: i32 = _len_cart[l as usize];
+    let nf2: i32 = nf * 2_i32;
+    let nd: i32 = _len_spinor(kappa, l);
     let mut coeffR: *mut f64 = std::ptr::null_mut::<f64>();
     let mut coeffI: *mut f64 = std::ptr::null_mut::<f64>();
     if kappa < 0_i32 {
@@ -89629,16 +89628,16 @@ unsafe extern "C" fn a_ket_cart2spinor(
     }
 }
 unsafe extern "C" fn a_iket_cart2spinor(
-    mut gspR: *mut f64,
-    mut gspI: *mut f64,
-    mut gcartR: *mut f64,
-    mut gcartI: *mut f64,
-    mut nbra: i32,
-    mut kappa: i32,
-    mut l: i32,
+    gspR: *mut f64,
+    gspI: *mut f64,
+    gcartR: *mut f64,
+    gcartI: *mut f64,
+    nbra: i32,
+    kappa: i32,
+    l: i32,
 ) {
     a_ket_cart2spinor(gspI, gspR, gcartR, gcartI, nbra, kappa, l);
-    let mut size: i32 = _len_spinor(kappa, l) * nbra;
+    let size: i32 = _len_spinor(kappa, l) * nbra;
     let mut i: i32 = 0;
     i = 0_i32;
     while i < size {
@@ -89648,24 +89647,24 @@ unsafe extern "C" fn a_iket_cart2spinor(
     }
 }
 unsafe extern "C" fn a_ket1_cart2spinor(
-    mut gspR: *mut f64,
-    mut gspI: *mut f64,
-    mut gcartR: *mut f64,
-    mut gcartI: *mut f64,
-    mut nbra: i32,
-    mut counts: i32,
-    mut kappa: i32,
-    mut l: i32,
+    gspR: *mut f64,
+    gspI: *mut f64,
+    gcartR: *mut f64,
+    gcartI: *mut f64,
+    nbra: i32,
+    counts: i32,
+    kappa: i32,
+    l: i32,
 ) {
-    let mut nf: i32 = _len_cart[l as usize];
-    let mut nf2: i32 = nf * 2_i32;
-    let mut nd: i32 = _len_spinor(kappa, l);
-    let mut nds: i32 = nd * nbra;
-    let mut nfs: i32 = nf * nbra;
-    let mut gcartaR: *mut f64 = gcartR;
-    let mut gcartaI: *mut f64 = gcartI;
-    let mut gcartbR: *mut f64 = gcartaR.offset((nfs * counts) as isize);
-    let mut gcartbI: *mut f64 = gcartaI.offset((nfs * counts) as isize);
+    let nf: i32 = _len_cart[l as usize];
+    let nf2: i32 = nf * 2_i32;
+    let nd: i32 = _len_spinor(kappa, l);
+    let nds: i32 = nd * nbra;
+    let nfs: i32 = nf * nbra;
+    let gcartaR: *mut f64 = gcartR;
+    let gcartaI: *mut f64 = gcartI;
+    let gcartbR: *mut f64 = gcartaR.offset((nfs * counts) as isize);
+    let gcartbI: *mut f64 = gcartaI.offset((nfs * counts) as isize);
     let mut coeffR: *mut f64 = std::ptr::null_mut::<f64>();
     let mut coeffI: *mut f64 = std::ptr::null_mut::<f64>();
     if kappa < 0_i32 {
@@ -89733,17 +89732,17 @@ unsafe extern "C" fn a_ket1_cart2spinor(
     }
 }
 unsafe extern "C" fn a_iket1_cart2spinor(
-    mut gspR: *mut f64,
-    mut gspI: *mut f64,
-    mut gcartR: *mut f64,
-    mut gcartI: *mut f64,
-    mut nbra: i32,
-    mut counts: i32,
-    mut kappa: i32,
-    mut l: i32,
+    gspR: *mut f64,
+    gspI: *mut f64,
+    gcartR: *mut f64,
+    gcartI: *mut f64,
+    nbra: i32,
+    counts: i32,
+    kappa: i32,
+    l: i32,
 ) {
     a_ket1_cart2spinor(gspI, gspR, gcartR, gcartI, nbra, counts, kappa, l);
-    let mut size: i32 = _len_spinor(kappa, l) * nbra * counts;
+    let size: i32 = _len_spinor(kappa, l) * nbra * counts;
     let mut i: i32 = 0;
     i = 0_i32;
     while i < size {
@@ -89753,8 +89752,8 @@ unsafe extern "C" fn a_iket1_cart2spinor(
     }
 }
 unsafe extern "C" fn dcopy_ij(
-    mut out: *mut f64,
-    mut gctr: *mut f64,
+    out: *mut f64,
+    gctr: *mut f64,
     ni: i32,
     _nj: i32,
     mi: i32,
@@ -90013,12 +90012,12 @@ unsafe extern "C" fn dcopy_iklj(
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn c2s_dset0(mut out: *mut f64, mut dims: *mut i32, mut counts: *mut i32) {
-    let mut ni: i32 = *dims.offset(0_isize);
-    let mut nj: i32 = *dims.offset(1_isize);
-    let mut nk: i32 = *dims.offset(2_isize);
-    let mut nij: u64 = (ni * nj) as u64;
-    let mut nijk: u64 = nij.wrapping_mul(nk as u64);
+pub unsafe extern "C" fn c2s_dset0(mut out: *mut f64, dims: *mut i32, counts: *mut i32) {
+    let ni: i32 = *dims.offset(0_isize);
+    let nj: i32 = *dims.offset(1_isize);
+    let nk: i32 = *dims.offset(2_isize);
+    let nij: u64 = (ni * nj) as u64;
+    let nijk: u64 = nij.wrapping_mul(nk as u64);
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -90032,10 +90031,10 @@ pub unsafe extern "C" fn c2s_dset0(mut out: *mut f64, mut dims: *mut i32, mut co
         }
         return;
     }
-    let mut di: i32 = *counts.offset(0_isize);
-    let mut dj: i32 = *counts.offset(1_isize);
-    let mut dk: i32 = *counts.offset(2_isize);
-    let mut dl: i32 = *counts.offset(3_isize);
+    let di: i32 = *counts.offset(0_isize);
+    let dj: i32 = *counts.offset(1_isize);
+    let dk: i32 = *counts.offset(2_isize);
+    let dl: i32 = *counts.offset(3_isize);
     let mut pout: *mut f64 = std::ptr::null_mut::<f64>();
     l = 0_i32;
     while l < dl {
@@ -90063,9 +90062,9 @@ pub unsafe extern "C" fn c2s_dset0(mut out: *mut f64, mut dims: *mut i32, mut co
 }
 #[no_mangle]
 pub unsafe extern "C" fn c2s_grids_dset0(
-    mut out: *mut f64,
-    mut dims: *mut i32,
-    mut counts: *mut i32,
+    out: *mut f64,
+    dims: *mut i32,
+    counts: *mut i32,
 ) {
     let mut counts1: [i32; 4] = [
         *counts.offset(2_isize),
@@ -90082,13 +90081,13 @@ pub unsafe extern "C" fn c2s_grids_dset0(
     c2s_dset0(out, dims1.as_mut_ptr(), counts1.as_mut_ptr());
 }
 unsafe extern "C" fn sph2e_inner(
-    mut gsph: *mut f64,
-    mut gcart: *mut f64,
-    mut l: i32,
-    mut nbra: i32,
-    mut ncall: i32,
-    mut sizsph: i32,
-    mut sizcart: i32,
+    gsph: *mut f64,
+    gcart: *mut f64,
+    l: i32,
+    nbra: i32,
+    ncall: i32,
+    sizsph: i32,
+    sizcart: i32,
 ) -> *mut f64 {
     let mut n: i32 = 0;
     match l {
@@ -90154,26 +90153,26 @@ unsafe extern "C" fn sph2e_inner(
 }
 #[no_mangle]
 pub unsafe extern "C" fn c2s_sph_1e(
-    mut opij: *mut f64,
+    opij: *mut f64,
     mut gctr: *mut f64,
-    mut dims: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    dims: *mut i32,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
 ) {
-    let mut i_l: i32 = (*envs).i_l;
-    let mut j_l: i32 = (*envs).j_l;
-    let mut i_ctr: i32 = (*envs).x_ctr[0_usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1_usize];
-    let mut di: i32 = i_l * 2_i32 + 1_i32;
-    let mut dj: i32 = j_l * 2_i32 + 1_i32;
-    let mut ni: i32 = *dims.offset(0_isize);
-    let mut nj: i32 = *dims.offset(1_isize);
-    let mut ofj: i32 = ni * dj;
-    let mut nfi: i32 = (*envs).nfi;
-    let mut nf: i32 = (*envs).nf;
+    let i_l: i32 = (*envs).i_l;
+    let j_l: i32 = (*envs).j_l;
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
+    let di: i32 = i_l * 2_i32 + 1_i32;
+    let dj: i32 = j_l * 2_i32 + 1_i32;
+    let ni: i32 = *dims.offset(0_isize);
+    let nj: i32 = *dims.offset(1_isize);
+    let ofj: i32 = ni * dj;
+    let nfi: i32 = (*envs).nfi;
+    let nf: i32 = (*envs).nf;
     let mut ic: i32 = 0;
     let mut jc: i32 = 0;
-    let mut buflen: i32 = nfi * dj;
+    let buflen: i32 = nfi * dj;
     let mut buf1: *mut f64 = std::ptr::null_mut::<f64>();
     let mut buf2: *mut f64 = std::ptr::null_mut::<f64>();
     buf1 = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
@@ -90330,50 +90329,50 @@ pub unsafe extern "C" fn c2s_sph_1e(
 // }
 #[no_mangle]
 pub unsafe extern "C" fn c2s_sph_2e1(
-    mut out: *mut f64,
+    out: *mut f64,
     mut gctr: *mut f64,
-    mut dims: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    dims: *mut i32,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
 ) {
-    let mut i_l: i32 = (*envs).i_l;
-    let mut j_l: i32 = (*envs).j_l;
-    let mut k_l: i32 = (*envs).k_l;
-    let mut l_l: i32 = (*envs).l_l;
-    let mut i_ctr: i32 = (*envs).x_ctr[0_usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1_usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2_usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3_usize];
-    let mut di: i32 = i_l * 2_i32 + 1_i32;
-    let mut dj: i32 = j_l * 2_i32 + 1_i32;
-    let mut dk: i32 = k_l * 2_i32 + 1_i32;
-    let mut dl: i32 = l_l * 2_i32 + 1_i32;
-    let mut ni: i32 = *dims.offset(0_isize);
-    let mut nj: i32 = *dims.offset(1_isize);
-    let mut nk: i32 = *dims.offset(2_isize);
-    let mut nl: i32 = *dims.offset(3_isize);
-    let mut nfi: i32 = (*envs).nfi;
-    let mut nfk: i32 = (*envs).c2rust_unnamed.nfk;
-    let mut nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
-    let mut nfik: i32 = nfi * nfk;
-    let mut nfikl: i32 = nfik * nfl;
-    let mut dlj: i32 = dl * dj;
-    let mut nf: i32 = (*envs).nf;
-    let mut ofj: i32 = ni * dj;
-    let mut ofk: i32 = ni * nj * dk;
-    let mut ofl: i32 = ni * nj * nk * dl;
+    let i_l: i32 = (*envs).i_l;
+    let j_l: i32 = (*envs).j_l;
+    let k_l: i32 = (*envs).k_l;
+    let l_l: i32 = (*envs).l_l;
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
+    let k_ctr: i32 = (*envs).x_ctr[2_usize];
+    let l_ctr: i32 = (*envs).x_ctr[3_usize];
+    let di: i32 = i_l * 2_i32 + 1_i32;
+    let dj: i32 = j_l * 2_i32 + 1_i32;
+    let dk: i32 = k_l * 2_i32 + 1_i32;
+    let dl: i32 = l_l * 2_i32 + 1_i32;
+    let ni: i32 = *dims.offset(0_isize);
+    let nj: i32 = *dims.offset(1_isize);
+    let nk: i32 = *dims.offset(2_isize);
+    let nl: i32 = *dims.offset(3_isize);
+    let nfi: i32 = (*envs).nfi;
+    let nfk: i32 = (*envs).c2rust_unnamed.nfk;
+    let nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
+    let nfik: i32 = nfi * nfk;
+    let nfikl: i32 = nfik * nfl;
+    let dlj: i32 = dl * dj;
+    let nf: i32 = (*envs).nf;
+    let ofj: i32 = ni * dj;
+    let ofk: i32 = ni * nj * dk;
+    let ofl: i32 = ni * nj * nk * dl;
     let mut ic: i32 = 0;
     let mut jc: i32 = 0;
     let mut kc: i32 = 0;
     let mut lc: i32 = 0;
-    let mut buflen: i32 = nfikl * dj;
+    let buflen: i32 = nfikl * dj;
     let mut buf1: *mut f64 = std::ptr::null_mut::<f64>();
     buf1 = ((cache as uintptr_t).wrapping_add(7_u64) & (8 as uintptr_t).wrapping_neg())
         as *mut libc::c_void as *mut f64;
     cache = buf1.offset((buflen * 4_i32) as isize);
-    let mut buf2: *mut f64 = buf1.offset(buflen as isize);
-    let mut buf3: *mut f64 = buf2.offset(buflen as isize);
-    let mut buf4: *mut f64 = buf3.offset(buflen as isize);
+    let buf2: *mut f64 = buf1.offset(buflen as isize);
+    let buf3: *mut f64 = buf2.offset(buflen as isize);
+    let buf4: *mut f64 = buf3.offset(buflen as isize);
     let mut pout: *mut f64 = std::ptr::null_mut::<f64>();
     let mut tmp1: *mut f64 = std::ptr::null_mut::<f64>();
     lc = 0_i32;
@@ -90674,20 +90673,20 @@ pub unsafe extern "C" fn c2s_sph_2e1(
 // }
 #[no_mangle]
 pub unsafe extern "C" fn c2s_cart_1e(
-    mut opij: *mut f64,
+    opij: *mut f64,
     mut gctr: *mut f64,
-    mut dims: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    dims: *mut i32,
+    envs: *mut CINTEnvVars,
     _cache: *mut f64,
 ) {
-    let mut i_ctr: i32 = (*envs).x_ctr[0_usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1_usize];
-    let mut nfi: i32 = (*envs).nfi;
-    let mut nfj: i32 = (*envs).nfj;
-    let mut nf: i32 = (*envs).nf;
-    let mut ni: i32 = *dims.offset(0_isize);
-    let mut nj: i32 = *dims.offset(1_isize);
-    let mut ofj: i32 = ni * nfj;
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
+    let nfi: i32 = (*envs).nfi;
+    let nfj: i32 = (*envs).nfj;
+    let nf: i32 = (*envs).nf;
+    let ni: i32 = *dims.offset(0_isize);
+    let nj: i32 = *dims.offset(1_isize);
+    let ofj: i32 = ni * nfj;
     let mut ic: i32 = 0;
     let mut jc: i32 = 0;
     let mut popij: *mut f64 = std::ptr::null_mut::<f64>();
@@ -90707,28 +90706,28 @@ pub unsafe extern "C" fn c2s_cart_1e(
 }
 #[no_mangle]
 pub unsafe extern "C" fn c2s_cart_2e1(
-    mut fijkl: *mut f64,
+    fijkl: *mut f64,
     mut gctr: *mut f64,
-    mut dims: *mut i32,
-    mut envs: *mut CINTEnvVars,
+    dims: *mut i32,
+    envs: *mut CINTEnvVars,
     _cache: *mut f64,
 ) {
-    let mut i_ctr: i32 = (*envs).x_ctr[0_usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1_usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2_usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3_usize];
-    let mut nfi: i32 = (*envs).nfi;
-    let mut nfj: i32 = (*envs).nfj;
-    let mut nfk: i32 = (*envs).c2rust_unnamed.nfk;
-    let mut nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
-    let mut nf: i32 = (*envs).nf;
-    let mut ni: i32 = *dims.offset(0_isize);
-    let mut nj: i32 = *dims.offset(1_isize);
-    let mut nk: i32 = *dims.offset(2_isize);
-    let mut nl: i32 = *dims.offset(3_isize);
-    let mut ofj: i32 = ni * nfj;
-    let mut ofk: i32 = ni * nj * nfk;
-    let mut ofl: i32 = ni * nj * nk * nfl;
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
+    let k_ctr: i32 = (*envs).x_ctr[2_usize];
+    let l_ctr: i32 = (*envs).x_ctr[3_usize];
+    let nfi: i32 = (*envs).nfi;
+    let nfj: i32 = (*envs).nfj;
+    let nfk: i32 = (*envs).c2rust_unnamed.nfk;
+    let nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
+    let nf: i32 = (*envs).nf;
+    let ni: i32 = *dims.offset(0_isize);
+    let nj: i32 = *dims.offset(1_isize);
+    let nk: i32 = *dims.offset(2_isize);
+    let nl: i32 = *dims.offset(3_isize);
+    let ofj: i32 = ni * nfj;
+    let ofk: i32 = ni * nj * nfk;
+    let ofl: i32 = ni * nj * nk * nfl;
     let mut ic: i32 = 0;
     let mut jc: i32 = 0;
     let mut kc: i32 = 0;
@@ -91067,7 +91066,7 @@ pub unsafe extern "C" fn c2s_cart_2e1(
 unsafe extern "C" fn run_static_initializers() {
     g_c2s = [
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr(),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr(),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr(),
@@ -91077,7 +91076,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(1_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(4_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(4_isize),
@@ -91087,7 +91086,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(10_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(40_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(40_isize),
@@ -91097,7 +91096,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(40_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(160_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(160_isize),
@@ -91107,7 +91106,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(110_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(440_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(440_isize),
@@ -91117,7 +91116,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(245_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(980_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(980_isize),
@@ -91127,7 +91126,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(476_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(1904_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(1904_isize),
@@ -91137,7 +91136,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(840_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(3360_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(3360_isize),
@@ -91147,7 +91146,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(1380_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(5520_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(5520_isize),
@@ -91157,7 +91156,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(2145_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(8580_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(8580_isize),
@@ -91167,7 +91166,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(3190_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(12760_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(12760_isize),
@@ -91177,7 +91176,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(4576_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(18304_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(18304_isize),
@@ -91187,7 +91186,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(6370_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(25480_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(25480_isize),
@@ -91197,7 +91196,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(8645_isize),
                 cart2j_lt_lR: std::ptr::null_mut::<f64>(),
                 cart2j_lt_lI: std::ptr::null_mut::<f64>(),
@@ -91207,7 +91206,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(11480_isize),
                 cart2j_lt_lR: std::ptr::null_mut::<f64>(),
                 cart2j_lt_lI: std::ptr::null_mut::<f64>(),
@@ -91217,7 +91216,7 @@ unsafe extern "C" fn run_static_initializers() {
             init
         },
         {
-            let mut init = cart2sp_t {
+            let init = cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(14960_isize),
                 cart2j_lt_lR: std::ptr::null_mut::<f64>(),
                 cart2j_lt_lI: std::ptr::null_mut::<f64>(),

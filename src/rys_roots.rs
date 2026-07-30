@@ -4,8 +4,7 @@
     non_camel_case_types,
     non_snake_case,
     non_upper_case_globals,
-    unused_assignments,
-    unused_mut
+    unused_assignments
 )]
 
 use crate::find_roots::_CINT_polynomial_roots;
@@ -3014,14 +3013,14 @@ static mut POLY_LARGEX_WW: [f64; 496] = [
     2.802_570_929_318_941e-47_f64,
 ];
 unsafe extern "C" fn segment_solve(
-    mut n: i32,
-    mut x: f64,
-    mut lower: f64,
-    mut u: *mut f64,
-    mut w: *mut f64,
-    mut breakpoint: f64,
-    mut fn1: Option<QuadratureFunction>,
-    mut fn2: Option<QuadratureFunction>,
+    n: i32,
+    x: f64,
+    lower: f64,
+    u: *mut f64,
+    w: *mut f64,
+    breakpoint: f64,
+    fn1: Option<QuadratureFunction>,
+    fn2: Option<QuadratureFunction>,
 ) -> i32 {
     let mut error: i32 = 0;
     if x <= breakpoint {
@@ -3036,13 +3035,13 @@ unsafe extern "C" fn segment_solve(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTrys_roots(
-    mut nroots: i32,
-    mut x: f64,
-    mut u: *mut f64,
-    mut w: *mut f64,
+    nroots: i32,
+    x: f64,
+    u: *mut f64,
+    w: *mut f64,
 ) {
     if x <= 3e-7f64 {
-        let mut off: i32 = nroots * (nroots - 1_i32) / 2_i32;
+        let off: i32 = nroots * (nroots - 1_i32) / 2_i32;
         let mut i: i32 = 0;
         i = 0_i32;
         while i < nroots {
@@ -3055,10 +3054,10 @@ pub unsafe extern "C" fn CINTrys_roots(
         }
         return;
     } else if x >= (35_i32 + nroots * 5_i32) as f64 {
-        let mut off_0: i32 = nroots * (nroots - 1_i32) / 2_i32;
+        let off_0: i32 = nroots * (nroots - 1_i32) / 2_i32;
         let mut i_0: i32 = 0;
         let mut rt: f64 = 0.;
-        let mut t: f64 = sqrt(0.785_398_163_397_448_3_f64 / x);
+        let t: f64 = sqrt(0.785_398_163_397_448_3_f64 / x);
         i_0 = 0_i32;
         while i_0 < nroots {
             rt = POLY_LARGEX_RT[(off_0 + i_0) as usize];
@@ -3201,17 +3200,17 @@ pub unsafe extern "C" fn CINTrys_roots(
     }
 }
 unsafe extern "C" fn segment_solve1(
-    mut n: i32,
-    mut x: f64,
-    mut lower: f64,
-    mut u: *mut f64,
-    mut w: *mut f64,
-    mut lower_bp1: f64,
-    mut lower_bp2: f64,
-    mut breakpoint: f64,
-    mut fn1: Option<QuadratureFunction>,
-    mut fn2: Option<QuadratureFunction>,
-    mut fn3: Option<QuadratureFunction>,
+    n: i32,
+    x: f64,
+    lower: f64,
+    u: *mut f64,
+    w: *mut f64,
+    lower_bp1: f64,
+    lower_bp2: f64,
+    breakpoint: f64,
+    fn1: Option<QuadratureFunction>,
+    fn2: Option<QuadratureFunction>,
+    fn3: Option<QuadratureFunction>,
 ) -> i32 {
     let mut error: i32 = 0;
     if lower < lower_bp1 {
@@ -3232,11 +3231,11 @@ unsafe extern "C" fn segment_solve1(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTsr_rys_roots(
-    mut nroots: i32,
-    mut x: f64,
-    mut lower: f64,
-    mut u: *mut f64,
-    mut w: *mut f64,
+    nroots: i32,
+    x: f64,
+    lower: f64,
+    u: *mut f64,
+    w: *mut f64,
 ) {
     let mut err: i32 = 1_i32;
     match nroots {
@@ -3629,7 +3628,7 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
         std::process::exit(err);
     }
 }
-unsafe extern "C" fn rys_root1(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
+unsafe extern "C" fn rys_root1(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
     let mut Y: f64 = 0.;
     let mut F1: f64 = 0.;
     if X > 33.0f64 {
@@ -3641,7 +3640,7 @@ unsafe extern "C" fn rys_root1(mut X: f64, mut roots: *mut f64, mut weights: *mu
         *roots.offset(0_isize) = 0.5E+00f64 - X / 5.0E+00f64;
         return 0_i32;
     }
-    let mut E: f64 = exp(-X);
+    let E: f64 = exp(-X);
     if X > 15.0f64 {
         Y = 1.0f64 / X;
         F1 = (((1.9623264149430E-01f64 * Y - 4.9695241464490E-01f64) * Y - 6.0156581186481E-05f64)
@@ -3740,12 +3739,12 @@ unsafe extern "C" fn rys_root1(mut X: f64, mut roots: *mut f64, mut weights: *mu
             * X
             + 3.33333333333318E-01f64;
     }
-    let mut WW1: f64 = 2.0f64 * X * F1 + E;
+    let WW1: f64 = 2.0f64 * X * F1 + E;
     *weights.offset(0_isize) = WW1;
     *roots.offset(0_isize) = F1 / (WW1 - F1);
     0_i32
 }
-unsafe extern "C" fn rys_root2(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
+unsafe extern "C" fn rys_root2(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
     let mut R12: f64 = 0.;
     let mut R22: f64 = 0.;
     let mut W22: f64 = 0.;
@@ -4079,7 +4078,7 @@ unsafe extern "C" fn rys_root2(mut X: f64, mut roots: *mut f64, mut weights: *mu
     *weights.offset(1_isize) = WW2;
     0_i32
 }
-unsafe extern "C" fn rys_root3(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
+unsafe extern "C" fn rys_root3(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
     let mut R13: f64 = 0.;
     let mut R23: f64 = 0.;
     let mut W23: f64 = 0.;
@@ -4639,7 +4638,7 @@ unsafe extern "C" fn rys_root3(mut X: f64, mut roots: *mut f64, mut weights: *mu
     *weights.offset(2_isize) = WW3;
     0_i32
 }
-unsafe extern "C" fn rys_root4(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
+unsafe extern "C" fn rys_root4(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
     let mut R14: f64 = 0.;
     let mut R24: f64 = 0.;
     let mut W24: f64 = 0.;
@@ -5636,7 +5635,7 @@ unsafe extern "C" fn rys_root4(mut X: f64, mut roots: *mut f64, mut weights: *mu
     *weights.offset(3_isize) = WW4;
     0_i32
 }
-unsafe extern "C" fn rys_root5(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
+unsafe extern "C" fn rys_root5(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
     let mut R15: f64 = 0.;
     let mut R25: f64 = 0.;
     let mut W25: f64 = 0.;
@@ -7095,7 +7094,7 @@ unsafe extern "C" fn rys_root5(mut X: f64, mut roots: *mut f64, mut weights: *mu
     *weights.offset(4_isize) = WW5;
     0_i32
 }
-unsafe extern "C" fn R_dsmit(mut cs: *mut f64, mut fmt_ints: *mut f64, mut n: i32) -> i32 {
+unsafe extern "C" fn R_dsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -7191,18 +7190,18 @@ unsafe extern "C" fn R_dsmit(mut cs: *mut f64, mut fmt_ints: *mut f64, mut n: i3
     0_i32
 }
 unsafe extern "C" fn _rdk_rys_roots(
-    mut nroots: i32,
-    mut fmt_ints: *mut f64,
-    mut roots: *mut f64,
-    mut weights: *mut f64,
+    nroots: i32,
+    fmt_ints: *mut f64,
+    roots: *mut f64,
+    weights: *mut f64,
 ) -> i32 {
     let mut i: i32 = 0;
     let mut k: i32 = 0;
     let mut j: i32 = 0;
     let mut order: i32 = 0;
-    let mut nroots1: i32 = nroots + 1_i32;
+    let nroots1: i32 = nroots + 1_i32;
     let mut rt: [f64; 1056] = [0.; 1056];
-    let mut cs: *mut f64 = rt.as_mut_ptr().offset(nroots1 as isize);
+    let cs: *mut f64 = rt.as_mut_ptr().offset(nroots1 as isize);
     let mut a: *mut f64 = std::ptr::null_mut::<f64>();
     let mut root: f64 = 0.;
     let mut poly: f64 = 0.;
@@ -7264,11 +7263,11 @@ unsafe extern "C" fn _rdk_rys_roots(
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTrys_schmidt(
-    mut nroots: i32,
-    mut x: f64,
-    mut lower: f64,
-    mut roots: *mut f64,
-    mut weights: *mut f64,
+    nroots: i32,
+    x: f64,
+    lower: f64,
+    roots: *mut f64,
+    weights: *mut f64,
 ) -> i32 {
     let mut fmt_ints: [f64; 64] = [0.; 64];
     if lower == 0 as f64 {
@@ -7278,7 +7277,7 @@ pub unsafe extern "C" fn CINTrys_schmidt(
     }
     _rdk_rys_roots(nroots, fmt_ints.as_mut_ptr(), roots, weights)
 }
-unsafe extern "C" fn R_lsmit(mut cs: *mut f64, mut fmt_ints: *mut f64, mut n: i32) -> i32 {
+unsafe extern "C" fn R_lsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -7375,22 +7374,22 @@ unsafe extern "C" fn R_lsmit(mut cs: *mut f64, mut fmt_ints: *mut f64, mut n: i3
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTlrys_schmidt(
-    mut nroots: i32,
-    mut x: f64,
-    mut lower: f64,
-    mut roots: *mut f64,
-    mut weights: *mut f64,
+    nroots: i32,
+    x: f64,
+    lower: f64,
+    roots: *mut f64,
+    weights: *mut f64,
 ) -> i32 {
     let mut i: i32 = 0;
     let mut k: i32 = 0;
     let mut j: i32 = 0;
     let mut order: i32 = 0;
     let mut error: i32 = 0;
-    let mut nroots1: i32 = nroots + 1_i32;
+    let nroots1: i32 = nroots + 1_i32;
     let mut fmt_ints: [f64; 1088] = [0.0f64; 1088];
-    let mut qcs: *mut f64 = fmt_ints.as_mut_ptr().offset((nroots1 * 2_i32) as isize);
+    let qcs: *mut f64 = fmt_ints.as_mut_ptr().offset((nroots1 * 2_i32) as isize);
     let mut rt: [f64; 1056] = [0.; 1056];
-    let mut cs: *mut f64 = rt.as_mut_ptr().offset(nroots as isize);
+    let cs: *mut f64 = rt.as_mut_ptr().offset(nroots as isize);
     let mut a: *mut f64 = std::ptr::null_mut::<f64>();
     let mut root: f64 = 0.;
     let mut poly: f64 = 0.;

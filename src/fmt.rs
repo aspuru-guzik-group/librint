@@ -4,8 +4,7 @@
     non_camel_case_types,
     non_snake_case,
     non_upper_case_globals,
-    unused_assignments,
-    unused_mut
+    unused_assignments
 )]
 extern "C" {
     fn expl(_: f64) -> f64;
@@ -61,14 +60,14 @@ static mut TURNOVER_POINT: [f64; 40] = [
     14.56467047710f64,
     14.93687515212f64,
 ];
-unsafe extern "C" fn fmt1_gamma_inc_like(mut f: *mut f64, mut t: f64, mut m: i32) {
+unsafe extern "C" fn fmt1_gamma_inc_like(f: *mut f64, t: f64, m: i32) {
     let mut i: i32 = 0;
     let mut b: f64 = m as f64 + 0.5f64;
     let mut bi: f64 = 0.;
-    let mut e: f64 = 0.5f64 * exp(-t);
+    let e: f64 = 0.5f64 * exp(-t);
     let mut x: f64 = e;
     let mut s: f64 = e;
-    let mut tol: f64 = 2.220_446_049_250_313e-16_f64 * 0.5f64 * e;
+    let tol: f64 = 2.220_446_049_250_313e-16_f64 * 0.5f64 * e;
     bi = b + 1.0f64;
     while x > tol {
         x *= t / bi;
@@ -85,17 +84,17 @@ unsafe extern "C" fn fmt1_gamma_inc_like(mut f: *mut f64, mut t: f64, mut m: i32
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn gamma_inc_like(mut f: *mut f64, mut t: f64, mut m: i32) {
+pub unsafe extern "C" fn gamma_inc_like(f: *mut f64, t: f64, m: i32) {
     if t < TURNOVER_POINT[m as usize] {
         fmt1_gamma_inc_like(f, t, m);
     } else {
         let mut i: i32 = 0;
-        let mut tt: f64 = sqrt(t);
+        let tt: f64 = sqrt(t);
         *f.offset(0_isize) =
             0.886_226_925_452_758_f64 / tt * erf(tt);
         if m > 0_i32 {
-            let mut e: f64 = exp(-t);
-            let mut b: f64 = 0.5f64 / t;
+            let e: f64 = exp(-t);
+            let b: f64 = 0.5f64 / t;
             i = 1_i32;
             while i <= m {
                 *f.offset(i as isize) =
@@ -106,13 +105,13 @@ pub unsafe extern "C" fn gamma_inc_like(mut f: *mut f64, mut t: f64, mut m: i32)
         }
     };
 }
-unsafe extern "C" fn fmt1_lgamma_inc_like(mut f: *mut f64, mut t: f64, mut m: i32) {
+unsafe extern "C" fn fmt1_lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
     let mut b: f64 = m as f64 + 0.5f64;
     let mut bi: f64 = 0.0f64;
-    let mut e: f64 = 0.5f64 * expl(-t);
+    let e: f64 = 0.5f64 * expl(-t);
     let mut x: f64 = e;
     let mut s: f64 = e;
-    let mut tol: f64 = 2.0e-20f64 * e;
+    let tol: f64 = 2.0e-20f64 * e;
     let mut i: i32 = 0;
     bi = b + 1.0f64;
     while x > tol {
@@ -130,17 +129,17 @@ unsafe extern "C" fn fmt1_lgamma_inc_like(mut f: *mut f64, mut t: f64, mut m: i3
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn lgamma_inc_like(mut f: *mut f64, mut t: f64, mut m: i32) {
+pub unsafe extern "C" fn lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
     if t < TURNOVER_POINT[m as usize] {
         fmt1_lgamma_inc_like(f, t, m);
     } else {
         let mut i: i32 = 0;
-        let mut tt: f64 = sqrtl(t);
+        let tt: f64 = sqrtl(t);
         *f.offset(0_isize) =
             0.886_226_925_452_758 / tt * erfl(tt);
         if m > 0_i32 {
-            let mut e: f64 = expl(-t);
-            let mut b: f64 = 0.5f64 / t;
+            let e: f64 = expl(-t);
+            let b: f64 = 0.5f64 / t;
             i = 1_i32;
             while i <= m {
                 *f.offset(i as isize) =
@@ -152,7 +151,7 @@ pub unsafe extern "C" fn lgamma_inc_like(mut f: *mut f64, mut t: f64, mut m: i32
     };
 }
 #[inline]
-unsafe extern "C" fn _pow(mut base: f64, mut exponent: i32) -> f64 {
+unsafe extern "C" fn _pow(mut base: f64, exponent: i32) -> f64 {
     let mut i: i32 = 0;
     let mut result: f64 = 1_f64;
     i = 1_i32;
@@ -166,7 +165,7 @@ unsafe extern "C" fn _pow(mut base: f64, mut exponent: i32) -> f64 {
     result
 }
 #[inline]
-unsafe extern "C" fn _powl(mut base: f64, mut exponent: i32) -> f64 {
+unsafe extern "C" fn _powl(mut base: f64, exponent: i32) -> f64 {
     let mut i: i32 = 0;
     let mut result: f64 = 1.0f64;
     i = 1_i32;
@@ -180,20 +179,20 @@ unsafe extern "C" fn _powl(mut base: f64, mut exponent: i32) -> f64 {
     result
 }
 #[no_mangle]
-pub unsafe extern "C" fn fmt1_erfc_like(mut f: *mut f64, mut t: f64, mut lower: f64, mut m: i32) {
+pub unsafe extern "C" fn fmt1_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     let mut i: i32 = 0;
-    let mut lower2: f64 = lower * lower;
+    let lower2: f64 = lower * lower;
     let mut b: f64 = m as f64 + 0.5f64;
     let mut bi: f64 = 0.;
-    let mut e: f64 = 0.5f64 * exp(-t);
+    let e: f64 = 0.5f64 * exp(-t);
     let mut e1: f64 = 0.5f64 * exp(-t * lower2) * lower;
     e1 *= _pow(lower2, m);
-    let mut x: f64 = e;
+    let x: f64 = e;
     let mut x1: f64 = e1;
     let mut s: f64 = e - e1;
     let mut div: f64 = 1.0f64;
     let mut delta: f64 = s;
-    let mut tol: f64 = 2.220_446_049_250_313e-16_f64 * 0.5f64 * fabs(delta);
+    let tol: f64 = 2.220_446_049_250_313e-16_f64 * 0.5f64 * fabs(delta);
     bi = b + 1.0f64;
     while fabs(delta) > tol {
         div *= t / bi;
@@ -215,12 +214,12 @@ pub unsafe extern "C" fn fmt1_erfc_like(mut f: *mut f64, mut t: f64, mut lower: 
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn fmt_erfc_like(mut f: *mut f64, mut t: f64, mut lower: f64, mut m: i32) {
+pub unsafe extern "C" fn fmt_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     if lower == 0 as f64 {
         return gamma_inc_like(f, t, m);
     }
     let mut i: i32 = 0;
-    let mut lower2: f64 = lower * lower;
+    let lower2: f64 = lower * lower;
     if t * lower2 > 200_f64 {
         i = 0_i32;
         while i <= m {
@@ -233,15 +232,15 @@ pub unsafe extern "C" fn fmt_erfc_like(mut f: *mut f64, mut t: f64, mut lower: f
     if t < TURNOVER_POINT[m as usize] {
         fmt1_erfc_like(f, t, lower, m);
     } else {
-        let mut tt: f64 = sqrt(t);
+        let tt: f64 = sqrt(t);
         let mut val: f64 = 0.886_226_925_452_758_f64
             / tt
             * (erfc(lower * tt) - erfc(tt));
         *f.offset(0_isize) = val;
         if m > 0_i32 {
-            let mut e: f64 = exp(-t);
+            let e: f64 = exp(-t);
             let mut e1: f64 = exp(-t * lower2) * lower;
-            let mut b: f64 = 0.5f64 / t;
+            let b: f64 = 0.5f64 / t;
             i = 0_i32;
             while i < m {
                 val = b * ((2_i32 * i + 1_i32) as f64 * val - e + e1);
@@ -254,12 +253,12 @@ pub unsafe extern "C" fn fmt_erfc_like(mut f: *mut f64, mut t: f64, mut lower: f
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fmt_lerfc_like(mut f: *mut f64, mut t: f64, mut lower: f64, mut m: i32) {
+pub unsafe extern "C" fn fmt_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     if lower == 0.0f64 {
         return lgamma_inc_like(f, t, m);
     }
     let mut i: i32 = 0;
-    let mut lower2: f64 = lower * lower;
+    let lower2: f64 = lower * lower;
     if t * lower2 > 200.0f64 {
         i = 0_i32;
         while i <= m {
@@ -272,15 +271,15 @@ pub unsafe extern "C" fn fmt_lerfc_like(mut f: *mut f64, mut t: f64, mut lower: 
     if t < TURNOVER_POINT[m as usize] {
         fmt1_lerfc_like(f, t, lower, m);
     } else {
-        let mut tt: f64 = sqrtl(t);
+        let tt: f64 = sqrtl(t);
         let mut val: f64 = 0.886_226_925_452_758
             / tt
             * (erfcl(lower * tt) - erfcl(tt));
         *f.offset(0_isize) = val;
         if m > 0_i32 {
-            let mut e: f64 = expl(-t);
+            let e: f64 = expl(-t);
             let mut e1: f64 = expl(-t * lower2) * lower;
-            let mut b: f64 = 0.5f64 / t;
+            let b: f64 = 0.5f64 / t;
             i = 0_i32;
             while i < m {
                 val = b * ((2_i32 * i + 1_i32) as f64 * val - e + e1);
@@ -293,20 +292,20 @@ pub unsafe extern "C" fn fmt_lerfc_like(mut f: *mut f64, mut t: f64, mut lower: 
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fmt1_lerfc_like(mut f: *mut f64, mut t: f64, mut lower: f64, mut m: i32) {
+pub unsafe extern "C" fn fmt1_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     let mut i: i32 = 0;
-    let mut lower2: f64 = lower * lower;
+    let lower2: f64 = lower * lower;
     let mut b: f64 = m as f64 + 0.5f64;
     let mut bi: f64 = 0.0f64;
-    let mut e: f64 = 0.5f64 * expl(-t);
+    let e: f64 = 0.5f64 * expl(-t);
     let mut e1: f64 = 0.5f64 * expl(-t * lower2) * lower;
     e1 *= _powl(lower2, m);
-    let mut x: f64 = e;
+    let x: f64 = e;
     let mut x1: f64 = e1;
     let mut s: f64 = e - e1;
     let mut div: f64 = 1.0f64;
     let mut delta: f64 = s;
-    let mut tol: f64 = 2.0e-20f64 * fabsl(delta);
+    let tol: f64 = 2.0e-20f64 * fabsl(delta);
     bi = b + 1.0f64;
     while fabsl(delta) > tol {
         div *= t / bi;

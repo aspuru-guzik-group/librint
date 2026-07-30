@@ -4,11 +4,10 @@
     non_camel_case_types,
     non_snake_case,
     non_upper_case_globals,
-    unused_assignments,
-    unused_mut
+    unused_assignments
 )]
 
-unsafe extern "C" fn R_dnode(mut a: *mut f64, mut roots: *mut f64, mut order: i32) -> i32 {
+unsafe extern "C" fn R_dnode(a: *mut f64, roots: *mut f64, order: i32) -> i32 {
     let accrt: f64 = 1e-15f64;
     let mut x0: f64 = 0.;
     let mut x1: f64 = 0.;
@@ -113,13 +112,13 @@ unsafe extern "C" fn R_dnode(mut a: *mut f64, mut roots: *mut f64, mut order: i3
     0_i32
 }
 unsafe extern "C" fn _qr_step(
-    mut A: *mut f64,
-    mut nroots: i32,
-    mut n0: i32,
-    mut n1: i32,
-    mut shift: f64,
+    A: *mut f64,
+    nroots: i32,
+    n0: i32,
+    n1: i32,
+    shift: f64,
 ) {
-    let mut m1: i32 = n0 + 1_i32;
+    let m1: i32 = n0 + 1_i32;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut m3: i32 = 0;
@@ -201,9 +200,9 @@ unsafe extern "C" fn _qr_step(
         j;
     }
 }
-unsafe extern "C" fn _hessenberg_qr(mut A: *mut f64, mut nroots: i32) -> i32 {
-    let mut eps: f64 = 1e-15f64;
-    let mut maxits: i32 = 30_i32;
+unsafe extern "C" fn _hessenberg_qr(A: *mut f64, nroots: i32) -> i32 {
+    let eps: f64 = 1e-15f64;
+    let maxits: i32 = 30_i32;
     let mut n0: i32 = 0_i32;
     let mut n1: i32 = nroots;
     let mut its: i32 = 0_i32;
@@ -214,7 +213,7 @@ unsafe extern "C" fn _hessenberg_qr(mut A: *mut f64, mut nroots: i32) -> i32 {
     while ic < nroots * maxits {
         k = n0;
         while (k + 1_i32) < n1 {
-            let mut s: f64 = (*A.offset((k * nroots + k) as isize)).abs()
+            let s: f64 = (*A.offset((k * nroots + k) as isize)).abs()
                 + (*A.offset(((k + 1_i32) * nroots + k + 1_i32) as isize)).abs();
             if (*A.offset(((k + 1_i32) * nroots + k) as isize)).abs() < eps * s {
                 break;
@@ -234,20 +233,20 @@ unsafe extern "C" fn _hessenberg_qr(mut A: *mut f64, mut nroots: i32) -> i32 {
                 }
             }
         } else {
-            let mut m1: i32 = n1 - 1_i32;
-            let mut m2: i32 = n1 - 2_i32;
-            let mut a11: f64 = *A.offset((m1 * nroots + m1) as isize);
-            let mut a22: f64 = *A.offset((m2 * nroots + m2) as isize);
+            let m1: i32 = n1 - 1_i32;
+            let m2: i32 = n1 - 2_i32;
+            let a11: f64 = *A.offset((m1 * nroots + m1) as isize);
+            let a22: f64 = *A.offset((m2 * nroots + m2) as isize);
             let mut shift: f64 = 0.;
-            let mut t: f64 = a11 + a22;
+            let t: f64 = a11 + a22;
             let mut s_0: f64 = (a11 - a22) * (a11 - a22);
             s_0 += 4_f64
                 * *A.offset((m1 * nroots + m2) as isize)
                 * *A.offset((m2 * nroots + m1) as isize);
             if s_0 > 0 as f64 {
                 s_0 = (s_0).sqrt();
-                let mut a: f64 = (t + s_0) * 0.5f64;
-                let mut b: f64 = (t - s_0) * 0.5f64;
+                let a: f64 = (t + s_0) * 0.5f64;
+                let b: f64 = (t - s_0) * 0.5f64;
                 if (a11 - a).abs() > (a11 - b).abs() {
                     shift = b;
                 } else {
@@ -275,15 +274,15 @@ unsafe extern "C" fn _hessenberg_qr(mut A: *mut f64, mut nroots: i32) -> i32 {
 }
 #[no_mangle]
 pub unsafe extern "C" fn _CINT_polynomial_roots(
-    mut roots: *mut f64,
-    mut cs: *mut f64,
-    mut nroots: i32,
+    roots: *mut f64,
+    cs: *mut f64,
+    nroots: i32,
 ) -> i32 {
     if nroots == 1_i32 {
         *roots.offset(0_isize) = -*cs.offset(2_isize) / *cs.offset(3_isize);
         return 0_i32;
     } else if nroots == 2_i32 {
-        let mut dum: f64 = (*cs.offset((2_i32 * 3_i32 + 1_i32) as isize)
+        let dum: f64 = (*cs.offset((2_i32 * 3_i32 + 1_i32) as isize)
             * *cs.offset((2_i32 * 3_i32 + 1_i32) as isize)
             - 4_f64
                 * *cs.offset((2_i32 * 3_i32 + 0_i32) as isize)
@@ -298,9 +297,9 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
         return 0_i32;
     }
     let mut A: [f64; 1024] = [0.; 1024];
-    let mut nroots1: i32 = nroots + 1_i32;
+    let nroots1: i32 = nroots + 1_i32;
     let mut i: i32 = 0;
-    let mut fac: f64 = -1.0f64 / *cs.offset((nroots * nroots1 + nroots) as isize);
+    let fac: f64 = -1.0f64 / *cs.offset((nroots * nroots1 + nroots) as isize);
     i = 0_i32;
     while i < nroots {
         A[(nroots - 1_i32 - i) as usize] = *cs.offset((nroots * nroots1 + i) as isize) * fac;
@@ -331,7 +330,7 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
         let mut k: i32 = 0;
         let mut order: i32 = 0;
         let mut a: *mut f64 = std::ptr::null_mut::<f64>();
-        let mut dum_0: f64 = (*cs.offset((2_i32 * nroots1 + 1_i32) as isize)
+        let dum_0: f64 = (*cs.offset((2_i32 * nroots1 + 1_i32) as isize)
             * *cs.offset((2_i32 * nroots1 + 1_i32) as isize)
             - 4_f64
                 * *cs.offset((2_i32 * nroots1 + 0_i32) as isize)
