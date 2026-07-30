@@ -369,9 +369,9 @@ pub fn dSg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<
     let mut env1: Vec<f64> = env[0..s1].to_vec();
     let mut env2: Vec<f64> = env[s1..s2].to_vec();
 
-    let dS = dSf(atm, bas, &mut env1, &mut env2, &Q);
+    
 
-    dS
+    dSf(atm, bas, &mut env1, &mut env2, &Q)
 }
 
 pub fn dRf(
@@ -527,8 +527,8 @@ pub fn dRg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<
     let mut env1: Vec<f64> = env[0..s1].to_vec();
     let mut env2: Vec<f64> = env[s1..s2].to_vec();
 
-    let dR = dRf(atm, bas, &mut env1, &mut env2, P);
-    dR
+    
+    dRf(atm, bas, &mut env1, &mut env2, P)
 }
 
 pub fn danalyticalg(

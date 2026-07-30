@@ -625,8 +625,8 @@ pub fn calc_F(n: usize, P: &[f64], two: &[f64], H: &[f64]) -> Vec<f64> {
 
 fn calc_Fprime(n: usize, F: &[f64], X: &[f64], Xdag: &[f64]) -> Vec<f64> {
     let inter = matmult(n, Xdag, F);
-    let Fprime = matmult(n, &inter, X);
-    Fprime
+    
+    matmult(n, &inter, X)
 }
 
 // F' = X^dag F X is symmetric; same self-adjoint requirement as find_X. With
@@ -655,9 +655,9 @@ fn diag_F(n: usize, Fprime: &[f64], X: &[f64]) -> Vec<f64> {
     // occupied set
     sort(n, &mut eig, &mut U);
 
-    let C = matmult(n, X, &U);
+    
 
-    C
+    matmult(n, X, &U)
 }
 
 fn calc_P(n: usize, nelec: usize, C: &mut [f64]) -> Vec<f64> {

@@ -91066,164 +91066,164 @@ pub unsafe extern "C" fn c2s_cart_2e1(
 unsafe extern "C" fn run_static_initializers() {
     g_c2s = [
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr(),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr(),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr(),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr(),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr(),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(1_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(4_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(4_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(16_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(16_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(10_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(40_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(40_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(88_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(88_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(40_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(160_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(160_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(280_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(280_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(110_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(440_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(440_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(680_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(680_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(245_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(980_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(980_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(1400_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(1400_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(476_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(1904_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(1904_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(2576_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(2576_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(840_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(3360_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(3360_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(4368_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(4368_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(1380_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(5520_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(5520_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(6960_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(6960_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(2145_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(8580_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(8580_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(10560_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(10560_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(3190_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(12760_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(12760_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(15400_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(15400_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(4576_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(18304_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(18304_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(21736_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(21736_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(6370_isize),
                 cart2j_lt_lR: g_trans_cart2jR.as_mut_ptr().offset(25480_isize),
                 cart2j_lt_lI: g_trans_cart2jI.as_mut_ptr().offset(25480_isize),
                 cart2j_gt_lR: g_trans_cart2jR.as_mut_ptr().offset(29848_isize),
                 cart2j_gt_lI: g_trans_cart2jI.as_mut_ptr().offset(29848_isize),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(8645_isize),
                 cart2j_lt_lR: std::ptr::null_mut::<f64>(),
                 cart2j_lt_lI: std::ptr::null_mut::<f64>(),
                 cart2j_gt_lR: std::ptr::null_mut::<f64>(),
                 cart2j_gt_lI: std::ptr::null_mut::<f64>(),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(11480_isize),
                 cart2j_lt_lR: std::ptr::null_mut::<f64>(),
                 cart2j_lt_lI: std::ptr::null_mut::<f64>(),
                 cart2j_gt_lR: std::ptr::null_mut::<f64>(),
                 cart2j_gt_lI: std::ptr::null_mut::<f64>(),
-            };
-            init
+            }
         },
         {
-            let init = cart2sp_t {
+            
+            cart2sp_t {
                 cart2sph: g_trans_cart2sph.as_mut_ptr().offset(14960_isize),
                 cart2j_lt_lR: std::ptr::null_mut::<f64>(),
                 cart2j_lt_lI: std::ptr::null_mut::<f64>(),
                 cart2j_gt_lR: std::ptr::null_mut::<f64>(),
                 cart2j_gt_lI: std::ptr::null_mut::<f64>(),
-            };
-            init
+            }
         },
     ];
 }
