@@ -42,8 +42,8 @@ unsafe extern "C" fn _dlarrk(
         fabs(gu)
     };
     info = -1_i32;
-    left = gl - tnorm * 2.0f64 * 2.2204460492503131e-16f64 * n as f64;
-    right = gu + tnorm * 2.0f64 * 2.2204460492503131e-16f64 * n as f64;
+    left = gl - tnorm * 2.0f64 * 2.220_446_049_250_313e-16_f64 * n as f64;
+    right = gu + tnorm * 2.0f64 * 2.220_446_049_250_313e-16_f64 * n as f64;
     it = 0_i32;
     while it < 1000_i32 {
         tmp1 = fabs(right - left);
@@ -609,7 +609,7 @@ unsafe extern "C" fn _dlasq2(
         iwhilb = 0_i32;
         while iwhilb < nbig {
             n0init = n0;
-            tol = 2.2204460492503131e-16f64 * 100.0f64;
+            tol = 2.220_446_049_250_313e-16_f64 * 100.0f64;
             tol2 = tol * tol;
             while n0 > i0 {
                 n1 = n0 - 1_i32;
@@ -670,7 +670,7 @@ unsafe extern "C" fn _dlasq2(
                     &mut tau,
                 );
             }
-            tol = 2.2204460492503131e-16f64 * sigma;
+            tol = 2.220_446_049_250_313e-16_f64 * sigma;
             iter = 0_i32;
             while iter < 3_i32 {
                 _dlasq5(
@@ -773,9 +773,9 @@ unsafe extern "C" fn _compute_eigenvalues(
         *diag_off1.offset(0_isize) = 0.0f64;
         return 0_i32;
     }
-    eps = 2_f64 * 2.2204460492503131e-16f64;
+    eps = 2_f64 * 2.220_446_049_250_313e-16_f64;
     rtl = 2.1e-8f64;
-    rtol = 16.0f64 * 2.2204460492503131e-16f64;
+    rtol = 16.0f64 * 2.220_446_049_250_313e-16_f64;
     gl = *diag.offset(0_isize);
     gu = *diag.offset(0_isize);
     eold = 0.0f64;
@@ -1015,7 +1015,7 @@ unsafe extern "C" fn _dlarrf(
     let mut growthbound: f64 = 0.;
     let mut lsigma: f64 = 0.;
     lsigma = *w.offset(clstrt as isize) - *werr.offset(clstrt as isize);
-    lsigma -= fabs(lsigma) * 4.0f64 * 2.2204460492503131e-16f64;
+    lsigma -= fabs(lsigma) * 4.0f64 * 2.220_446_049_250_313e-16_f64;
     growthbound = *diag.offset(0_isize) * 8.0f64;
     ktry = 0_i32;
     while ktry < 2_i32 {
@@ -1390,9 +1390,9 @@ unsafe extern "C" fn _compute_eigenvectors(
     }
     old_cluster_range = iwork.offset(n as isize);
     new_cluster_range = iwork.offset((n * 3_i32) as isize);
-    eps = 2.2204460492503131e-16f64;
-    rqtol = 2.2204460492503131e-16f64 * 2.0f64;
-    tol = 2.2204460492503131e-16f64 * 8_f64;
+    eps = 2.220_446_049_250_313e-16_f64;
+    rqtol = 2.220_446_049_250_313e-16_f64 * 2.0f64;
+    tol = 2.220_446_049_250_313e-16_f64 * 8_f64;
     sigma = *diag_off1.offset((n - 1_i32) as isize);
     if 1_i32 == n {
         *vec.offset(0_isize) = 1.0f64;

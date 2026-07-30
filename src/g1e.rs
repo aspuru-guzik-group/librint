@@ -159,8 +159,8 @@ pub unsafe extern "C" fn CINTg1e_ovlp(mut g: *mut f64, mut envs: *mut CINTEnvVar
     *gx.offset(0_isize) = 1_f64;
     *gy.offset(0_isize) = 1_f64;
     *gz.offset(0_isize) = (*envs).fac[0_usize]
-        * 1.7724538509055160272981674833411451f64
-        * 3.14159265358979323846f64
+        * 1.772_453_850_905_516_f64
+        * 3.141_592_653_589_793_f64
         / (aij * (aij).sqrt());
     let mut nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
     if nmax == 0_i32 {
@@ -276,11 +276,11 @@ pub unsafe extern "C" fn CINTg1e_nuc(
     let mut aij: f64 = (*envs).ai[0_usize] + (*envs).aj[0_usize];
     let mut tau: f64 = CINTnuc_mod(aij, nuc_id, atm, env);
     if nuc_id < 0_i32 {
-        fac1 = 2_f64 * 3.14159265358979323846f64 * (*envs).fac[0_usize] * tau / aij;
+        fac1 = 2_f64 * 3.141_592_653_589_793_f64 * (*envs).fac[0_usize] * tau / aij;
         cr = env.offset(4_isize);
     } else if *atm.offset((6_i32 * nuc_id + 2_i32) as isize) == 3_i32 {
         fac1 = 2_f64
-            * 3.14159265358979323846f64
+            * 3.141_592_653_589_793_f64
             * -*env.offset(*atm.offset((4_i32 + nuc_id * 6_i32) as isize) as isize)
             * (*envs).fac[0_usize]
             * tau
@@ -288,7 +288,7 @@ pub unsafe extern "C" fn CINTg1e_nuc(
         cr = env.offset(*atm.offset((6_i32 * nuc_id + 1_i32) as isize) as isize);
     } else {
         fac1 = 2_f64
-            * 3.14159265358979323846f64
+            * 3.141_592_653_589_793_f64
             * -(*atm.offset((0_i32 + nuc_id * 6_i32) as isize)).abs() as f64
             * (*envs).fac[0_usize]
             * tau
@@ -806,8 +806,8 @@ pub unsafe extern "C" fn CINTprim_to_ctr_1(
 #[no_mangle]
 pub unsafe extern "C" fn CINTcommon_fac_sp(mut l: i32) -> f64 {
     match l {
-        0 => 0.282094791773878143f64,
-        1 => 0.488602511902919921f64,
+        0 => 0.282_094_791_773_878_14_f64,
+        1 => 0.488_602_511_902_919_9_f64,
         _ => 1_f64,
     }
 }

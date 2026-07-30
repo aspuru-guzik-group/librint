@@ -19,8 +19,8 @@ pub const GSIZE_MAX: usize = (LMAX + 1) * (LMAX + 1) * (2 * LMAX + 1) * (2 * LMA
 
 fn common_fac_sp(l: i32) -> f64 {
     match l {
-        0 => 0.282094791773878143,
-        1 => 0.488602511902919921,
+        0 => 0.282_094_791_773_878_14,
+        1 => 0.488_602_511_902_919_9,
         _ => 1.0,
     }
 }
@@ -150,7 +150,7 @@ fn quartet_ctx(shls: &[i32], atm: &[i32], bas: &[i32], env: &[f64]) -> QuartetCt
     assert!(dj * (nmax + 1) <= GSIZE_MAX);
 
     let common_factor = std::f64::consts::PI * std::f64::consts::PI * std::f64::consts::PI * 2.0
-        / 1.7724538509055160272981674833411451
+        / 1.772_453_850_905_516
         * common_fac_sp(li as i32)
         * common_fac_sp(lj as i32)
         * common_fac_sp(lk as i32)

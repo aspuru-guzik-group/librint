@@ -79,11 +79,11 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
         env.offset(*atm.offset(
             (6_i32 * *bas.offset((8_i32 * l_sh + 0_i32) as isize) + 1_i32) as isize,
         ) as isize);
-    (*envs).common_factor = 3.14159265358979323846f64
-        * 3.14159265358979323846f64
-        * 3.14159265358979323846f64
+    (*envs).common_factor = 3.141_592_653_589_793_f64
+        * 3.141_592_653_589_793_f64
+        * 3.141_592_653_589_793_f64
         * 2_f64
-        / 1.7724538509055160272981674833411451f64
+        / 1.772_453_850_905_516_f64
         * CINTcommon_fac_sp((*envs).i_l)
         * CINTcommon_fac_sp((*envs).j_l)
         * CINTcommon_fac_sp((*envs).k_l)
