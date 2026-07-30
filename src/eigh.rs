@@ -6,7 +6,6 @@
     non_upper_case_globals,
     unused_assignments
 )]
-#![feature(extern_types)]
 extern "C" {
     // fn sqrt(_: f64) -> f64;
     fn fabs(_: f64) -> f64;
