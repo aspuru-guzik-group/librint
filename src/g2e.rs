@@ -29,7 +29,7 @@ pub struct Rys2eT {
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
     ng: &[i32; 8],
     shls: *mut i32,
     atm: *mut i32,
@@ -38,169 +38,176 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
     nbas: i32,
     env: *mut f64,
 ) {
-    envs.natm = natm;
-    envs.nbas = nbas;
-    envs.atm = atm;
-    envs.bas = bas;
-    envs.env = env;
-    envs.shls = shls;
+    (*envs).natm = natm;
+    (*envs).nbas = nbas;
+    (*envs).atm = atm;
+    (*envs).bas = bas;
+    (*envs).env = env;
+    (*envs).shls = shls;
     let i_sh: i32 = *shls.offset(0_isize);
     let j_sh: i32 = *shls.offset(1_isize);
     let k_sh: i32 = *shls.offset(2_isize);
     let l_sh: i32 = *shls.offset(3_isize);
-    envs.i_l = *bas.offset((8_i32 * i_sh + 1_i32) as isize);
-    envs.j_l = *bas.offset((8_i32 * j_sh + 1_i32) as isize);
-    envs.k_l = *bas.offset((8_i32 * k_sh + 1_i32) as isize);
-    envs.l_l = *bas.offset((8_i32 * l_sh + 1_i32) as isize);
-    envs.x_ctr[0_i32 as usize] = *bas.offset((8_i32 * i_sh + 3_i32) as isize);
-    envs.x_ctr[1_i32 as usize] = *bas.offset((8_i32 * j_sh + 3_i32) as isize);
-    envs.x_ctr[2_i32 as usize] = *bas.offset((8_i32 * k_sh + 3_i32) as isize);
-    envs.x_ctr[3_i32 as usize] = *bas.offset((8_i32 * l_sh + 3_i32) as isize);
-    envs.nfi = (envs.i_l + 1_i32) * (envs.i_l + 2_i32) / 2_i32;
-    envs.nfj = (envs.j_l + 1_i32) * (envs.j_l + 2_i32) / 2_i32;
-    envs.c2rust_unnamed.nfk = (envs.k_l + 1_i32) * (envs.k_l + 2_i32) / 2_i32;
-    envs.c2rust_unnamed_0.nfl = (envs.l_l + 1_i32) * (envs.l_l + 2_i32) / 2_i32;
-    envs.nf = envs.nfi * envs.c2rust_unnamed.nfk * envs.c2rust_unnamed_0.nfl * envs.nfj;
-    envs.ri = env.offset(
+    (*envs).i_l = *bas.offset((8_i32 * i_sh + 1_i32) as isize);
+    (*envs).j_l = *bas.offset((8_i32 * j_sh + 1_i32) as isize);
+    (*envs).k_l = *bas.offset((8_i32 * k_sh + 1_i32) as isize);
+    (*envs).l_l = *bas.offset((8_i32 * l_sh + 1_i32) as isize);
+    (*envs).x_ctr[0_i32 as usize] = *bas.offset((8_i32 * i_sh + 3_i32) as isize);
+    (*envs).x_ctr[1_i32 as usize] = *bas.offset((8_i32 * j_sh + 3_i32) as isize);
+    (*envs).x_ctr[2_i32 as usize] = *bas.offset((8_i32 * k_sh + 3_i32) as isize);
+    (*envs).x_ctr[3_i32 as usize] = *bas.offset((8_i32 * l_sh + 3_i32) as isize);
+    (*envs).nfi = ((*envs).i_l + 1_i32) * ((*envs).i_l + 2_i32) / 2_i32;
+    (*envs).nfj = ((*envs).j_l + 1_i32) * ((*envs).j_l + 2_i32) / 2_i32;
+    (*envs).c2rust_unnamed.nfk = ((*envs).k_l + 1_i32) * ((*envs).k_l + 2_i32) / 2_i32;
+    (*envs).c2rust_unnamed_0.nfl = ((*envs).l_l + 1_i32) * ((*envs).l_l + 2_i32) / 2_i32;
+    (*envs).nf =
+        (*envs).nfi * (*envs).c2rust_unnamed.nfk * (*envs).c2rust_unnamed_0.nfl * (*envs).nfj;
+    (*envs).ri = env.offset(
         *atm.offset((6_i32 * *bas.offset((8_i32 * i_sh) as isize) + 1_i32) as isize) as isize,
     );
-    envs.rj = env.offset(
+    (*envs).rj = env.offset(
         *atm.offset((6_i32 * *bas.offset((8_i32 * j_sh) as isize) + 1_i32) as isize) as isize,
     );
-    envs.rk = env.offset(
+    (*envs).rk = env.offset(
         *atm.offset((6_i32 * *bas.offset((8_i32 * k_sh) as isize) + 1_i32) as isize) as isize,
     );
-    envs.c2rust_unnamed_1.rl = env.offset(
+    (*envs).c2rust_unnamed_1.rl = env.offset(
         *atm.offset((6_i32 * *bas.offset((8_i32 * l_sh) as isize) + 1_i32) as isize) as isize,
     );
-    envs.common_factor =
+    (*envs).common_factor =
         3.141_592_653_589_793_f64 * 3.141_592_653_589_793_f64 * 3.141_592_653_589_793_f64 * 2_f64
             / 1.772_453_850_905_516_f64
-            * CINTcommon_fac_sp(envs.i_l)
-            * CINTcommon_fac_sp(envs.j_l)
-            * CINTcommon_fac_sp(envs.k_l)
-            * CINTcommon_fac_sp(envs.l_l);
+            * CINTcommon_fac_sp((*envs).i_l)
+            * CINTcommon_fac_sp((*envs).j_l)
+            * CINTcommon_fac_sp((*envs).k_l)
+            * CINTcommon_fac_sp((*envs).l_l);
     if *env.offset(0_isize) == 0 as f64 {
-        envs.expcutoff = 60_f64;
+        (*envs).expcutoff = 60_f64;
     } else {
-        envs.expcutoff = (if 40_f64 > *env.offset(0_isize) {
+        (*envs).expcutoff = (if 40_f64 > *env.offset(0_isize) {
             40_f64
         } else {
             *env.offset(0_isize)
         }) + 1_f64;
     }
-    envs.gbits = ng[4];
-    envs.ncomp_e1 = ng[5];
-    envs.ncomp_e2 = ng[6];
-    envs.ncomp_tensor = ng[7];
-    envs.li_ceil = envs.i_l + ng[0];
-    envs.lj_ceil = envs.j_l + ng[1];
-    envs.lk_ceil = envs.k_l + ng[2];
-    envs.ll_ceil = envs.l_l + ng[3];
+    (*envs).gbits = ng[4];
+    (*envs).ncomp_e1 = ng[5];
+    (*envs).ncomp_e2 = ng[6];
+    (*envs).ncomp_tensor = ng[7];
+    (*envs).li_ceil = (*envs).i_l + ng[0];
+    (*envs).lj_ceil = (*envs).j_l + ng[1];
+    (*envs).lk_ceil = (*envs).k_l + ng[2];
+    (*envs).ll_ceil = (*envs).l_l + ng[3];
     let rys_order: i32 =
-        (envs.li_ceil + envs.lj_ceil + envs.lk_ceil + envs.ll_ceil) / 2_i32 + 1_i32;
+        ((*envs).li_ceil + (*envs).lj_ceil + (*envs).lk_ceil + (*envs).ll_ceil) / 2_i32 + 1_i32;
     let mut nrys_roots: i32 = rys_order;
     let omega: f64 = *env.offset(8_isize);
     if omega < 0 as f64 && rys_order <= 3_i32 {
         nrys_roots *= 2_i32;
     }
-    envs.rys_order = rys_order;
-    envs.nrys_roots = nrys_roots;
+    (*envs).rys_order = rys_order;
+    (*envs).nrys_roots = nrys_roots;
     let mut dli: i32 = 0;
     let mut dlj: i32 = 0;
     let mut dlk: i32 = 0;
     let mut dll: i32 = 0;
-    let ibase: i32 = (envs.li_ceil > envs.lj_ceil) as i32;
-    let kbase: i32 = (envs.lk_ceil > envs.ll_ceil) as i32;
+    let ibase: i32 = ((*envs).li_ceil > (*envs).lj_ceil) as i32;
+    let kbase: i32 = ((*envs).lk_ceil > (*envs).ll_ceil) as i32;
     if kbase != 0 {
-        dlk = envs.lk_ceil + envs.ll_ceil + 1_i32;
-        dll = envs.ll_ceil + 1_i32;
+        dlk = (*envs).lk_ceil + (*envs).ll_ceil + 1_i32;
+        dll = (*envs).ll_ceil + 1_i32;
     } else {
-        dlk = envs.lk_ceil + 1_i32;
-        dll = envs.lk_ceil + envs.ll_ceil + 1_i32;
+        dlk = (*envs).lk_ceil + 1_i32;
+        dll = (*envs).lk_ceil + (*envs).ll_ceil + 1_i32;
     }
     if ibase != 0 {
-        dli = envs.li_ceil + envs.lj_ceil + 1_i32;
-        dlj = envs.lj_ceil + 1_i32;
+        dli = (*envs).li_ceil + (*envs).lj_ceil + 1_i32;
+        dlj = (*envs).lj_ceil + 1_i32;
     } else {
-        dli = envs.li_ceil + 1_i32;
-        dlj = envs.li_ceil + envs.lj_ceil + 1_i32;
+        dli = (*envs).li_ceil + 1_i32;
+        dlj = (*envs).li_ceil + (*envs).lj_ceil + 1_i32;
     }
-    envs.g_stride_i = nrys_roots;
-    envs.g_stride_k = nrys_roots * dli;
-    envs.g_stride_l = nrys_roots * dli * dlk;
-    envs.g_stride_j = nrys_roots * dli * dlk * dll;
-    envs.g_size = nrys_roots * dli * dlk * dll * dlj;
+    (*envs).g_stride_i = nrys_roots;
+    (*envs).g_stride_k = nrys_roots * dli;
+    (*envs).g_stride_l = nrys_roots * dli * dlk;
+    (*envs).g_stride_j = nrys_roots * dli * dlk * dll;
+    (*envs).g_size = nrys_roots * dli * dlk * dll * dlj;
     if kbase != 0 {
-        envs.g2d_klmax = envs.g_stride_k;
-        envs.rx_in_rklrx = envs.rk;
-        envs.rkrl[0_i32 as usize] =
-            *(envs.rk).offset(0_isize) - *(envs.c2rust_unnamed_1.rl).offset(0_isize);
-        envs.rkrl[1_i32 as usize] =
-            *(envs.rk).offset(1_isize) - *(envs.c2rust_unnamed_1.rl).offset(1_isize);
-        envs.rkrl[2_i32 as usize] =
-            *(envs.rk).offset(2_isize) - *(envs.c2rust_unnamed_1.rl).offset(2_isize);
+        (*envs).g2d_klmax = (*envs).g_stride_k;
+        (*envs).rx_in_rklrx = (*envs).rk;
+        (*envs).rkrl[0_i32 as usize] =
+            *((*envs).rk).offset(0_isize) - *((*envs).c2rust_unnamed_1.rl).offset(0_isize);
+        (*envs).rkrl[1_i32 as usize] =
+            *((*envs).rk).offset(1_isize) - *((*envs).c2rust_unnamed_1.rl).offset(1_isize);
+        (*envs).rkrl[2_i32 as usize] =
+            *((*envs).rk).offset(2_isize) - *((*envs).c2rust_unnamed_1.rl).offset(2_isize);
     } else {
-        envs.g2d_klmax = envs.g_stride_l;
-        envs.rx_in_rklrx = envs.c2rust_unnamed_1.rl;
-        envs.rkrl[0_i32 as usize] =
-            *(envs.c2rust_unnamed_1.rl).offset(0_isize) - *(envs.rk).offset(0_isize);
-        envs.rkrl[1_i32 as usize] =
-            *(envs.c2rust_unnamed_1.rl).offset(1_isize) - *(envs.rk).offset(1_isize);
-        envs.rkrl[2_i32 as usize] =
-            *(envs.c2rust_unnamed_1.rl).offset(2_isize) - *(envs.rk).offset(2_isize);
+        (*envs).g2d_klmax = (*envs).g_stride_l;
+        (*envs).rx_in_rklrx = (*envs).c2rust_unnamed_1.rl;
+        (*envs).rkrl[0_i32 as usize] =
+            *((*envs).c2rust_unnamed_1.rl).offset(0_isize) - *((*envs).rk).offset(0_isize);
+        (*envs).rkrl[1_i32 as usize] =
+            *((*envs).c2rust_unnamed_1.rl).offset(1_isize) - *((*envs).rk).offset(1_isize);
+        (*envs).rkrl[2_i32 as usize] =
+            *((*envs).c2rust_unnamed_1.rl).offset(2_isize) - *((*envs).rk).offset(2_isize);
     }
     if ibase != 0 {
-        envs.g2d_ijmax = envs.g_stride_i;
-        envs.rx_in_rijrx = envs.ri;
-        envs.rirj[0_i32 as usize] = *(envs.ri).offset(0_isize) - *(envs.rj).offset(0_isize);
-        envs.rirj[1_i32 as usize] = *(envs.ri).offset(1_isize) - *(envs.rj).offset(1_isize);
-        envs.rirj[2_i32 as usize] = *(envs.ri).offset(2_isize) - *(envs.rj).offset(2_isize);
+        (*envs).g2d_ijmax = (*envs).g_stride_i;
+        (*envs).rx_in_rijrx = (*envs).ri;
+        (*envs).rirj[0_i32 as usize] =
+            *((*envs).ri).offset(0_isize) - *((*envs).rj).offset(0_isize);
+        (*envs).rirj[1_i32 as usize] =
+            *((*envs).ri).offset(1_isize) - *((*envs).rj).offset(1_isize);
+        (*envs).rirj[2_i32 as usize] =
+            *((*envs).ri).offset(2_isize) - *((*envs).rj).offset(2_isize);
     } else {
-        envs.g2d_ijmax = envs.g_stride_j;
-        envs.rx_in_rijrx = envs.rj;
-        envs.rirj[0_i32 as usize] = *(envs.rj).offset(0_isize) - *(envs.ri).offset(0_isize);
-        envs.rirj[1_i32 as usize] = *(envs.rj).offset(1_isize) - *(envs.ri).offset(1_isize);
-        envs.rirj[2_i32 as usize] = *(envs.rj).offset(2_isize) - *(envs.ri).offset(2_isize);
+        (*envs).g2d_ijmax = (*envs).g_stride_j;
+        (*envs).rx_in_rijrx = (*envs).rj;
+        (*envs).rirj[0_i32 as usize] =
+            *((*envs).rj).offset(0_isize) - *((*envs).ri).offset(0_isize);
+        (*envs).rirj[1_i32 as usize] =
+            *((*envs).rj).offset(1_isize) - *((*envs).ri).offset(1_isize);
+        (*envs).rirj[2_i32 as usize] =
+            *((*envs).rj).offset(2_isize) - *((*envs).ri).offset(2_isize);
     }
     if rys_order <= 2_i32 {
-        envs.f_g0_2d4d = Some(G0_2d4d::Unrolled);
+        (*envs).f_g0_2d4d = Some(G0_2d4d::Unrolled);
         if rys_order != nrys_roots {
-            envs.f_g0_2d4d = Some(G0_2d4d::SrUnrolled);
+            (*envs).f_g0_2d4d = Some(G0_2d4d::SrUnrolled);
         }
     } else if kbase != 0 {
         if ibase != 0 {
-            envs.f_g0_2d4d = Some(G0_2d4d::Ik);
+            (*envs).f_g0_2d4d = Some(G0_2d4d::Ik);
         } else {
-            envs.f_g0_2d4d = Some(G0_2d4d::Kj);
+            (*envs).f_g0_2d4d = Some(G0_2d4d::Kj);
         }
     } else if ibase != 0 {
-        envs.f_g0_2d4d = Some(G0_2d4d::Il);
+        (*envs).f_g0_2d4d = Some(G0_2d4d::Il);
     } else {
-        envs.f_g0_2d4d = Some(G0_2d4d::Lj);
+        (*envs).f_g0_2d4d = Some(G0_2d4d::Lj);
     }
-    envs.f_g0_2e = ::core::mem::transmute::<
-        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut f64, f64, &mut CINTEnvVars) -> i32>,
+    (*envs).f_g0_2e = ::core::mem::transmute::<
+        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut f64, f64, *mut CINTEnvVars) -> i32>,
         Option<unsafe extern "C" fn() -> i32>,
     >(Some(
         CINTg0_2e
-            as unsafe extern "C" fn(*mut f64, *mut f64, *mut f64, f64, &mut CINTEnvVars) -> i32,
+            as unsafe extern "C" fn(*mut f64, *mut f64, *mut f64, f64, *mut CINTEnvVars) -> i32,
     ));
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg2e_index_xyz(idx: *mut i32, envs: &CINTEnvVars) {
-    let i_l: i32 = envs.i_l;
-    let j_l: i32 = envs.j_l;
-    let k_l: i32 = envs.k_l;
-    let l_l: i32 = envs.l_l;
-    let nfi: i32 = envs.nfi;
-    let nfj: i32 = envs.nfj;
-    let nfk: i32 = envs.c2rust_unnamed.nfk;
-    let nfl: i32 = envs.c2rust_unnamed_0.nfl;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
+pub unsafe extern "C" fn CINTg2e_index_xyz(idx: *mut i32, envs: *const CINTEnvVars) {
+    let i_l: i32 = (*envs).i_l;
+    let j_l: i32 = (*envs).j_l;
+    let k_l: i32 = (*envs).k_l;
+    let l_l: i32 = (*envs).l_l;
+    let nfi: i32 = (*envs).nfi;
+    let nfj: i32 = (*envs).nfj;
+    let nfk: i32 = (*envs).c2rust_unnamed.nfk;
+    let nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -232,8 +239,8 @@ pub unsafe extern "C" fn CINTg2e_index_xyz(idx: *mut i32, envs: &CINTEnvVars) {
     CINTcart_comp(k_nx.as_mut_ptr(), k_ny.as_mut_ptr(), k_nz.as_mut_ptr(), k_l);
     CINTcart_comp(l_nx.as_mut_ptr(), l_ny.as_mut_ptr(), l_nz.as_mut_ptr(), l_l);
     ofx = 0_i32;
-    ofy = envs.g_size;
-    ofz = envs.g_size * 2_i32;
+    ofy = (*envs).g_size;
+    ofz = (*envs).g_size * 2_i32;
     n = 0_i32;
     j = 0_i32;
     while j < nfj {
@@ -310,20 +317,20 @@ pub unsafe extern "C" fn CINTg2e_index_xyz(idx: *mut i32, envs: &CINTEnvVars) {
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg0_2e_2d(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let nroots: i32 = envs.nrys_roots;
-    let nmax: i32 = envs.li_ceil + envs.lj_ceil;
-    let mmax: i32 = envs.lk_ceil + envs.ll_ceil;
-    let dm: i32 = envs.g2d_klmax;
-    let dn: i32 = envs.g2d_ijmax;
+pub unsafe extern "C" fn CINTg0_2e_2d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let nroots: i32 = (*envs).nrys_roots;
+    let nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+    let mmax: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let dm: i32 = (*envs).g2d_klmax;
+    let dn: i32 = (*envs).g2d_ijmax;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut m: i32 = 0;
     let mut n: i32 = 0;
     let mut off: i32 = 0;
     let gx: *mut f64 = g;
-    let gy: *mut f64 = g.offset(envs.g_size as isize);
-    let gz: *mut f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *mut f64 = g.offset((*envs).g_size as isize);
+    let gz: *mut f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let _p0x: *mut f64 = std::ptr::null_mut::<f64>();
     let _p0y: *mut f64 = std::ptr::null_mut::<f64>();
     let _p0z: *mut f64 = std::ptr::null_mut::<f64>();
@@ -365,15 +372,15 @@ pub unsafe extern "C" fn CINTg0_2e_2d(g: *mut f64, bc: &mut Rys2eT, envs: &mut C
     let mut b00: f64 = 0.;
     i = 0_i32;
     while i < nroots {
-        c00x = bc.c00x[i as usize];
-        c00y = bc.c00y[i as usize];
-        c00z = bc.c00z[i as usize];
-        c0px = bc.c0px[i as usize];
-        c0py = bc.c0py[i as usize];
-        c0pz = bc.c0pz[i as usize];
-        b10 = bc.b10[i as usize];
-        b01 = bc.b01[i as usize];
-        b00 = bc.b00[i as usize];
+        c00x = (*bc).c00x[i as usize];
+        c00y = (*bc).c00y[i as usize];
+        c00z = (*bc).c00z[i as usize];
+        c0px = (*bc).c0px[i as usize];
+        c0py = (*bc).c0py[i as usize];
+        c0pz = (*bc).c0pz[i as usize];
+        b10 = (*bc).b10[i as usize];
+        b01 = (*bc).b01[i as usize];
+        b00 = (*bc).b00[i as usize];
         if nmax > 0_i32 {
             s0x = *gx.offset(i as isize);
             s0y = *gy.offset(i as isize);
@@ -502,31 +509,31 @@ pub unsafe extern "C" fn CINTg0_2e_2d(g: *mut f64, bc: &mut Rys2eT, envs: &mut C
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg0_lj2d_4d(g: *mut f64, envs: &mut CINTEnvVars) {
-    let li: i32 = envs.li_ceil;
-    let lk: i32 = envs.lk_ceil;
+pub unsafe extern "C" fn CINTg0_lj2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
+    let li: i32 = (*envs).li_ceil;
+    let lk: i32 = (*envs).lk_ceil;
     if li == 0_i32 && lk == 0_i32 {
         return;
     }
-    let nmax: i32 = envs.li_ceil + envs.lj_ceil;
-    let mmax: i32 = envs.lk_ceil + envs.ll_ceil;
-    let lj: i32 = envs.lj_ceil;
-    let nroots: i32 = envs.nrys_roots;
+    let nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+    let mmax: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let lj: i32 = (*envs).lj_ceil;
+    let nroots: i32 = (*envs).nrys_roots;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut l: i32 = 0;
     let mut ptr: i32 = 0;
     let mut n: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let rirj: *mut f64 = (envs.rirj).as_mut_ptr();
-    let rkrl: *mut f64 = (envs.rkrl).as_mut_ptr();
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
+    let rkrl: *mut f64 = ((*envs).rkrl).as_mut_ptr();
     let gx: *mut f64 = g;
-    let gy: *mut f64 = g.offset(envs.g_size as isize);
-    let gz: *mut f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *mut f64 = g.offset((*envs).g_size as isize);
+    let gz: *mut f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let mut p1x: *mut f64 = std::ptr::null_mut::<f64>();
     let mut p1y: *mut f64 = std::ptr::null_mut::<f64>();
     let mut p1z: *mut f64 = std::ptr::null_mut::<f64>();
@@ -604,31 +611,31 @@ pub unsafe extern "C" fn CINTg0_lj2d_4d(g: *mut f64, envs: &mut CINTEnvVars) {
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg0_kj2d_4d(g: *mut f64, envs: &mut CINTEnvVars) {
-    let li: i32 = envs.li_ceil;
-    let ll: i32 = envs.ll_ceil;
+pub unsafe extern "C" fn CINTg0_kj2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
+    let li: i32 = (*envs).li_ceil;
+    let ll: i32 = (*envs).ll_ceil;
     if li == 0_i32 && ll == 0_i32 {
         return;
     }
-    let nmax: i32 = envs.li_ceil + envs.lj_ceil;
-    let mmax: i32 = envs.lk_ceil + envs.ll_ceil;
-    let lj: i32 = envs.lj_ceil;
-    let nroots: i32 = envs.nrys_roots;
+    let nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+    let mmax: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let lj: i32 = (*envs).lj_ceil;
+    let nroots: i32 = (*envs).nrys_roots;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut l: i32 = 0;
     let mut ptr: i32 = 0;
     let mut n: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let rirj: *mut f64 = (envs.rirj).as_mut_ptr();
-    let rkrl: *mut f64 = (envs.rkrl).as_mut_ptr();
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
+    let rkrl: *mut f64 = ((*envs).rkrl).as_mut_ptr();
     let gx: *mut f64 = g;
-    let gy: *mut f64 = g.offset(envs.g_size as isize);
-    let gz: *mut f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *mut f64 = g.offset((*envs).g_size as isize);
+    let gz: *mut f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let mut p1x: *mut f64 = std::ptr::null_mut::<f64>();
     let mut p1y: *mut f64 = std::ptr::null_mut::<f64>();
     let mut p1z: *mut f64 = std::ptr::null_mut::<f64>();
@@ -706,31 +713,31 @@ pub unsafe extern "C" fn CINTg0_kj2d_4d(g: *mut f64, envs: &mut CINTEnvVars) {
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg0_il2d_4d(g: *mut f64, envs: &mut CINTEnvVars) {
-    let lk: i32 = envs.lk_ceil;
-    let lj: i32 = envs.lj_ceil;
+pub unsafe extern "C" fn CINTg0_il2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
+    let lk: i32 = (*envs).lk_ceil;
+    let lj: i32 = (*envs).lj_ceil;
     if lj == 0_i32 && lk == 0_i32 {
         return;
     }
-    let nmax: i32 = envs.li_ceil + envs.lj_ceil;
-    let mmax: i32 = envs.lk_ceil + envs.ll_ceil;
-    let ll: i32 = envs.ll_ceil;
-    let nroots: i32 = envs.nrys_roots;
+    let nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+    let mmax: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let ll: i32 = (*envs).ll_ceil;
+    let nroots: i32 = (*envs).nrys_roots;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut l: i32 = 0;
     let mut ptr: i32 = 0;
     let mut n: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let rirj: *mut f64 = (envs.rirj).as_mut_ptr();
-    let rkrl: *mut f64 = (envs.rkrl).as_mut_ptr();
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
+    let rkrl: *mut f64 = ((*envs).rkrl).as_mut_ptr();
     let gx: *mut f64 = g;
-    let gy: *mut f64 = g.offset(envs.g_size as isize);
-    let gz: *mut f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *mut f64 = g.offset((*envs).g_size as isize);
+    let gz: *mut f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let mut p1x: *mut f64 = std::ptr::null_mut::<f64>();
     let mut p1y: *mut f64 = std::ptr::null_mut::<f64>();
     let mut p1z: *mut f64 = std::ptr::null_mut::<f64>();
@@ -808,31 +815,31 @@ pub unsafe extern "C" fn CINTg0_il2d_4d(g: *mut f64, envs: &mut CINTEnvVars) {
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg0_ik2d_4d(g: *mut f64, envs: &mut CINTEnvVars) {
-    let lj: i32 = envs.lj_ceil;
-    let ll: i32 = envs.ll_ceil;
+pub unsafe extern "C" fn CINTg0_ik2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
+    let lj: i32 = (*envs).lj_ceil;
+    let ll: i32 = (*envs).ll_ceil;
     if lj == 0_i32 && ll == 0_i32 {
         return;
     }
-    let nmax: i32 = envs.li_ceil + envs.lj_ceil;
-    let mmax: i32 = envs.lk_ceil + envs.ll_ceil;
-    let lk: i32 = envs.lk_ceil;
-    let nroots: i32 = envs.nrys_roots;
+    let nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
+    let mmax: i32 = (*envs).lk_ceil + (*envs).ll_ceil;
+    let lk: i32 = (*envs).lk_ceil;
+    let nroots: i32 = (*envs).nrys_roots;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut l: i32 = 0;
     let mut ptr: i32 = 0;
     let mut n: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let rirj: *mut f64 = (envs.rirj).as_mut_ptr();
-    let rkrl: *mut f64 = (envs.rkrl).as_mut_ptr();
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
+    let rkrl: *mut f64 = ((*envs).rkrl).as_mut_ptr();
     let gx: *mut f64 = g;
-    let gy: *mut f64 = g.offset(envs.g_size as isize);
-    let gz: *mut f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *mut f64 = g.offset((*envs).g_size as isize);
+    let gz: *mut f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let mut p1x: *mut f64 = std::ptr::null_mut::<f64>();
     let mut p1y: *mut f64 = std::ptr::null_mut::<f64>();
     let mut p1z: *mut f64 = std::ptr::null_mut::<f64>();
@@ -910,15 +917,15 @@ pub unsafe extern "C" fn CINTg0_ik2d_4d(g: *mut f64, envs: &mut CINTEnvVars) {
     }
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0000(g: *mut f64, _bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
+unsafe extern "C" fn _g0_2d4d_0000(g: *mut f64, _bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0001(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = *cpx.offset(0_isize);
     *g.offset(2_isize) = 1_f64;
@@ -926,11 +933,11 @@ unsafe extern "C" fn _g0_2d4d_0001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
     *g.offset(5_isize) = *cpz.offset(0_isize) * *g.offset(4_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0002(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0002(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -951,11 +958,11 @@ unsafe extern "C" fn _g0_2d4d_0002(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         *cpz.offset(1_isize) * *g.offset(15_isize) + *b01.offset(1_isize) * *g.offset(13_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0003(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0003(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -986,10 +993,10 @@ unsafe extern "C" fn _g0_2d4d_0003(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + 2_f64 * *b01.offset(1_isize) * *g.offset(19_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0010(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = *cpx.offset(0_isize);
     *g.offset(2_isize) = 1_f64;
@@ -997,14 +1004,14 @@ unsafe extern "C" fn _g0_2d4d_0010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
     *g.offset(5_isize) = *cpz.offset(0_isize) * *g.offset(4_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0011(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
-    let xkxl: f64 = envs.rkrl[0_usize];
-    let ykyl: f64 = envs.rkrl[1_usize];
-    let zkzl: f64 = envs.rkrl[2_usize];
+unsafe extern "C" fn _g0_2d4d_0011(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
+    let xkxl: f64 = (*envs).rkrl[0_usize];
+    let ykyl: f64 = (*envs).rkrl[1_usize];
+    let zkzl: f64 = (*envs).rkrl[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(4_isize) = *cpx.offset(0_isize);
@@ -1035,14 +1042,14 @@ unsafe extern "C" fn _g0_2d4d_0011(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINT
     *g.offset(27_isize) = *g.offset(25_isize) * (zkzl + *cpz.offset(1_isize));
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0012(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
-    let xkxl: f64 = envs.rkrl[0_usize];
-    let ykyl: f64 = envs.rkrl[1_usize];
-    let zkzl: f64 = envs.rkrl[2_usize];
+unsafe extern "C" fn _g0_2d4d_0012(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
+    let xkxl: f64 = (*envs).rkrl[0_usize];
+    let ykyl: f64 = (*envs).rkrl[1_usize];
+    let zkzl: f64 = (*envs).rkrl[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(4_isize) = *cpx.offset(0_isize);
@@ -1093,11 +1100,11 @@ unsafe extern "C" fn _g0_2d4d_0012(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINT
     *g.offset(35_isize) = *g.offset(33_isize) * (zkzl + *cpz.offset(1_isize));
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0020(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0020(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -1118,14 +1125,14 @@ unsafe extern "C" fn _g0_2d4d_0020(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         *cpz.offset(1_isize) * *g.offset(15_isize) + *b01.offset(1_isize) * *g.offset(13_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0021(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
-    let xkxl: f64 = envs.rkrl[0_usize];
-    let ykyl: f64 = envs.rkrl[1_usize];
-    let zkzl: f64 = envs.rkrl[2_usize];
+unsafe extern "C" fn _g0_2d4d_0021(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
+    let xkxl: f64 = (*envs).rkrl[0_usize];
+    let ykyl: f64 = (*envs).rkrl[1_usize];
+    let zkzl: f64 = (*envs).rkrl[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -1176,11 +1183,11 @@ unsafe extern "C" fn _g0_2d4d_0021(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINT
         + 2_f64 * *b01.offset(1_isize) * *g.offset(35_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0030(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0030(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -1211,10 +1218,10 @@ unsafe extern "C" fn _g0_2d4d_0030(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + 2_f64 * *b01.offset(1_isize) * *g.offset(19_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0100(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0100(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = *c0x.offset(0_isize);
     *g.offset(2_isize) = 1_f64;
@@ -1222,14 +1229,14 @@ unsafe extern "C" fn _g0_2d4d_0100(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
     *g.offset(5_isize) = *c0z.offset(0_isize) * *g.offset(4_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0101(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0101(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -1256,15 +1263,15 @@ unsafe extern "C" fn _g0_2d4d_0101(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         *cpz.offset(1_isize) * *g.offset(21_isize) + *b00.offset(1_isize) * *g.offset(17_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0102(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0102(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -1313,14 +1320,14 @@ unsafe extern "C" fn _g0_2d4d_0102(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + *b00.offset(1_isize) * *g.offset(27_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0110(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0110(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -1347,18 +1354,18 @@ unsafe extern "C" fn _g0_2d4d_0110(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         *cpz.offset(1_isize) * *g.offset(21_isize) + *b00.offset(1_isize) * *g.offset(17_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0111(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
-    let xkxl: f64 = envs.rkrl[0_usize];
-    let ykyl: f64 = envs.rkrl[1_usize];
-    let zkzl: f64 = envs.rkrl[2_usize];
+unsafe extern "C" fn _g0_2d4d_0111(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
+    let xkxl: f64 = (*envs).rkrl[0_usize];
+    let ykyl: f64 = (*envs).rkrl[1_usize];
+    let zkzl: f64 = (*envs).rkrl[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(12_isize) = *c0x.offset(0_isize);
@@ -1433,15 +1440,15 @@ unsafe extern "C" fn _g0_2d4d_0111(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINT
         + *b00.offset(1_isize) * *g.offset(49_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0120(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0120(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -1490,11 +1497,11 @@ unsafe extern "C" fn _g0_2d4d_0120(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + *b00.offset(1_isize) * *g.offset(27_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0200(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0200(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -1515,15 +1522,15 @@ unsafe extern "C" fn _g0_2d4d_0200(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         *c0z.offset(1_isize) * *g.offset(15_isize) + *b10.offset(1_isize) * *g.offset(13_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0201(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0201(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(4_isize) = *c0x.offset(0_isize);
@@ -1572,15 +1579,15 @@ unsafe extern "C" fn _g0_2d4d_0201(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + *b00.offset(1_isize) * *g.offset(29_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0210(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0210(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -1629,11 +1636,11 @@ unsafe extern "C" fn _g0_2d4d_0210(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + *b00.offset(1_isize) * *g.offset(29_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_0300(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_0300(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -1664,10 +1671,10 @@ unsafe extern "C" fn _g0_2d4d_0300(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + 2_f64 * *b10.offset(1_isize) * *g.offset(19_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_1000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_1000(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = *c0x.offset(0_isize);
     *g.offset(2_isize) = 1_f64;
@@ -1675,14 +1682,14 @@ unsafe extern "C" fn _g0_2d4d_1000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
     *g.offset(5_isize) = *c0z.offset(0_isize) * *g.offset(4_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_1001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_1001(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -1709,15 +1716,15 @@ unsafe extern "C" fn _g0_2d4d_1001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         *cpz.offset(1_isize) * *g.offset(19_isize) + *b00.offset(1_isize) * *g.offset(17_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_1002(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_1002(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -1766,14 +1773,14 @@ unsafe extern "C" fn _g0_2d4d_1002(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + *b00.offset(1_isize) * *g.offset(29_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_1010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_1010(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -1800,18 +1807,18 @@ unsafe extern "C" fn _g0_2d4d_1010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         *cpz.offset(1_isize) * *g.offset(19_isize) + *b00.offset(1_isize) * *g.offset(17_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_1011(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
-    let xkxl: f64 = envs.rkrl[0_usize];
-    let ykyl: f64 = envs.rkrl[1_usize];
-    let zkzl: f64 = envs.rkrl[2_usize];
+unsafe extern "C" fn _g0_2d4d_1011(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
+    let xkxl: f64 = (*envs).rkrl[0_usize];
+    let ykyl: f64 = (*envs).rkrl[1_usize];
+    let zkzl: f64 = (*envs).rkrl[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -1886,15 +1893,15 @@ unsafe extern "C" fn _g0_2d4d_1011(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINT
         + *b00.offset(1_isize) * *g.offset(49_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_1020(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_1020(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -1943,14 +1950,14 @@ unsafe extern "C" fn _g0_2d4d_1020(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + *b00.offset(1_isize) * *g.offset(29_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_1100(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
-    let xixj: f64 = envs.rirj[0_usize];
-    let yiyj: f64 = envs.rirj[1_usize];
-    let zizj: f64 = envs.rirj[2_usize];
+unsafe extern "C" fn _g0_2d4d_1100(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
+    let xixj: f64 = (*envs).rirj[0_usize];
+    let yiyj: f64 = (*envs).rirj[1_usize];
+    let zizj: f64 = (*envs).rirj[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(4_isize) = *c0x.offset(0_isize);
@@ -1981,18 +1988,18 @@ unsafe extern "C" fn _g0_2d4d_1100(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINT
     *g.offset(27_isize) = *g.offset(25_isize) * (zizj + *c0z.offset(1_isize));
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_1101(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
-    let xixj: f64 = envs.rirj[0_usize];
-    let yiyj: f64 = envs.rirj[1_usize];
-    let zizj: f64 = envs.rirj[2_usize];
+unsafe extern "C" fn _g0_2d4d_1101(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
+    let xixj: f64 = (*envs).rirj[0_usize];
+    let yiyj: f64 = (*envs).rirj[1_usize];
+    let zizj: f64 = (*envs).rirj[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(8_isize) = *c0x.offset(0_isize);
@@ -2069,18 +2076,18 @@ unsafe extern "C" fn _g0_2d4d_1101(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINT
         + *b00.offset(1_isize) * *g.offset(49_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_1110(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
-    let xixj: f64 = envs.rirj[0_usize];
-    let yiyj: f64 = envs.rirj[1_usize];
-    let zizj: f64 = envs.rirj[2_usize];
+unsafe extern "C" fn _g0_2d4d_1110(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
+    let xixj: f64 = (*envs).rirj[0_usize];
+    let yiyj: f64 = (*envs).rirj[1_usize];
+    let zizj: f64 = (*envs).rirj[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(8_isize) = *c0x.offset(0_isize);
@@ -2157,14 +2164,14 @@ unsafe extern "C" fn _g0_2d4d_1110(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINT
         + *b00.offset(1_isize) * *g.offset(49_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_1200(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
-    let xixj: f64 = envs.rirj[0_usize];
-    let yiyj: f64 = envs.rirj[1_usize];
-    let zizj: f64 = envs.rirj[2_usize];
+unsafe extern "C" fn _g0_2d4d_1200(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
+    let xixj: f64 = (*envs).rirj[0_usize];
+    let yiyj: f64 = (*envs).rirj[1_usize];
+    let zizj: f64 = (*envs).rirj[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(4_isize) = *c0x.offset(0_isize);
@@ -2215,11 +2222,11 @@ unsafe extern "C" fn _g0_2d4d_1200(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINT
     *g.offset(35_isize) = *g.offset(33_isize) * (zizj + *c0z.offset(1_isize));
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_2000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_2000(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -2240,15 +2247,15 @@ unsafe extern "C" fn _g0_2d4d_2000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         *c0z.offset(1_isize) * *g.offset(15_isize) + *b10.offset(1_isize) * *g.offset(13_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_2001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_2001(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -2297,15 +2304,15 @@ unsafe extern "C" fn _g0_2d4d_2001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + *b00.offset(1_isize) * *g.offset(27_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_2010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_2010(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -2354,14 +2361,14 @@ unsafe extern "C" fn _g0_2d4d_2010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
         + *b00.offset(1_isize) * *g.offset(27_isize);
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_2100(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
-    let xixj: f64 = envs.rirj[0_usize];
-    let yiyj: f64 = envs.rirj[1_usize];
-    let zizj: f64 = envs.rirj[2_usize];
+unsafe extern "C" fn _g0_2d4d_2100(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
+    let xixj: f64 = (*envs).rirj[0_usize];
+    let yiyj: f64 = (*envs).rirj[1_usize];
+    let zizj: f64 = (*envs).rirj[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -2412,11 +2419,11 @@ unsafe extern "C" fn _g0_2d4d_2100(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINT
     *g.offset(41_isize) = *g.offset(33_isize) * (zizj + *c0z.offset(1_isize));
 }
 #[inline]
-unsafe extern "C" fn _g0_2d4d_3000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _g0_2d4d_3000(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -2449,11 +2456,13 @@ unsafe extern "C" fn _g0_2d4d_3000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CIN
 #[no_mangle]
 pub unsafe extern "C" fn CINTg0_2e_2d4d_unrolled(
     g: *mut f64,
-    bc: &mut Rys2eT,
-    envs: &mut CINTEnvVars,
+    bc: *mut Rys2eT,
+    envs: *mut CINTEnvVars,
 ) {
-    let type_ijkl: i32 =
-        envs.li_ceil << 6_i32 | envs.lj_ceil << 4_i32 | envs.lk_ceil << 2_i32 | envs.ll_ceil;
+    let type_ijkl: i32 = (*envs).li_ceil << 6_i32
+        | (*envs).lj_ceil << 4_i32
+        | (*envs).lk_ceil << 2_i32
+        | (*envs).ll_ceil;
     match type_ijkl {
         0 => {
             _g0_2d4d_0000(g, bc, envs);
@@ -2599,21 +2608,24 @@ pub unsafe extern "C" fn CINTg0_2e_2d4d_unrolled(
     }
     eprintln!(
         "Dimension error for CINTg0_2e_lj2d4d: iklj = {} {} {} {}",
-        envs.li_ceil, envs.lk_ceil, envs.ll_ceil, envs.lj_ceil
+        (*envs).li_ceil,
+        (*envs).lk_ceil,
+        (*envs).ll_ceil,
+        (*envs).lj_ceil
     );
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0000(g: *mut f64, _bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
+unsafe extern "C" fn _srg0_2d4d_0000(g: *mut f64, _bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
     *g.offset(3_isize) = 1_f64;
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0001(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -2626,11 +2638,11 @@ unsafe extern "C" fn _srg0_2d4d_0001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
     *g.offset(11_isize) = *cpz.offset(1_isize) * *g.offset(9_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0002(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0002(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -2669,11 +2681,11 @@ unsafe extern "C" fn _srg0_2d4d_0002(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         *cpz.offset(3_isize) * *g.offset(31_isize) + *b01.offset(3_isize) * *g.offset(27_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0003(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0003(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -2736,10 +2748,10 @@ unsafe extern "C" fn _srg0_2d4d_0003(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + 2_f64 * *b01.offset(3_isize) * *g.offset(39_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0010(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *cpx.offset(0_isize);
@@ -2752,14 +2764,14 @@ unsafe extern "C" fn _srg0_2d4d_0010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
     *g.offset(11_isize) = *cpz.offset(1_isize) * *g.offset(9_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0011(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
-    let xkxl: f64 = envs.rkrl[0_usize];
-    let ykyl: f64 = envs.rkrl[1_usize];
-    let zkzl: f64 = envs.rkrl[2_usize];
+unsafe extern "C" fn _srg0_2d4d_0011(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
+    let xkxl: f64 = (*envs).rkrl[0_usize];
+    let ykyl: f64 = (*envs).rkrl[1_usize];
+    let zkzl: f64 = (*envs).rkrl[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -2818,14 +2830,14 @@ unsafe extern "C" fn _srg0_2d4d_0011(g: *mut f64, bc: &mut Rys2eT, envs: &mut CI
     *g.offset(55_isize) = *g.offset(51_isize) * (zkzl + *cpz.offset(3_isize));
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0012(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
-    let xkxl: f64 = envs.rkrl[0_usize];
-    let ykyl: f64 = envs.rkrl[1_usize];
-    let zkzl: f64 = envs.rkrl[2_usize];
+unsafe extern "C" fn _srg0_2d4d_0012(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
+    let xkxl: f64 = (*envs).rkrl[0_usize];
+    let ykyl: f64 = (*envs).rkrl[1_usize];
+    let zkzl: f64 = (*envs).rkrl[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -2924,11 +2936,11 @@ unsafe extern "C" fn _srg0_2d4d_0012(g: *mut f64, bc: &mut Rys2eT, envs: &mut CI
     *g.offset(71_isize) = *g.offset(67_isize) * (zkzl + *cpz.offset(3_isize));
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0020(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0020(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -2967,14 +2979,14 @@ unsafe extern "C" fn _srg0_2d4d_0020(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         *cpz.offset(3_isize) * *g.offset(31_isize) + *b01.offset(3_isize) * *g.offset(27_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0021(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
-    let xkxl: f64 = envs.rkrl[0_usize];
-    let ykyl: f64 = envs.rkrl[1_usize];
-    let zkzl: f64 = envs.rkrl[2_usize];
+unsafe extern "C" fn _srg0_2d4d_0021(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
+    let xkxl: f64 = (*envs).rkrl[0_usize];
+    let ykyl: f64 = (*envs).rkrl[1_usize];
+    let zkzl: f64 = (*envs).rkrl[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3073,11 +3085,11 @@ unsafe extern "C" fn _srg0_2d4d_0021(g: *mut f64, bc: &mut Rys2eT, envs: &mut CI
         + 2_f64 * *b01.offset(3_isize) * *g.offset(71_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0030(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0030(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3140,10 +3152,10 @@ unsafe extern "C" fn _srg0_2d4d_0030(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + 2_f64 * *b01.offset(3_isize) * *g.offset(39_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0100(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0100(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -3156,14 +3168,14 @@ unsafe extern "C" fn _srg0_2d4d_0100(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
     *g.offset(11_isize) = *c0z.offset(1_isize) * *g.offset(9_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0101(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0101(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3214,15 +3226,15 @@ unsafe extern "C" fn _srg0_2d4d_0101(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         *cpz.offset(3_isize) * *g.offset(43_isize) + *b00.offset(3_isize) * *g.offset(35_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0102(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0102(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3317,14 +3329,14 @@ unsafe extern "C" fn _srg0_2d4d_0102(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + *b00.offset(3_isize) * *g.offset(55_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0110(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0110(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3375,18 +3387,18 @@ unsafe extern "C" fn _srg0_2d4d_0110(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         *cpz.offset(3_isize) * *g.offset(43_isize) + *b00.offset(3_isize) * *g.offset(35_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0111(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
-    let xkxl: f64 = envs.rkrl[0_usize];
-    let ykyl: f64 = envs.rkrl[1_usize];
-    let zkzl: f64 = envs.rkrl[2_usize];
+unsafe extern "C" fn _srg0_2d4d_0111(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
+    let xkxl: f64 = (*envs).rkrl[0_usize];
+    let ykyl: f64 = (*envs).rkrl[1_usize];
+    let zkzl: f64 = (*envs).rkrl[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3533,15 +3545,15 @@ unsafe extern "C" fn _srg0_2d4d_0111(g: *mut f64, bc: &mut Rys2eT, envs: &mut CI
         + *b00.offset(3_isize) * *g.offset(99_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0120(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0120(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3636,11 +3648,11 @@ unsafe extern "C" fn _srg0_2d4d_0120(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + *b00.offset(3_isize) * *g.offset(55_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0200(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0200(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3679,15 +3691,15 @@ unsafe extern "C" fn _srg0_2d4d_0200(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         *c0z.offset(3_isize) * *g.offset(31_isize) + *b10.offset(3_isize) * *g.offset(27_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0201(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0201(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3782,15 +3794,15 @@ unsafe extern "C" fn _srg0_2d4d_0201(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + *b00.offset(3_isize) * *g.offset(59_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0210(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0210(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3885,11 +3897,11 @@ unsafe extern "C" fn _srg0_2d4d_0210(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + *b00.offset(3_isize) * *g.offset(59_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_0300(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_0300(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -3952,10 +3964,10 @@ unsafe extern "C" fn _srg0_2d4d_0300(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + 2_f64 * *b10.offset(3_isize) * *g.offset(39_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_1000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_1000(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = *c0x.offset(0_isize);
@@ -3968,14 +3980,14 @@ unsafe extern "C" fn _srg0_2d4d_1000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
     *g.offset(11_isize) = *c0z.offset(1_isize) * *g.offset(9_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_1001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_1001(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -4026,15 +4038,15 @@ unsafe extern "C" fn _srg0_2d4d_1001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         *cpz.offset(3_isize) * *g.offset(39_isize) + *b00.offset(3_isize) * *g.offset(35_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_1002(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_1002(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -4129,14 +4141,14 @@ unsafe extern "C" fn _srg0_2d4d_1002(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + *b00.offset(3_isize) * *g.offset(59_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_1010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_1010(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -4187,18 +4199,18 @@ unsafe extern "C" fn _srg0_2d4d_1010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         *cpz.offset(3_isize) * *g.offset(39_isize) + *b00.offset(3_isize) * *g.offset(35_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_1011(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
-    let xkxl: f64 = envs.rkrl[0_usize];
-    let ykyl: f64 = envs.rkrl[1_usize];
-    let zkzl: f64 = envs.rkrl[2_usize];
+unsafe extern "C" fn _srg0_2d4d_1011(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
+    let xkxl: f64 = (*envs).rkrl[0_usize];
+    let ykyl: f64 = (*envs).rkrl[1_usize];
+    let zkzl: f64 = (*envs).rkrl[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -4345,15 +4357,15 @@ unsafe extern "C" fn _srg0_2d4d_1011(g: *mut f64, bc: &mut Rys2eT, envs: &mut CI
         + *b00.offset(3_isize) * *g.offset(99_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_1020(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b01: *mut f64 = (bc.b01).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_1020(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b01: *mut f64 = ((*bc).b01).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -4448,14 +4460,14 @@ unsafe extern "C" fn _srg0_2d4d_1020(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + *b00.offset(3_isize) * *g.offset(59_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_1100(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
-    let xixj: f64 = envs.rirj[0_usize];
-    let yiyj: f64 = envs.rirj[1_usize];
-    let zizj: f64 = envs.rirj[2_usize];
+unsafe extern "C" fn _srg0_2d4d_1100(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
+    let xixj: f64 = (*envs).rirj[0_usize];
+    let yiyj: f64 = (*envs).rirj[1_usize];
+    let zizj: f64 = (*envs).rirj[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -4514,18 +4526,18 @@ unsafe extern "C" fn _srg0_2d4d_1100(g: *mut f64, bc: &mut Rys2eT, envs: &mut CI
     *g.offset(55_isize) = *g.offset(51_isize) * (zizj + *c0z.offset(3_isize));
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_1101(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
-    let xixj: f64 = envs.rirj[0_usize];
-    let yiyj: f64 = envs.rirj[1_usize];
-    let zizj: f64 = envs.rirj[2_usize];
+unsafe extern "C" fn _srg0_2d4d_1101(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
+    let xixj: f64 = (*envs).rirj[0_usize];
+    let yiyj: f64 = (*envs).rirj[1_usize];
+    let zizj: f64 = (*envs).rirj[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -4676,18 +4688,18 @@ unsafe extern "C" fn _srg0_2d4d_1101(g: *mut f64, bc: &mut Rys2eT, envs: &mut CI
         + *b00.offset(3_isize) * *g.offset(99_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_1110(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
-    let xixj: f64 = envs.rirj[0_usize];
-    let yiyj: f64 = envs.rirj[1_usize];
-    let zizj: f64 = envs.rirj[2_usize];
+unsafe extern "C" fn _srg0_2d4d_1110(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
+    let xixj: f64 = (*envs).rirj[0_usize];
+    let yiyj: f64 = (*envs).rirj[1_usize];
+    let zizj: f64 = (*envs).rirj[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -4838,14 +4850,14 @@ unsafe extern "C" fn _srg0_2d4d_1110(g: *mut f64, bc: &mut Rys2eT, envs: &mut CI
         + *b00.offset(3_isize) * *g.offset(99_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_1200(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
-    let xixj: f64 = envs.rirj[0_usize];
-    let yiyj: f64 = envs.rirj[1_usize];
-    let zizj: f64 = envs.rirj[2_usize];
+unsafe extern "C" fn _srg0_2d4d_1200(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
+    let xixj: f64 = (*envs).rirj[0_usize];
+    let yiyj: f64 = (*envs).rirj[1_usize];
+    let zizj: f64 = (*envs).rirj[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -4944,11 +4956,11 @@ unsafe extern "C" fn _srg0_2d4d_1200(g: *mut f64, bc: &mut Rys2eT, envs: &mut CI
     *g.offset(71_isize) = *g.offset(67_isize) * (zizj + *c0z.offset(3_isize));
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_2000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_2000(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -4987,15 +4999,15 @@ unsafe extern "C" fn _srg0_2d4d_2000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         *c0z.offset(3_isize) * *g.offset(31_isize) + *b10.offset(3_isize) * *g.offset(27_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_2001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_2001(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -5090,15 +5102,15 @@ unsafe extern "C" fn _srg0_2d4d_2001(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + *b00.offset(3_isize) * *g.offset(55_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_2010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let cpx: *mut f64 = (bc.c0px).as_mut_ptr();
-    let cpy: *mut f64 = (bc.c0py).as_mut_ptr();
-    let cpz: *mut f64 = (bc.c0pz).as_mut_ptr();
-    let b00: *mut f64 = (bc.b00).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_2010(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let cpx: *mut f64 = ((*bc).c0px).as_mut_ptr();
+    let cpy: *mut f64 = ((*bc).c0py).as_mut_ptr();
+    let cpz: *mut f64 = ((*bc).c0pz).as_mut_ptr();
+    let b00: *mut f64 = ((*bc).b00).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -5193,14 +5205,14 @@ unsafe extern "C" fn _srg0_2d4d_2010(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
         + *b00.offset(3_isize) * *g.offset(55_isize);
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_2100(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
-    let xixj: f64 = envs.rirj[0_usize];
-    let yiyj: f64 = envs.rirj[1_usize];
-    let zizj: f64 = envs.rirj[2_usize];
+unsafe extern "C" fn _srg0_2d4d_2100(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
+    let xixj: f64 = (*envs).rirj[0_usize];
+    let yiyj: f64 = (*envs).rirj[1_usize];
+    let zizj: f64 = (*envs).rirj[2_usize];
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -5299,11 +5311,11 @@ unsafe extern "C" fn _srg0_2d4d_2100(g: *mut f64, bc: &mut Rys2eT, envs: &mut CI
     *g.offset(83_isize) = *g.offset(67_isize) * (zizj + *c0z.offset(3_isize));
 }
 #[inline]
-unsafe extern "C" fn _srg0_2d4d_3000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut CINTEnvVars) {
-    let c0x: *mut f64 = (bc.c00x).as_mut_ptr();
-    let c0y: *mut f64 = (bc.c00y).as_mut_ptr();
-    let c0z: *mut f64 = (bc.c00z).as_mut_ptr();
-    let b10: *mut f64 = (bc.b10).as_mut_ptr();
+unsafe extern "C" fn _srg0_2d4d_3000(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
+    let c0x: *mut f64 = ((*bc).c00x).as_mut_ptr();
+    let c0y: *mut f64 = ((*bc).c00y).as_mut_ptr();
+    let c0z: *mut f64 = ((*bc).c00z).as_mut_ptr();
+    let b10: *mut f64 = ((*bc).b10).as_mut_ptr();
     *g.offset(0_isize) = 1_f64;
     *g.offset(1_isize) = 1_f64;
     *g.offset(2_isize) = 1_f64;
@@ -5368,11 +5380,13 @@ unsafe extern "C" fn _srg0_2d4d_3000(g: *mut f64, bc: &mut Rys2eT, _envs: &mut C
 #[no_mangle]
 pub unsafe extern "C" fn CINTsrg0_2e_2d4d_unrolled(
     g: *mut f64,
-    bc: &mut Rys2eT,
-    envs: &mut CINTEnvVars,
+    bc: *mut Rys2eT,
+    envs: *mut CINTEnvVars,
 ) {
-    let type_ijkl: i32 =
-        envs.li_ceil << 6_i32 | envs.lj_ceil << 4_i32 | envs.lk_ceil << 2_i32 | envs.ll_ceil;
+    let type_ijkl: i32 = (*envs).li_ceil << 6_i32
+        | (*envs).lj_ceil << 4_i32
+        | (*envs).lk_ceil << 2_i32
+        | (*envs).ll_ceil;
     match type_ijkl {
         0 => {
             _srg0_2d4d_0000(g, bc, envs);
@@ -5518,26 +5532,29 @@ pub unsafe extern "C" fn CINTsrg0_2e_2d4d_unrolled(
     }
     eprintln!(
         "Dimension error for CINTg0_2e_lj2d4d: iklj = {} {} {} {}",
-        envs.li_ceil, envs.lk_ceil, envs.ll_ceil, envs.lj_ceil
+        (*envs).li_ceil,
+        (*envs).lk_ceil,
+        (*envs).ll_ceil,
+        (*envs).lj_ceil
     );
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg0_2e_lj2d4d(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
+pub unsafe extern "C" fn CINTg0_2e_lj2d4d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     CINTg0_2e_2d(g, bc, envs);
     CINTg0_lj2d_4d(g, envs);
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg0_2e_kj2d4d(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
+pub unsafe extern "C" fn CINTg0_2e_kj2d4d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     CINTg0_2e_2d(g, bc, envs);
     CINTg0_kj2d_4d(g, envs);
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg0_2e_ik2d4d(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
+pub unsafe extern "C" fn CINTg0_2e_ik2d4d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     CINTg0_2e_2d(g, bc, envs);
     CINTg0_ik2d_4d(g, envs);
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg0_2e_il2d4d(g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
+pub unsafe extern "C" fn CINTg0_2e_il2d4d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     CINTg0_2e_2d(g, bc, envs);
     CINTg0_il2d_4d(g, envs);
 }
@@ -5547,27 +5564,27 @@ pub unsafe extern "C" fn CINTg0_2e(
     rij: *mut f64,
     rkl: *mut f64,
     cutoff: f64,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
 ) -> i32 {
     let mut irys: i32 = 0;
-    let nroots: i32 = envs.nrys_roots;
-    let aij: f64 = envs.ai[0_usize] + envs.aj[0_usize];
-    let akl: f64 = envs.ak[0_usize] + envs.al[0_usize];
+    let nroots: i32 = (*envs).nrys_roots;
+    let aij: f64 = (*envs).ai[0_usize] + (*envs).aj[0_usize];
+    let akl: f64 = (*envs).ak[0_usize] + (*envs).al[0_usize];
     let mut a0: f64 = 0.;
     let mut a1: f64 = 0.;
     let mut fac1: f64 = 0.;
     let mut x: f64 = 0.;
     let mut u: [f64; 32] = [0.; 32];
-    let w: *mut f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let w: *mut f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let xij_kl: f64 = *rij.offset(0_isize) - *rkl.offset(0_isize);
     let yij_kl: f64 = *rij.offset(1_isize) - *rkl.offset(1_isize);
     let zij_kl: f64 = *rij.offset(2_isize) - *rkl.offset(2_isize);
     let rr: f64 = xij_kl * xij_kl + yij_kl * yij_kl + zij_kl * zij_kl;
     a1 = aij * akl;
     a0 = a1 / (aij + akl);
-    fac1 = (a0 / (a1 * a1 * a1)).sqrt() * envs.fac[0_usize];
+    fac1 = (a0 / (a1 * a1 * a1)).sqrt() * (*envs).fac[0_usize];
     x = a0 * rr;
-    let omega: f64 = *(envs.env).offset(8_isize);
+    let omega: f64 = *((*envs).env).offset(8_isize);
     let mut theta: f64 = 0 as f64;
     if omega == 0.0f64 {
         CINTrys_roots(nroots, x, u.as_mut_ptr(), w);
@@ -5576,7 +5593,7 @@ pub unsafe extern "C" fn CINTg0_2e(
         if theta * x > cutoff || theta * x > 40_f64 {
             return 0_i32;
         }
-        let rorder: i32 = envs.rys_order;
+        let rorder: i32 = (*envs).rys_order;
         if rorder == nroots {
             CINTsr_rys_roots(nroots, x, (theta).sqrt(), u.as_mut_ptr(), w);
         } else {
@@ -5588,7 +5605,7 @@ pub unsafe extern "C" fn CINTg0_2e(
                 u.as_mut_ptr().offset(rorder as isize),
                 w.offset(rorder as isize),
             );
-            if envs.g_size == 2_i32 {
+            if (*envs).g_size == 2_i32 {
                 *g.offset(0_isize) = 1_f64;
                 *g.offset(1_isize) = 1_f64;
                 *g.offset(2_isize) = 1_f64;
@@ -5619,7 +5636,7 @@ pub unsafe extern "C" fn CINTg0_2e(
             irys;
         }
     }
-    if envs.g_size == 1_i32 {
+    if (*envs).g_size == 1_i32 {
         *g.offset(0_isize) = 1_f64;
         *g.offset(1_isize) = 1_f64;
         *g.offset(2_isize) *= fac1;
@@ -5631,12 +5648,12 @@ pub unsafe extern "C" fn CINTg0_2e(
     let mut tmp3: f64 = 0.;
     let mut tmp4: f64 = 0.;
     let mut tmp5: f64 = 0.;
-    let rijrx: f64 = *rij.offset(0_isize) - *(envs.rx_in_rijrx).offset(0_isize);
-    let rijry: f64 = *rij.offset(1_isize) - *(envs.rx_in_rijrx).offset(1_isize);
-    let rijrz: f64 = *rij.offset(2_isize) - *(envs.rx_in_rijrx).offset(2_isize);
-    let rklrx: f64 = *rkl.offset(0_isize) - *(envs.rx_in_rklrx).offset(0_isize);
-    let rklry: f64 = *rkl.offset(1_isize) - *(envs.rx_in_rklrx).offset(1_isize);
-    let rklrz: f64 = *rkl.offset(2_isize) - *(envs.rx_in_rklrx).offset(2_isize);
+    let rijrx: f64 = *rij.offset(0_isize) - *((*envs).rx_in_rijrx).offset(0_isize);
+    let rijry: f64 = *rij.offset(1_isize) - *((*envs).rx_in_rijrx).offset(1_isize);
+    let rijrz: f64 = *rij.offset(2_isize) - *((*envs).rx_in_rijrx).offset(2_isize);
+    let rklrx: f64 = *rkl.offset(0_isize) - *((*envs).rx_in_rklrx).offset(0_isize);
+    let rklry: f64 = *rkl.offset(1_isize) - *((*envs).rx_in_rklrx).offset(1_isize);
+    let rklrz: f64 = *rkl.offset(2_isize) - *((*envs).rx_in_rklrx).offset(2_isize);
     let mut bc: Rys2eT = Rys2eT {
         c00x: [0.; 32],
         c00y: [0.; 32],
@@ -5693,7 +5710,7 @@ impl G0_2d4d {
     /// `g` must point at a g-buffer of at least `envs.g_size` doubles and `envs`
     /// must be the fully initialised `CINTEnvVars` for this quartet, exactly as
     /// the previous transmuted function pointer required.
-    unsafe fn call(self, g: *mut f64, bc: &mut Rys2eT, envs: &mut CINTEnvVars) {
+    unsafe fn call(self, g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
         match self {
             G0_2d4d::Unrolled => CINTg0_2e_2d4d_unrolled(g, bc, envs),
             G0_2d4d::SrUnrolled => CINTsrg0_2e_2d4d_unrolled(g, bc, envs),
@@ -5712,7 +5729,7 @@ pub unsafe extern "C" fn CINTnabla1i_2e(
     lj: i32,
     lk: i32,
     ll: i32,
-    envs: &CINTEnvVars,
+    envs: *const CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -5720,18 +5737,18 @@ pub unsafe extern "C" fn CINTnabla1i_2e(
     let mut l: i32 = 0;
     let mut n: i32 = 0;
     let mut ptr: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let nroots: i32 = envs.nrys_roots;
-    let ai2: f64 = -2_f64 * envs.ai[0_usize];
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
+    let ai2: f64 = -2_f64 * (*envs).ai[0_usize];
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     let p1x: *const f64 = gx.offset(-(di as isize));
     let p1y: *const f64 = gy.offset(-(di as isize));
     let p1z: *const f64 = gz.offset(-(di as isize));
@@ -5789,7 +5806,7 @@ pub unsafe extern "C" fn CINTnabla1j_2e(
     lj: i32,
     lk: i32,
     ll: i32,
-    envs: &CINTEnvVars,
+    envs: *const CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -5797,18 +5814,18 @@ pub unsafe extern "C" fn CINTnabla1j_2e(
     let mut l: i32 = 0;
     let mut n: i32 = 0;
     let mut ptr: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let nroots: i32 = envs.nrys_roots;
-    let aj2: f64 = -2_f64 * envs.aj[0_usize];
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
+    let aj2: f64 = -2_f64 * (*envs).aj[0_usize];
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     let p1x: *const f64 = gx.offset(-(dj as isize));
     let p1y: *const f64 = gy.offset(-(dj as isize));
     let p1z: *const f64 = gz.offset(-(dj as isize));
@@ -5882,7 +5899,7 @@ pub unsafe extern "C" fn CINTnabla1k_2e(
     lj: i32,
     lk: i32,
     ll: i32,
-    envs: &CINTEnvVars,
+    envs: *const CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -5890,18 +5907,18 @@ pub unsafe extern "C" fn CINTnabla1k_2e(
     let mut l: i32 = 0;
     let mut n: i32 = 0;
     let mut ptr: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let nroots: i32 = envs.nrys_roots;
-    let ak2: f64 = -2_f64 * envs.ak[0_usize];
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
+    let ak2: f64 = -2_f64 * (*envs).ak[0_usize];
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     let p1x: *const f64 = gx.offset(-(dk as isize));
     let p1y: *const f64 = gy.offset(-(dk as isize));
     let p1z: *const f64 = gz.offset(-(dk as isize));
@@ -5965,7 +5982,7 @@ pub unsafe extern "C" fn CINTnabla1l_2e(
     lj: i32,
     lk: i32,
     ll: i32,
-    envs: &CINTEnvVars,
+    envs: *const CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -5973,18 +5990,18 @@ pub unsafe extern "C" fn CINTnabla1l_2e(
     let mut l: i32 = 0;
     let mut n: i32 = 0;
     let mut ptr: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let nroots: i32 = envs.nrys_roots;
-    let al2: f64 = -2_f64 * envs.al[0_usize];
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
+    let al2: f64 = -2_f64 * (*envs).al[0_usize];
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     let p1x: *const f64 = gx.offset(-(dl as isize));
     let p1y: *const f64 = gy.offset(-(dl as isize));
     let p1z: *const f64 = gz.offset(-(dl as isize));
@@ -6054,7 +6071,7 @@ pub unsafe extern "C" fn CINTx1i_2e(
     lj: i32,
     lk: i32,
     ll: i32,
-    envs: &CINTEnvVars,
+    envs: *const CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -6062,17 +6079,17 @@ pub unsafe extern "C" fn CINTx1i_2e(
     let mut l: i32 = 0;
     let mut n: i32 = 0;
     let mut ptr: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let nroots: i32 = envs.nrys_roots;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     let p1x: *const f64 = gx.offset(di as isize);
     let p1y: *const f64 = gy.offset(di as isize);
     let p1z: *const f64 = gz.offset(di as isize);
@@ -6119,7 +6136,7 @@ pub unsafe extern "C" fn CINTx1j_2e(
     lj: i32,
     lk: i32,
     ll: i32,
-    envs: &CINTEnvVars,
+    envs: *const CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -6127,17 +6144,17 @@ pub unsafe extern "C" fn CINTx1j_2e(
     let mut l: i32 = 0;
     let mut n: i32 = 0;
     let mut ptr: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let nroots: i32 = envs.nrys_roots;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     let p1x: *const f64 = gx.offset(dj as isize);
     let p1y: *const f64 = gy.offset(dj as isize);
     let p1z: *const f64 = gz.offset(dj as isize);
@@ -6184,7 +6201,7 @@ pub unsafe extern "C" fn CINTx1k_2e(
     lj: i32,
     lk: i32,
     ll: i32,
-    envs: &CINTEnvVars,
+    envs: *const CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -6192,17 +6209,17 @@ pub unsafe extern "C" fn CINTx1k_2e(
     let mut l: i32 = 0;
     let mut n: i32 = 0;
     let mut ptr: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let nroots: i32 = envs.nrys_roots;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     let p1x: *const f64 = gx.offset(dk as isize);
     let p1y: *const f64 = gy.offset(dk as isize);
     let p1z: *const f64 = gz.offset(dk as isize);
@@ -6249,7 +6266,7 @@ pub unsafe extern "C" fn CINTx1l_2e(
     lj: i32,
     lk: i32,
     ll: i32,
-    envs: &CINTEnvVars,
+    envs: *const CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -6257,17 +6274,17 @@ pub unsafe extern "C" fn CINTx1l_2e(
     let mut l: i32 = 0;
     let mut n: i32 = 0;
     let mut ptr: i32 = 0;
-    let di: i32 = envs.g_stride_i;
-    let dk: i32 = envs.g_stride_k;
-    let dl: i32 = envs.g_stride_l;
-    let dj: i32 = envs.g_stride_j;
-    let nroots: i32 = envs.nrys_roots;
+    let di: i32 = (*envs).g_stride_i;
+    let dk: i32 = (*envs).g_stride_k;
+    let dl: i32 = (*envs).g_stride_l;
+    let dj: i32 = (*envs).g_stride_j;
+    let nroots: i32 = (*envs).nrys_roots;
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     let p1x: *const f64 = gx.offset(dl as isize);
     let p1y: *const f64 = gy.offset(dl as isize);
     let p1z: *const f64 = gz.offset(dl as isize);

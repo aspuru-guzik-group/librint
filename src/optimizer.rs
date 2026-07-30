@@ -325,7 +325,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
         ::core::mem::transmute::<
             Option<
                 unsafe extern "C" fn(
-                    &mut CINTEnvVars,
+                    *mut CINTEnvVars,
                     &[i32; 8],
                     *mut i32,
                     *mut i32,
@@ -339,7 +339,7 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
         >(Some(
             CINTinit_int1e_EnvVars
                 as unsafe extern "C" fn(
-                    &mut CINTEnvVars,
+                    *mut CINTEnvVars,
                     &[i32; 8],
                     *mut i32,
                     *mut i32,
@@ -350,10 +350,10 @@ pub unsafe extern "C" fn CINTall_1e_optimizer(
                 ) -> (),
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut i32, &mut CINTEnvVars) -> ()>,
+            Option<unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> ()>,
             Option<unsafe extern "C" fn() -> ()>,
         >(Some(
-            CINTg1e_index_xyz as unsafe extern "C" fn(*mut i32, &mut CINTEnvVars) -> (),
+            CINTg1e_index_xyz as unsafe extern "C" fn(*mut i32, *mut CINTEnvVars) -> (),
         )),
         2_i32,
         15_i32,
@@ -383,7 +383,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
         ::core::mem::transmute::<
             Option<
                 unsafe extern "C" fn(
-                    &mut CINTEnvVars,
+                    *mut CINTEnvVars,
                     &[i32; 8],
                     *mut i32,
                     *mut i32,
@@ -397,7 +397,7 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
         >(Some(
             CINTinit_int2e_EnvVars
                 as unsafe extern "C" fn(
-                    &mut CINTEnvVars,
+                    *mut CINTEnvVars,
                     &[i32; 8],
                     *mut i32,
                     *mut i32,
@@ -408,10 +408,10 @@ pub unsafe extern "C" fn CINTall_2e_optimizer(
                 ) -> (),
         )),
         ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut i32, &CINTEnvVars) -> ()>,
+            Option<unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> ()>,
             Option<unsafe extern "C" fn() -> ()>,
         >(Some(
-            CINTg2e_index_xyz as unsafe extern "C" fn(*mut i32, &CINTEnvVars) -> (),
+            CINTg2e_index_xyz as unsafe extern "C" fn(*mut i32, *const CINTEnvVars) -> (),
         )),
         4_i32,
         6_i32,

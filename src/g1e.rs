@@ -26,7 +26,7 @@ fn SQUARE(r: *mut f64) -> f64 {
 
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
     ng: &[i32; 8],
     shls: *mut i32,
     atm: *mut i32,
@@ -35,73 +35,79 @@ pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
     nbas: i32,
     env: *mut f64,
 ) {
-    envs.natm = natm;
-    envs.nbas = nbas;
-    envs.atm = atm;
-    envs.bas = bas;
-    envs.env = env;
-    envs.shls = shls;
+    (*envs).natm = natm;
+    (*envs).nbas = nbas;
+    (*envs).atm = atm;
+    (*envs).bas = bas;
+    (*envs).env = env;
+    (*envs).shls = shls;
     let i_sh: i32 = *shls.offset(0_isize);
     let j_sh: i32 = *shls.offset(1_isize);
-    envs.i_l = *bas.offset((8_i32 * i_sh + 1_i32) as isize);
-    envs.j_l = *bas.offset((8_i32 * j_sh + 1_i32) as isize);
-    envs.x_ctr[0_i32 as usize] = *bas.offset((8_i32 * i_sh + 3_i32) as isize);
-    envs.x_ctr[1_i32 as usize] = *bas.offset((8_i32 * j_sh + 3_i32) as isize);
-    envs.nfi = (envs.i_l + 1_i32) * (envs.i_l + 2_i32) / 2_i32;
-    envs.nfj = (envs.j_l + 1_i32) * (envs.j_l + 2_i32) / 2_i32;
-    envs.nf = envs.nfi * envs.nfj;
-    envs.common_factor = 1_f64;
+    (*envs).i_l = *bas.offset((8_i32 * i_sh + 1_i32) as isize);
+    (*envs).j_l = *bas.offset((8_i32 * j_sh + 1_i32) as isize);
+    (*envs).x_ctr[0_i32 as usize] = *bas.offset((8_i32 * i_sh + 3_i32) as isize);
+    (*envs).x_ctr[1_i32 as usize] = *bas.offset((8_i32 * j_sh + 3_i32) as isize);
+    (*envs).nfi = ((*envs).i_l + 1_i32) * ((*envs).i_l + 2_i32) / 2_i32;
+    (*envs).nfj = ((*envs).j_l + 1_i32) * ((*envs).j_l + 2_i32) / 2_i32;
+    (*envs).nf = (*envs).nfi * (*envs).nfj;
+    (*envs).common_factor = 1_f64;
     if *env.offset(0_isize) == 0 as f64 {
-        envs.expcutoff = 60_f64;
+        (*envs).expcutoff = 60_f64;
     } else {
-        envs.expcutoff = MAX(40_f64, *env.offset(0_isize));
+        (*envs).expcutoff = MAX(40_f64, *env.offset(0_isize));
     }
-    envs.li_ceil = envs.i_l + ng[0];
-    envs.lj_ceil = envs.j_l + ng[1];
-    envs.ri = env.offset(
+    (*envs).li_ceil = (*envs).i_l + ng[0];
+    (*envs).lj_ceil = (*envs).j_l + ng[1];
+    (*envs).ri = env.offset(
         *atm.offset((6_i32 * *bas.offset((8_i32 * i_sh) as isize) + 1_i32) as isize) as isize,
     );
-    envs.rj = env.offset(
+    (*envs).rj = env.offset(
         *atm.offset((6_i32 * *bas.offset((8_i32 * j_sh) as isize) + 1_i32) as isize) as isize,
     );
-    envs.gbits = ng[4];
-    envs.ncomp_e1 = ng[5];
-    envs.ncomp_tensor = ng[7];
+    (*envs).gbits = ng[4];
+    (*envs).ncomp_e1 = ng[5];
+    (*envs).ncomp_tensor = ng[7];
     if ng[6] > 0_i32 {
-        envs.nrys_roots = ng[6];
+        (*envs).nrys_roots = ng[6];
     } else {
-        envs.nrys_roots = (envs.li_ceil + envs.lj_ceil) / 2_i32 + 1_i32;
+        (*envs).nrys_roots = ((*envs).li_ceil + (*envs).lj_ceil) / 2_i32 + 1_i32;
     }
     let mut dli: i32 = 0;
     let mut dlj: i32 = 0;
-    let ibase: i32 = (envs.li_ceil > envs.lj_ceil) as i32;
+    let ibase: i32 = ((*envs).li_ceil > (*envs).lj_ceil) as i32;
     if ibase != 0 {
-        dli = envs.li_ceil + envs.lj_ceil + 1_i32;
-        dlj = envs.lj_ceil + 1_i32;
-        envs.rirj[0_i32 as usize] = *(envs.ri).offset(0_isize) - *(envs.rj).offset(0_isize);
-        envs.rirj[1_i32 as usize] = *(envs.ri).offset(1_isize) - *(envs.rj).offset(1_isize);
-        envs.rirj[2_i32 as usize] = *(envs.ri).offset(2_isize) - *(envs.rj).offset(2_isize);
+        dli = (*envs).li_ceil + (*envs).lj_ceil + 1_i32;
+        dlj = (*envs).lj_ceil + 1_i32;
+        (*envs).rirj[0_i32 as usize] =
+            *((*envs).ri).offset(0_isize) - *((*envs).rj).offset(0_isize);
+        (*envs).rirj[1_i32 as usize] =
+            *((*envs).ri).offset(1_isize) - *((*envs).rj).offset(1_isize);
+        (*envs).rirj[2_i32 as usize] =
+            *((*envs).ri).offset(2_isize) - *((*envs).rj).offset(2_isize);
     } else {
-        dli = envs.li_ceil + 1_i32;
-        dlj = envs.li_ceil + envs.lj_ceil + 1_i32;
-        envs.rirj[0_i32 as usize] = *(envs.rj).offset(0_isize) - *(envs.ri).offset(0_isize);
-        envs.rirj[1_i32 as usize] = *(envs.rj).offset(1_isize) - *(envs.ri).offset(1_isize);
-        envs.rirj[2_i32 as usize] = *(envs.rj).offset(2_isize) - *(envs.ri).offset(2_isize);
+        dli = (*envs).li_ceil + 1_i32;
+        dlj = (*envs).li_ceil + (*envs).lj_ceil + 1_i32;
+        (*envs).rirj[0_i32 as usize] =
+            *((*envs).rj).offset(0_isize) - *((*envs).ri).offset(0_isize);
+        (*envs).rirj[1_i32 as usize] =
+            *((*envs).rj).offset(1_isize) - *((*envs).ri).offset(1_isize);
+        (*envs).rirj[2_i32 as usize] =
+            *((*envs).rj).offset(2_isize) - *((*envs).ri).offset(2_isize);
     }
-    envs.g_stride_i = envs.nrys_roots;
-    envs.g_stride_j = envs.nrys_roots * dli;
-    envs.g_size = envs.nrys_roots * dli * dlj;
-    envs.g_stride_k = envs.g_size;
-    envs.g_stride_l = envs.g_size;
+    (*envs).g_stride_i = (*envs).nrys_roots;
+    (*envs).g_stride_j = (*envs).nrys_roots * dli;
+    (*envs).g_size = (*envs).nrys_roots * dli * dlj;
+    (*envs).g_stride_k = (*envs).g_size;
+    (*envs).g_stride_l = (*envs).g_size;
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg1e_index_xyz(idx: *mut i32, envs: &mut CINTEnvVars) {
-    let i_l: i32 = envs.i_l;
-    let j_l: i32 = envs.j_l;
-    let nfi: i32 = envs.nfi;
-    let nfj: i32 = envs.nfj;
-    let di: i32 = envs.g_stride_i;
-    let dj: i32 = envs.g_stride_j;
+pub unsafe extern "C" fn CINTg1e_index_xyz(idx: *mut i32, envs: *mut CINTEnvVars) {
+    let i_l: i32 = (*envs).i_l;
+    let j_l: i32 = (*envs).j_l;
+    let nfi: i32 = (*envs).nfi;
+    let nfj: i32 = (*envs).nfj;
+    let di: i32 = (*envs).g_stride_i;
+    let dj: i32 = (*envs).g_stride_j;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut n: i32 = 0;
@@ -120,8 +126,8 @@ pub unsafe extern "C" fn CINTg1e_index_xyz(idx: *mut i32, envs: &mut CINTEnvVars
     CINTcart_comp(i_nx.as_mut_ptr(), i_ny.as_mut_ptr(), i_nz.as_mut_ptr(), i_l);
     CINTcart_comp(j_nx.as_mut_ptr(), j_ny.as_mut_ptr(), j_nz.as_mut_ptr(), j_l);
     ofx = 0_i32;
-    ofy = envs.g_size;
-    ofz = envs.g_size * 2_i32;
+    ofy = (*envs).g_size;
+    ofz = (*envs).g_size * 2_i32;
     n = 0_i32;
     j = 0_i32;
     while j < nfj {
@@ -142,21 +148,22 @@ pub unsafe extern "C" fn CINTg1e_index_xyz(idx: *mut i32, envs: &mut CINTEnvVars
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg1e_ovlp(g: *mut f64, envs: &mut CINTEnvVars) -> i32 {
+pub unsafe extern "C" fn CINTg1e_ovlp(g: *mut f64, envs: *mut CINTEnvVars) -> i32 {
     let gx: *mut f64 = g;
-    let gy: *mut f64 = g.offset(envs.g_size as isize);
-    let gz: *mut f64 = g.offset((envs.g_size * 2_i32) as isize);
-    let aij: f64 = envs.ai[0_usize] + envs.aj[0_usize];
+    let gy: *mut f64 = g.offset((*envs).g_size as isize);
+    let gz: *mut f64 = g.offset(((*envs).g_size * 2_i32) as isize);
+    let aij: f64 = (*envs).ai[0_usize] + (*envs).aj[0_usize];
     *gx.offset(0_isize) = 1_f64;
     *gy.offset(0_isize) = 1_f64;
-    *gz.offset(0_isize) = envs.fac[0_usize] * 1.772_453_850_905_516_f64 * 3.141_592_653_589_793_f64
-        / (aij * (aij).sqrt());
-    let nmax: i32 = envs.li_ceil + envs.lj_ceil;
+    *gz.offset(0_isize) =
+        (*envs).fac[0_usize] * 1.772_453_850_905_516_f64 * 3.141_592_653_589_793_f64
+            / (aij * (aij).sqrt());
+    let nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
     if nmax == 0_i32 {
         return 1_i32;
     }
-    let rij: *mut f64 = (envs.rij).as_mut_ptr();
-    let rirj: *mut f64 = (envs.rirj).as_mut_ptr();
+    let rij: *mut f64 = ((*envs).rij).as_mut_ptr();
+    let rirj: *mut f64 = ((*envs).rirj).as_mut_ptr();
     let mut lj: i32 = 0;
     let mut di: i32 = 0;
     let mut dj: i32 = 0;
@@ -165,16 +172,16 @@ pub unsafe extern "C" fn CINTg1e_ovlp(g: *mut f64, envs: &mut CINTEnvVars) -> i3
     let mut n: i32 = 0;
     let mut ptr: i32 = 0;
     let mut rx: *mut f64 = std::ptr::null_mut::<f64>();
-    if envs.li_ceil > envs.lj_ceil {
-        lj = envs.lj_ceil;
-        di = envs.g_stride_i;
-        dj = envs.g_stride_j;
-        rx = envs.ri;
+    if (*envs).li_ceil > (*envs).lj_ceil {
+        lj = (*envs).lj_ceil;
+        di = (*envs).g_stride_i;
+        dj = (*envs).g_stride_j;
+        rx = (*envs).ri;
     } else {
-        lj = envs.li_ceil;
-        di = envs.g_stride_j;
-        dj = envs.g_stride_i;
-        rx = envs.rj;
+        lj = (*envs).li_ceil;
+        di = (*envs).g_stride_j;
+        dj = (*envs).g_stride_i;
+        rx = (*envs).rj;
     }
     let mut rijrx: [f64; 3] = [0.; 3];
     rijrx[0_i32 as usize] = *rij.offset(0_isize) - *rx.offset(0_isize);
@@ -236,14 +243,14 @@ pub unsafe extern "C" fn CINTnuc_mod(aij: f64, nuc_id: i32, atm: *mut i32, env: 
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTg1e_nuc(g: *mut f64, envs: &mut CINTEnvVars, nuc_id: i32) -> i32 {
-    let nrys_roots: i32 = envs.nrys_roots;
-    let atm: *mut i32 = envs.atm;
-    let env: *mut f64 = envs.env;
-    let rij: *mut f64 = (envs.rij).as_mut_ptr();
+pub unsafe extern "C" fn CINTg1e_nuc(g: *mut f64, envs: *mut CINTEnvVars, nuc_id: i32) -> i32 {
+    let nrys_roots: i32 = (*envs).nrys_roots;
+    let atm: *mut i32 = (*envs).atm;
+    let env: *mut f64 = (*envs).env;
+    let rij: *mut f64 = ((*envs).rij).as_mut_ptr();
     let gx: *mut f64 = g;
-    let gy: *mut f64 = g.offset(envs.g_size as isize);
-    let gz: *mut f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *mut f64 = g.offset((*envs).g_size as isize);
+    let gz: *mut f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let mut u: [f64; 32] = [0.; 32];
     let w: *mut f64 = gz;
     let mut cr: *mut f64 = std::ptr::null_mut::<f64>();
@@ -253,16 +260,16 @@ pub unsafe extern "C" fn CINTg1e_nuc(g: *mut f64, envs: &mut CINTEnvVars, nuc_id
     let mut crij: [f64; 3] = [0.; 3];
     let mut x: f64 = 0.;
     let mut fac1: f64 = 0.;
-    let aij: f64 = envs.ai[0_usize] + envs.aj[0_usize];
+    let aij: f64 = (*envs).ai[0_usize] + (*envs).aj[0_usize];
     let tau: f64 = CINTnuc_mod(aij, nuc_id, atm, env);
     if nuc_id < 0_i32 {
-        fac1 = 2_f64 * 3.141_592_653_589_793_f64 * envs.fac[0_usize] * tau / aij;
+        fac1 = 2_f64 * 3.141_592_653_589_793_f64 * (*envs).fac[0_usize] * tau / aij;
         cr = env.offset(4_isize);
     } else if *atm.offset((6_i32 * nuc_id + 2_i32) as isize) == 3_i32 {
         fac1 = 2_f64
             * 3.141_592_653_589_793_f64
             * -*env.offset(*atm.offset((4_i32 + nuc_id * 6_i32) as isize) as isize)
-            * envs.fac[0_usize]
+            * (*envs).fac[0_usize]
             * tau
             / aij;
         cr = env.offset(*atm.offset((6_i32 * nuc_id + 1_i32) as isize) as isize);
@@ -270,7 +277,7 @@ pub unsafe extern "C" fn CINTg1e_nuc(g: *mut f64, envs: &mut CINTEnvVars, nuc_id
         fac1 = 2_f64
             * 3.141_592_653_589_793_f64
             * -(*atm.offset((nuc_id * 6_i32) as isize)).abs() as f64
-            * envs.fac[0_usize]
+            * (*envs).fac[0_usize]
             * tau
             / aij;
         cr = env.offset(*atm.offset((6_i32 * nuc_id + 1_i32) as isize) as isize);
@@ -288,7 +295,7 @@ pub unsafe extern "C" fn CINTg1e_nuc(g: *mut f64, envs: &mut CINTEnvVars, nuc_id
         i += 1;
         i;
     }
-    let nmax: i32 = envs.li_ceil + envs.lj_ceil;
+    let nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
     if nmax == 0_i32 {
         return 1_i32;
     }
@@ -305,16 +312,16 @@ pub unsafe extern "C" fn CINTg1e_nuc(g: *mut f64, envs: &mut CINTEnvVars, nuc_id
     let mut di: i32 = 0;
     let mut dj: i32 = 0;
     let mut rx: *mut f64 = std::ptr::null_mut::<f64>();
-    if envs.li_ceil > envs.lj_ceil {
-        lj = envs.lj_ceil;
-        di = envs.g_stride_i;
-        dj = envs.g_stride_j;
-        rx = envs.ri;
+    if (*envs).li_ceil > (*envs).lj_ceil {
+        lj = (*envs).lj_ceil;
+        di = (*envs).g_stride_i;
+        dj = (*envs).g_stride_j;
+        rx = (*envs).ri;
     } else {
-        lj = envs.li_ceil;
-        di = envs.g_stride_j;
-        dj = envs.g_stride_i;
-        rx = envs.rj;
+        lj = (*envs).li_ceil;
+        di = (*envs).g_stride_j;
+        dj = (*envs).g_stride_i;
+        rx = (*envs).rj;
     }
     let rijrx: f64 = *rij.offset(0_isize) - *rx.offset(0_isize);
     let rijry: f64 = *rij.offset(1_isize) - *rx.offset(1_isize);
@@ -355,9 +362,9 @@ pub unsafe extern "C" fn CINTg1e_nuc(g: *mut f64, envs: &mut CINTEnvVars, nuc_id
         n += 1;
         n;
     }
-    let rirjx: f64 = envs.rirj[0_usize];
-    let rirjy: f64 = envs.rirj[1_usize];
-    let rirjz: f64 = envs.rirj[2_usize];
+    let rirjx: f64 = (*envs).rirj[0_usize];
+    let rirjy: f64 = (*envs).rirj[1_usize];
+    let rirjz: f64 = (*envs).rirj[2_usize];
     j = 1_i32;
     while j <= lj {
         p0x = gx.offset((j * dj) as isize);
@@ -397,21 +404,21 @@ pub unsafe extern "C" fn CINTnabla1i_1e(
     li: i32,
     lj: i32,
     lk: i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
 ) {
-    let dj: i32 = envs.g_stride_j;
-    let dk: i32 = envs.g_stride_k;
-    let ai2: f64 = -2_f64 * envs.ai[0_usize];
+    let dj: i32 = (*envs).g_stride_j;
+    let dk: i32 = (*envs).g_stride_k;
+    let ai2: f64 = -2_f64 * (*envs).ai[0_usize];
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut ptr: i32 = 0;
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     k = 0_i32;
     while k <= lk {
         j = 0_i32;
@@ -445,21 +452,21 @@ pub unsafe extern "C" fn CINTnabla1j_1e(
     li: i32,
     lj: i32,
     lk: i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
 ) {
-    let dj: i32 = envs.g_stride_j;
-    let dk: i32 = envs.g_stride_k;
-    let aj2: f64 = -2_f64 * envs.aj[0_usize];
+    let dj: i32 = (*envs).g_stride_j;
+    let dk: i32 = (*envs).g_stride_k;
+    let aj2: f64 = -2_f64 * (*envs).aj[0_usize];
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut ptr: i32 = 0;
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     k = 0_i32;
     while k <= lk {
         ptr = dk * k;
@@ -499,21 +506,21 @@ pub unsafe extern "C" fn CINTnabla1k_1e(
     li: i32,
     lj: i32,
     lk: i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
 ) {
-    let dj: i32 = envs.g_stride_j;
-    let dk: i32 = envs.g_stride_k;
-    let ak2: f64 = -2_f64 * envs.ak[0_usize];
+    let dj: i32 = (*envs).g_stride_j;
+    let dk: i32 = (*envs).g_stride_k;
+    let ak2: f64 = -2_f64 * (*envs).ak[0_usize];
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut ptr: i32 = 0;
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     j = 0_i32;
     while j <= lj {
         ptr = dj * j;
@@ -559,20 +566,20 @@ pub unsafe extern "C" fn CINTx1i_1e(
     li: i32,
     lj: i32,
     lk: i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut ptr: i32 = 0;
-    let dj: i32 = envs.g_stride_j;
-    let dk: i32 = envs.g_stride_k;
+    let dj: i32 = (*envs).g_stride_j;
+    let dk: i32 = (*envs).g_stride_k;
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     k = 0_i32;
     while k <= lk {
         j = 0_i32;
@@ -604,20 +611,20 @@ pub unsafe extern "C" fn CINTx1j_1e(
     li: i32,
     lj: i32,
     lk: i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut ptr: i32 = 0;
-    let dj: i32 = envs.g_stride_j;
-    let dk: i32 = envs.g_stride_k;
+    let dj: i32 = (*envs).g_stride_j;
+    let dk: i32 = (*envs).g_stride_k;
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     k = 0_i32;
     while k <= lk {
         j = 0_i32;
@@ -649,20 +656,20 @@ pub unsafe extern "C" fn CINTx1k_1e(
     li: i32,
     lj: i32,
     lk: i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut ptr: i32 = 0;
-    let dj: i32 = envs.g_stride_j;
-    let dk: i32 = envs.g_stride_k;
+    let dj: i32 = (*envs).g_stride_j;
+    let dk: i32 = (*envs).g_stride_k;
     let gx: *const f64 = g;
-    let gy: *const f64 = g.offset(envs.g_size as isize);
-    let gz: *const f64 = g.offset((envs.g_size * 2_i32) as isize);
+    let gy: *const f64 = g.offset((*envs).g_size as isize);
+    let gz: *const f64 = g.offset(((*envs).g_size * 2_i32) as isize);
     let fx: *mut f64 = f;
-    let fy: *mut f64 = f.offset(envs.g_size as isize);
-    let fz: *mut f64 = f.offset((envs.g_size * 2_i32) as isize);
+    let fy: *mut f64 = f.offset((*envs).g_size as isize);
+    let fz: *mut f64 = f.offset(((*envs).g_size * 2_i32) as isize);
     k = 0_i32;
     while k <= lk {
         j = 0_i32;

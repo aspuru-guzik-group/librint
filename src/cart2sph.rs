@@ -90145,20 +90145,20 @@ pub unsafe extern "C" fn c2s_sph_1e(
     opij: *mut f64,
     mut gctr: *mut f64,
     dims: *mut i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
 ) {
-    let i_l: i32 = envs.i_l;
-    let j_l: i32 = envs.j_l;
-    let i_ctr: i32 = envs.x_ctr[0_usize];
-    let j_ctr: i32 = envs.x_ctr[1_usize];
+    let i_l: i32 = (*envs).i_l;
+    let j_l: i32 = (*envs).j_l;
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
     let di: i32 = i_l * 2_i32 + 1_i32;
     let dj: i32 = j_l * 2_i32 + 1_i32;
     let ni: i32 = *dims.offset(0_isize);
     let nj: i32 = *dims.offset(1_isize);
     let ofj: i32 = ni * dj;
-    let nfi: i32 = envs.nfi;
-    let nf: i32 = envs.nf;
+    let nfi: i32 = (*envs).nfi;
+    let nf: i32 = (*envs).nf;
     let mut ic: i32 = 0;
     let mut jc: i32 = 0;
     let buflen: i32 = nfi * dj;
@@ -90197,22 +90197,22 @@ pub unsafe extern "C" fn c2s_sph_1e(
 //     mut out: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
-//     let mut ngrids: i32 = envs.c2rust_unnamed_0.ngrids;
-//     let mut i_l: i32 = envs.i_l;
-//     let mut j_l: i32 = envs.j_l;
-//     let mut i_ctr: i32 = envs.x_ctr[0 as usize];
-//     let mut j_ctr: i32 = envs.x_ctr[1 as usize];
+//     let mut ngrids: i32 = (*envs).c2rust_unnamed_0.ngrids;
+//     let mut i_l: i32 = (*envs).i_l;
+//     let mut j_l: i32 = (*envs).j_l;
+//     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+//     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
 //     let mut di: i32 = i_l * 2 as i32 + 1 as i32;
 //     let mut dj: i32 = j_l * 2 as i32 + 1 as i32;
 //     let mut ni: i32 = *dims.offset(0 as isize);
 //     let mut nj: i32 = *dims.offset(1 as isize);
 //     let mut Ng: u64 = *dims.offset(2 as isize) as u64;
 //     let mut ofj: i32 = ni * dj;
-//     let mut nfi: i32 = envs.nfi;
-//     let mut nf: i32 = envs.nf;
+//     let mut nfi: i32 = (*envs).nfi;
+//     let mut nf: i32 = (*envs).nf;
 //     let mut ic: i32 = 0;
 //     let mut jc: i32 = 0;
 //     let mut grids_offset: i32 = 0;
@@ -90271,18 +90271,18 @@ pub unsafe extern "C" fn c2s_sph_1e(
 //     mut out: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
-//     let mut ngrids: i32 = envs.c2rust_unnamed_0.ngrids;
-//     let mut i_ctr: i32 = envs.x_ctr[0 as usize];
-//     let mut j_ctr: i32 = envs.x_ctr[1 as usize];
+//     let mut ngrids: i32 = (*envs).c2rust_unnamed_0.ngrids;
+//     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+//     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
 //     let mut ni: i32 = *dims.offset(0 as isize);
 //     let mut nj: i32 = *dims.offset(1 as isize);
 //     let mut Ng: u64 = *dims.offset(2 as isize) as u64;
-//     let mut nfi: i32 = envs.nfi;
-//     let mut nfj: i32 = envs.nfj;
-//     let mut nf: i32 = envs.nf;
+//     let mut nfi: i32 = (*envs).nfi;
+//     let mut nfj: i32 = (*envs).nfj;
+//     let mut nf: i32 = (*envs).nf;
 //     let mut ofj: i32 = ni * nfj;
 //     let mut ic: i32 = 0;
 //     let mut jc: i32 = 0;
@@ -90321,17 +90321,17 @@ pub unsafe extern "C" fn c2s_sph_2e1(
     out: *mut f64,
     mut gctr: *mut f64,
     dims: *mut i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
     mut cache: *mut f64,
 ) {
-    let i_l: i32 = envs.i_l;
-    let j_l: i32 = envs.j_l;
-    let k_l: i32 = envs.k_l;
-    let l_l: i32 = envs.l_l;
-    let i_ctr: i32 = envs.x_ctr[0_usize];
-    let j_ctr: i32 = envs.x_ctr[1_usize];
-    let k_ctr: i32 = envs.x_ctr[2_usize];
-    let l_ctr: i32 = envs.x_ctr[3_usize];
+    let i_l: i32 = (*envs).i_l;
+    let j_l: i32 = (*envs).j_l;
+    let k_l: i32 = (*envs).k_l;
+    let l_l: i32 = (*envs).l_l;
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
+    let k_ctr: i32 = (*envs).x_ctr[2_usize];
+    let l_ctr: i32 = (*envs).x_ctr[3_usize];
     let di: i32 = i_l * 2_i32 + 1_i32;
     let dj: i32 = j_l * 2_i32 + 1_i32;
     let dk: i32 = k_l * 2_i32 + 1_i32;
@@ -90340,13 +90340,13 @@ pub unsafe extern "C" fn c2s_sph_2e1(
     let nj: i32 = *dims.offset(1_isize);
     let nk: i32 = *dims.offset(2_isize);
     let nl: i32 = *dims.offset(3_isize);
-    let nfi: i32 = envs.nfi;
-    let nfk: i32 = envs.c2rust_unnamed.nfk;
-    let nfl: i32 = envs.c2rust_unnamed_0.nfl;
+    let nfi: i32 = (*envs).nfi;
+    let nfk: i32 = (*envs).c2rust_unnamed.nfk;
+    let nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
     let nfik: i32 = nfi * nfk;
     let nfikl: i32 = nfik * nfl;
     let dlj: i32 = dl * dj;
-    let nf: i32 = envs.nf;
+    let nf: i32 = (*envs).nf;
     let ofj: i32 = ni * dj;
     let ofk: i32 = ni * nj * dk;
     let ofl: i32 = ni * nj * nk * dl;
@@ -90405,30 +90405,30 @@ pub unsafe extern "C" fn c2s_sph_2e1(
 //     mut opij: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
-//     let mut shls: *mut i32 = envs.shls;
-//     let mut bas: *mut i32 = envs.bas;
+//     let mut shls: *mut i32 = (*envs).shls;
+//     let mut bas: *mut i32 = (*envs).bas;
 //     let mut i_sh: i32 = *shls.offset(0 as isize);
 //     let mut j_sh: i32 = *shls.offset(1 as isize);
-//     let mut i_l: i32 = envs.i_l;
-//     let mut j_l: i32 = envs.j_l;
+//     let mut i_l: i32 = (*envs).i_l;
+//     let mut j_l: i32 = (*envs).j_l;
 //     let mut i_kp: i32 = *bas
 //         .offset((8 as i32 * i_sh + 4 as i32) as isize);
 //     let mut j_kp: i32 = *bas
 //         .offset((8 as i32 * j_sh + 4 as i32) as isize);
-//     let mut i_ctr: i32 = envs.x_ctr[0 as usize];
-//     let mut j_ctr: i32 = envs.x_ctr[1 as usize];
-//     let mut k_ctr: i32 = envs.x_ctr[2 as usize];
-//     let mut l_ctr: i32 = envs.x_ctr[3 as usize];
+//     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+//     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
+//     let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
+//     let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
 //     let mut di: i32 = _len_spinor(i_kp, i_l);
 //     let mut dj: i32 = _len_spinor(j_kp, j_l);
-//     let mut nfj: i32 = envs.nfj;
-//     let mut nfk: i32 = envs.c2rust_unnamed.nfk;
-//     let mut nfl: i32 = envs.c2rust_unnamed_0.nfl;
+//     let mut nfj: i32 = (*envs).nfj;
+//     let mut nfk: i32 = (*envs).c2rust_unnamed.nfk;
+//     let mut nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
 //     let mut nf2j: i32 = nfj + nfj;
-//     let mut nf: i32 = envs.nf;
+//     let mut nf: i32 = (*envs).nf;
 //     let mut no: i32 = di * nfk * nfl * dj;
 //     let mut d_i: i32 = di * nfk * nfl;
 //     let mut d_j: i32 = nfk * nfl * nfj;
@@ -90469,30 +90469,30 @@ pub unsafe extern "C" fn c2s_sph_2e1(
 //     mut opij: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
-//     let mut shls: *mut i32 = envs.shls;
-//     let mut bas: *mut i32 = envs.bas;
+//     let mut shls: *mut i32 = (*envs).shls;
+//     let mut bas: *mut i32 = (*envs).bas;
 //     let mut i_sh: i32 = *shls.offset(0 as isize);
 //     let mut j_sh: i32 = *shls.offset(1 as isize);
-//     let mut i_l: i32 = envs.i_l;
-//     let mut j_l: i32 = envs.j_l;
+//     let mut i_l: i32 = (*envs).i_l;
+//     let mut j_l: i32 = (*envs).j_l;
 //     let mut i_kp: i32 = *bas
 //         .offset((8 as i32 * i_sh + 4 as i32) as isize);
 //     let mut j_kp: i32 = *bas
 //         .offset((8 as i32 * j_sh + 4 as i32) as isize);
-//     let mut i_ctr: i32 = envs.x_ctr[0 as usize];
-//     let mut j_ctr: i32 = envs.x_ctr[1 as usize];
-//     let mut k_ctr: i32 = envs.x_ctr[2 as usize];
-//     let mut l_ctr: i32 = envs.x_ctr[3 as usize];
+//     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+//     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
+//     let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
+//     let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
 //     let mut di: i32 = _len_spinor(i_kp, i_l);
 //     let mut dj: i32 = _len_spinor(j_kp, j_l);
-//     let mut nfj: i32 = envs.nfj;
-//     let mut nfk: i32 = envs.c2rust_unnamed.nfk;
-//     let mut nfl: i32 = envs.c2rust_unnamed_0.nfl;
+//     let mut nfj: i32 = (*envs).nfj;
+//     let mut nfk: i32 = (*envs).c2rust_unnamed.nfk;
+//     let mut nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
 //     let mut nf2j: i32 = nfj + nfj;
-//     let mut nf: i32 = envs.nf;
+//     let mut nf: i32 = (*envs).nf;
 //     let mut no: i32 = di * nfk * nfl * dj;
 //     let mut d_i: i32 = di * nfk * nfl;
 //     let mut d_j: i32 = nfk * nfl * nfj;
@@ -90533,32 +90533,32 @@ pub unsafe extern "C" fn c2s_sph_2e1(
 //     mut opij: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
-//     let mut shls: *mut i32 = envs.shls;
-//     let mut bas: *mut i32 = envs.bas;
+//     let mut shls: *mut i32 = (*envs).shls;
+//     let mut bas: *mut i32 = (*envs).bas;
 //     let mut i_sh: i32 = *shls.offset(0 as isize);
 //     let mut j_sh: i32 = *shls.offset(1 as isize);
-//     let mut i_l: i32 = envs.i_l;
-//     let mut j_l: i32 = envs.j_l;
+//     let mut i_l: i32 = (*envs).i_l;
+//     let mut j_l: i32 = (*envs).j_l;
 //     let mut i_kp: i32 = *bas
 //         .offset((8 as i32 * i_sh + 4 as i32) as isize);
 //     let mut j_kp: i32 = *bas
 //         .offset((8 as i32 * j_sh + 4 as i32) as isize);
-//     let mut i_ctr: i32 = envs.x_ctr[0 as usize];
-//     let mut j_ctr: i32 = envs.x_ctr[1 as usize];
-//     let mut k_ctr: i32 = envs.x_ctr[2 as usize];
-//     let mut l_ctr: i32 = envs.x_ctr[3 as usize];
+//     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+//     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
+//     let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
+//     let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
 //     let mut di: i32 = _len_spinor(i_kp, i_l);
 //     let mut dj: i32 = _len_spinor(j_kp, j_l);
-//     let mut nfi: i32 = envs.nfi;
-//     let mut nfj: i32 = envs.nfj;
-//     let mut nfk: i32 = envs.c2rust_unnamed.nfk;
-//     let mut nfl: i32 = envs.c2rust_unnamed_0.nfl;
+//     let mut nfi: i32 = (*envs).nfi;
+//     let mut nfj: i32 = (*envs).nfj;
+//     let mut nfk: i32 = (*envs).c2rust_unnamed.nfk;
+//     let mut nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
 //     let mut nf2i: i32 = nfi + nfi;
 //     let mut nf2j: i32 = nfj + nfj;
-//     let mut nf: i32 = envs.nf;
+//     let mut nf: i32 = (*envs).nf;
 //     let mut no: i32 = di * nfk * nfl * dj;
 //     let mut d_i: i32 = di * nfk * nfl;
 //     let mut d_j: i32 = nfk * nfl * nfj;
@@ -90599,32 +90599,32 @@ pub unsafe extern "C" fn c2s_sph_2e1(
 //     mut opij: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
-//     let mut shls: *mut i32 = envs.shls;
-//     let mut bas: *mut i32 = envs.bas;
+//     let mut shls: *mut i32 = (*envs).shls;
+//     let mut bas: *mut i32 = (*envs).bas;
 //     let mut i_sh: i32 = *shls.offset(0 as isize);
 //     let mut j_sh: i32 = *shls.offset(1 as isize);
-//     let mut i_l: i32 = envs.i_l;
-//     let mut j_l: i32 = envs.j_l;
+//     let mut i_l: i32 = (*envs).i_l;
+//     let mut j_l: i32 = (*envs).j_l;
 //     let mut i_kp: i32 = *bas
 //         .offset((8 as i32 * i_sh + 4 as i32) as isize);
 //     let mut j_kp: i32 = *bas
 //         .offset((8 as i32 * j_sh + 4 as i32) as isize);
-//     let mut i_ctr: i32 = envs.x_ctr[0 as usize];
-//     let mut j_ctr: i32 = envs.x_ctr[1 as usize];
-//     let mut k_ctr: i32 = envs.x_ctr[2 as usize];
-//     let mut l_ctr: i32 = envs.x_ctr[3 as usize];
+//     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+//     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
+//     let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
+//     let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
 //     let mut di: i32 = _len_spinor(i_kp, i_l);
 //     let mut dj: i32 = _len_spinor(j_kp, j_l);
-//     let mut nfi: i32 = envs.nfi;
-//     let mut nfj: i32 = envs.nfj;
-//     let mut nfk: i32 = envs.c2rust_unnamed.nfk;
-//     let mut nfl: i32 = envs.c2rust_unnamed_0.nfl;
+//     let mut nfi: i32 = (*envs).nfi;
+//     let mut nfj: i32 = (*envs).nfj;
+//     let mut nfk: i32 = (*envs).c2rust_unnamed.nfk;
+//     let mut nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
 //     let mut nf2i: i32 = nfi + nfi;
 //     let mut nf2j: i32 = nfj + nfj;
-//     let mut nf: i32 = envs.nf;
+//     let mut nf: i32 = (*envs).nf;
 //     let mut no: i32 = di * nfk * nfl * dj;
 //     let mut d_i: i32 = di * nfk * nfl;
 //     let mut d_j: i32 = nfk * nfl * nfj;
@@ -90665,14 +90665,14 @@ pub unsafe extern "C" fn c2s_cart_1e(
     opij: *mut f64,
     mut gctr: *mut f64,
     dims: *mut i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
     _cache: *mut f64,
 ) {
-    let i_ctr: i32 = envs.x_ctr[0_usize];
-    let j_ctr: i32 = envs.x_ctr[1_usize];
-    let nfi: i32 = envs.nfi;
-    let nfj: i32 = envs.nfj;
-    let nf: i32 = envs.nf;
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
+    let nfi: i32 = (*envs).nfi;
+    let nfj: i32 = (*envs).nfj;
+    let nf: i32 = (*envs).nf;
     let ni: i32 = *dims.offset(0_isize);
     let nj: i32 = *dims.offset(1_isize);
     let ofj: i32 = ni * nfj;
@@ -90698,18 +90698,18 @@ pub unsafe extern "C" fn c2s_cart_2e1(
     fijkl: *mut f64,
     mut gctr: *mut f64,
     dims: *mut i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
     _cache: *mut f64,
 ) {
-    let i_ctr: i32 = envs.x_ctr[0_usize];
-    let j_ctr: i32 = envs.x_ctr[1_usize];
-    let k_ctr: i32 = envs.x_ctr[2_usize];
-    let l_ctr: i32 = envs.x_ctr[3_usize];
-    let nfi: i32 = envs.nfi;
-    let nfj: i32 = envs.nfj;
-    let nfk: i32 = envs.c2rust_unnamed.nfk;
-    let nfl: i32 = envs.c2rust_unnamed_0.nfl;
-    let nf: i32 = envs.nf;
+    let i_ctr: i32 = (*envs).x_ctr[0_usize];
+    let j_ctr: i32 = (*envs).x_ctr[1_usize];
+    let k_ctr: i32 = (*envs).x_ctr[2_usize];
+    let l_ctr: i32 = (*envs).x_ctr[3_usize];
+    let nfi: i32 = (*envs).nfi;
+    let nfj: i32 = (*envs).nfj;
+    let nfk: i32 = (*envs).c2rust_unnamed.nfk;
+    let nfl: i32 = (*envs).c2rust_unnamed_0.nfl;
+    let nf: i32 = (*envs).nf;
     let ni: i32 = *dims.offset(0_isize);
     let nj: i32 = *dims.offset(1_isize);
     let nk: i32 = *dims.offset(2_isize);
@@ -90757,24 +90757,24 @@ pub unsafe extern "C" fn c2s_cart_2e1(
 //     mut bufijk: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
-//     let mut i_l: i32 = envs.i_l;
-//     let mut j_l: i32 = envs.j_l;
-//     let mut k_l: i32 = envs.k_l;
-//     let mut i_ctr: i32 = envs.x_ctr[0 as usize];
-//     let mut j_ctr: i32 = envs.x_ctr[1 as usize];
-//     let mut k_ctr: i32 = envs.x_ctr[2 as usize];
+//     let mut i_l: i32 = (*envs).i_l;
+//     let mut j_l: i32 = (*envs).j_l;
+//     let mut k_l: i32 = (*envs).k_l;
+//     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+//     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
+//     let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
 //     let mut di: i32 = i_l * 2 as i32 + 1 as i32;
 //     let mut dj: i32 = j_l * 2 as i32 + 1 as i32;
 //     let mut dk: i32 = k_l * 2 as i32 + 1 as i32;
 //     let mut ni: i32 = *dims.offset(0 as isize);
 //     let mut nj: i32 = *dims.offset(1 as isize);
 //     let mut nk: i32 = *dims.offset(2 as isize);
-//     let mut nfi: i32 = envs.nfi;
-//     let mut nfk: i32 = envs.c2rust_unnamed.nfk;
-//     let mut nf: i32 = envs.nf;
+//     let mut nfi: i32 = (*envs).nfi;
+//     let mut nfk: i32 = (*envs).c2rust_unnamed.nfk;
+//     let mut nf: i32 = (*envs).nf;
 //     let mut nfik: i32 = nfi * nfk;
 //     let mut ofj: i32 = ni * dj;
 //     let mut ofk: i32 = ni * nj * dk;
@@ -90838,19 +90838,19 @@ pub unsafe extern "C" fn c2s_cart_2e1(
 //     mut bufijk: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
-//     let mut i_ctr: i32 = envs.x_ctr[0 as usize];
-//     let mut j_ctr: i32 = envs.x_ctr[1 as usize];
-//     let mut k_ctr: i32 = envs.x_ctr[2 as usize];
-//     let mut nfi: i32 = envs.nfi;
-//     let mut nfj: i32 = envs.nfj;
-//     let mut nfk: i32 = envs.c2rust_unnamed.nfk;
+//     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+//     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
+//     let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
+//     let mut nfi: i32 = (*envs).nfi;
+//     let mut nfj: i32 = (*envs).nfj;
+//     let mut nfk: i32 = (*envs).c2rust_unnamed.nfk;
 //     let mut ni: i32 = *dims.offset(0 as isize);
 //     let mut nj: i32 = *dims.offset(1 as isize);
 //     let mut nk: i32 = *dims.offset(2 as isize);
-//     let mut nf: i32 = envs.nf;
+//     let mut nf: i32 = (*envs).nf;
 //     let mut ofj: i32 = ni * nfj;
 //     let mut ofk: i32 = ni * nj * nfk;
 //     let mut ic: i32 = 0;
@@ -90895,22 +90895,22 @@ pub unsafe extern "C" fn c2s_cart_2e1(
 //     mut bufijk: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
-//     let mut i_l: i32 = envs.i_l;
-//     let mut j_l: i32 = envs.j_l;
-//     let mut i_ctr: i32 = envs.x_ctr[0 as usize];
-//     let mut j_ctr: i32 = envs.x_ctr[1 as usize];
-//     let mut k_ctr: i32 = envs.x_ctr[2 as usize];
+//     let mut i_l: i32 = (*envs).i_l;
+//     let mut j_l: i32 = (*envs).j_l;
+//     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+//     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
+//     let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
 //     let mut di: i32 = i_l * 2 as i32 + 1 as i32;
 //     let mut dj: i32 = j_l * 2 as i32 + 1 as i32;
-//     let mut nfi: i32 = envs.nfi;
-//     let mut nfk: i32 = envs.c2rust_unnamed.nfk;
+//     let mut nfi: i32 = (*envs).nfi;
+//     let mut nfk: i32 = (*envs).c2rust_unnamed.nfk;
 //     let mut ni: i32 = di * i_ctr;
 //     let mut nj: i32 = dj * j_ctr;
 //     let mut nk: i32 = nfk * k_ctr;
-//     let mut nf: i32 = envs.nf;
+//     let mut nf: i32 = (*envs).nf;
 //     let mut nfik: i32 = nfi * nfk;
 //     let mut ofj: i32 = ni * dj;
 //     let mut ofk: i32 = ni * nj * nfk;
@@ -90976,7 +90976,7 @@ pub unsafe extern "C" fn c2s_cart_2e1(
 //     mut out: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
 //     c2s_sph_3c2e1(out, gctr, dims, envs, cache);
@@ -90986,7 +90986,7 @@ pub unsafe extern "C" fn c2s_cart_2e1(
 //     mut out: *mut f64,
 //     mut gctr: *mut f64,
 //     mut dims: *mut i32,
-//     mut envs: &mut CINTEnvVars,
+//     mut envs: *mut CINTEnvVars,
 //     mut cache: *mut f64,
 // ) {
 //     c2s_cart_3c2e1(out, gctr, dims, envs, cache);
