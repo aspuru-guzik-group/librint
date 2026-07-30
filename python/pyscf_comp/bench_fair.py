@@ -212,8 +212,21 @@ def worker_t1_librint(geo, basis, out):
     # dscf.denergyf is not a second method to time: denergy_c routes to
     # denergyfast, which assembles the same dHcoreg/dRg/dSg expression as
     # danalyticalg and returns bitwise-identical values.
-    g = librint.dscf.danalyticalf(mol, P)
-    ts = _time_n(lambda: librint.dscf.danalyticalf(mol, P), 3)
+    #
+    # "free" and any explicit width ("32") run the threaded assembly
+    # (src/par.rs) on rayon's global pool, which spawn() sized with
+    # RAYON_NUM_THREADS -- the same core count jax gets from its own thread
+    # knobs. Passing 0 uses that global pool rather than building a private
+    # one, so the width comes from the environment in every threaded mode.
+    # "pin" stays on the serial entry point, so the pin column remains exactly
+    # the FD-validated reference path.
+    if THREAD_MODE != "pin":
+        run = lambda: librint.dscf.danalytical_par(mol, P, 0)
+    else:
+        run = lambda: librint.dscf.danalyticalf(mol, P)
+
+    g = run()
+    ts = _time_n(run, 3)
     out.update(median=_median(ts), grad_sorted=np.sort(g).tolist())
     out["peak_kb"] = _vmhwm_kb()
 
@@ -328,6 +341,17 @@ def worker_t2_jax(geo, basis, out):
     out.update(cold=cold, median=_median(ts), grad_sorted=np.sort(g).tolist())
 
 
+# "pin" (one core), "free" (the whole allocation), or a decimal width like
+# "32"; set by run_worker before dispatch so a worker can pick the matching
+# code path.
+THREAD_MODE = "pin"
+
+# Fixed librint widths measured alongside pin and free. pin and free bracket
+# the ladder at 1 core and the whole node, which leaves everything between them
+# unmeasured -- and the node width varies by machine, so "free" alone is not a
+# number you can compare across runs.
+THREAD_WIDTHS = ("32",)
+
 WORKERS = {
     "t0": worker_t0,
     "t1_librint": worker_t1_librint,
@@ -345,17 +369,56 @@ def worker_setup_P(geo, basis, out_path):
     np.save(out_path, _converged_P(mol))
 
 
+def _siblings(cpu):
+    p = f"/sys/devices/system/cpu/cpu{cpu}/topology/thread_siblings_list"
+    try:
+        with open(p) as f:
+            return f.read().strip()
+    except OSError:
+        return str(cpu)                      # no topology exposed -> assume 1:1
+
+
+def _cpu_order(mask):
+    """Allocation's cpus, one per PHYSICAL core first, SMT siblings after.
+
+    These nodes are 48 cores x 2 threads presented as 96 cpus, so taking the
+    first N of the raw mask can put a "32 core" run on 16 cores' worth of
+    silicon and call the SMT gain a scaling result. Ordering by distinct
+    thread_siblings_list makes the first 32 entries 32 separate cores.
+    """
+    seen, first, extra = set(), [], []
+    for c in sorted(mask):
+        sib = _siblings(c)
+        if sib in seen:
+            extra.append(c)
+        else:
+            seen.add(sib)
+            first.append(c)
+    return first + extra
+
+
+def _nphys(mask):
+    """Distinct physical cores covered by a cpu mask."""
+    return len({_siblings(c) for c in mask})
+
+
 def run_worker(argv):
     kind, geo, basis, arg4 = argv
     if kind == "setup_P":
         worker_setup_P(geo, basis, arg4)  # arg4 = output npy path
         return
     threads = arg4
-    if threads != "free":
+    global THREAD_MODE
+    THREAD_MODE = threads
+    # "pin" = one core, "free" = the whole allocation, "<N>" = the first N
+    # cores of it. Narrowing affinity rather than only capping
+    # RAYON_NUM_THREADS is what makes out["ncores"] below report the width the
+    # run actually had, and stops BLAS/OMP spilling past it.
+    n = None if threads == "free" else (1 if threads == "pin" else int(threads))
+    if n is not None:
         try:
-            # first core of OUR allocation (works inside SLURM cgroups too)
-            core = sorted(os.sched_getaffinity(0))[0]
-            os.sched_setaffinity(0, {core})
+            # cpus of OUR allocation (works inside SLURM cgroups too)
+            os.sched_setaffinity(0, set(_cpu_order(os.sched_getaffinity(0))[:n]))
         except OSError:
             pass
     state = {"peak_kb": -1}
@@ -363,10 +426,14 @@ def run_worker(argv):
     out = {}
     WORKERS[kind](geo, basis, out)
     out["peak_kb"] = max(state["peak_kb"], _vmhwm_kb())
-    # measured after the affinity call, so this is the core count the run
-    # really had -- the figure labels its curves from this, never from a
-    # hardcoded number
-    out["ncores"] = len(os.sched_getaffinity(0))
+    # measured after the affinity call, so these describe the run it really
+    # got -- the figure labels its curves from them, never from a hardcoded
+    # number. ncpus counts hardware threads, ncores counts distinct physical
+    # cores; on an SMT node those differ by 2x and only one of them is what
+    # "32 cores" means.
+    mask = os.sched_getaffinity(0)
+    out["ncpus"] = len(mask)
+    out["ncores"] = _nphys(mask)
     print("BENCH_JSON " + json.dumps(out), flush=True)
 
 
@@ -400,13 +467,31 @@ def spawn(kind, geo, basis, threads, timeout=900, p_file=None):
     env["PYTHONHASHSEED"] = "0"
     if p_file:  # T1 workers load this P instead of running incore SCF
         env["LIBRINT_P_FILE"] = p_file
-    nthr = "1" if threads != "free" else str(os.cpu_count())
+    if threads == "free":
+        nthr = str(os.cpu_count())
+    elif threads == "pin":
+        nthr = "1"
+    else:                                    # explicit width, e.g. "32"
+        nthr = str(int(threads))
+    # rayon sizes librint's global pool from this; set in every mode so the
+    # two engines are given the same core count rather than different ones.
+    env["RAYON_NUM_THREADS"] = nthr
     if threads != "free":
         for var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS",
                     "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS"):
             env[var] = nthr
-        env["XLA_FLAGS"] = ("--xla_cpu_multi_thread_eigen=false "
-                            "intra_op_parallelism_threads=1")
+        if threads == "pin":
+            # single-core means single-core for XLA too
+            env["XLA_FLAGS"] = ("--xla_cpu_multi_thread_eigen=false "
+                                "intra_op_parallelism_threads=1")
+        # No XLA_FLAGS for a fixed width: XLA's parser treats any token that
+        # does not start with "--" as a FILE to read flags from and aborts
+        # (SIGABRT) when it cannot open it, so a bare
+        # "intra_op_parallelism_threads=32" kills the process. It is tolerated
+        # in the pin string above only because a real "--" flag leads -- which
+        # means it is being ignored there too. What actually bounds jax is the
+        # affinity mask: its CPU backend sizes the Eigen pool from
+        # sched_getaffinity, so pinning to N cpus gives N intra-op threads.
     t0 = time.perf_counter()
     try:
         proc = subprocess.run(
@@ -484,7 +569,8 @@ def main():
     # provenance of THIS run, so plots read the node's real core count and
     # memory ceiling out of the results instead of assuming them
     results = {"_meta": {"node": platform.node(),
-                         "ncores": len(os.sched_getaffinity(0)),
+                         "ncores": _nphys(os.sched_getaffinity(0)),
+                         "ncpus": len(os.sched_getaffinity(0)),
                          "mem_limit_kb": _mem_limit_kb(),
                          "cpu_model": _cpu_model()}}
 
@@ -513,11 +599,26 @@ def main():
                 results[key(tier, eng, tag, "pin")] = r
                 print(f"   {tier} {eng:8s} pin : {fmt_t(r)}s  peak {fmt_mem(r)}",
                       flush=True)
-            rf = spawn(f"{tier}_jax", geo, basis, "free", timeout=args.timeout,
-                       p_file=pf_t)
-            results[key(tier, "jax", tag, "free")] = rf
-            print(f"   {tier} jax      free: {fmt_t(rf)}s  peak {fmt_mem(rf)}",
-                  flush=True)
+            # librint only has a threaded path for the T1 gradient assembly
+            # (src/par.rs); its T2 driver still runs a serial SCF, so timing it
+            # "free" would report a number no threading produced.
+            free_engines = ("librint", "jax") if tier == "t1" else ("jax",)
+            for eng in free_engines:
+                rf = spawn(f"{tier}_{eng}", geo, basis, "free",
+                           timeout=args.timeout, p_file=pf_t)
+                results[key(tier, eng, tag, "free")] = rf
+                print(f"   {tier} {eng:8s} free: {fmt_t(rf)}s  peak {fmt_mem(rf)}",
+                      flush=True)
+            # BOTH engines at each fixed width: the figure compares at equal
+            # core counts, so sweeping only librint would leave jax to be
+            # judged at whatever width the node happened to have.
+            for w in (THREAD_WIDTHS if tier == "t1" else ()):
+                for eng in ("librint", "jax"):
+                    rw = spawn(f"{tier}_{eng}", geo, basis, w,
+                               timeout=args.timeout, p_file=pf_t)
+                    results[key(tier, eng, tag, w)] = rw
+                    print(f"   {tier} {eng:8s} {w:>4s}: {fmt_t(rw)}s  "
+                          f"peak {fmt_mem(rw)}", flush=True)
         if pf and os.path.exists(pf):
             os.remove(pf)
         with open(out_json, "w") as f:  # write-as-you-go: survive job timeouts
@@ -543,19 +644,29 @@ def main():
                        ("t2", f"end-to-end SCF+gradient (conv_tol={SCF_CONV})")):
         if tier not in tiers:
             continue
-        print(f"\n=== {tier.upper()} {desc}; median of 3; librint = danalyticalf ===")
-        print(f"{'system':16s} {'librint@1c':>11s} {'jax@1c':>9s} "
-              f"{'jax warm1':>9s} {'jax@free':>9s} {'lib peak':>9s} {'jax peak':>9s} "
-              f"{'max|Δg|':>9s}")
+        print(f"\n=== {tier.upper()} {desc}; median of 3 ===")
+        print("    @1c = danalyticalf (serial, FD-validated); @Nc and @free = "
+              "danalytical_par on N cores / the whole allocation")
+        wcols = "".join(f"{'librint@' + w + 'c':>13s}" for w in THREAD_WIDTHS)
+        print(f"{'system':16s} {'librint@1c':>11s}{wcols} {'librint@free':>13s} "
+              f"{'jax@1c':>9s} {'jax warm1':>9s} {'jax@free':>9s} "
+              f"{'lib peak':>9s} {'jax peak':>9s} {'max|Δg|':>9s}")
         for basis, geo in mols:
             tag = f"{geo}/{basis}"
             rl = results.get(key(tier, "librint", tag, "pin"))
             if rl is None:  # T1_ONLY system
                 continue
+            rlf = results.get(key(tier, "librint", tag, "free"))
             rj = results[key(tier, "jax", tag, "pin")]
             rf = results[key(tier, "jax", tag, "free")]
             cold = fmt_t(rj, "cold") if rj.get("status") == "ok" else "-"
-            print(f"{tag:16s} {fmt_t(rl):>11s} {fmt_t(rj):>9s} {cold:>9s} "
+            wvals = "".join(
+                f"{(fmt_t(rw) if rw else '-'):>13s}"
+                for rw in (results.get(key(tier, "librint", tag, w))
+                           for w in THREAD_WIDTHS))
+            print(f"{tag:16s} {fmt_t(rl):>11s}{wvals} "
+                  f"{(fmt_t(rlf) if rlf else '-'):>13s} "
+                  f"{fmt_t(rj):>9s} {cold:>9s} "
                   f"{fmt_t(rf):>9s} {fmt_mem(rl):>9s} {fmt_mem(rj):>9s} "
                   f"{grad_err(rl, rj):>9s}")
 
