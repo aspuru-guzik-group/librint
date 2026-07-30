@@ -1,12 +1,12 @@
-use std::io;
 use std::env;
-use std::time::{Instant, Duration};
+use std::io;
+use std::time::{Duration, Instant};
 
 use librint::utils::{nmol, read_basis};
 
-use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_nuc_cart;
 use librint::cint2e::cint2e_cart;
+use librint::cint_bas::CINTcgto_cart;
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -29,14 +29,14 @@ fn nuc(
         for j in 0..nbas {
             shls[0] = i as i32;
             shls[1] = j as i32;
-            
+
             unsafe {
                 di = CINTcgto_cart(i as i32, bas.as_mut_ptr());
                 dj = CINTcgto_cart(j as i32, bas.as_mut_ptr());
             }
 
             buf = vec![0.0; (di * dj) as usize];
-            
+
             // let start = Instant::now();
             unsafe {
                 cint1e_nuc_cart(
@@ -55,11 +55,10 @@ fn nuc(
             for p in 0..(di * dj) {
                 print!("{} ", buf[p as usize]);
             }
-
         }
     }
     println!();
-    
+
     let duration_total = start_total.elapsed();
 
     return duration_total;
@@ -89,7 +88,7 @@ fn rep(
                     shls[1] = j as i32;
                     shls[2] = k as i32;
                     shls[3] = l as i32;
-                    
+
                     unsafe {
                         di = CINTcgto_cart(i as i32, bas.as_mut_ptr());
                         dj = CINTcgto_cart(j as i32, bas.as_mut_ptr());
@@ -137,8 +136,8 @@ fn main() -> io::Result<()> {
 
     let (natm, nbas) = nmol(&mut atm, &mut bas);
 
-    let mut time ;
-    
+    let mut time;
+
     // first call is warmup
 
     // Nuc integral
@@ -150,6 +149,6 @@ fn main() -> io::Result<()> {
     _ = rep(&mut atm, natm, &mut bas, nbas, &mut env);
     time = rep(&mut atm, natm, &mut bas, nbas, &mut env);
     println!("{:?} ns", time.as_nanos());
-    
+
     Ok(())
 }

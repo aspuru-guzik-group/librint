@@ -6,8 +6,8 @@ use std::autodiff::*;
 use crate::cint1e::cint1e_ovlp_cart;
 use crate::utils::combine;
 
-use crate::scf::{nmol, integral1e, integral2e, density, energyfast, scf};
-use crate::dscf::{dS_uncontracted, dHcoreg, dSg, dRg, gradenergy, danalyticalg, denergyfast};
+use crate::dscf::{dHcoreg, dRg, dS_uncontracted, dSg, danalyticalg, denergyfast, gradenergy};
+use crate::scf::{density, energyfast, integral1e, integral2e, nmol, scf};
 
 #[no_mangle]
 fn c2r_arr(

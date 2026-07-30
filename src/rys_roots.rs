@@ -1,13 +1,21 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![allow(
+    dead_code,
+    mutable_transmutes,
+    non_camel_case_types,
+    non_snake_case,
+    non_upper_case_globals,
+    unused_assignments,
+    unused_mut
+)]
 
 use crate::find_roots::_CINT_polynomial_roots;
 use crate::fmt::fmt_erfc_like;
 use crate::fmt::fmt_lerfc_like;
 use crate::fmt::gamma_inc_like;
 use crate::fmt::lgamma_inc_like;
+use crate::rys_wheeler::CINTlrys_jacobi;
 use crate::rys_wheeler::CINTlrys_laguerre;
 use crate::rys_wheeler::CINTrys_jacobi;
-use crate::rys_wheeler::CINTlrys_jacobi;
 
 extern "C" {
     fn exp(_: f64) -> f64;
@@ -16,13 +24,7 @@ extern "C" {
     fn sqrt(_: f64) -> f64;
 }
 
-pub type QuadratureFunction = unsafe extern "C" fn(
-    i32,
-    f64,
-    f64,
-    *mut f64,
-    *mut f64,
-) -> i32;
+pub type QuadratureFunction = unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32;
 static mut POLY_SMALLX_R0: [f64; 496] = [
     5.0000000000000000e-01f64,
     1.3069360623708470e-01f64,
@@ -3018,8 +3020,8 @@ unsafe extern "C" fn segment_solve(
     mut u: *mut f64,
     mut w: *mut f64,
     mut breakpoint: f64,
-    mut fn1: Option::<QuadratureFunction>,
-    mut fn2: Option::<QuadratureFunction>,
+    mut fn1: Option<QuadratureFunction>,
+    mut fn2: Option<QuadratureFunction>,
 ) -> i32 {
     let mut error: i32 = 0;
     if x <= breakpoint {
@@ -3040,28 +3042,20 @@ pub unsafe extern "C" fn CINTrys_roots(
     mut w: *mut f64,
 ) {
     if x <= 3e-7f64 {
-        let mut off: i32 = nroots * (nroots - 1 as i32)
-            / 2 as i32;
+        let mut off: i32 = nroots * (nroots - 1 as i32) / 2 as i32;
         let mut i: i32 = 0;
         i = 0 as i32;
         while i < nroots {
-            *u
-                .offset(
-                    i as isize,
-                ) = POLY_SMALLX_R0[(off + i) as usize]
-                + POLY_SMALLX_R1[(off + i) as usize] * x;
-            *w
-                .offset(
-                    i as isize,
-                ) = POLY_SMALLX_W0[(off + i) as usize]
-                + POLY_SMALLX_W1[(off + i) as usize] * x;
+            *u.offset(i as isize) =
+                POLY_SMALLX_R0[(off + i) as usize] + POLY_SMALLX_R1[(off + i) as usize] * x;
+            *w.offset(i as isize) =
+                POLY_SMALLX_W0[(off + i) as usize] + POLY_SMALLX_W1[(off + i) as usize] * x;
             i += 1;
             i;
         }
         return;
     } else if x >= (35 as i32 + nroots * 5 as i32) as f64 {
-        let mut off_0: i32 = nroots * (nroots - 1 as i32)
-            / 2 as i32;
+        let mut off_0: i32 = nroots * (nroots - 1 as i32) / 2 as i32;
         let mut i_0: i32 = 0;
         let mut rt: f64 = 0.;
         let mut t: f64 = sqrt(0.78539816339744827900f64 / x);
@@ -3102,23 +3096,11 @@ pub unsafe extern "C" fn CINTrys_roots(
                 11 as f64,
                 Some(
                     CINTrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTrys_schmidt
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3132,23 +3114,11 @@ pub unsafe extern "C" fn CINTrys_roots(
                 11 as f64,
                 Some(
                     CINTrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_schmidt
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3162,23 +3132,11 @@ pub unsafe extern "C" fn CINTrys_roots(
                 10 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3192,23 +3150,11 @@ pub unsafe extern "C" fn CINTrys_roots(
                 18 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3222,23 +3168,11 @@ pub unsafe extern "C" fn CINTrys_roots(
                 22 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3252,23 +3186,11 @@ pub unsafe extern "C" fn CINTrys_roots(
                 50 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3287,9 +3209,9 @@ unsafe extern "C" fn segment_solve1(
     mut lower_bp1: f64,
     mut lower_bp2: f64,
     mut breakpoint: f64,
-    mut fn1: Option::<QuadratureFunction>,
-    mut fn2: Option::<QuadratureFunction>,
-    mut fn3: Option::<QuadratureFunction>,
+    mut fn1: Option<QuadratureFunction>,
+    mut fn2: Option<QuadratureFunction>,
+    mut fn3: Option<QuadratureFunction>,
 ) -> i32 {
     let mut error: i32 = 0;
     if lower < lower_bp1 {
@@ -3301,7 +3223,7 @@ unsafe extern "C" fn segment_solve1(
     } else if lower < lower_bp2 {
         error = fn3.expect("non-null function pointer")(n, x, lower, u, w);
     } else {
-        return 1 as i32
+        return 1 as i32;
     }
     if error != 0 {
         error = CINTlrys_schmidt(n, x, lower, u, w);
@@ -3341,23 +3263,11 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     10 as f64,
                     Some(
                         CINTlrys_jacobi
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                 );
             } else {
@@ -3377,23 +3287,11 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     10 as f64,
                     Some(
                         CINTlrys_jacobi
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                 );
             } else {
@@ -3411,23 +3309,11 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     50 as f64,
                     Some(
                         CINTrys_schmidt
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                 );
             } else if lower < 0.8f64 {
@@ -3440,23 +3326,11 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     10 as f64,
                     Some(
                         CINTlrys_jacobi
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                 );
             } else {
@@ -3474,23 +3348,11 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     60 as f64,
                     Some(
                         CINTrys_schmidt
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                 );
             } else if lower < 0.8f64 {
@@ -3503,23 +3365,11 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     10 as f64,
                     Some(
                         CINTlrys_jacobi
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                     Some(
                         CINTlrys_laguerre
-                            as unsafe extern "C" fn(
-                                i32,
-                                f64,
-                                f64,
-                                *mut f64,
-                                *mut f64,
-                            ) -> i32,
+                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                     ),
                 );
             } else {
@@ -3538,33 +3388,15 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 60 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3580,33 +3412,15 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 60 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3622,33 +3436,15 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 60 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3664,33 +3460,15 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 60 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3706,33 +3484,15 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 60 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3748,33 +3508,15 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 60 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3790,33 +3532,15 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 60 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3832,33 +3556,15 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 60 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3874,33 +3580,15 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 60 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3916,33 +3604,15 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 60 as f64,
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_laguerre
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
                 Some(
                     CINTlrys_jacobi
-                        as unsafe extern "C" fn(
-                            i32,
-                            f64,
-                            f64,
-                            *mut f64,
-                            *mut f64,
-                        ) -> i32,
+                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
                 ),
             );
         }
@@ -3952,15 +3622,14 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
         }
     }
     if err != 0 {
-        eprintln!("sr_rys_roots fails: nroots={} x={:.15} lower={:.15}", nroots, x, lower);
+        eprintln!(
+            "sr_rys_roots fails: nroots={} x={:.15} lower={:.15}",
+            nroots, x, lower
+        );
         std::process::exit(err);
     }
 }
-unsafe extern "C" fn rys_root1(
-    mut X: f64,
-    mut roots: *mut f64,
-    mut weights: *mut f64,
-) -> i32 {
+unsafe extern "C" fn rys_root1(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
     let mut Y: f64 = 0.;
     let mut F1: f64 = 0.;
     if X > 33.0f64 {
@@ -3975,55 +3644,108 @@ unsafe extern "C" fn rys_root1(
     let mut E: f64 = exp(-X);
     if X > 15.0f64 {
         Y = 1.0f64 / X;
-        F1 = (((1.9623264149430E-01f64 * Y - 4.9695241464490E-01f64) * Y
-            - 6.0156581186481E-05f64) * E + sqrt(0.78539816339744827900f64 / X) - E) * Y;
+        F1 = (((1.9623264149430E-01f64 * Y - 4.9695241464490E-01f64) * Y - 6.0156581186481E-05f64)
+            * E
+            + sqrt(0.78539816339744827900f64 / X)
+            - E)
+            * Y;
         F1 *= 0.5f64;
     } else if X > 10.0f64 {
         Y = 1.0f64 / X;
         F1 = ((((-1.8784686463512E-01f64 * Y + 2.2991849164985E-01f64) * Y
-            - 4.9893752514047E-01f64) * Y - 2.1916512131607E-05f64) * E
-            + sqrt(0.78539816339744827900f64 / X) - E) * Y;
+            - 4.9893752514047E-01f64)
+            * Y
+            - 2.1916512131607E-05f64)
+            * E
+            + sqrt(0.78539816339744827900f64 / X)
+            - E)
+            * Y;
         F1 *= 0.5f64;
     } else if X > 5.0f64 {
         Y = 1.0f64 / X;
         F1 = (((((((4.6897511375022E-01f64 * Y - 6.9955602298985E-01f64) * Y
-            + 5.3689283271887E-01f64) * Y - 3.2883030418398E-01f64) * Y
-            + 2.4645596956002E-01f64) * Y - 4.9984072848436E-01f64) * Y
-            - 3.1501078774085E-06f64) * E + sqrt(0.78539816339744827900f64 / X) - E) * Y;
+            + 5.3689283271887E-01f64)
+            * Y
+            - 3.2883030418398E-01f64)
+            * Y
+            + 2.4645596956002E-01f64)
+            * Y
+            - 4.9984072848436E-01f64)
+            * Y
+            - 3.1501078774085E-06f64)
+            * E
+            + sqrt(0.78539816339744827900f64 / X)
+            - E)
+            * Y;
         F1 *= 0.5f64;
     } else if X > 3.0f64 {
         Y = X - 4.0E+00f64;
         F1 = ((((((((((-2.62453564772299E-11f64 * Y + 3.24031041623823E-10f64) * Y
-            - 3.614965656163E-09f64) * Y + 3.760256799971E-08f64) * Y
-            - 3.553558319675E-07f64) * Y + 3.022556449731E-06f64) * Y
-            - 2.290098979647E-05f64) * Y + 1.526537461148E-04f64) * Y
-            - 8.81947375894379E-04f64) * Y + 4.33207949514611E-03f64) * Y
-            - 1.75257821619926E-02f64) * Y + 5.28406320615584E-02f64;
+            - 3.614965656163E-09f64)
+            * Y
+            + 3.760256799971E-08f64)
+            * Y
+            - 3.553558319675E-07f64)
+            * Y
+            + 3.022556449731E-06f64)
+            * Y
+            - 2.290098979647E-05f64)
+            * Y
+            + 1.526537461148E-04f64)
+            * Y
+            - 8.81947375894379E-04f64)
+            * Y
+            + 4.33207949514611E-03f64)
+            * Y
+            - 1.75257821619926E-02f64)
+            * Y
+            + 5.28406320615584E-02f64;
     } else if X > 1.0f64 {
         Y = X - 2.0E+00f64;
         F1 = ((((((((((-1.61702782425558E-10f64 * Y + 1.96215250865776E-09f64) * Y
-            - 2.14234468198419E-08f64) * Y + 2.17216556336318E-07f64) * Y
-            - 1.98850171329371E-06f64) * Y + 1.62429321438911E-05f64) * Y
-            - 1.16740298039895E-04f64) * Y + 7.24888732052332E-04f64) * Y
-            - 3.79490003707156E-03f64) * Y + 1.61723488664661E-02f64) * Y
-            - 5.29428148329736E-02f64) * Y + 1.15702180856167E-01f64;
+            - 2.14234468198419E-08f64)
+            * Y
+            + 2.17216556336318E-07f64)
+            * Y
+            - 1.98850171329371E-06f64)
+            * Y
+            + 1.62429321438911E-05f64)
+            * Y
+            - 1.16740298039895E-04f64)
+            * Y
+            + 7.24888732052332E-04f64)
+            * Y
+            - 3.79490003707156E-03f64)
+            * Y
+            + 1.61723488664661E-02f64)
+            * Y
+            - 5.29428148329736E-02f64)
+            * Y
+            + 1.15702180856167E-01f64;
     } else {
         F1 = ((((((((-8.36313918003957E-08f64 * X + 1.21222603512827E-06f64) * X
-            - 1.15662609053481E-05f64) * X + 9.25197374512647E-05f64) * X
-            - 6.40994113129432E-04f64) * X + 3.78787044215009E-03f64) * X
-            - 1.85185172458485E-02f64) * X + 7.14285713298222E-02f64) * X
-            - 1.99999999997023E-01f64) * X + 3.33333333333318E-01f64;
+            - 1.15662609053481E-05f64)
+            * X
+            + 9.25197374512647E-05f64)
+            * X
+            - 6.40994113129432E-04f64)
+            * X
+            + 3.78787044215009E-03f64)
+            * X
+            - 1.85185172458485E-02f64)
+            * X
+            + 7.14285713298222E-02f64)
+            * X
+            - 1.99999999997023E-01f64)
+            * X
+            + 3.33333333333318E-01f64;
     }
     let mut WW1: f64 = 2.0f64 * X * F1 + E;
     *weights.offset(0 as isize) = WW1;
     *roots.offset(0 as isize) = F1 / (WW1 - F1);
     return 0 as i32;
 }
-unsafe extern "C" fn rys_root2(
-    mut X: f64,
-    mut roots: *mut f64,
-    mut weights: *mut f64,
-) -> i32 {
+unsafe extern "C" fn rys_root2(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
     let mut R12: f64 = 0.;
     let mut R22: f64 = 0.;
     let mut W22: f64 = 0.;
@@ -4044,133 +3766,304 @@ unsafe extern "C" fn rys_root2(
         WW2 = 3.47854845137453E-01f64 - 2.10619711404725E-01f64 * X;
     } else if X < 1.0f64 {
         F1 = ((((((((-8.36313918003957E-08f64 * X + 1.21222603512827E-06f64) * X
-            - 1.15662609053481E-05f64) * X + 9.25197374512647E-05f64) * X
-            - 6.40994113129432E-04f64) * X + 3.78787044215009E-03f64) * X
-            - 1.85185172458485E-02f64) * X + 7.14285713298222E-02f64) * X
-            - 1.99999999997023E-01f64) * X + 3.33333333333318E-01f64;
+            - 1.15662609053481E-05f64)
+            * X
+            + 9.25197374512647E-05f64)
+            * X
+            - 6.40994113129432E-04f64)
+            * X
+            + 3.78787044215009E-03f64)
+            * X
+            - 1.85185172458485E-02f64)
+            * X
+            + 7.14285713298222E-02f64)
+            * X
+            - 1.99999999997023E-01f64)
+            * X
+            + 3.33333333333318E-01f64;
         WW1 = (X + X) * F1 + exp(-X);
         RT1 = (((((((-2.35234358048491E-09f64 * X + 2.49173650389842E-08f64) * X
-            - 4.558315364581E-08f64) * X - 2.447252174587E-06f64) * X
-            + 4.743292959463E-05f64) * X - 5.33184749432408E-04f64) * X
-            + 4.44654947116579E-03f64) * X - 2.90430236084697E-02f64) * X
+            - 4.558315364581E-08f64)
+            * X
+            - 2.447252174587E-06f64)
+            * X
+            + 4.743292959463E-05f64)
+            * X
+            - 5.33184749432408E-04f64)
+            * X
+            + 4.44654947116579E-03f64)
+            * X
+            - 2.90430236084697E-02f64)
+            * X
             + 1.30693606237085E-01f64;
         RT2 = (((((((-2.47404902329170E-08f64 * X + 2.36809910635906E-07f64) * X
-            + 1.835367736310E-06f64) * X - 2.066168802076E-05f64) * X
-            - 1.345693393936E-04f64) * X - 5.88154362858038E-05f64) * X
-            + 5.32735082098139E-02f64) * X - 6.37623643056745E-01f64) * X
+            + 1.835367736310E-06f64)
+            * X
+            - 2.066168802076E-05f64)
+            * X
+            - 1.345693393936E-04f64)
+            * X
+            - 5.88154362858038E-05f64)
+            * X
+            + 5.32735082098139E-02f64)
+            * X
+            - 6.37623643056745E-01f64)
+            * X
             + 2.86930639376289E+00f64;
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
         WW1 = WW1 - WW2;
     } else if X < 3.0f64 {
         Y = X - 2.0E+00f64;
         F1 = ((((((((((-1.61702782425558E-10f64 * Y + 1.96215250865776E-09f64) * Y
-            - 2.14234468198419E-08f64) * Y + 2.17216556336318E-07f64) * Y
-            - 1.98850171329371E-06f64) * Y + 1.62429321438911E-05f64) * Y
-            - 1.16740298039895E-04f64) * Y + 7.24888732052332E-04f64) * Y
-            - 3.79490003707156E-03f64) * Y + 1.61723488664661E-02f64) * Y
-            - 5.29428148329736E-02f64) * Y + 1.15702180856167E-01f64;
+            - 2.14234468198419E-08f64)
+            * Y
+            + 2.17216556336318E-07f64)
+            * Y
+            - 1.98850171329371E-06f64)
+            * Y
+            + 1.62429321438911E-05f64)
+            * Y
+            - 1.16740298039895E-04f64)
+            * Y
+            + 7.24888732052332E-04f64)
+            * Y
+            - 3.79490003707156E-03f64)
+            * Y
+            + 1.61723488664661E-02f64)
+            * Y
+            - 5.29428148329736E-02f64)
+            * Y
+            + 1.15702180856167E-01f64;
         WW1 = (X + X) * F1 + exp(-X);
         RT1 = (((((((((-6.36859636616415E-12f64 * Y + 8.47417064776270E-11f64) * Y
-            - 5.152207846962E-10f64) * Y - 3.846389873308E-10f64) * Y
-            + 8.472253388380E-08f64) * Y - 1.85306035634293E-06f64) * Y
-            + 2.47191693238413E-05f64) * Y - 2.49018321709815E-04f64) * Y
-            + 2.19173220020161E-03f64) * Y - 1.63329339286794E-02f64) * Y
+            - 5.152207846962E-10f64)
+            * Y
+            - 3.846389873308E-10f64)
+            * Y
+            + 8.472253388380E-08f64)
+            * Y
+            - 1.85306035634293E-06f64)
+            * Y
+            + 2.47191693238413E-05f64)
+            * Y
+            - 2.49018321709815E-04f64)
+            * Y
+            + 2.19173220020161E-03f64)
+            * Y
+            - 1.63329339286794E-02f64)
+            * Y
             + 8.68085688285261E-02f64;
         RT2 = (((((((((1.45331350488343E-10f64 * Y + 2.07111465297976E-09f64) * Y
-            - 1.878920917404E-08f64) * Y - 1.725838516261E-07f64) * Y
-            + 2.247389642339E-06f64) * Y + 9.76783813082564E-06f64) * Y
-            - 1.93160765581969E-04f64) * Y - 1.58064140671893E-03f64) * Y
-            + 4.85928174507904E-02f64) * Y - 4.30761584997596E-01f64) * Y
+            - 1.878920917404E-08f64)
+            * Y
+            - 1.725838516261E-07f64)
+            * Y
+            + 2.247389642339E-06f64)
+            * Y
+            + 9.76783813082564E-06f64)
+            * Y
+            - 1.93160765581969E-04f64)
+            * Y
+            - 1.58064140671893E-03f64)
+            * Y
+            + 4.85928174507904E-02f64)
+            * Y
+            - 4.30761584997596E-01f64)
+            * Y
             + 1.80400974537950E+00f64;
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
         WW1 = WW1 - WW2;
     } else if X < 5.0f64 {
         Y = X - 4.0E+00f64;
         F1 = ((((((((((-2.62453564772299E-11f64 * Y + 3.24031041623823E-10f64) * Y
-            - 3.614965656163E-09f64) * Y + 3.760256799971E-08f64) * Y
-            - 3.553558319675E-07f64) * Y + 3.022556449731E-06f64) * Y
-            - 2.290098979647E-05f64) * Y + 1.526537461148E-04f64) * Y
-            - 8.81947375894379E-04f64) * Y + 4.33207949514611E-03f64) * Y
-            - 1.75257821619926E-02f64) * Y + 5.28406320615584E-02f64;
+            - 3.614965656163E-09f64)
+            * Y
+            + 3.760256799971E-08f64)
+            * Y
+            - 3.553558319675E-07f64)
+            * Y
+            + 3.022556449731E-06f64)
+            * Y
+            - 2.290098979647E-05f64)
+            * Y
+            + 1.526537461148E-04f64)
+            * Y
+            - 8.81947375894379E-04f64)
+            * Y
+            + 4.33207949514611E-03f64)
+            * Y
+            - 1.75257821619926E-02f64)
+            * Y
+            + 5.28406320615584E-02f64;
         WW1 = (X + X) * F1 + exp(-X);
         RT1 = ((((((((-4.11560117487296E-12f64 * Y + 7.10910223886747E-11f64) * Y
-            - 1.73508862390291E-09f64) * Y + 5.93066856324744E-08f64) * Y
-            - 9.76085576741771E-07f64) * Y + 1.08484384385679E-05f64) * Y
-            - 1.12608004981982E-04f64) * Y + 1.16210907653515E-03f64) * Y
-            - 9.89572595720351E-03f64) * Y + 6.12589701086408E-02f64;
+            - 1.73508862390291E-09f64)
+            * Y
+            + 5.93066856324744E-08f64)
+            * Y
+            - 9.76085576741771E-07f64)
+            * Y
+            + 1.08484384385679E-05f64)
+            * Y
+            - 1.12608004981982E-04f64)
+            * Y
+            + 1.16210907653515E-03f64)
+            * Y
+            - 9.89572595720351E-03f64)
+            * Y
+            + 6.12589701086408E-02f64;
         RT2 = (((((((((-1.80555625241001E-10f64 * Y + 5.44072475994123E-10f64) * Y
-            + 1.603498045240E-08f64) * Y - 1.497986283037E-07f64) * Y
-            - 7.017002532106E-07f64) * Y + 1.85882653064034E-05f64) * Y
-            - 2.04685420150802E-05f64) * Y - 2.49327728643089E-03f64) * Y
-            + 3.56550690684281E-02f64) * Y - 2.60417417692375E-01f64) * Y
+            + 1.603498045240E-08f64)
+            * Y
+            - 1.497986283037E-07f64)
+            * Y
+            - 7.017002532106E-07f64)
+            * Y
+            + 1.85882653064034E-05f64)
+            * Y
+            - 2.04685420150802E-05f64)
+            * Y
+            - 2.49327728643089E-03f64)
+            * Y
+            + 3.56550690684281E-02f64)
+            * Y
+            - 2.60417417692375E-01f64)
+            * Y
             + 1.12155283108289E+00f64;
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
         WW1 = WW1 - WW2;
     } else if X < 10 as f64 {
         E = exp(-X);
         WW1 = ((((((4.6897511375022E-01f64 / X - 6.9955602298985E-01f64) / X
-            + 5.3689283271887E-01f64) / X - 3.2883030418398E-01f64) / X
-            + 2.4645596956002E-01f64) / X - 4.9984072848436E-01f64) / X
-            - 3.1501078774085E-06f64) * E + sqrt(0.78539816339744827900f64 / X);
+            + 5.3689283271887E-01f64)
+            / X
+            - 3.2883030418398E-01f64)
+            / X
+            + 2.4645596956002E-01f64)
+            / X
+            - 4.9984072848436E-01f64)
+            / X
+            - 3.1501078774085E-06f64)
+            * E
+            + sqrt(0.78539816339744827900f64 / X);
         F1 = (WW1 - E) / (X + X);
         Y = X - 7.5E+00f64;
         RT1 = (((((((((((((-1.43632730148572E-16f64 * Y + 2.38198922570405E-16f64) * Y
-            + 1.358319618800E-14f64) * Y - 7.064522786879E-14f64) * Y
-            - 7.719300212748E-13f64) * Y + 7.802544789997E-12f64) * Y
-            + 6.628721099436E-11f64) * Y - 1.775564159743E-09f64) * Y
-            + 1.713828823990E-08f64) * Y - 1.497500187053E-07f64) * Y
-            + 2.283485114279E-06f64) * Y - 3.76953869614706E-05f64) * Y
-            + 4.74791204651451E-04f64) * Y - 4.60448960876139E-03f64) * Y
+            + 1.358319618800E-14f64)
+            * Y
+            - 7.064522786879E-14f64)
+            * Y
+            - 7.719300212748E-13f64)
+            * Y
+            + 7.802544789997E-12f64)
+            * Y
+            + 6.628721099436E-11f64)
+            * Y
+            - 1.775564159743E-09f64)
+            * Y
+            + 1.713828823990E-08f64)
+            * Y
+            - 1.497500187053E-07f64)
+            * Y
+            + 2.283485114279E-06f64)
+            * Y
+            - 3.76953869614706E-05f64)
+            * Y
+            + 4.74791204651451E-04f64)
+            * Y
+            - 4.60448960876139E-03f64)
+            * Y
             + 3.72458587837249E-02f64;
         RT2 = ((((((((((((2.48791622798900E-14f64 * Y - 1.36113510175724E-13f64) * Y
-            - 2.224334349799E-12f64) * Y + 4.190559455515E-11f64) * Y
-            - 2.222722579924E-10f64) * Y - 2.624183464275E-09f64) * Y
-            + 6.128153450169E-08f64) * Y - 4.383376014528E-07f64) * Y
-            - 2.49952200232910E-06f64) * Y + 1.03236647888320E-04f64) * Y
-            - 1.44614664924989E-03f64) * Y + 1.35094294917224E-02f64) * Y
-            - 9.53478510453887E-02f64) * Y + 5.44765245686790E-01f64;
+            - 2.224334349799E-12f64)
+            * Y
+            + 4.190559455515E-11f64)
+            * Y
+            - 2.222722579924E-10f64)
+            * Y
+            - 2.624183464275E-09f64)
+            * Y
+            + 6.128153450169E-08f64)
+            * Y
+            - 4.383376014528E-07f64)
+            * Y
+            - 2.49952200232910E-06f64)
+            * Y
+            + 1.03236647888320E-04f64)
+            * Y
+            - 1.44614664924989E-03f64)
+            * Y
+            + 1.35094294917224E-02f64)
+            * Y
+            - 9.53478510453887E-02f64)
+            * Y
+            + 5.44765245686790E-01f64;
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
         WW1 = WW1 - WW2;
     } else if X < 15 as f64 {
         E = exp(-X);
         WW1 = (((-1.8784686463512E-01f64 / X + 2.2991849164985E-01f64) / X
-            - 4.9893752514047E-01f64) / X - 2.1916512131607E-05f64) * E
+            - 4.9893752514047E-01f64)
+            / X
+            - 2.1916512131607E-05f64)
+            * E
             + sqrt(0.78539816339744827900f64 / X);
         F1 = (WW1 - E) / (X + X);
         RT1 = ((((-1.01041157064226E-05f64 * X + 1.19483054115173E-03f64) * X
-            - 6.73760231824074E-02f64) * X + 1.25705571069895E+00f64) * X
+            - 6.73760231824074E-02f64)
+            * X
+            + 1.25705571069895E+00f64)
+            * X
             + (((-8.57609422987199E+03f64 / X + 5.91005939591842E+03f64) / X
-                - 1.70807677109425E+03f64) / X + 2.64536689959503E+02f64) / X
-            - 2.38570496490846E+01f64) * E + R12 / (X - R12);
+                - 1.70807677109425E+03f64)
+                / X
+                + 2.64536689959503E+02f64)
+                / X
+            - 2.38570496490846E+01f64)
+            * E
+            + R12 / (X - R12);
         RT2 = (((3.39024225137123E-04f64 * X - 9.34976436343509E-02f64) * X
-            - 4.22216483306320E+00f64) * X
+            - 4.22216483306320E+00f64)
+            * X
             + (((-2.08457050986847E+03f64 / X - 1.04999071905664E+03f64) / X
-                + 3.39891508992661E+02f64) / X - 1.56184800325063E+02f64) / X
-            + 8.00839033297501E+00f64) * E + R22 / (X - R22);
+                + 3.39891508992661E+02f64)
+                / X
+                - 1.56184800325063E+02f64)
+                / X
+            + 8.00839033297501E+00f64)
+            * E
+            + R22 / (X - R22);
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
         WW1 = WW1 - WW2;
     } else if X < 33 as f64 {
         E = exp(-X);
-        WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X
-            - 6.0156581186481E-05f64) * E + sqrt(0.78539816339744827900f64 / X);
+        WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X - 6.0156581186481E-05f64)
+            * E
+            + sqrt(0.78539816339744827900f64 / X);
         F1 = (WW1 - E) / (X + X);
         RT1 = ((((-1.14906395546354E-06f64 * X + 1.76003409708332E-04f64) * X
-            - 1.71984023644904E-02f64) * X - 1.37292644149838E-01f64) * X
+            - 1.71984023644904E-02f64)
+            * X
+            - 1.37292644149838E-01f64)
+            * X
             + (-4.75742064274859E+01f64 / X + 9.21005186542857E+00f64) / X
-            - 2.31080873898939E-02f64) * E + R12 / (X - R12);
+            - 2.31080873898939E-02f64)
+            * E
+            + R12 / (X - R12);
         RT2 = (((3.64921633404158E-04f64 * X - 9.71850973831558E-02f64) * X
-            - 4.02886174850252E+00f64) * X
+            - 4.02886174850252E+00f64)
+            * X
             + (-1.35831002139173E+02f64 / X - 8.66891724287962E+01f64) / X
-            + 2.98011277766958E+00f64) * E + R22 / (X - R22);
+            + 2.98011277766958E+00f64)
+            * E
+            + R22 / (X - R22);
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
         WW1 = WW1 - WW2;
     } else if X < 40 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         E = exp(-X);
-        RT1 = (-8.78947307498880E-01f64 * X + 1.09243702330261E+01f64) * E
-            + R12 / (X - R12);
-        RT2 = (-9.28903924275977E+00f64 * X + 8.10642367843811E+01f64) * E
-            + R22 / (X - R22);
+        RT1 = (-8.78947307498880E-01f64 * X + 1.09243702330261E+01f64) * E + R12 / (X - R12);
+        RT2 = (-9.28903924275977E+00f64 * X + 8.10642367843811E+01f64) * E + R22 / (X - R22);
         WW2 = (4.46857389308400E+00f64 * X - 7.79250653461045E+01f64) * E + W22 * WW1;
         WW1 = WW1 - WW2;
     } else {
@@ -4186,11 +4079,7 @@ unsafe extern "C" fn rys_root2(
     *weights.offset(1 as isize) = WW2;
     return 0 as i32;
 }
-unsafe extern "C" fn rys_root3(
-    mut X: f64,
-    mut roots: *mut f64,
-    mut weights: *mut f64,
-) -> i32 {
+unsafe extern "C" fn rys_root3(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
     let mut R13: f64 = 0.;
     let mut R23: f64 = 0.;
     let mut W23: f64 = 0.;
@@ -4225,22 +4114,57 @@ unsafe extern "C" fn rys_root3(
         WW3 = 1.71324492379169E-01f64 - 1.27768455150979E-01f64 * X;
     } else if X < 1.0f64 {
         RT1 = ((((((-5.10186691538870E-10f64 * X + 2.40134415703450E-08f64) * X
-            - 5.01081057744427E-07f64) * X + 7.58291285499256E-06f64) * X
-            - 9.55085533670919E-05f64) * X + 1.02893039315878E-03f64) * X
-            - 9.28875764374337E-03f64) * X + 6.03769246832810E-02f64;
+            - 5.01081057744427E-07f64)
+            * X
+            + 7.58291285499256E-06f64)
+            * X
+            - 9.55085533670919E-05f64)
+            * X
+            + 1.02893039315878E-03f64)
+            * X
+            - 9.28875764374337E-03f64)
+            * X
+            + 6.03769246832810E-02f64;
         RT2 = ((((((-1.29646524960555E-08f64 * X + 7.74602292865683E-08f64) * X
-            + 1.56022811158727E-06f64) * X - 1.58051990661661E-05f64) * X
-            - 3.30447806384059E-04f64) * X + 9.74266885190267E-03f64) * X
-            - 1.19511285526388E-01f64) * X + 7.76823355931033E-01f64;
+            + 1.56022811158727E-06f64)
+            * X
+            - 1.58051990661661E-05f64)
+            * X
+            - 3.30447806384059E-04f64)
+            * X
+            + 9.74266885190267E-03f64)
+            * X
+            - 1.19511285526388E-01f64)
+            * X
+            + 7.76823355931033E-01f64;
         RT3 = ((((((-9.28536484109606E-09f64 * X - 3.02786290067014E-07f64) * X
-            - 2.50734477064200E-06f64) * X - 7.32728109752881E-06f64) * X
-            + 2.44217481700129E-04f64) * X + 4.94758452357327E-02f64) * X
-            - 1.02504611065774E+00f64) * X + 6.66279971938553E+00f64;
+            - 2.50734477064200E-06f64)
+            * X
+            - 7.32728109752881E-06f64)
+            * X
+            + 2.44217481700129E-04f64)
+            * X
+            + 4.94758452357327E-02f64)
+            * X
+            - 1.02504611065774E+00f64)
+            * X
+            + 6.66279971938553E+00f64;
         F2 = ((((((((-7.60911486098850E-08f64 * X + 1.09552870123182E-06f64) * X
-            - 1.03463270693454E-05f64) * X + 8.16324851790106E-05f64) * X
-            - 5.55526624875562E-04f64) * X + 3.20512054753924E-03f64) * X
-            - 1.51515139838540E-02f64) * X + 5.55555554649585E-02f64) * X
-            - 1.42857142854412E-01f64) * X + 1.99999999999986E-01f64;
+            - 1.03463270693454E-05f64)
+            * X
+            + 8.16324851790106E-05f64)
+            * X
+            - 5.55526624875562E-04f64)
+            * X
+            + 3.20512054753924E-03f64)
+            * X
+            - 1.51515139838540E-02f64)
+            * X
+            + 5.55555554649585E-02f64)
+            * X
+            - 1.42857142854412E-01f64)
+            * X
+            + 1.99999999999986E-01f64;
         E = exp(-X);
         F1 = ((X + X) * F2 + E) / 3.0E+00f64;
         WW1 = (X + X) * F1 + E;
@@ -4255,26 +4179,71 @@ unsafe extern "C" fn rys_root3(
     } else if X < 3.0f64 {
         Y = X - 2.0E+00f64;
         RT1 = ((((((((1.44687969563318E-12f64 * Y + 4.85300143926755E-12f64) * Y
-            - 6.55098264095516E-10f64) * Y + 1.56592951656828E-08f64) * Y
-            - 2.60122498274734E-07f64) * Y + 3.86118485517386E-06f64) * Y
-            - 5.13430986707889E-05f64) * Y + 6.03194524398109E-04f64) * Y
-            - 6.11219349825090E-03f64) * Y + 4.52578254679079E-02f64;
+            - 6.55098264095516E-10f64)
+            * Y
+            + 1.56592951656828E-08f64)
+            * Y
+            - 2.60122498274734E-07f64)
+            * Y
+            + 3.86118485517386E-06f64)
+            * Y
+            - 5.13430986707889E-05f64)
+            * Y
+            + 6.03194524398109E-04f64)
+            * Y
+            - 6.11219349825090E-03f64)
+            * Y
+            + 4.52578254679079E-02f64;
         RT2 = (((((((6.95964248788138E-10f64 * Y - 5.35281831445517E-09f64) * Y
-            - 6.745205954533E-08f64) * Y + 1.502366784525E-06f64) * Y
-            + 9.923326947376E-07f64) * Y - 3.89147469249594E-04f64) * Y
-            + 7.51549330892401E-03f64) * Y - 8.48778120363400E-02f64) * Y
+            - 6.745205954533E-08f64)
+            * Y
+            + 1.502366784525E-06f64)
+            * Y
+            + 9.923326947376E-07f64)
+            * Y
+            - 3.89147469249594E-04f64)
+            * Y
+            + 7.51549330892401E-03f64)
+            * Y
+            - 8.48778120363400E-02f64)
+            * Y
             + 5.73928229597613E-01f64;
         RT3 = ((((((((-2.81496588401439E-10f64 * Y + 3.61058041895031E-09f64) * Y
-            + 4.53631789436255E-08f64) * Y - 1.40971837780847E-07f64) * Y
-            - 6.05865557561067E-06f64) * Y - 5.15964042227127E-05f64) * Y
-            + 3.34761560498171E-05f64) * Y + 5.04871005319119E-02f64) * Y
-            - 8.24708946991557E-01f64) * Y + 4.81234667357205E+00f64;
+            + 4.53631789436255E-08f64)
+            * Y
+            - 1.40971837780847E-07f64)
+            * Y
+            - 6.05865557561067E-06f64)
+            * Y
+            - 5.15964042227127E-05f64)
+            * Y
+            + 3.34761560498171E-05f64)
+            * Y
+            + 5.04871005319119E-02f64)
+            * Y
+            - 8.24708946991557E-01f64)
+            * Y
+            + 4.81234667357205E+00f64;
         F2 = ((((((((((-1.48044231072140E-10f64 * Y + 1.78157031325097E-09f64) * Y
-            - 1.92514145088973E-08f64) * Y + 1.92804632038796E-07f64) * Y
-            - 1.73806555021045E-06f64) * Y + 1.39195169625425E-05f64) * Y
-            - 9.74574633246452E-05f64) * Y + 5.83701488646511E-04f64) * Y
-            - 2.89955494844975E-03f64) * Y + 1.13847001113810E-02f64) * Y
-            - 3.23446977320647E-02f64) * Y + 5.29428148329709E-02f64;
+            - 1.92514145088973E-08f64)
+            * Y
+            + 1.92804632038796E-07f64)
+            * Y
+            - 1.73806555021045E-06f64)
+            * Y
+            + 1.39195169625425E-05f64)
+            * Y
+            - 9.74574633246452E-05f64)
+            * Y
+            + 5.83701488646511E-04f64)
+            * Y
+            - 2.89955494844975E-03f64)
+            * Y
+            + 1.13847001113810E-02f64)
+            * Y
+            - 3.23446977320647E-02f64)
+            * Y
+            + 5.29428148329709E-02f64;
         E = exp(-X);
         F1 = ((X + X) * F2 + E) / 3.0E+00f64;
         WW1 = (X + X) * F1 + E;
@@ -4289,26 +4258,71 @@ unsafe extern "C" fn rys_root3(
     } else if X < 5.0f64 {
         Y = X - 4.0E+00f64;
         RT1 = (((((((1.44265709189601E-11f64 * Y - 4.66622033006074E-10f64) * Y
-            + 7.649155832025E-09f64) * Y - 1.229940017368E-07f64) * Y
-            + 2.026002142457E-06f64) * Y - 2.87048671521677E-05f64) * Y
-            + 3.70326938096287E-04f64) * Y - 4.21006346373634E-03f64) * Y
+            + 7.649155832025E-09f64)
+            * Y
+            - 1.229940017368E-07f64)
+            * Y
+            + 2.026002142457E-06f64)
+            * Y
+            - 2.87048671521677E-05f64)
+            * Y
+            + 3.70326938096287E-04f64)
+            * Y
+            - 4.21006346373634E-03f64)
+            * Y
             + 3.50898470729044E-02f64;
         RT2 = ((((((((-2.65526039155651E-11f64 * Y + 1.97549041402552E-10f64) * Y
-            + 2.15971131403034E-09f64) * Y - 7.95045680685193E-08f64) * Y
-            + 5.15021914287057E-07f64) * Y + 1.11788717230514E-05f64) * Y
-            - 3.33739312603632E-04f64) * Y + 5.30601428208358E-03f64) * Y
-            - 5.93483267268959E-02f64) * Y + 4.31180523260239E-01f64;
+            + 2.15971131403034E-09f64)
+            * Y
+            - 7.95045680685193E-08f64)
+            * Y
+            + 5.15021914287057E-07f64)
+            * Y
+            + 1.11788717230514E-05f64)
+            * Y
+            - 3.33739312603632E-04f64)
+            * Y
+            + 5.30601428208358E-03f64)
+            * Y
+            - 5.93483267268959E-02f64)
+            * Y
+            + 4.31180523260239E-01f64;
         RT3 = ((((((((-3.92833750584041E-10f64 * Y - 4.16423229782280E-09f64) * Y
-            + 4.42413039572867E-08f64) * Y + 6.40574545989551E-07f64) * Y
-            - 3.05512456576552E-06f64) * Y - 1.05296443527943E-04f64) * Y
-            - 6.14120969315617E-04f64) * Y + 4.89665802767005E-02f64) * Y
-            - 6.24498381002855E-01f64) * Y + 3.36412312243724E+00f64;
+            + 4.42413039572867E-08f64)
+            * Y
+            + 6.40574545989551E-07f64)
+            * Y
+            - 3.05512456576552E-06f64)
+            * Y
+            - 1.05296443527943E-04f64)
+            * Y
+            - 6.14120969315617E-04f64)
+            * Y
+            + 4.89665802767005E-02f64)
+            * Y
+            - 6.24498381002855E-01f64)
+            * Y
+            + 3.36412312243724E+00f64;
         F2 = ((((((((((-2.36788772599074E-11f64 * Y + 2.89147476459092E-10f64) * Y
-            - 3.18111322308846E-09f64) * Y + 3.25336816562485E-08f64) * Y
-            - 3.00873821471489E-07f64) * Y + 2.48749160874431E-06f64) * Y
-            - 1.81353179793672E-05f64) * Y + 1.14504948737066E-04f64) * Y
-            - 6.10614987696677E-04f64) * Y + 2.64584212770942E-03f64) * Y
-            - 8.66415899015349E-03f64) * Y + 1.75257821619922E-02f64;
+            - 3.18111322308846E-09f64)
+            * Y
+            + 3.25336816562485E-08f64)
+            * Y
+            - 3.00873821471489E-07f64)
+            * Y
+            + 2.48749160874431E-06f64)
+            * Y
+            - 1.81353179793672E-05f64)
+            * Y
+            + 1.14504948737066E-04f64)
+            * Y
+            - 6.10614987696677E-04f64)
+            * Y
+            + 2.64584212770942E-03f64)
+            * Y
+            - 8.66415899015349E-03f64)
+            * Y
+            + 1.75257821619922E-02f64;
         E = exp(-X);
         F1 = ((X + X) * F2 + E) / 3.0E+00f64;
         WW1 = (X + X) * F1 + E;
@@ -4323,33 +4337,88 @@ unsafe extern "C" fn rys_root3(
     } else if X < 10 as f64 {
         E = exp(-X);
         WW1 = ((((((4.6897511375022E-01f64 / X - 6.9955602298985E-01f64) / X
-            + 5.3689283271887E-01f64) / X - 3.2883030418398E-01f64) / X
-            + 2.4645596956002E-01f64) / X - 4.9984072848436E-01f64) / X
-            - 3.1501078774085E-06f64) * E + sqrt(0.78539816339744827900f64 / X);
+            + 5.3689283271887E-01f64)
+            / X
+            - 3.2883030418398E-01f64)
+            / X
+            + 2.4645596956002E-01f64)
+            / X
+            - 4.9984072848436E-01f64)
+            / X
+            - 3.1501078774085E-06f64)
+            * E
+            + sqrt(0.78539816339744827900f64 / X);
         F1 = (WW1 - E) / (X + X);
         F2 = (F1 + F1 + F1 - E) / (X + X);
         Y = X - 7.5E+00f64;
         RT1 = (((((((((((5.74429401360115E-16f64 * Y + 7.11884203790984E-16f64) * Y
-            - 6.736701449826E-14f64) * Y - 6.264613873998E-13f64) * Y
-            + 1.315418927040E-11f64) * Y - 4.23879635610964E-11f64) * Y
-            + 1.39032379769474E-09f64) * Y - 4.65449552856856E-08f64) * Y
-            + 7.34609900170759E-07f64) * Y - 1.08656008854077E-05f64) * Y
-            + 1.77930381549953E-04f64) * Y - 2.39864911618015E-03f64) * Y
+            - 6.736701449826E-14f64)
+            * Y
+            - 6.264613873998E-13f64)
+            * Y
+            + 1.315418927040E-11f64)
+            * Y
+            - 4.23879635610964E-11f64)
+            * Y
+            + 1.39032379769474E-09f64)
+            * Y
+            - 4.65449552856856E-08f64)
+            * Y
+            + 7.34609900170759E-07f64)
+            * Y
+            - 1.08656008854077E-05f64)
+            * Y
+            + 1.77930381549953E-04f64)
+            * Y
+            - 2.39864911618015E-03f64)
+            * Y
             + 2.39112249488821E-02f64;
         RT2 = (((((((((((1.13464096209120E-14f64 * Y + 6.99375313934242E-15f64) * Y
-            - 8.595618132088E-13f64) * Y - 5.293620408757E-12f64) * Y
-            - 2.492175211635E-11f64) * Y + 2.73681574882729E-09f64) * Y
-            - 1.06656985608482E-08f64) * Y - 4.40252529648056E-07f64) * Y
-            + 9.68100917793911E-06f64) * Y - 1.68211091755327E-04f64) * Y
-            + 2.69443611274173E-03f64) * Y - 3.23845035189063E-02f64) * Y
+            - 8.595618132088E-13f64)
+            * Y
+            - 5.293620408757E-12f64)
+            * Y
+            - 2.492175211635E-11f64)
+            * Y
+            + 2.73681574882729E-09f64)
+            * Y
+            - 1.06656985608482E-08f64)
+            * Y
+            - 4.40252529648056E-07f64)
+            * Y
+            + 9.68100917793911E-06f64)
+            * Y
+            - 1.68211091755327E-04f64)
+            * Y
+            + 2.69443611274173E-03f64)
+            * Y
+            - 3.23845035189063E-02f64)
+            * Y
             + 2.75969447451882E-01f64;
         RT3 = ((((((((((((6.66339416996191E-15f64 * Y + 1.84955640200794E-13f64) * Y
-            - 1.985141104444E-12f64) * Y - 2.309293727603E-11f64) * Y
-            + 3.917984522103E-10f64) * Y + 1.663165279876E-09f64) * Y
-            - 6.205591993923E-08f64) * Y + 8.769581622041E-09f64) * Y
-            + 8.97224398620038E-06f64) * Y - 3.14232666170796E-05f64) * Y
-            - 1.83917335649633E-03f64) * Y + 3.51246831672571E-02f64) * Y
-            - 3.22335051270860E-01f64) * Y + 1.73582831755430E+00f64;
+            - 1.985141104444E-12f64)
+            * Y
+            - 2.309293727603E-11f64)
+            * Y
+            + 3.917984522103E-10f64)
+            * Y
+            + 1.663165279876E-09f64)
+            * Y
+            - 6.205591993923E-08f64)
+            * Y
+            + 8.769581622041E-09f64)
+            * Y
+            + 8.97224398620038E-06f64)
+            * Y
+            - 3.14232666170796E-05f64)
+            * Y
+            - 1.83917335649633E-03f64)
+            * Y
+            + 3.51246831672571E-02f64)
+            * Y
+            - 3.22335051270860E-01f64)
+            * Y
+            + 1.73582831755430E+00f64;
         T1 = RT1 / (RT1 + 1.0E+00f64);
         T2 = RT2 / (RT2 + 1.0E+00f64);
         T3 = RT3 / (RT3 + 1.0E+00f64);
@@ -4361,32 +4430,82 @@ unsafe extern "C" fn rys_root3(
     } else if X < 15 as f64 {
         E = exp(-X);
         WW1 = (((-1.8784686463512E-01f64 / X + 2.2991849164985E-01f64) / X
-            - 4.9893752514047E-01f64) / X - 2.1916512131607E-05f64) * E
+            - 4.9893752514047E-01f64)
+            / X
+            - 2.1916512131607E-05f64)
+            * E
             + sqrt(0.78539816339744827900f64 / X);
         F1 = (WW1 - E) / (X + X);
         F2 = (F1 + F1 + F1 - E) / (X + X);
         Y = X - 12.5E+00f64;
         RT1 = (((((((((((4.42133001283090E-16f64 * Y - 2.77189767070441E-15f64) * Y
-            - 4.084026087887E-14f64) * Y + 5.379885121517E-13f64) * Y
-            + 1.882093066702E-12f64) * Y - 8.67286219861085E-11f64) * Y
-            + 7.11372337079797E-10f64) * Y - 3.55578027040563E-09f64) * Y
-            + 1.29454702851936E-07f64) * Y - 4.14222202791434E-06f64) * Y
-            + 8.04427643593792E-05f64) * Y - 1.18587782909876E-03f64) * Y
+            - 4.084026087887E-14f64)
+            * Y
+            + 5.379885121517E-13f64)
+            * Y
+            + 1.882093066702E-12f64)
+            * Y
+            - 8.67286219861085E-11f64)
+            * Y
+            + 7.11372337079797E-10f64)
+            * Y
+            - 3.55578027040563E-09f64)
+            * Y
+            + 1.29454702851936E-07f64)
+            * Y
+            - 4.14222202791434E-06f64)
+            * Y
+            + 8.04427643593792E-05f64)
+            * Y
+            - 1.18587782909876E-03f64)
+            * Y
             + 1.53435577063174E-02f64;
         RT2 = (((((((((((6.85146742119357E-15f64 * Y - 1.08257654410279E-14f64) * Y
-            - 8.579165965128E-13f64) * Y + 6.642452485783E-12f64) * Y
-            + 4.798806828724E-11f64) * Y - 1.13413908163831E-09f64) * Y
-            + 7.08558457182751E-09f64) * Y - 5.59678576054633E-08f64) * Y
-            + 2.51020389884249E-06f64) * Y - 6.63678914608681E-05f64) * Y
-            + 1.11888323089714E-03f64) * Y - 1.45361636398178E-02f64) * Y
+            - 8.579165965128E-13f64)
+            * Y
+            + 6.642452485783E-12f64)
+            * Y
+            + 4.798806828724E-11f64)
+            * Y
+            - 1.13413908163831E-09f64)
+            * Y
+            + 7.08558457182751E-09f64)
+            * Y
+            - 5.59678576054633E-08f64)
+            * Y
+            + 2.51020389884249E-06f64)
+            * Y
+            - 6.63678914608681E-05f64)
+            * Y
+            + 1.11888323089714E-03f64)
+            * Y
+            - 1.45361636398178E-02f64)
+            * Y
             + 1.65077877454402E-01f64;
         RT3 = ((((((((((((3.20622388697743E-15f64 * Y - 2.73458804864628E-14f64) * Y
-            - 3.157134329361E-13f64) * Y + 8.654129268056E-12f64) * Y
-            - 5.625235879301E-11f64) * Y - 7.718080513708E-10f64) * Y
-            + 2.064664199164E-08f64) * Y - 1.567725007761E-07f64) * Y
-            - 1.57938204115055E-06f64) * Y + 6.27436306915967E-05f64) * Y
-            - 1.01308723606946E-03f64) * Y + 1.13901881430697E-02f64) * Y
-            - 1.01449652899450E-01f64) * Y + 7.77203937334739E-01f64;
+            - 3.157134329361E-13f64)
+            * Y
+            + 8.654129268056E-12f64)
+            * Y
+            - 5.625235879301E-11f64)
+            * Y
+            - 7.718080513708E-10f64)
+            * Y
+            + 2.064664199164E-08f64)
+            * Y
+            - 1.567725007761E-07f64)
+            * Y
+            - 1.57938204115055E-06f64)
+            * Y
+            + 6.27436306915967E-05f64)
+            * Y
+            - 1.01308723606946E-03f64)
+            * Y
+            + 1.13901881430697E-02f64)
+            * Y
+            - 1.01449652899450E-01f64)
+            * Y
+            + 7.77203937334739E-01f64;
         T1 = RT1 / (RT1 + 1.0E+00f64);
         T2 = RT2 / (RT2 + 1.0E+00f64);
         T3 = RT3 / (RT3 + 1.0E+00f64);
@@ -4397,39 +4516,76 @@ unsafe extern "C" fn rys_root3(
         WW1 = WW1 - WW2 - WW3;
     } else if X < 33 as f64 {
         E = exp(-X);
-        WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X
-            - 6.0156581186481E-05f64) * E + sqrt(0.78539816339744827900f64 / X);
+        WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X - 6.0156581186481E-05f64)
+            * E
+            + sqrt(0.78539816339744827900f64 / X);
         F1 = (WW1 - E) / (X + X);
         F2 = (F1 + F1 + F1 - E) / (X + X);
         if X < 20 as f64 {
             RT1 = ((((((-2.43270989903742E-06f64 * X + 3.57901398988359E-04f64) * X
-                - 2.34112415981143E-02f64) * X + 7.81425144913975E-01f64) * X
-                - 1.73209218219175E+01f64) * X + 2.43517435690398E+02f64) * X
+                - 2.34112415981143E-02f64)
+                * X
+                + 7.81425144913975E-01f64)
+                * X
+                - 1.73209218219175E+01f64)
+                * X
+                + 2.43517435690398E+02f64)
+                * X
                 + (-1.97611541576986E+04f64 / X + 9.82441363463929E+03f64) / X
-                - 2.07970687843258E+03f64) * E + R13 / (X - R13);
+                - 2.07970687843258E+03f64)
+                * E
+                + R13 / (X - R13);
             RT2 = (((((-2.62627010965435E-04f64 * X + 3.49187925428138E-02f64) * X
-                - 3.09337618731880E+00f64) * X + 1.07037141010778E+02f64) * X
-                - 2.36659637247087E+03f64) * X
+                - 3.09337618731880E+00f64)
+                * X
+                + 1.07037141010778E+02f64)
+                * X
+                - 2.36659637247087E+03f64)
+                * X
                 + ((-2.91669113681020E+06f64 / X + 1.41129505262758E+06f64) / X
-                    - 2.91532335433779E+05f64) / X + 3.35202872835409E+04f64) * E
+                    - 2.91532335433779E+05f64)
+                    / X
+                + 3.35202872835409E+04f64)
+                * E
                 + R23 / (X - R23);
             RT3 = (((((9.31856404738601E-05f64 * X - 2.87029400759565E-02f64) * X
-                - 7.83503697918455E-01f64) * X - 1.84338896480695E+01f64) * X
-                + 4.04996712650414E+02f64) * X
+                - 7.83503697918455E-01f64)
+                * X
+                - 1.84338896480695E+01f64)
+                * X
+                + 4.04996712650414E+02f64)
+                * X
                 + (-1.89829509315154E+05f64 / X + 5.11498390849158E+04f64) / X
-                - 6.88145821789955E+03f64) * E + R33 / (X - R33);
+                - 6.88145821789955E+03f64)
+                * E
+                + R33 / (X - R33);
         } else {
             RT1 = ((((-4.97561537069643E-04f64 * X - 5.00929599665316E-02f64) * X
-                + 1.31099142238996E+00f64) * X - 1.88336409225481E+01f64) * X
-                - 6.60344754467191E+02f64 / X + 1.64931462413877E+02f64) * E
+                + 1.31099142238996E+00f64)
+                * X
+                - 1.88336409225481E+01f64)
+                * X
+                - 6.60344754467191E+02f64 / X
+                + 1.64931462413877E+02f64)
+                * E
                 + R13 / (X - R13);
             RT2 = ((((-4.48218898474906E-03f64 * X - 5.17373211334924E-01f64) * X
-                + 1.13691058739678E+01f64) * X - 1.65426392885291E+02f64) * X
-                - 6.30909125686731E+03f64 / X + 1.52231757709236E+03f64) * E
+                + 1.13691058739678E+01f64)
+                * X
+                - 1.65426392885291E+02f64)
+                * X
+                - 6.30909125686731E+03f64 / X
+                + 1.52231757709236E+03f64)
+                * E
                 + R23 / (X - R23);
             RT3 = ((((-1.38368602394293E-02f64 * X - 1.77293428863008E+00f64) * X
-                + 1.73639054044562E+01f64) * X - 3.57615122086961E+02f64) * X
-                - 1.45734701095912E+04f64 / X + 2.69831813951849E+03f64) * E
+                + 1.73639054044562E+01f64)
+                * X
+                - 3.57615122086961E+02f64)
+                * X
+                - 1.45734701095912E+04f64 / X
+                + 2.69831813951849E+03f64)
+                * E
                 + R33 / (X - R33);
         }
         T1 = RT1 / (RT1 + 1.0E+00f64);
@@ -4444,15 +4600,27 @@ unsafe extern "C" fn rys_root3(
         WW1 = sqrt(0.78539816339744827900f64 / X);
         E = exp(-X);
         RT1 = ((-7.39058467995275E+00f64 * X + 3.21318352526305E+02f64) * X
-            - 3.99433696473658E+03f64) * E + R13 / (X - R13);
+            - 3.99433696473658E+03f64)
+            * E
+            + R13 / (X - R13);
         RT2 = ((-7.38726243906513E+01f64 * X + 3.13569966333873E+03f64) * X
-            - 3.86862867311321E+04f64) * E + R23 / (X - R23);
+            - 3.86862867311321E+04f64)
+            * E
+            + R23 / (X - R23);
         RT3 = ((-2.63750565461336E+02f64 * X + 1.04412168692352E+04f64) * X
-            - 1.28094577915394E+05f64) * E + R33 / (X - R33);
+            - 1.28094577915394E+05f64)
+            * E
+            + R33 / (X - R33);
         WW3 = (((1.52258947224714E-01f64 * X - 8.30661900042651E+00f64) * X
-            + 1.92977367967984E+02f64) * X - 1.67787926005344E+03f64) * E + W33 * WW1;
+            + 1.92977367967984E+02f64)
+            * X
+            - 1.67787926005344E+03f64)
+            * E
+            + W33 * WW1;
         WW2 = ((6.15072615497811E+01f64 * X - 2.91980647450269E+03f64) * X
-            + 3.80794303087338E+04f64) * E + W23 * WW1;
+            + 3.80794303087338E+04f64)
+            * E
+            + W23 * WW1;
         WW1 = WW1 - WW2 - WW3;
     } else {
         WW1 = sqrt(0.78539816339744827900f64 / X);
@@ -4471,11 +4639,7 @@ unsafe extern "C" fn rys_root3(
     *weights.offset(2 as isize) = WW3;
     return 0 as i32;
 }
-unsafe extern "C" fn rys_root4(
-    mut X: f64,
-    mut roots: *mut f64,
-    mut weights: *mut f64,
-) -> i32 {
+unsafe extern "C" fn rys_root4(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
     let mut R14: f64 = 0.;
     let mut R24: f64 = 0.;
     let mut W24: f64 = 0.;
@@ -4511,326 +4675,945 @@ unsafe extern "C" fn rys_root4(
         WW4 = 1.01228536290376E-01f64 - 8.28299075414321E-02f64 * X;
     } else if X <= 1.0f64 {
         RT1 = ((((((-1.95309614628539E-10f64 * X + 5.19765728707592E-09f64) * X
-            - 1.01756452250573E-07f64) * X + 1.72365935872131E-06f64) * X
-            - 2.61203523522184E-05f64) * X + 3.52921308769880E-04f64) * X
-            - 4.09645850658433E-03f64) * X + 3.48198973061469E-02f64;
+            - 1.01756452250573E-07f64)
+            * X
+            + 1.72365935872131E-06f64)
+            * X
+            - 2.61203523522184E-05f64)
+            * X
+            + 3.52921308769880E-04f64)
+            * X
+            - 4.09645850658433E-03f64)
+            * X
+            + 3.48198973061469E-02f64;
         RT2 = (((((-1.89554881382342E-08f64 * X + 3.07583114342365E-07f64) * X
-            + 1.270981734393E-06f64) * X - 1.417298563884E-04f64) * X
-            + 3.226979163176E-03f64) * X - 4.48902570678178E-02f64) * X
+            + 1.270981734393E-06f64)
+            * X
+            - 1.417298563884E-04f64)
+            * X
+            + 3.226979163176E-03f64)
+            * X
+            - 4.48902570678178E-02f64)
+            * X
             + 3.81567185080039E-01f64;
         RT3 = ((((((1.77280535300416E-09f64 * X + 3.36524958870615E-08f64) * X
-            - 2.58341529013893E-07f64) * X - 1.13644895662320E-05f64) * X
-            - 7.91549618884063E-05f64) * X + 1.03825827346828E-02f64) * X
-            - 2.04389090525137E-01f64) * X + 1.73730726945889E+00f64;
+            - 2.58341529013893E-07f64)
+            * X
+            - 1.13644895662320E-05f64)
+            * X
+            - 7.91549618884063E-05f64)
+            * X
+            + 1.03825827346828E-02f64)
+            * X
+            - 2.04389090525137E-01f64)
+            * X
+            + 1.73730726945889E+00f64;
         RT4 = (((((-5.61188882415248E-08f64 * X - 2.49480733072460E-07f64) * X
-            + 3.428685057114E-06f64) * X + 1.679007454539E-04f64) * X
-            + 4.722855585715E-02f64) * X - 1.39368301737828E+00f64) * X
+            + 3.428685057114E-06f64)
+            * X
+            + 1.679007454539E-04f64)
+            * X
+            + 4.722855585715E-02f64)
+            * X
+            - 1.39368301737828E+00f64)
+            * X
             + 1.18463056481543E+01f64;
         WW1 = ((((((-1.14649303201279E-08f64 * X + 1.88015570196787E-07f64) * X
-            - 2.33305875372323E-06f64) * X + 2.68880044371597E-05f64) * X
-            - 2.94268428977387E-04f64) * X + 3.06548909776613E-03f64) * X
-            - 3.13844305680096E-02f64) * X + 3.62683783378335E-01f64;
+            - 2.33305875372323E-06f64)
+            * X
+            + 2.68880044371597E-05f64)
+            * X
+            - 2.94268428977387E-04f64)
+            * X
+            + 3.06548909776613E-03f64)
+            * X
+            - 3.13844305680096E-02f64)
+            * X
+            + 3.62683783378335E-01f64;
         WW2 = ((((((((-4.11720483772634E-09f64 * X + 6.54963481852134E-08f64) * X
-            - 7.20045285129626E-07f64) * X + 6.93779646721723E-06f64) * X
-            - 6.05367572016373E-05f64) * X + 4.74241566251899E-04f64) * X
-            - 3.26956188125316E-03f64) * X + 1.91883866626681E-02f64) * X
-            - 8.98046242565811E-02f64) * X + 3.13706645877886E-01f64;
+            - 7.20045285129626E-07f64)
+            * X
+            + 6.93779646721723E-06f64)
+            * X
+            - 6.05367572016373E-05f64)
+            * X
+            + 4.74241566251899E-04f64)
+            * X
+            - 3.26956188125316E-03f64)
+            * X
+            + 1.91883866626681E-02f64)
+            * X
+            - 8.98046242565811E-02f64)
+            * X
+            + 3.13706645877886E-01f64;
         WW3 = ((((((((-3.41688436990215E-08f64 * X + 5.07238960340773E-07f64) * X
-            - 5.01675628408220E-06f64) * X + 4.20363420922845E-05f64) * X
-            - 3.08040221166823E-04f64) * X + 1.94431864731239E-03f64) * X
-            - 1.02477820460278E-02f64) * X + 4.28670143840073E-02f64) * X
-            - 1.29314370962569E-01f64) * X + 2.22381034453369E-01f64;
+            - 5.01675628408220E-06f64)
+            * X
+            + 4.20363420922845E-05f64)
+            * X
+            - 3.08040221166823E-04f64)
+            * X
+            + 1.94431864731239E-03f64)
+            * X
+            - 1.02477820460278E-02f64)
+            * X
+            + 4.28670143840073E-02f64)
+            * X
+            - 1.29314370962569E-01f64)
+            * X
+            + 2.22381034453369E-01f64;
         WW4 = (((((((((4.99660550769508E-09f64 * X - 7.94585963310120E-08f64) * X
-            + 8.359072409485E-07f64) * X - 7.422369210610E-06f64) * X
-            + 5.763374308160E-05f64) * X - 3.86645606718233E-04f64) * X
-            + 2.18417516259781E-03f64) * X - 9.99791027771119E-03f64) * X
-            + 3.48791097377370E-02f64) * X - 8.28299075413889E-02f64) * X
+            + 8.359072409485E-07f64)
+            * X
+            - 7.422369210610E-06f64)
+            * X
+            + 5.763374308160E-05f64)
+            * X
+            - 3.86645606718233E-04f64)
+            * X
+            + 2.18417516259781E-03f64)
+            * X
+            - 9.99791027771119E-03f64)
+            * X
+            + 3.48791097377370E-02f64)
+            * X
+            - 8.28299075413889E-02f64)
+            * X
             + 1.01228536290376E-01f64;
     } else if X <= 5 as f64 {
         Y = X - 3.0E+00f64;
         RT1 = (((((((((-1.48570633747284E-15f64 * Y - 1.33273068108777E-13f64) * Y
-            + 4.068543696670E-12f64) * Y - 9.163164161821E-11f64) * Y
-            + 2.046819017845E-09f64) * Y - 4.03076426299031E-08f64) * Y
-            + 7.29407420660149E-07f64) * Y - 1.23118059980833E-05f64) * Y
-            + 1.88796581246938E-04f64) * Y - 2.53262912046853E-03f64) * Y
+            + 4.068543696670E-12f64)
+            * Y
+            - 9.163164161821E-11f64)
+            * Y
+            + 2.046819017845E-09f64)
+            * Y
+            - 4.03076426299031E-08f64)
+            * Y
+            + 7.29407420660149E-07f64)
+            * Y
+            - 1.23118059980833E-05f64)
+            * Y
+            + 1.88796581246938E-04f64)
+            * Y
+            - 2.53262912046853E-03f64)
+            * Y
             + 2.51198234505021E-02f64;
         RT2 = (((((((((1.35830583483312E-13f64 * Y - 2.29772605964836E-12f64) * Y
-            - 3.821500128045E-12f64) * Y + 6.844424214735E-10f64) * Y
-            - 1.048063352259E-08f64) * Y + 1.50083186233363E-08f64) * Y
-            + 3.48848942324454E-06f64) * Y - 1.08694174399193E-04f64) * Y
-            + 2.08048885251999E-03f64) * Y - 2.91205805373793E-02f64) * Y
+            - 3.821500128045E-12f64)
+            * Y
+            + 6.844424214735E-10f64)
+            * Y
+            - 1.048063352259E-08f64)
+            * Y
+            + 1.50083186233363E-08f64)
+            * Y
+            + 3.48848942324454E-06f64)
+            * Y
+            - 1.08694174399193E-04f64)
+            * Y
+            + 2.08048885251999E-03f64)
+            * Y
+            - 2.91205805373793E-02f64)
+            * Y
             + 2.72276489515713E-01f64;
         RT3 = (((((((((5.02799392850289E-13f64 * Y + 1.07461812944084E-11f64) * Y
-            - 1.482277886411E-10f64) * Y - 2.153585661215E-09f64) * Y
-            + 3.654087802817E-08f64) * Y + 5.15929575830120E-07f64) * Y
-            - 9.52388379435709E-06f64) * Y - 2.16552440036426E-04f64) * Y
-            + 9.03551469568320E-03f64) * Y - 1.45505469175613E-01f64) * Y
+            - 1.482277886411E-10f64)
+            * Y
+            - 2.153585661215E-09f64)
+            * Y
+            + 3.654087802817E-08f64)
+            * Y
+            + 5.15929575830120E-07f64)
+            * Y
+            - 9.52388379435709E-06f64)
+            * Y
+            - 2.16552440036426E-04f64)
+            * Y
+            + 9.03551469568320E-03f64)
+            * Y
+            - 1.45505469175613E-01f64)
+            * Y
             + 1.21449092319186E+00f64;
         RT4 = (((((((((-1.08510370291979E-12f64 * Y + 6.41492397277798E-11f64) * Y
-            + 7.542387436125E-10f64) * Y - 2.213111836647E-09f64) * Y
-            - 1.448228963549E-07f64) * Y - 1.95670833237101E-06f64) * Y
-            - 1.07481314670844E-05f64) * Y + 1.49335941252765E-04f64) * Y
-            + 4.87791531990593E-02f64) * Y - 1.10559909038653E+00f64) * Y
+            + 7.542387436125E-10f64)
+            * Y
+            - 2.213111836647E-09f64)
+            * Y
+            - 1.448228963549E-07f64)
+            * Y
+            - 1.95670833237101E-06f64)
+            * Y
+            - 1.07481314670844E-05f64)
+            * Y
+            + 1.49335941252765E-04f64)
+            * Y
+            + 4.87791531990593E-02f64)
+            * Y
+            - 1.10559909038653E+00f64)
+            * Y
             + 8.09502028611780E+00f64;
         WW1 = ((((((((((-4.65801912689961E-14f64 * Y + 7.58669507106800E-13f64) * Y
-            - 1.186387548048E-11f64) * Y + 1.862334710665E-10f64) * Y
-            - 2.799399389539E-09f64) * Y + 4.148972684255E-08f64) * Y
-            - 5.933568079600E-07f64) * Y + 8.168349266115E-06f64) * Y
-            - 1.08989176177409E-04f64) * Y + 1.41357961729531E-03f64) * Y
-            - 1.87588361833659E-02f64) * Y + 2.89898651436026E-01f64;
+            - 1.186387548048E-11f64)
+            * Y
+            + 1.862334710665E-10f64)
+            * Y
+            - 2.799399389539E-09f64)
+            * Y
+            + 4.148972684255E-08f64)
+            * Y
+            - 5.933568079600E-07f64)
+            * Y
+            + 8.168349266115E-06f64)
+            * Y
+            - 1.08989176177409E-04f64)
+            * Y
+            + 1.41357961729531E-03f64)
+            * Y
+            - 1.87588361833659E-02f64)
+            * Y
+            + 2.89898651436026E-01f64;
         WW2 = ((((((((((((-1.46345073267549E-14f64 * Y + 2.25644205432182E-13f64) * Y
-            - 3.116258693847E-12f64) * Y + 4.321908756610E-11f64) * Y
-            - 5.673270062669E-10f64) * Y + 7.006295962960E-09f64) * Y
-            - 8.120186517000E-08f64) * Y + 8.775294645770E-07f64) * Y
-            - 8.77829235749024E-06f64) * Y + 8.04372147732379E-05f64) * Y
-            - 6.64149238804153E-04f64) * Y + 4.81181506827225E-03f64) * Y
-            - 2.88982669486183E-02f64) * Y + 1.56247249979288E-01f64;
+            - 3.116258693847E-12f64)
+            * Y
+            + 4.321908756610E-11f64)
+            * Y
+            - 5.673270062669E-10f64)
+            * Y
+            + 7.006295962960E-09f64)
+            * Y
+            - 8.120186517000E-08f64)
+            * Y
+            + 8.775294645770E-07f64)
+            * Y
+            - 8.77829235749024E-06f64)
+            * Y
+            + 8.04372147732379E-05f64)
+            * Y
+            - 6.64149238804153E-04f64)
+            * Y
+            + 4.81181506827225E-03f64)
+            * Y
+            - 2.88982669486183E-02f64)
+            * Y
+            + 1.56247249979288E-01f64;
         WW3 = (((((((((((((9.06812118895365E-15f64 * Y - 1.40541322766087E-13f64) * Y
-            + 1.919270015269E-12f64) * Y - 2.605135739010E-11f64) * Y
-            + 3.299685839012E-10f64) * Y - 3.86354139348735E-09f64) * Y
-            + 4.16265847927498E-08f64) * Y - 4.09462835471470E-07f64) * Y
-            + 3.64018881086111E-06f64) * Y - 2.88665153269386E-05f64) * Y
-            + 2.00515819789028E-04f64) * Y - 1.18791896897934E-03f64) * Y
-            + 5.75223633388589E-03f64) * Y - 2.09400418772687E-02f64) * Y
+            + 1.919270015269E-12f64)
+            * Y
+            - 2.605135739010E-11f64)
+            * Y
+            + 3.299685839012E-10f64)
+            * Y
+            - 3.86354139348735E-09f64)
+            * Y
+            + 4.16265847927498E-08f64)
+            * Y
+            - 4.09462835471470E-07f64)
+            * Y
+            + 3.64018881086111E-06f64)
+            * Y
+            - 2.88665153269386E-05f64)
+            * Y
+            + 2.00515819789028E-04f64)
+            * Y
+            - 1.18791896897934E-03f64)
+            * Y
+            + 5.75223633388589E-03f64)
+            * Y
+            - 2.09400418772687E-02f64)
+            * Y
             + 4.85368861938873E-02f64;
-        WW4 = ((((((((((((((-9.74835552342257E-16f64 * Y + 1.57857099317175E-14f64) * Y
-            - 2.249993780112E-13f64) * Y + 3.173422008953E-12f64) * Y
-            - 4.161159459680E-11f64) * Y + 5.021343560166E-10f64) * Y
-            - 5.545047534808E-09f64) * Y + 5.554146993491E-08f64) * Y
-            - 4.99048696190133E-07f64) * Y + 3.96650392371311E-06f64) * Y
-            - 2.73816413291214E-05f64) * Y + 1.60106988333186E-04f64) * Y
-            - 7.64560567879592E-04f64) * Y + 2.81330044426892E-03f64) * Y
-            - 7.16227030134947E-03f64) * Y + 9.66077262223353E-03f64;
+        WW4 = ((((((((((((((-9.74835552342257E-16f64 * Y + 1.57857099317175E-14f64)
+            * Y
+            - 2.249993780112E-13f64)
+            * Y
+            + 3.173422008953E-12f64)
+            * Y
+            - 4.161159459680E-11f64)
+            * Y
+            + 5.021343560166E-10f64)
+            * Y
+            - 5.545047534808E-09f64)
+            * Y
+            + 5.554146993491E-08f64)
+            * Y
+            - 4.99048696190133E-07f64)
+            * Y
+            + 3.96650392371311E-06f64)
+            * Y
+            - 2.73816413291214E-05f64)
+            * Y
+            + 1.60106988333186E-04f64)
+            * Y
+            - 7.64560567879592E-04f64)
+            * Y
+            + 2.81330044426892E-03f64)
+            * Y
+            - 7.16227030134947E-03f64)
+            * Y
+            + 9.66077262223353E-03f64;
     } else if X <= 10.0f64 {
         Y = X - 7.5E+00f64;
         RT1 = (((((((((4.64217329776215E-15f64 * Y - 6.27892383644164E-15f64) * Y
-            + 3.462236347446E-13f64) * Y - 2.927229355350E-11f64) * Y
-            + 5.090355371676E-10f64) * Y - 9.97272656345253E-09f64) * Y
-            + 2.37835295639281E-07f64) * Y - 4.60301761310921E-06f64) * Y
-            + 8.42824204233222E-05f64) * Y - 1.37983082233081E-03f64) * Y
+            + 3.462236347446E-13f64)
+            * Y
+            - 2.927229355350E-11f64)
+            * Y
+            + 5.090355371676E-10f64)
+            * Y
+            - 9.97272656345253E-09f64)
+            * Y
+            + 2.37835295639281E-07f64)
+            * Y
+            - 4.60301761310921E-06f64)
+            * Y
+            + 8.42824204233222E-05f64)
+            * Y
+            - 1.37983082233081E-03f64)
+            * Y
             + 1.66630865869375E-02f64;
         RT2 = (((((((((2.93981127919047E-14f64 * Y + 8.47635639065744E-13f64) * Y
-            - 1.446314544774E-11f64) * Y - 6.149155555753E-12f64) * Y
-            + 8.484275604612E-10f64) * Y - 6.10898827887652E-08f64) * Y
-            + 2.39156093611106E-06f64) * Y - 5.35837089462592E-05f64) * Y
-            + 1.00967602595557E-03f64) * Y - 1.57769317127372E-02f64) * Y
+            - 1.446314544774E-11f64)
+            * Y
+            - 6.149155555753E-12f64)
+            * Y
+            + 8.484275604612E-10f64)
+            * Y
+            - 6.10898827887652E-08f64)
+            * Y
+            + 2.39156093611106E-06f64)
+            * Y
+            - 5.35837089462592E-05f64)
+            * Y
+            + 1.00967602595557E-03f64)
+            * Y
+            - 1.57769317127372E-02f64)
+            * Y
             + 1.74853819464285E-01f64;
         RT3 = ((((((((((2.93523563363000E-14f64 * Y - 6.40041776667020E-14f64) * Y
-            - 2.695740446312E-12f64) * Y + 1.027082960169E-10f64) * Y
-            - 5.822038656780E-10f64) * Y - 3.159991002539E-08f64) * Y
-            + 4.327249251331E-07f64) * Y + 4.856768455119E-06f64) * Y
-            - 2.54617989427762E-04f64) * Y + 5.54843378106589E-03f64) * Y
-            - 7.95013029486684E-02f64) * Y + 7.20206142703162E-01f64;
+            - 2.695740446312E-12f64)
+            * Y
+            + 1.027082960169E-10f64)
+            * Y
+            - 5.822038656780E-10f64)
+            * Y
+            - 3.159991002539E-08f64)
+            * Y
+            + 4.327249251331E-07f64)
+            * Y
+            + 4.856768455119E-06f64)
+            * Y
+            - 2.54617989427762E-04f64)
+            * Y
+            + 5.54843378106589E-03f64)
+            * Y
+            - 7.95013029486684E-02f64)
+            * Y
+            + 7.20206142703162E-01f64;
         RT4 = (((((((((((-1.62212382394553E-14f64 * Y + 7.68943641360593E-13f64) * Y
-            + 5.764015756615E-12f64) * Y - 1.380635298784E-10f64) * Y
-            - 1.476849808675E-09f64) * Y + 1.84347052385605E-08f64) * Y
-            + 3.34382940759405E-07f64) * Y - 1.39428366421645E-06f64) * Y
-            - 7.50249313713996E-05f64) * Y - 6.26495899187507E-04f64) * Y
-            + 4.69716410901162E-02f64) * Y - 6.66871297428209E-01f64) * Y
+            + 5.764015756615E-12f64)
+            * Y
+            - 1.380635298784E-10f64)
+            * Y
+            - 1.476849808675E-09f64)
+            * Y
+            + 1.84347052385605E-08f64)
+            * Y
+            + 3.34382940759405E-07f64)
+            * Y
+            - 1.39428366421645E-06f64)
+            * Y
+            - 7.50249313713996E-05f64)
+            * Y
+            - 6.26495899187507E-04f64)
+            * Y
+            + 4.69716410901162E-02f64)
+            * Y
+            - 6.66871297428209E-01f64)
+            * Y
             + 4.11207530217806E+00f64;
         WW1 = ((((((((((-1.65995045235997E-15f64 * Y + 6.91838935879598E-14f64) * Y
-            - 9.131223418888E-13f64) * Y + 1.403341829454E-11f64) * Y
-            - 3.672235069444E-10f64) * Y + 6.366962546990E-09f64) * Y
-            - 1.039220021671E-07f64) * Y + 1.959098751715E-06f64) * Y
-            - 3.33474893152939E-05f64) * Y + 5.72164211151013E-04f64) * Y
-            - 1.05583210553392E-02f64) * Y + 2.26696066029591E-01f64;
+            - 9.131223418888E-13f64)
+            * Y
+            + 1.403341829454E-11f64)
+            * Y
+            - 3.672235069444E-10f64)
+            * Y
+            + 6.366962546990E-09f64)
+            * Y
+            - 1.039220021671E-07f64)
+            * Y
+            + 1.959098751715E-06f64)
+            * Y
+            - 3.33474893152939E-05f64)
+            * Y
+            + 5.72164211151013E-04f64)
+            * Y
+            - 1.05583210553392E-02f64)
+            * Y
+            + 2.26696066029591E-01f64;
         WW2 = ((((((((((((-3.57248951192047E-16f64 * Y + 6.25708409149331E-15f64) * Y
-            - 9.657033089714E-14f64) * Y + 1.507864898748E-12f64) * Y
-            - 2.332522256110E-11f64) * Y + 3.428545616603E-10f64) * Y
-            - 4.698730937661E-09f64) * Y + 6.219977635130E-08f64) * Y
-            - 7.83008889613661E-07f64) * Y + 9.08621687041567E-06f64) * Y
-            - 9.86368311253873E-05f64) * Y + 9.69632496710088E-04f64) * Y
-            - 8.14594214284187E-03f64) * Y + 8.50218447733457E-02f64;
+            - 9.657033089714E-14f64)
+            * Y
+            + 1.507864898748E-12f64)
+            * Y
+            - 2.332522256110E-11f64)
+            * Y
+            + 3.428545616603E-10f64)
+            * Y
+            - 4.698730937661E-09f64)
+            * Y
+            + 6.219977635130E-08f64)
+            * Y
+            - 7.83008889613661E-07f64)
+            * Y
+            + 9.08621687041567E-06f64)
+            * Y
+            - 9.86368311253873E-05f64)
+            * Y
+            + 9.69632496710088E-04f64)
+            * Y
+            - 8.14594214284187E-03f64)
+            * Y
+            + 8.50218447733457E-02f64;
         WW3 = (((((((((((((1.64742458534277E-16f64 * Y - 2.68512265928410E-15f64) * Y
-            + 3.788890667676E-14f64) * Y - 5.508918529823E-13f64) * Y
-            + 7.555896810069E-12f64) * Y - 9.69039768312637E-11f64) * Y
-            + 1.16034263529672E-09f64) * Y - 1.28771698573873E-08f64) * Y
-            + 1.31949431805798E-07f64) * Y - 1.23673915616005E-06f64) * Y
-            + 1.04189803544936E-05f64) * Y - 7.79566003744742E-05f64) * Y
-            + 5.03162624754434E-04f64) * Y - 2.55138844587555E-03f64) * Y
+            + 3.788890667676E-14f64)
+            * Y
+            - 5.508918529823E-13f64)
+            * Y
+            + 7.555896810069E-12f64)
+            * Y
+            - 9.69039768312637E-11f64)
+            * Y
+            + 1.16034263529672E-09f64)
+            * Y
+            - 1.28771698573873E-08f64)
+            * Y
+            + 1.31949431805798E-07f64)
+            * Y
+            - 1.23673915616005E-06f64)
+            * Y
+            + 1.04189803544936E-05f64)
+            * Y
+            - 7.79566003744742E-05f64)
+            * Y
+            + 5.03162624754434E-04f64)
+            * Y
+            - 2.55138844587555E-03f64)
+            * Y
             + 1.13250730954014E-02f64;
-        WW4 = ((((((((((((((-1.55714130075679E-17f64 * Y + 2.57193722698891E-16f64) * Y
-            - 3.626606654097E-15f64) * Y + 5.234734676175E-14f64) * Y
-            - 7.067105402134E-13f64) * Y + 8.793512664890E-12f64) * Y
-            - 1.006088923498E-10f64) * Y + 1.050565098393E-09f64) * Y
-            - 9.91517881772662E-09f64) * Y + 8.35835975882941E-08f64) * Y
-            - 6.19785782240693E-07f64) * Y + 3.95841149373135E-06f64) * Y
-            - 2.11366761402403E-05f64) * Y + 9.00474771229507E-05f64) * Y
-            - 2.78777909813289E-04f64) * Y + 5.26543779837487E-04f64;
+        WW4 = ((((((((((((((-1.55714130075679E-17f64 * Y + 2.57193722698891E-16f64)
+            * Y
+            - 3.626606654097E-15f64)
+            * Y
+            + 5.234734676175E-14f64)
+            * Y
+            - 7.067105402134E-13f64)
+            * Y
+            + 8.793512664890E-12f64)
+            * Y
+            - 1.006088923498E-10f64)
+            * Y
+            + 1.050565098393E-09f64)
+            * Y
+            - 9.91517881772662E-09f64)
+            * Y
+            + 8.35835975882941E-08f64)
+            * Y
+            - 6.19785782240693E-07f64)
+            * Y
+            + 3.95841149373135E-06f64)
+            * Y
+            - 2.11366761402403E-05f64)
+            * Y
+            + 9.00474771229507E-05f64)
+            * Y
+            - 2.78777909813289E-04f64)
+            * Y
+            + 5.26543779837487E-04f64;
     } else if X <= 15 as f64 {
         Y = X - 12.5E+00f64;
         RT1 = (((((((((((4.94869622744119E-17f64 * Y + 8.03568805739160E-16f64) * Y
-            - 5.599125915431E-15f64) * Y - 1.378685560217E-13f64) * Y
-            + 7.006511663249E-13f64) * Y + 1.30391406991118E-11f64) * Y
-            + 8.06987313467541E-11f64) * Y - 5.20644072732933E-09f64) * Y
-            + 7.72794187755457E-08f64) * Y - 1.61512612564194E-06f64) * Y
-            + 4.15083811185831E-05f64) * Y - 7.87855975560199E-04f64) * Y
+            - 5.599125915431E-15f64)
+            * Y
+            - 1.378685560217E-13f64)
+            * Y
+            + 7.006511663249E-13f64)
+            * Y
+            + 1.30391406991118E-11f64)
+            * Y
+            + 8.06987313467541E-11f64)
+            * Y
+            - 5.20644072732933E-09f64)
+            * Y
+            + 7.72794187755457E-08f64)
+            * Y
+            - 1.61512612564194E-06f64)
+            * Y
+            + 4.15083811185831E-05f64)
+            * Y
+            - 7.87855975560199E-04f64)
+            * Y
             + 1.14189319050009E-02f64;
         RT2 = (((((((((((4.89224285522336E-16f64 * Y + 1.06390248099712E-14f64) * Y
-            - 5.446260182933E-14f64) * Y - 1.613630106295E-12f64) * Y
-            + 3.910179118937E-12f64) * Y + 1.90712434258806E-10f64) * Y
-            + 8.78470199094761E-10f64) * Y - 5.97332993206797E-08f64) * Y
-            + 9.25750831481589E-07f64) * Y - 2.02362185197088E-05f64) * Y
-            + 4.92341968336776E-04f64) * Y - 8.68438439874703E-03f64) * Y
+            - 5.446260182933E-14f64)
+            * Y
+            - 1.613630106295E-12f64)
+            * Y
+            + 3.910179118937E-12f64)
+            * Y
+            + 1.90712434258806E-10f64)
+            * Y
+            + 8.78470199094761E-10f64)
+            * Y
+            - 5.97332993206797E-08f64)
+            * Y
+            + 9.25750831481589E-07f64)
+            * Y
+            - 2.02362185197088E-05f64)
+            * Y
+            + 4.92341968336776E-04f64)
+            * Y
+            - 8.68438439874703E-03f64)
+            * Y
             + 1.15825965127958E-01f64;
         RT3 = ((((((((((6.12419396208408E-14f64 * Y + 1.12328861406073E-13f64) * Y
-            - 9.051094103059E-12f64) * Y - 4.781797525341E-11f64) * Y
-            + 1.660828868694E-09f64) * Y + 4.499058798868E-10f64) * Y
-            - 2.519549641933E-07f64) * Y + 4.977444040180E-06f64) * Y
-            - 1.25858350034589E-04f64) * Y + 2.70279176970044E-03f64) * Y
-            - 3.99327850801083E-02f64) * Y + 4.33467200855434E-01f64;
+            - 9.051094103059E-12f64)
+            * Y
+            - 4.781797525341E-11f64)
+            * Y
+            + 1.660828868694E-09f64)
+            * Y
+            + 4.499058798868E-10f64)
+            * Y
+            - 2.519549641933E-07f64)
+            * Y
+            + 4.977444040180E-06f64)
+            * Y
+            - 1.25858350034589E-04f64)
+            * Y
+            + 2.70279176970044E-03f64)
+            * Y
+            - 3.99327850801083E-02f64)
+            * Y
+            + 4.33467200855434E-01f64;
         RT4 = (((((((((((4.63414725924048E-14f64 * Y - 4.72757262693062E-14f64) * Y
-            - 1.001926833832E-11f64) * Y + 6.074107718414E-11f64) * Y
-            + 1.576976911942E-09f64) * Y - 2.01186401974027E-08f64) * Y
-            - 1.84530195217118E-07f64) * Y + 5.02333087806827E-06f64) * Y
-            + 9.66961790843006E-06f64) * Y - 1.58522208889528E-03f64) * Y
-            + 2.80539673938339E-02f64) * Y - 2.78953904330072E-01f64) * Y
+            - 1.001926833832E-11f64)
+            * Y
+            + 6.074107718414E-11f64)
+            * Y
+            + 1.576976911942E-09f64)
+            * Y
+            - 2.01186401974027E-08f64)
+            * Y
+            - 1.84530195217118E-07f64)
+            * Y
+            + 5.02333087806827E-06f64)
+            * Y
+            + 9.66961790843006E-06f64)
+            * Y
+            - 1.58522208889528E-03f64)
+            * Y
+            + 2.80539673938339E-02f64)
+            * Y
+            - 2.78953904330072E-01f64)
+            * Y
             + 1.82835655238235E+00f64;
         WW4 = (((((((((((((2.90401781000996E-18f64 * Y - 4.63389683098251E-17f64) * Y
-            + 6.274018198326E-16f64) * Y - 8.936002188168E-15f64) * Y
-            + 1.194719074934E-13f64) * Y - 1.45501321259466E-12f64) * Y
-            + 1.64090830181013E-11f64) * Y - 1.71987745310181E-10f64) * Y
-            + 1.63738403295718E-09f64) * Y - 1.39237504892842E-08f64) * Y
-            + 1.06527318142151E-07f64) * Y - 7.27634957230524E-07f64) * Y
-            + 4.12159381310339E-06f64) * Y - 1.74648169719173E-05f64) * Y
+            + 6.274018198326E-16f64)
+            * Y
+            - 8.936002188168E-15f64)
+            * Y
+            + 1.194719074934E-13f64)
+            * Y
+            - 1.45501321259466E-12f64)
+            * Y
+            + 1.64090830181013E-11f64)
+            * Y
+            - 1.71987745310181E-10f64)
+            * Y
+            + 1.63738403295718E-09f64)
+            * Y
+            - 1.39237504892842E-08f64)
+            * Y
+            + 1.06527318142151E-07f64)
+            * Y
+            - 7.27634957230524E-07f64)
+            * Y
+            + 4.12159381310339E-06f64)
+            * Y
+            - 1.74648169719173E-05f64)
+            * Y
             + 8.50290130067818E-05f64;
         WW3 = ((((((((((((-4.19569145459480E-17f64 * Y + 5.94344180261644E-16f64) * Y
-            - 1.148797566469E-14f64) * Y + 1.881303962576E-13f64) * Y
-            - 2.413554618391E-12f64) * Y + 3.372127423047E-11f64) * Y
-            - 4.933988617784E-10f64) * Y + 6.116545396281E-09f64) * Y
-            - 6.69965691739299E-08f64) * Y + 7.52380085447161E-07f64) * Y
-            - 8.08708393262321E-06f64) * Y + 6.88603417296672E-05f64) * Y
-            - 4.67067112993427E-04f64) * Y + 5.42313365864597E-03f64;
+            - 1.148797566469E-14f64)
+            * Y
+            + 1.881303962576E-13f64)
+            * Y
+            - 2.413554618391E-12f64)
+            * Y
+            + 3.372127423047E-11f64)
+            * Y
+            - 4.933988617784E-10f64)
+            * Y
+            + 6.116545396281E-09f64)
+            * Y
+            - 6.69965691739299E-08f64)
+            * Y
+            + 7.52380085447161E-07f64)
+            * Y
+            - 8.08708393262321E-06f64)
+            * Y
+            + 6.88603417296672E-05f64)
+            * Y
+            - 4.67067112993427E-04f64)
+            * Y
+            + 5.42313365864597E-03f64;
         WW2 = ((((((((((-6.22272689880615E-15f64 * Y + 1.04126809657554E-13f64) * Y
-            - 6.842418230913E-13f64) * Y + 1.576841731919E-11f64) * Y
-            - 4.203948834175E-10f64) * Y + 6.287255934781E-09f64) * Y
-            - 8.307159819228E-08f64) * Y + 1.356478091922E-06f64) * Y
-            - 2.08065576105639E-05f64) * Y + 2.52396730332340E-04f64) * Y
-            - 2.94484050194539E-03f64) * Y + 6.01396183129168E-02f64;
+            - 6.842418230913E-13f64)
+            * Y
+            + 1.576841731919E-11f64)
+            * Y
+            - 4.203948834175E-10f64)
+            * Y
+            + 6.287255934781E-09f64)
+            * Y
+            - 8.307159819228E-08f64)
+            * Y
+            + 1.356478091922E-06f64)
+            * Y
+            - 2.08065576105639E-05f64)
+            * Y
+            + 2.52396730332340E-04f64)
+            * Y
+            - 2.94484050194539E-03f64)
+            * Y
+            + 6.01396183129168E-02f64;
         WW1 = (((-1.8784686463512E-01f64 / X + 2.2991849164985E-01f64) / X
-            - 4.9893752514047E-01f64) / X - 2.1916512131607E-05f64) * exp(-X)
-            + sqrt(0.78539816339744827900f64 / X) - WW4 - WW3 - WW2;
+            - 4.9893752514047E-01f64)
+            / X
+            - 2.1916512131607E-05f64)
+            * exp(-X)
+            + sqrt(0.78539816339744827900f64 / X)
+            - WW4
+            - WW3
+            - WW2;
     } else if X <= 20 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         Y = X - 17.5E+00f64;
         RT1 = (((((((((((4.36701759531398E-17f64 * Y - 1.12860600219889E-16f64) * Y
-            - 6.149849164164E-15f64) * Y + 5.820231579541E-14f64) * Y
-            + 4.396602872143E-13f64) * Y - 1.24330365320172E-11f64) * Y
-            + 6.71083474044549E-11f64) * Y + 2.43865205376067E-10f64) * Y
-            + 1.67559587099969E-08f64) * Y - 9.32738632357572E-07f64) * Y
-            + 2.39030487004977E-05f64) * Y - 4.68648206591515E-04f64) * Y
+            - 6.149849164164E-15f64)
+            * Y
+            + 5.820231579541E-14f64)
+            * Y
+            + 4.396602872143E-13f64)
+            * Y
+            - 1.24330365320172E-11f64)
+            * Y
+            + 6.71083474044549E-11f64)
+            * Y
+            + 2.43865205376067E-10f64)
+            * Y
+            + 1.67559587099969E-08f64)
+            * Y
+            - 9.32738632357572E-07f64)
+            * Y
+            + 2.39030487004977E-05f64)
+            * Y
+            - 4.68648206591515E-04f64)
+            * Y
             + 8.34977776583956E-03f64;
         RT2 = (((((((((((4.98913142288158E-16f64 * Y - 2.60732537093612E-16f64) * Y
-            - 7.775156445127E-14f64) * Y + 5.766105220086E-13f64) * Y
-            + 6.432696729600E-12f64) * Y - 1.39571683725792E-10f64) * Y
-            + 5.95451479522191E-10f64) * Y + 2.42471442836205E-09f64) * Y
-            + 2.47485710143120E-07f64) * Y - 1.14710398652091E-05f64) * Y
-            + 2.71252453754519E-04f64) * Y - 4.96812745851408E-03f64) * Y
+            - 7.775156445127E-14f64)
+            * Y
+            + 5.766105220086E-13f64)
+            * Y
+            + 6.432696729600E-12f64)
+            * Y
+            - 1.39571683725792E-10f64)
+            * Y
+            + 5.95451479522191E-10f64)
+            * Y
+            + 2.42471442836205E-09f64)
+            * Y
+            + 2.47485710143120E-07f64)
+            * Y
+            - 1.14710398652091E-05f64)
+            * Y
+            + 2.71252453754519E-04f64)
+            * Y
+            - 4.96812745851408E-03f64)
+            * Y
             + 8.26020602026780E-02f64;
         RT3 = (((((((((((1.91498302509009E-15f64 * Y + 1.48840394311115E-14f64) * Y
-            - 4.316925145767E-13f64) * Y + 1.186495793471E-12f64) * Y
-            + 4.615806713055E-11f64) * Y - 5.54336148667141E-10f64) * Y
-            + 3.48789978951367E-10f64) * Y - 2.79188977451042E-09f64) * Y
-            + 2.09563208958551E-06f64) * Y - 6.76512715080324E-05f64) * Y
-            + 1.32129867629062E-03f64) * Y - 2.05062147771513E-02f64) * Y
+            - 4.316925145767E-13f64)
+            * Y
+            + 1.186495793471E-12f64)
+            * Y
+            + 4.615806713055E-11f64)
+            * Y
+            - 5.54336148667141E-10f64)
+            * Y
+            + 3.48789978951367E-10f64)
+            * Y
+            - 2.79188977451042E-09f64)
+            * Y
+            + 2.09563208958551E-06f64)
+            * Y
+            - 6.76512715080324E-05f64)
+            * Y
+            + 1.32129867629062E-03f64)
+            * Y
+            - 2.05062147771513E-02f64)
+            * Y
             + 2.88068671894324E-01f64;
         RT4 = (((((((((((-5.43697691672942E-15f64 * Y - 1.12483395714468E-13f64) * Y
-            + 2.826607936174E-12f64) * Y - 1.266734493280E-11f64) * Y
-            - 4.258722866437E-10f64) * Y + 9.45486578503261E-09f64) * Y
-            - 5.86635622821309E-08f64) * Y - 1.28835028104639E-06f64) * Y
-            + 4.41413815691885E-05f64) * Y - 7.61738385590776E-04f64) * Y
-            + 9.66090902985550E-03f64) * Y - 1.01410568057649E-01f64) * Y
+            + 2.826607936174E-12f64)
+            * Y
+            - 1.266734493280E-11f64)
+            * Y
+            - 4.258722866437E-10f64)
+            * Y
+            + 9.45486578503261E-09f64)
+            * Y
+            - 5.86635622821309E-08f64)
+            * Y
+            - 1.28835028104639E-06f64)
+            * Y
+            + 4.41413815691885E-05f64)
+            * Y
+            - 7.61738385590776E-04f64)
+            * Y
+            + 9.66090902985550E-03f64)
+            * Y
+            - 1.01410568057649E-01f64)
+            * Y
             + 9.54714798156712E-01f64;
         WW4 = ((((((((((((-7.56882223582704E-19f64 * Y + 7.53541779268175E-18f64) * Y
-            - 1.157318032236E-16f64) * Y + 2.411195002314E-15f64) * Y
-            - 3.601794386996E-14f64) * Y + 4.082150659615E-13f64) * Y
-            - 4.289542980767E-12f64) * Y + 5.086829642731E-11f64) * Y
-            - 6.35435561050807E-10f64) * Y + 6.82309323251123E-09f64) * Y
-            - 5.63374555753167E-08f64) * Y + 3.57005361100431E-07f64) * Y
-            - 2.40050045173721E-06f64) * Y + 4.94171300536397E-05f64;
+            - 1.157318032236E-16f64)
+            * Y
+            + 2.411195002314E-15f64)
+            * Y
+            - 3.601794386996E-14f64)
+            * Y
+            + 4.082150659615E-13f64)
+            * Y
+            - 4.289542980767E-12f64)
+            * Y
+            + 5.086829642731E-11f64)
+            * Y
+            - 6.35435561050807E-10f64)
+            * Y
+            + 6.82309323251123E-09f64)
+            * Y
+            - 5.63374555753167E-08f64)
+            * Y
+            + 3.57005361100431E-07f64)
+            * Y
+            - 2.40050045173721E-06f64)
+            * Y
+            + 4.94171300536397E-05f64;
         WW3 = (((((((((((-5.54451040921657E-17f64 * Y + 2.68748367250999E-16f64) * Y
-            + 1.349020069254E-14f64) * Y - 2.507452792892E-13f64) * Y
-            + 1.944339743818E-12f64) * Y - 1.29816917658823E-11f64) * Y
-            + 3.49977768819641E-10f64) * Y - 8.67270669346398E-09f64) * Y
-            + 1.31381116840118E-07f64) * Y - 1.36790720600822E-06f64) * Y
-            + 1.19210697673160E-05f64) * Y - 1.42181943986587E-04f64) * Y
+            + 1.349020069254E-14f64)
+            * Y
+            - 2.507452792892E-13f64)
+            * Y
+            + 1.944339743818E-12f64)
+            * Y
+            - 1.29816917658823E-11f64)
+            * Y
+            + 3.49977768819641E-10f64)
+            * Y
+            - 8.67270669346398E-09f64)
+            * Y
+            + 1.31381116840118E-07f64)
+            * Y
+            - 1.36790720600822E-06f64)
+            * Y
+            + 1.19210697673160E-05f64)
+            * Y
+            - 1.42181943986587E-04f64)
+            * Y
             + 4.12615396191829E-03f64;
         WW2 = (((((((((((-1.86506057729700E-16f64 * Y + 1.16661114435809E-15f64) * Y
-            + 2.563712856363E-14f64) * Y - 4.498350984631E-13f64) * Y
-            + 1.765194089338E-12f64) * Y + 9.04483676345625E-12f64) * Y
-            + 4.98930345609785E-10f64) * Y - 2.11964170928181E-08f64) * Y
-            + 3.98295476005614E-07f64) * Y - 5.49390160829409E-06f64) * Y
-            + 7.74065155353262E-05f64) * Y - 1.48201933009105E-03f64) * Y
+            + 2.563712856363E-14f64)
+            * Y
+            - 4.498350984631E-13f64)
+            * Y
+            + 1.765194089338E-12f64)
+            * Y
+            + 9.04483676345625E-12f64)
+            * Y
+            + 4.98930345609785E-10f64)
+            * Y
+            - 2.11964170928181E-08f64)
+            * Y
+            + 3.98295476005614E-07f64)
+            * Y
+            - 5.49390160829409E-06f64)
+            * Y
+            + 7.74065155353262E-05f64)
+            * Y
+            - 1.48201933009105E-03f64)
+            * Y
             + 4.97836392625268E-02f64;
-        WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X
-            - 6.0156581186481E-05f64) * exp(-X) + WW1 - WW2 - WW3 - WW4;
+        WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X - 6.0156581186481E-05f64)
+            * exp(-X)
+            + WW1
+            - WW2
+            - WW3
+            - WW4;
     } else if X <= 35 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         E = exp(-X);
         RT1 = ((((((-4.45711399441838E-05f64 * X + 1.27267770241379E-03f64) * X
-            - 2.36954961381262E-01f64) * X + 1.54330657903756E+01f64) * X
-            - 5.22799159267808E+02f64) * X + 1.05951216669313E+04f64) * X
+            - 2.36954961381262E-01f64)
+            * X
+            + 1.54330657903756E+01f64)
+            * X
+            - 5.22799159267808E+02f64)
+            * X
+            + 1.05951216669313E+04f64)
+            * X
             + (-2.51177235556236E+06f64 / X + 8.72975373557709E+05f64) / X
-            - 1.29194382386499E+05f64) * E + R14 / (X - R14);
+            - 1.29194382386499E+05f64)
+            * E
+            + R14 / (X - R14);
         RT2 = (((((-7.85617372254488E-02f64 * X + 6.35653573484868E+00f64) * X
-            - 3.38296938763990E+02f64) * X + 1.25120495802096E+04f64) * X
-            - 3.16847570511637E+05f64) * X
+            - 3.38296938763990E+02f64)
+            * X
+            + 1.25120495802096E+04f64)
+            * X
+            - 3.16847570511637E+05f64)
+            * X
             + ((-1.02427466127427E+09f64 / X + 3.70104713293016E+08f64) / X
-                - 5.87119005093822E+07f64) / X + 5.38614211391604E+06f64) * E
+                - 5.87119005093822E+07f64)
+                / X
+            + 5.38614211391604E+06f64)
+            * E
             + R24 / (X - R24);
         RT3 = (((((-2.37900485051067E-01f64 * X + 1.84122184400896E+01f64) * X
-            - 1.00200731304146E+03f64) * X + 3.75151841595736E+04f64) * X
-            - 9.50626663390130E+05f64) * X
+            - 1.00200731304146E+03f64)
+            * X
+            + 3.75151841595736E+04f64)
+            * X
+            - 9.50626663390130E+05f64)
+            * X
             + ((-2.88139014651985E+09f64 / X + 1.06625915044526E+09f64) / X
-                - 1.72465289687396E+08f64) / X + 1.60419390230055E+07f64) * E
+                - 1.72465289687396E+08f64)
+                / X
+            + 1.60419390230055E+07f64)
+            * E
             + R34 / (X - R34);
         RT4 = ((((((-6.00691586407385E-04f64 * X - 3.64479545338439E-01f64) * X
-            + 1.57496131755179E+01f64) * X - 6.54944248734901E+02f64) * X
-            + 1.70830039597097E+04f64) * X - 2.90517939780207E+05f64) * X
+            + 1.57496131755179E+01f64)
+            * X
+            - 6.54944248734901E+02f64)
+            * X
+            + 1.70830039597097E+04f64)
+            * X
+            - 2.90517939780207E+05f64)
+            * X
             + (3.49059698304732E+07f64 / X - 1.64944522586065E+07f64) / X
-            + 2.96817940164703E+06f64) * E + R44 / (X - R44);
+            + 2.96817940164703E+06f64)
+            * E
+            + R44 / (X - R44);
         if X <= 25 as f64 {
             WW4 = (((((((2.33766206773151E-07f64 * X - 3.81542906607063E-05f64) * X
-                + 3.51416601267000E-03f64) * X - 1.66538571864728E-01f64) * X
-                + 4.80006136831847E+00f64) * X - 8.73165934223603E+01f64) * X
-                + 9.77683627474638E+02f64) * X + 1.66000945117640E+04f64 / X
-                - 6.14479071209961E+03f64) * E + W44 * WW1;
+                + 3.51416601267000E-03f64)
+                * X
+                - 1.66538571864728E-01f64)
+                * X
+                + 4.80006136831847E+00f64)
+                * X
+                - 8.73165934223603E+01f64)
+                * X
+                + 9.77683627474638E+02f64)
+                * X
+                + 1.66000945117640E+04f64 / X
+                - 6.14479071209961E+03f64)
+                * E
+                + W44 * WW1;
         } else {
             WW4 = ((((((5.74245945342286E-06f64 * X - 7.58735928102351E-05f64) * X
-                + 2.35072857922892E-04f64) * X - 3.78812134013125E-03f64) * X
-                + 3.09871652785805E-01f64) * X - 7.11108633061306E+00f64) * X
-                + 5.55297573149528E+01f64) * E + W44 * WW1;
+                + 2.35072857922892E-04f64)
+                * X
+                - 3.78812134013125E-03f64)
+                * X
+                + 3.09871652785805E-01f64)
+                * X
+                - 7.11108633061306E+00f64)
+                * X
+                + 5.55297573149528E+01f64)
+                * E
+                + W44 * WW1;
         }
         WW3 = ((((((2.36392855180768E-04f64 * X - 9.16785337967013E-03f64) * X
-            + 4.62186525041313E-01f64) * X - 1.96943786006540E+01f64) * X
-            + 4.99169195295559E+02f64) * X - 6.21419845845090E+03f64) * X
+            + 4.62186525041313E-01f64)
+            * X
+            - 1.96943786006540E+01f64)
+            * X
+            + 4.99169195295559E+02f64)
+            * X
+            - 6.21419845845090E+03f64)
+            * X
             + ((5.21445053212414E+07f64 / X - 1.34113464389309E+07f64) / X
-                + 1.13673298305631E+06f64) / X - 2.81501182042707E+03f64) * E
+                + 1.13673298305631E+06f64)
+                / X
+            - 2.81501182042707E+03f64)
+            * E
             + W34 * WW1;
         WW2 = ((((((7.29841848989391E-04f64 * X - 3.53899555749875E-02f64) * X
-            + 2.07797425718513E+00f64) * X - 1.00464709786287E+02f64) * X
-            + 3.15206108877819E+03f64) * X - 6.27054715090012E+04f64) * X
+            + 2.07797425718513E+00f64)
+            * X
+            - 1.00464709786287E+02f64)
+            * X
+            + 3.15206108877819E+03f64)
+            * X
+            - 6.27054715090012E+04f64)
+            * X
             + (1.54721246264919E+07f64 / X - 5.26074391316381E+06f64) / X
-            + 7.67135400969617E+05f64) * E + W24 * WW1;
-        WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X
-            - 6.0156581186481E-05f64) * E + WW1 - WW2 - WW3 - WW4;
+            + 7.67135400969617E+05f64)
+            * E
+            + W24 * WW1;
+        WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X - 6.0156581186481E-05f64)
+            * E
+            + WW1
+            - WW2
+            - WW3
+            - WW4;
     } else if X <= 53 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         E = exp(-X) * pow(X, 4 as f64);
         RT4 = ((-2.19135070169653E-03f64 * X - 1.19108256987623E-01f64) * X
-            - 7.50238795695573E-01f64) * E + R44 / (X - R44);
+            - 7.50238795695573E-01f64)
+            * E
+            + R44 / (X - R44);
         RT3 = ((-9.65842534508637E-04f64 * X - 4.49822013469279E-02f64) * X
-            + 6.08784033347757E-01f64) * E + R34 / (X - R34);
+            + 6.08784033347757E-01f64)
+            * E
+            + R34 / (X - R34);
         RT2 = ((-3.62569791162153E-04f64 * X - 9.09231717268466E-03f64) * X
-            + 1.84336760556262E-01f64) * E + R24 / (X - R24);
+            + 1.84336760556262E-01f64)
+            * E
+            + R24 / (X - R24);
         RT1 = ((-4.07557525914600E-05f64 * X - 6.88846864931685E-04f64) * X
-            + 1.74725309199384E-02f64) * E + R14 / (X - R14);
+            + 1.74725309199384E-02f64)
+            * E
+            + R14 / (X - R14);
         WW4 = ((5.76631982000990E-06f64 * X - 7.89187283804890E-05f64) * X
-            + 3.28297971853126E-04f64) * E + W44 * WW1;
+            + 3.28297971853126E-04f64)
+            * E
+            + W44 * WW1;
         WW3 = ((2.08294969857230E-04f64 * X - 3.77489954837361E-03f64) * X
-            + 2.09857151617436E-02f64) * E + W34 * WW1;
+            + 2.09857151617436E-02f64)
+            * E
+            + W34 * WW1;
         WW2 = ((6.16374517326469E-04f64 * X - 1.26711744680092E-02f64) * X
-            + 8.14504890732155E-02f64) * E + W24 * WW1;
+            + 8.14504890732155E-02f64)
+            * E
+            + W24 * WW1;
         WW1 = WW1 - WW2 - WW3 - WW4;
     } else {
         WW1 = sqrt(0.78539816339744827900f64 / X);
@@ -4853,11 +5636,7 @@ unsafe extern "C" fn rys_root4(
     *weights.offset(3 as isize) = WW4;
     return 0 as i32;
 }
-unsafe extern "C" fn rys_root5(
-    mut X: f64,
-    mut roots: *mut f64,
-    mut weights: *mut f64,
-) -> i32 {
+unsafe extern "C" fn rys_root5(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
     let mut R15: f64 = 0.;
     let mut R25: f64 = 0.;
     let mut W25: f64 = 0.;
@@ -4902,459 +5681,1394 @@ unsafe extern "C" fn rys_root5(
         WW5 = 6.66713443086877E-02f64 - 5.73782817488315E-02f64 * X;
     } else if X < 1.0f64 {
         RT1 = ((((((-4.46679165328413E-11f64 * X + 1.21879111988031E-09f64) * X
-            - 2.62975022612104E-08f64) * X + 5.15106194905897E-07f64) * X
-            - 9.27933625824749E-06f64) * X + 1.51794097682482E-04f64) * X
-            - 2.15865967920301E-03f64) * X + 2.26659266316985E-02f64;
+            - 2.62975022612104E-08f64)
+            * X
+            + 5.15106194905897E-07f64)
+            * X
+            - 9.27933625824749E-06f64)
+            * X
+            + 1.51794097682482E-04f64)
+            * X
+            - 2.15865967920301E-03f64)
+            * X
+            + 2.26659266316985E-02f64;
         RT2 = ((((((1.93117331714174E-10f64 * X - 4.57267589660699E-09f64) * X
-            + 2.48339908218932E-08f64) * X + 1.50716729438474E-06f64) * X
-            - 6.07268757707381E-05f64) * X + 1.37506939145643E-03f64) * X
-            - 2.20258754419939E-02f64) * X + 2.31271692140905E-01f64;
+            + 2.48339908218932E-08f64)
+            * X
+            + 1.50716729438474E-06f64)
+            * X
+            - 6.07268757707381E-05f64)
+            * X
+            + 1.37506939145643E-03f64)
+            * X
+            - 2.20258754419939E-02f64)
+            * X
+            + 2.31271692140905E-01f64;
         RT3 = (((((4.84989776180094E-09f64 * X + 1.31538893944284E-07f64) * X
-            - 2.766753852879E-06f64) * X - 7.651163510626E-05f64) * X
-            + 4.033058545972E-03f64) * X - 8.16520022916145E-02f64) * X
+            - 2.766753852879E-06f64)
+            * X
+            - 7.651163510626E-05f64)
+            * X
+            + 4.033058545972E-03f64)
+            * X
+            - 8.16520022916145E-02f64)
+            * X
             + 8.57346024118779E-01f64;
         RT4 = ((((-2.48581772214623E-07f64 * X - 4.34482635782585E-06f64) * X
-            - 7.46018257987630E-07f64) * X + 1.01210776517279E-02f64) * X
-            - 2.83193369640005E-01f64) * X + 2.97353038120345E+00f64;
+            - 7.46018257987630E-07f64)
+            * X
+            + 1.01210776517279E-02f64)
+            * X
+            - 2.83193369640005E-01f64)
+            * X
+            + 2.97353038120345E+00f64;
         RT5 = (((((-8.92432153868554E-09f64 * X + 1.77288899268988E-08f64) * X
-            + 3.040754680666E-06f64) * X + 1.058229325071E-04f64) * X
-            + 4.596379534985E-02f64) * X - 1.75382723579114E+00f64) * X
+            + 3.040754680666E-06f64)
+            * X
+            + 1.058229325071E-04f64)
+            * X
+            + 4.596379534985E-02f64)
+            * X
+            - 1.75382723579114E+00f64)
+            * X
             + 1.84151859759049E+01f64;
         WW1 = ((((((-2.03822632771791E-09f64 * X + 3.89110229133810E-08f64) * X
-            - 5.84914787904823E-07f64) * X + 8.30316168666696E-06f64) * X
-            - 1.13218402310546E-04f64) * X + 1.49128888586790E-03f64) * X
-            - 1.96867576904816E-02f64) * X + 2.95524224714749E-01f64;
+            - 5.84914787904823E-07f64)
+            * X
+            + 8.30316168666696E-06f64)
+            * X
+            - 1.13218402310546E-04f64)
+            * X
+            + 1.49128888586790E-03f64)
+            * X
+            - 1.96867576904816E-02f64)
+            * X
+            + 2.95524224714749E-01f64;
         WW2 = (((((((8.62848118397570E-09f64 * X - 1.38975551148989E-07f64) * X
-            + 1.602894068228E-06f64) * X - 1.646364300836E-05f64) * X
-            + 1.538445806778E-04f64) * X - 1.28848868034502E-03f64) * X
-            + 9.38866933338584E-03f64) * X - 5.61737590178812E-02f64) * X
+            + 1.602894068228E-06f64)
+            * X
+            - 1.646364300836E-05f64)
+            * X
+            + 1.538445806778E-04f64)
+            * X
+            - 1.28848868034502E-03f64)
+            * X
+            + 9.38866933338584E-03f64)
+            * X
+            - 5.61737590178812E-02f64)
+            * X
             + 2.69266719309991E-01f64;
         WW3 = ((((((((-9.41953204205665E-09f64 * X + 1.47452251067755E-07f64) * X
-            - 1.57456991199322E-06f64) * X + 1.45098401798393E-05f64) * X
-            - 1.18858834181513E-04f64) * X + 8.53697675984210E-04f64) * X
-            - 5.22877807397165E-03f64) * X + 2.60854524809786E-02f64) * X
-            - 9.71152726809059E-02f64) * X + 2.19086362515979E-01f64;
+            - 1.57456991199322E-06f64)
+            * X
+            + 1.45098401798393E-05f64)
+            * X
+            - 1.18858834181513E-04f64)
+            * X
+            + 8.53697675984210E-04f64)
+            * X
+            - 5.22877807397165E-03f64)
+            * X
+            + 2.60854524809786E-02f64)
+            * X
+            - 9.71152726809059E-02f64)
+            * X
+            + 2.19086362515979E-01f64;
         WW4 = ((((((((-3.84961617022042E-08f64 * X + 5.66595396544470E-07f64) * X
-            - 5.52351805403748E-06f64) * X + 4.53160377546073E-05f64) * X
-            - 3.22542784865557E-04f64) * X + 1.95682017370967E-03f64) * X
-            - 9.77232537679229E-03f64) * X + 3.79455945268632E-02f64) * X
-            - 1.02979262192227E-01f64) * X + 1.49451349150573E-01f64;
+            - 5.52351805403748E-06f64)
+            * X
+            + 4.53160377546073E-05f64)
+            * X
+            - 3.22542784865557E-04f64)
+            * X
+            + 1.95682017370967E-03f64)
+            * X
+            - 9.77232537679229E-03f64)
+            * X
+            + 3.79455945268632E-02f64)
+            * X
+            - 1.02979262192227E-01f64)
+            * X
+            + 1.49451349150573E-01f64;
         WW5 = (((((((((4.09594812521430E-09f64 * X - 6.47097874264417E-08f64) * X
-            + 6.743541482689E-07f64) * X - 5.917993920224E-06f64) * X
-            + 4.531969237381E-05f64) * X - 2.99102856679638E-04f64) * X
-            + 1.65695765202643E-03f64) * X - 7.40671222520653E-03f64) * X
-            + 2.50889946832192E-02f64) * X - 5.73782817487958E-02f64) * X
+            + 6.743541482689E-07f64)
+            * X
+            - 5.917993920224E-06f64)
+            * X
+            + 4.531969237381E-05f64)
+            * X
+            - 2.99102856679638E-04f64)
+            * X
+            + 1.65695765202643E-03f64)
+            * X
+            - 7.40671222520653E-03f64)
+            * X
+            + 2.50889946832192E-02f64)
+            * X
+            - 5.73782817487958E-02f64)
+            * X
             + 6.66713443086877E-02f64;
     } else if X < 5.0f64 {
         Y = X - 3.0E+00f64;
         RT1 = ((((((((-2.58163897135138E-14f64 * Y + 8.14127461488273E-13f64) * Y
-            - 2.11414838976129E-11f64) * Y + 5.09822003260014E-10f64) * Y
-            - 1.16002134438663E-08f64) * Y + 2.46810694414540E-07f64) * Y
-            - 4.92556826124502E-06f64) * Y + 9.02580687971053E-05f64) * Y
-            - 1.45190025120726E-03f64) * Y + 1.73416786387475E-02f64;
+            - 2.11414838976129E-11f64)
+            * Y
+            + 5.09822003260014E-10f64)
+            * Y
+            - 1.16002134438663E-08f64)
+            * Y
+            + 2.46810694414540E-07f64)
+            * Y
+            - 4.92556826124502E-06f64)
+            * Y
+            + 9.02580687971053E-05f64)
+            * Y
+            - 1.45190025120726E-03f64)
+            * Y
+            + 1.73416786387475E-02f64;
         RT2 = (((((((((1.04525287289788E-14f64 * Y + 5.44611782010773E-14f64) * Y
-            - 4.831059411392E-12f64) * Y + 1.136643908832E-10f64) * Y
-            - 1.104373076913E-09f64) * Y - 2.35346740649916E-08f64) * Y
-            + 1.43772622028764E-06f64) * Y - 4.23405023015273E-05f64) * Y
-            + 9.12034574793379E-04f64) * Y - 1.52479441718739E-02f64) * Y
+            - 4.831059411392E-12f64)
+            * Y
+            + 1.136643908832E-10f64)
+            * Y
+            - 1.104373076913E-09f64)
+            * Y
+            - 2.35346740649916E-08f64)
+            * Y
+            + 1.43772622028764E-06f64)
+            * Y
+            - 4.23405023015273E-05f64)
+            * Y
+            + 9.12034574793379E-04f64)
+            * Y
+            - 1.52479441718739E-02f64)
+            * Y
             + 1.76055265928744E-01f64;
         RT3 = (((((((((-6.89693150857911E-14f64 * Y + 5.92064260918861E-13f64) * Y
-            + 1.847170956043E-11f64) * Y - 3.390752744265E-10f64) * Y
-            - 2.995532064116E-09f64) * Y + 1.57456141058535E-07f64) * Y
-            - 3.95859409711346E-07f64) * Y - 9.58924580919747E-05f64) * Y
-            + 3.23551502557785E-03f64) * Y - 5.97587007636479E-02f64) * Y
+            + 1.847170956043E-11f64)
+            * Y
+            - 3.390752744265E-10f64)
+            * Y
+            - 2.995532064116E-09f64)
+            * Y
+            + 1.57456141058535E-07f64)
+            * Y
+            - 3.95859409711346E-07f64)
+            * Y
+            - 9.58924580919747E-05f64)
+            * Y
+            + 3.23551502557785E-03f64)
+            * Y
+            - 5.97587007636479E-02f64)
+            * Y
             + 6.46432853383057E-01f64;
         RT4 = ((((((((-3.61293809667763E-12f64 * Y - 2.70803518291085E-11f64) * Y
-            + 8.83758848468769E-10f64) * Y + 1.59166632851267E-08f64) * Y
-            - 1.32581997983422E-07f64) * Y - 7.60223407443995E-06f64) * Y
-            - 7.41019244900952E-05f64) * Y + 9.81432631743423E-03f64) * Y
-            - 2.23055570487771E-01f64) * Y + 2.21460798080643E+00f64;
+            + 8.83758848468769E-10f64)
+            * Y
+            + 1.59166632851267E-08f64)
+            * Y
+            - 1.32581997983422E-07f64)
+            * Y
+            - 7.60223407443995E-06f64)
+            * Y
+            - 7.41019244900952E-05f64)
+            * Y
+            + 9.81432631743423E-03f64)
+            * Y
+            - 2.23055570487771E-01f64)
+            * Y
+            + 2.21460798080643E+00f64;
         RT5 = (((((((((7.12332088345321E-13f64 * Y + 3.16578501501894E-12f64) * Y
-            - 8.776668218053E-11f64) * Y - 2.342817613343E-09f64) * Y
-            - 3.496962018025E-08f64) * Y - 3.03172870136802E-07f64) * Y
-            + 1.50511293969805E-06f64) * Y + 1.37704919387696E-04f64) * Y
-            + 4.70723869619745E-02f64) * Y - 1.47486623003693E+00f64) * Y
+            - 8.776668218053E-11f64)
+            * Y
+            - 2.342817613343E-09f64)
+            * Y
+            - 3.496962018025E-08f64)
+            * Y
+            - 3.03172870136802E-07f64)
+            * Y
+            + 1.50511293969805E-06f64)
+            * Y
+            + 1.37704919387696E-04f64)
+            * Y
+            + 4.70723869619745E-02f64)
+            * Y
+            - 1.47486623003693E+00f64)
+            * Y
             + 1.35704792175847E+01f64;
         WW1 = (((((((((1.04348658616398E-13f64 * Y - 1.94147461891055E-12f64) * Y
-            + 3.485512360993E-11f64) * Y - 6.277497362235E-10f64) * Y
-            + 1.100758247388E-08f64) * Y - 1.88329804969573E-07f64) * Y
-            + 3.12338120839468E-06f64) * Y - 5.04404167403568E-05f64) * Y
-            + 8.00338056610995E-04f64) * Y - 1.30892406559521E-02f64) * Y
+            + 3.485512360993E-11f64)
+            * Y
+            - 6.277497362235E-10f64)
+            * Y
+            + 1.100758247388E-08f64)
+            * Y
+            - 1.88329804969573E-07f64)
+            * Y
+            + 3.12338120839468E-06f64)
+            * Y
+            - 5.04404167403568E-05f64)
+            * Y
+            + 8.00338056610995E-04f64)
+            * Y
+            - 1.30892406559521E-02f64)
+            * Y
             + 2.47383140241103E-01f64;
         WW2 = (((((((((((3.23496149760478E-14f64 * Y - 5.24314473469311E-13f64) * Y
-            + 7.743219385056E-12f64) * Y - 1.146022750992E-10f64) * Y
-            + 1.615238462197E-09f64) * Y - 2.15479017572233E-08f64) * Y
-            + 2.70933462557631E-07f64) * Y - 3.18750295288531E-06f64) * Y
-            + 3.47425221210099E-05f64) * Y - 3.45558237388223E-04f64) * Y
-            + 3.05779768191621E-03f64) * Y - 2.29118251223003E-02f64) * Y
+            + 7.743219385056E-12f64)
+            * Y
+            - 1.146022750992E-10f64)
+            * Y
+            + 1.615238462197E-09f64)
+            * Y
+            - 2.15479017572233E-08f64)
+            * Y
+            + 2.70933462557631E-07f64)
+            * Y
+            - 3.18750295288531E-06f64)
+            * Y
+            + 3.47425221210099E-05f64)
+            * Y
+            - 3.45558237388223E-04f64)
+            * Y
+            + 3.05779768191621E-03f64)
+            * Y
+            - 2.29118251223003E-02f64)
+            * Y
             + 1.59834227924213E-01f64;
         WW3 = ((((((((((((-3.42790561802876E-14f64 * Y + 5.26475736681542E-13f64) * Y
-            - 7.184330797139E-12f64) * Y + 9.763932908544E-11f64) * Y
-            - 1.244014559219E-09f64) * Y + 1.472744068942E-08f64) * Y
-            - 1.611749975234E-07f64) * Y + 1.616487851917E-06f64) * Y
-            - 1.46852359124154E-05f64) * Y + 1.18900349101069E-04f64) * Y
-            - 8.37562373221756E-04f64) * Y + 4.93752683045845E-03f64) * Y
-            - 2.25514728915673E-02f64) * Y + 6.95211812453929E-02f64;
+            - 7.184330797139E-12f64)
+            * Y
+            + 9.763932908544E-11f64)
+            * Y
+            - 1.244014559219E-09f64)
+            * Y
+            + 1.472744068942E-08f64)
+            * Y
+            - 1.611749975234E-07f64)
+            * Y
+            + 1.616487851917E-06f64)
+            * Y
+            - 1.46852359124154E-05f64)
+            * Y
+            + 1.18900349101069E-04f64)
+            * Y
+            - 8.37562373221756E-04f64)
+            * Y
+            + 4.93752683045845E-03f64)
+            * Y
+            - 2.25514728915673E-02f64)
+            * Y
+            + 6.95211812453929E-02f64;
         WW4 = (((((((((((((1.04072340345039E-14f64 * Y - 1.60808044529211E-13f64) * Y
-            + 2.183534866798E-12f64) * Y - 2.939403008391E-11f64) * Y
-            + 3.679254029085E-10f64) * Y - 4.23775673047899E-09f64) * Y
-            + 4.46559231067006E-08f64) * Y - 4.26488836563267E-07f64) * Y
-            + 3.64721335274973E-06f64) * Y - 2.74868382777722E-05f64) * Y
-            + 1.78586118867488E-04f64) * Y - 9.68428981886534E-04f64) * Y
-            + 4.16002324339929E-03f64) * Y - 1.28290192663141E-02f64) * Y
+            + 2.183534866798E-12f64)
+            * Y
+            - 2.939403008391E-11f64)
+            * Y
+            + 3.679254029085E-10f64)
+            * Y
+            - 4.23775673047899E-09f64)
+            * Y
+            + 4.46559231067006E-08f64)
+            * Y
+            - 4.26488836563267E-07f64)
+            * Y
+            + 3.64721335274973E-06f64)
+            * Y
+            - 2.74868382777722E-05f64)
+            * Y
+            + 1.78586118867488E-04f64)
+            * Y
+            - 9.68428981886534E-04f64)
+            * Y
+            + 4.16002324339929E-03f64)
+            * Y
+            - 1.28290192663141E-02f64)
+            * Y
             + 2.22353727685016E-02f64;
-        WW5 = ((((((((((((((-8.16770412525963E-16f64 * Y + 1.31376515047977E-14f64) * Y
-            - 1.856950818865E-13f64) * Y + 2.596836515749E-12f64) * Y
-            - 3.372639523006E-11f64) * Y + 4.025371849467E-10f64) * Y
-            - 4.389453269417E-09f64) * Y + 4.332753856271E-08f64) * Y
-            - 3.82673275931962E-07f64) * Y + 2.98006900751543E-06f64) * Y
-            - 2.00718990300052E-05f64) * Y + 1.13876001386361E-04f64) * Y
-            - 5.23627942443563E-04f64) * Y + 1.83524565118203E-03f64) * Y
-            - 4.37785737450783E-03f64) * Y + 5.36963805223095E-03f64;
+        WW5 = ((((((((((((((-8.16770412525963E-16f64 * Y + 1.31376515047977E-14f64)
+            * Y
+            - 1.856950818865E-13f64)
+            * Y
+            + 2.596836515749E-12f64)
+            * Y
+            - 3.372639523006E-11f64)
+            * Y
+            + 4.025371849467E-10f64)
+            * Y
+            - 4.389453269417E-09f64)
+            * Y
+            + 4.332753856271E-08f64)
+            * Y
+            - 3.82673275931962E-07f64)
+            * Y
+            + 2.98006900751543E-06f64)
+            * Y
+            - 2.00718990300052E-05f64)
+            * Y
+            + 1.13876001386361E-04f64)
+            * Y
+            - 5.23627942443563E-04f64)
+            * Y
+            + 1.83524565118203E-03f64)
+            * Y
+            - 4.37785737450783E-03f64)
+            * Y
+            + 5.36963805223095E-03f64;
     } else if X < 10.0f64 {
         Y = X - 7.5E+00f64;
         RT1 = ((((((((-1.13825201010775E-14f64 * Y + 1.89737681670375E-13f64) * Y
-            - 4.81561201185876E-12f64) * Y + 1.56666512163407E-10f64) * Y
-            - 3.73782213255083E-09f64) * Y + 9.15858355075147E-08f64) * Y
-            - 2.13775073585629E-06f64) * Y + 4.56547356365536E-05f64) * Y
-            - 8.68003909323740E-04f64) * Y + 1.22703754069176E-02f64;
+            - 4.81561201185876E-12f64)
+            * Y
+            + 1.56666512163407E-10f64)
+            * Y
+            - 3.73782213255083E-09f64)
+            * Y
+            + 9.15858355075147E-08f64)
+            * Y
+            - 2.13775073585629E-06f64)
+            * Y
+            + 4.56547356365536E-05f64)
+            * Y
+            - 8.68003909323740E-04f64)
+            * Y
+            + 1.22703754069176E-02f64;
         RT2 = (((((((((-3.67160504428358E-15f64 * Y + 1.27876280158297E-14f64) * Y
-            - 1.296476623788E-12f64) * Y + 1.477175434354E-11f64) * Y
-            + 5.464102147892E-10f64) * Y - 2.42538340602723E-08f64) * Y
-            + 8.20460740637617E-07f64) * Y - 2.20379304598661E-05f64) * Y
-            + 4.90295372978785E-04f64) * Y - 9.14294111576119E-03f64) * Y
+            - 1.296476623788E-12f64)
+            * Y
+            + 1.477175434354E-11f64)
+            * Y
+            + 5.464102147892E-10f64)
+            * Y
+            - 2.42538340602723E-08f64)
+            * Y
+            + 8.20460740637617E-07f64)
+            * Y
+            - 2.20379304598661E-05f64)
+            * Y
+            + 4.90295372978785E-04f64)
+            * Y
+            - 9.14294111576119E-03f64)
+            * Y
             + 1.22590403403690E-01f64;
         RT3 = (((((((((1.39017367502123E-14f64 * Y - 6.96391385426890E-13f64) * Y
-            + 1.176946020731E-12f64) * Y + 1.725627235645E-10f64) * Y
-            - 3.686383856300E-09f64) * Y + 2.87495324207095E-08f64) * Y
-            + 1.71307311000282E-06f64) * Y - 7.94273603184629E-05f64) * Y
-            + 2.00938064965897E-03f64) * Y - 3.63329491677178E-02f64) * Y
+            + 1.176946020731E-12f64)
+            * Y
+            + 1.725627235645E-10f64)
+            * Y
+            - 3.686383856300E-09f64)
+            * Y
+            + 2.87495324207095E-08f64)
+            * Y
+            + 1.71307311000282E-06f64)
+            * Y
+            - 7.94273603184629E-05f64)
+            * Y
+            + 2.00938064965897E-03f64)
+            * Y
+            - 3.63329491677178E-02f64)
+            * Y
             + 4.34393683888443E-01f64;
         RT4 = ((((((((((-1.27815158195209E-14f64 * Y + 1.99910415869821E-14f64) * Y
-            + 3.753542914426E-12f64) * Y - 2.708018219579E-11f64) * Y
-            - 1.190574776587E-09f64) * Y + 1.106696436509E-08f64) * Y
-            + 3.954955671326E-07f64) * Y - 4.398596059588E-06f64) * Y
-            - 2.01087998907735E-04f64) * Y + 7.89092425542937E-03f64) * Y
-            - 1.42056749162695E-01f64) * Y + 1.39964149420683E+00f64;
+            + 3.753542914426E-12f64)
+            * Y
+            - 2.708018219579E-11f64)
+            * Y
+            - 1.190574776587E-09f64)
+            * Y
+            + 1.106696436509E-08f64)
+            * Y
+            + 3.954955671326E-07f64)
+            * Y
+            - 4.398596059588E-06f64)
+            * Y
+            - 2.01087998907735E-04f64)
+            * Y
+            + 7.89092425542937E-03f64)
+            * Y
+            - 1.42056749162695E-01f64)
+            * Y
+            + 1.39964149420683E+00f64;
         RT5 = ((((((((((-1.19442341030461E-13f64 * Y - 2.34074833275956E-12f64) * Y
-            + 6.861649627426E-12f64) * Y + 6.082671496226E-10f64) * Y
-            + 5.381160105420E-09f64) * Y - 6.253297138700E-08f64) * Y
-            - 2.135966835050E-06f64) * Y - 2.373394341886E-05f64) * Y
-            + 2.88711171412814E-06f64) * Y + 4.85221195290753E-02f64) * Y
-            - 1.04346091985269E+00f64) * Y + 7.89901551676692E+00f64;
+            + 6.861649627426E-12f64)
+            * Y
+            + 6.082671496226E-10f64)
+            * Y
+            + 5.381160105420E-09f64)
+            * Y
+            - 6.253297138700E-08f64)
+            * Y
+            - 2.135966835050E-06f64)
+            * Y
+            - 2.373394341886E-05f64)
+            * Y
+            + 2.88711171412814E-06f64)
+            * Y
+            + 4.85221195290753E-02f64)
+            * Y
+            - 1.04346091985269E+00f64)
+            * Y
+            + 7.89901551676692E+00f64;
         WW1 = (((((((((7.95526040108997E-15f64 * Y - 2.48593096128045E-13f64) * Y
-            + 4.761246208720E-12f64) * Y - 9.535763686605E-11f64) * Y
-            + 2.225273630974E-09f64) * Y - 4.49796778054865E-08f64) * Y
-            + 9.17812870287386E-07f64) * Y - 1.86764236490502E-05f64) * Y
-            + 3.76807779068053E-04f64) * Y - 8.10456360143408E-03f64) * Y
+            + 4.761246208720E-12f64)
+            * Y
+            - 9.535763686605E-11f64)
+            * Y
+            + 2.225273630974E-09f64)
+            * Y
+            - 4.49796778054865E-08f64)
+            * Y
+            + 9.17812870287386E-07f64)
+            * Y
+            - 1.86764236490502E-05f64)
+            * Y
+            + 3.76807779068053E-04f64)
+            * Y
+            - 8.10456360143408E-03f64)
+            * Y
             + 2.01097936411496E-01f64;
         WW2 = (((((((((((1.25678686624734E-15f64 * Y - 2.34266248891173E-14f64) * Y
-            + 3.973252415832E-13f64) * Y - 6.830539401049E-12f64) * Y
-            + 1.140771033372E-10f64) * Y - 1.82546185762009E-09f64) * Y
-            + 2.77209637550134E-08f64) * Y - 4.01726946190383E-07f64) * Y
-            + 5.48227244014763E-06f64) * Y - 6.95676245982121E-05f64) * Y
-            + 8.05193921815776E-04f64) * Y - 8.15528438784469E-03f64) * Y
+            + 3.973252415832E-13f64)
+            * Y
+            - 6.830539401049E-12f64)
+            * Y
+            + 1.140771033372E-10f64)
+            * Y
+            - 1.82546185762009E-09f64)
+            * Y
+            + 2.77209637550134E-08f64)
+            * Y
+            - 4.01726946190383E-07f64)
+            * Y
+            + 5.48227244014763E-06f64)
+            * Y
+            - 6.95676245982121E-05f64)
+            * Y
+            + 8.05193921815776E-04f64)
+            * Y
+            - 8.15528438784469E-03f64)
+            * Y
             + 9.71769901268114E-02f64;
         WW3 = ((((((((((((-8.20929494859896E-16f64 * Y + 1.37356038393016E-14f64) * Y
-            - 2.022863065220E-13f64) * Y + 3.058055403795E-12f64) * Y
-            - 4.387890955243E-11f64) * Y + 5.923946274445E-10f64) * Y
-            - 7.503659964159E-09f64) * Y + 8.851599803902E-08f64) * Y
-            - 9.65561998415038E-07f64) * Y + 9.60884622778092E-06f64) * Y
-            - 8.56551787594404E-05f64) * Y + 6.66057194311179E-04f64) * Y
-            - 4.17753183902198E-03f64) * Y + 2.25443826852447E-02f64;
-        WW4 = ((((((((((((((-1.08764612488790E-17f64 * Y + 1.85299909689937E-16f64) * Y
-            - 2.730195628655E-15f64) * Y + 4.127368817265E-14f64) * Y
-            - 5.881379088074E-13f64) * Y + 7.805245193391E-12f64) * Y
-            - 9.632707991704E-11f64) * Y + 1.099047050624E-09f64) * Y
-            - 1.15042731790748E-08f64) * Y + 1.09415155268932E-07f64) * Y
-            - 9.33687124875935E-07f64) * Y + 7.02338477986218E-06f64) * Y
-            - 4.53759748787756E-05f64) * Y + 2.41722511389146E-04f64) * Y
-            - 9.75935943447037E-04f64) * Y + 2.57520532789644E-03f64;
-        WW5 = (((((((((((((((7.28996979748849E-19f64 * Y - 1.26518146195173E-17f64) * Y
-            + 1.886145834486E-16f64) * Y - 2.876728287383E-15f64) * Y
-            + 4.114588668138E-14f64) * Y - 5.44436631413933E-13f64) * Y
-            + 6.64976446790959E-12f64) * Y - 7.44560069974940E-11f64) * Y
-            + 7.57553198166848E-10f64) * Y - 6.92956101109829E-09f64) * Y
-            + 5.62222859033624E-08f64) * Y - 3.97500114084351E-07f64) * Y
-            + 2.39039126138140E-06f64) * Y - 1.18023950002105E-05f64) * Y
-            + 4.52254031046244E-05f64) * Y - 1.21113782150370E-04f64) * Y
+            - 2.022863065220E-13f64)
+            * Y
+            + 3.058055403795E-12f64)
+            * Y
+            - 4.387890955243E-11f64)
+            * Y
+            + 5.923946274445E-10f64)
+            * Y
+            - 7.503659964159E-09f64)
+            * Y
+            + 8.851599803902E-08f64)
+            * Y
+            - 9.65561998415038E-07f64)
+            * Y
+            + 9.60884622778092E-06f64)
+            * Y
+            - 8.56551787594404E-05f64)
+            * Y
+            + 6.66057194311179E-04f64)
+            * Y
+            - 4.17753183902198E-03f64)
+            * Y
+            + 2.25443826852447E-02f64;
+        WW4 = ((((((((((((((-1.08764612488790E-17f64 * Y + 1.85299909689937E-16f64)
+            * Y
+            - 2.730195628655E-15f64)
+            * Y
+            + 4.127368817265E-14f64)
+            * Y
+            - 5.881379088074E-13f64)
+            * Y
+            + 7.805245193391E-12f64)
+            * Y
+            - 9.632707991704E-11f64)
+            * Y
+            + 1.099047050624E-09f64)
+            * Y
+            - 1.15042731790748E-08f64)
+            * Y
+            + 1.09415155268932E-07f64)
+            * Y
+            - 9.33687124875935E-07f64)
+            * Y
+            + 7.02338477986218E-06f64)
+            * Y
+            - 4.53759748787756E-05f64)
+            * Y
+            + 2.41722511389146E-04f64)
+            * Y
+            - 9.75935943447037E-04f64)
+            * Y
+            + 2.57520532789644E-03f64;
+        WW5 = (((((((((((((((7.28996979748849E-19f64 * Y - 1.26518146195173E-17f64)
+            * Y
+            + 1.886145834486E-16f64)
+            * Y
+            - 2.876728287383E-15f64)
+            * Y
+            + 4.114588668138E-14f64)
+            * Y
+            - 5.44436631413933E-13f64)
+            * Y
+            + 6.64976446790959E-12f64)
+            * Y
+            - 7.44560069974940E-11f64)
+            * Y
+            + 7.57553198166848E-10f64)
+            * Y
+            - 6.92956101109829E-09f64)
+            * Y
+            + 5.62222859033624E-08f64)
+            * Y
+            - 3.97500114084351E-07f64)
+            * Y
+            + 2.39039126138140E-06f64)
+            * Y
+            - 1.18023950002105E-05f64)
+            * Y
+            + 4.52254031046244E-05f64)
+            * Y
+            - 1.21113782150370E-04f64)
+            * Y
             + 1.75013126731224E-04f64;
     } else if X < 15.0f64 {
         Y = X - 12.5E+00f64;
         RT1 = ((((((((((-4.16387977337393E-17f64 * Y + 7.20872997373860E-16f64) * Y
-            + 1.395993802064E-14f64) * Y + 3.660484641252E-14f64) * Y
-            - 4.154857548139E-12f64) * Y + 2.301379846544E-11f64) * Y
-            - 1.033307012866E-09f64) * Y + 3.997777641049E-08f64) * Y
-            - 9.35118186333939E-07f64) * Y + 2.38589932752937E-05f64) * Y
-            - 5.35185183652937E-04f64) * Y + 8.85218988709735E-03f64;
+            + 1.395993802064E-14f64)
+            * Y
+            + 3.660484641252E-14f64)
+            * Y
+            - 4.154857548139E-12f64)
+            * Y
+            + 2.301379846544E-11f64)
+            * Y
+            - 1.033307012866E-09f64)
+            * Y
+            + 3.997777641049E-08f64)
+            * Y
+            - 9.35118186333939E-07f64)
+            * Y
+            + 2.38589932752937E-05f64)
+            * Y
+            - 5.35185183652937E-04f64)
+            * Y
+            + 8.85218988709735E-03f64;
         RT2 = ((((((((((-4.56279214732217E-16f64 * Y + 6.24941647247927E-15f64) * Y
-            + 1.737896339191E-13f64) * Y + 8.964205979517E-14f64) * Y
-            - 3.538906780633E-11f64) * Y + 9.561341254948E-11f64) * Y
-            - 9.772831891310E-09f64) * Y + 4.240340194620E-07f64) * Y
-            - 1.02384302866534E-05f64) * Y + 2.57987709704822E-04f64) * Y
-            - 5.54735977651677E-03f64) * Y + 8.68245143991948E-02f64;
+            + 1.737896339191E-13f64)
+            * Y
+            + 8.964205979517E-14f64)
+            * Y
+            - 3.538906780633E-11f64)
+            * Y
+            + 9.561341254948E-11f64)
+            * Y
+            - 9.772831891310E-09f64)
+            * Y
+            + 4.240340194620E-07f64)
+            * Y
+            - 1.02384302866534E-05f64)
+            * Y
+            + 2.57987709704822E-04f64)
+            * Y
+            - 5.54735977651677E-03f64)
+            * Y
+            + 8.68245143991948E-02f64;
         RT3 = ((((((((((-2.52879337929239E-15f64 * Y + 2.13925810087833E-14f64) * Y
-            + 7.884307667104E-13f64) * Y - 9.023398159510E-13f64) * Y
-            - 5.814101544957E-11f64) * Y - 1.333480437968E-09f64) * Y
-            - 2.217064940373E-08f64) * Y + 1.643290788086E-06f64) * Y
-            - 4.39602147345028E-05f64) * Y + 1.08648982748911E-03f64) * Y
-            - 2.13014521653498E-02f64) * Y + 2.94150684465425E-01f64;
+            + 7.884307667104E-13f64)
+            * Y
+            - 9.023398159510E-13f64)
+            * Y
+            - 5.814101544957E-11f64)
+            * Y
+            - 1.333480437968E-09f64)
+            * Y
+            - 2.217064940373E-08f64)
+            * Y
+            + 1.643290788086E-06f64)
+            * Y
+            - 4.39602147345028E-05f64)
+            * Y
+            + 1.08648982748911E-03f64)
+            * Y
+            - 2.13014521653498E-02f64)
+            * Y
+            + 2.94150684465425E-01f64;
         RT4 = ((((((((((-6.42391438038888E-15f64 * Y + 5.37848223438815E-15f64) * Y
-            + 8.960828117859E-13f64) * Y + 5.214153461337E-11f64) * Y
-            - 1.106601744067E-10f64) * Y - 2.007890743962E-08f64) * Y
-            + 1.543764346501E-07f64) * Y + 4.520749076914E-06f64) * Y
-            - 1.88893338587047E-04f64) * Y + 4.73264487389288E-03f64) * Y
-            - 7.91197893350253E-02f64) * Y + 8.60057928514554E-01f64;
+            + 8.960828117859E-13f64)
+            * Y
+            + 5.214153461337E-11f64)
+            * Y
+            - 1.106601744067E-10f64)
+            * Y
+            - 2.007890743962E-08f64)
+            * Y
+            + 1.543764346501E-07f64)
+            * Y
+            + 4.520749076914E-06f64)
+            * Y
+            - 1.88893338587047E-04f64)
+            * Y
+            + 4.73264487389288E-03f64)
+            * Y
+            - 7.91197893350253E-02f64)
+            * Y
+            + 8.60057928514554E-01f64;
         RT5 = (((((((((((-2.24366166957225E-14f64 * Y + 4.87224967526081E-14f64) * Y
-            + 5.587369053655E-12f64) * Y - 3.045253104617E-12f64) * Y
-            - 1.223983883080E-09f64) * Y - 2.05603889396319E-09f64) * Y
-            + 2.58604071603561E-07f64) * Y + 1.34240904266268E-06f64) * Y
-            - 5.72877569731162E-05f64) * Y - 9.56275105032191E-04f64) * Y
-            + 4.23367010370921E-02f64) * Y - 5.76800927133412E-01f64) * Y
+            + 5.587369053655E-12f64)
+            * Y
+            - 3.045253104617E-12f64)
+            * Y
+            - 1.223983883080E-09f64)
+            * Y
+            - 2.05603889396319E-09f64)
+            * Y
+            + 2.58604071603561E-07f64)
+            * Y
+            + 1.34240904266268E-06f64)
+            * Y
+            - 5.72877569731162E-05f64)
+            * Y
+            - 9.56275105032191E-04f64)
+            * Y
+            + 4.23367010370921E-02f64)
+            * Y
+            - 5.76800927133412E-01f64)
+            * Y
             + 3.87328263873381E+00f64;
         WW1 = (((((((((8.98007931950169E-15f64 * Y + 7.25673623859497E-14f64) * Y
-            + 5.851494250405E-14f64) * Y - 4.234204823846E-11f64) * Y
-            + 3.911507312679E-10f64) * Y - 9.65094802088511E-09f64) * Y
-            + 3.42197444235714E-07f64) * Y - 7.51821178144509E-06f64) * Y
-            + 1.94218051498662E-04f64) * Y - 5.38533819142287E-03f64) * Y
+            + 5.851494250405E-14f64)
+            * Y
+            - 4.234204823846E-11f64)
+            * Y
+            + 3.911507312679E-10f64)
+            * Y
+            - 9.65094802088511E-09f64)
+            * Y
+            + 3.42197444235714E-07f64)
+            * Y
+            - 7.51821178144509E-06f64)
+            * Y
+            + 1.94218051498662E-04f64)
+            * Y
+            - 5.38533819142287E-03f64)
+            * Y
             + 1.68122596736809E-01f64;
         WW2 = ((((((((((-1.05490525395105E-15f64 * Y + 1.96855386549388E-14f64) * Y
-            - 5.500330153548E-13f64) * Y + 1.003849567976E-11f64) * Y
-            - 1.720997242621E-10f64) * Y + 3.533277061402E-09f64) * Y
-            - 6.389171736029E-08f64) * Y + 1.046236652393E-06f64) * Y
-            - 1.73148206795827E-05f64) * Y + 2.57820531617185E-04f64) * Y
-            - 3.46188265338350E-03f64) * Y + 7.03302497508176E-02f64;
+            - 5.500330153548E-13f64)
+            * Y
+            + 1.003849567976E-11f64)
+            * Y
+            - 1.720997242621E-10f64)
+            * Y
+            + 3.533277061402E-09f64)
+            * Y
+            - 6.389171736029E-08f64)
+            * Y
+            + 1.046236652393E-06f64)
+            * Y
+            - 1.73148206795827E-05f64)
+            * Y
+            + 2.57820531617185E-04f64)
+            * Y
+            - 3.46188265338350E-03f64)
+            * Y
+            + 7.03302497508176E-02f64;
         WW3 = (((((((((((3.60020423754545E-16f64 * Y - 6.24245825017148E-15f64) * Y
-            + 9.945311467434E-14f64) * Y - 1.749051512721E-12f64) * Y
-            + 2.768503957853E-11f64) * Y - 4.08688551136506E-10f64) * Y
-            + 6.04189063303610E-09f64) * Y - 8.23540111024147E-08f64) * Y
-            + 1.01503783870262E-06f64) * Y - 1.20490761741576E-05f64) * Y
-            + 1.26928442448148E-04f64) * Y - 1.05539461930597E-03f64) * Y
+            + 9.945311467434E-14f64)
+            * Y
+            - 1.749051512721E-12f64)
+            * Y
+            + 2.768503957853E-11f64)
+            * Y
+            - 4.08688551136506E-10f64)
+            * Y
+            + 6.04189063303610E-09f64)
+            * Y
+            - 8.23540111024147E-08f64)
+            * Y
+            + 1.01503783870262E-06f64)
+            * Y
+            - 1.20490761741576E-05f64)
+            * Y
+            + 1.26928442448148E-04f64)
+            * Y
+            - 1.05539461930597E-03f64)
+            * Y
             + 1.15543698537013E-02f64;
         WW4 = (((((((((((((2.51163533058925E-18f64 * Y - 4.31723745510697E-17f64) * Y
-            + 6.557620865832E-16f64) * Y - 1.016528519495E-14f64) * Y
-            + 1.491302084832E-13f64) * Y - 2.06638666222265E-12f64) * Y
-            + 2.67958697789258E-11f64) * Y - 3.23322654638336E-10f64) * Y
-            + 3.63722952167779E-09f64) * Y - 3.75484943783021E-08f64) * Y
-            + 3.49164261987184E-07f64) * Y - 2.92658670674908E-06f64) * Y
-            + 2.12937256719543E-05f64) * Y - 1.19434130620929E-04f64) * Y
+            + 6.557620865832E-16f64)
+            * Y
+            - 1.016528519495E-14f64)
+            * Y
+            + 1.491302084832E-13f64)
+            * Y
+            - 2.06638666222265E-12f64)
+            * Y
+            + 2.67958697789258E-11f64)
+            * Y
+            - 3.23322654638336E-10f64)
+            * Y
+            + 3.63722952167779E-09f64)
+            * Y
+            - 3.75484943783021E-08f64)
+            * Y
+            + 3.49164261987184E-07f64)
+            * Y
+            - 2.92658670674908E-06f64)
+            * Y
+            + 2.12937256719543E-05f64)
+            * Y
+            - 1.19434130620929E-04f64)
+            * Y
             + 6.45524336158384E-04f64;
-        WW5 = ((((((((((((((-1.29043630202811E-19f64 * Y + 2.16234952241296E-18f64) * Y
-            - 3.107631557965E-17f64) * Y + 4.570804313173E-16f64) * Y
-            - 6.301348858104E-15f64) * Y + 8.031304476153E-14f64) * Y
-            - 9.446196472547E-13f64) * Y + 1.018245804339E-11f64) * Y
-            - 9.96995451348129E-11f64) * Y + 8.77489010276305E-10f64) * Y
-            - 6.84655877575364E-09f64) * Y + 4.64460857084983E-08f64) * Y
-            - 2.66924538268397E-07f64) * Y + 1.24621276265907E-06f64) * Y
-            - 4.30868944351523E-06f64) * Y + 9.94307982432868E-06f64;
+        WW5 = ((((((((((((((-1.29043630202811E-19f64 * Y + 2.16234952241296E-18f64)
+            * Y
+            - 3.107631557965E-17f64)
+            * Y
+            + 4.570804313173E-16f64)
+            * Y
+            - 6.301348858104E-15f64)
+            * Y
+            + 8.031304476153E-14f64)
+            * Y
+            - 9.446196472547E-13f64)
+            * Y
+            + 1.018245804339E-11f64)
+            * Y
+            - 9.96995451348129E-11f64)
+            * Y
+            + 8.77489010276305E-10f64)
+            * Y
+            - 6.84655877575364E-09f64)
+            * Y
+            + 4.64460857084983E-08f64)
+            * Y
+            - 2.66924538268397E-07f64)
+            * Y
+            + 1.24621276265907E-06f64)
+            * Y
+            - 4.30868944351523E-06f64)
+            * Y
+            + 9.94307982432868E-06f64;
     } else if X < 20.0f64 {
         Y = X - 17.5E+00f64;
         RT1 = ((((((((((1.91875764545740E-16f64 * Y + 7.8357401095707E-16f64) * Y
-            - 3.260875931644E-14f64) * Y - 1.186752035569E-13f64) * Y
-            + 4.275180095653E-12f64) * Y + 3.357056136731E-11f64) * Y
-            - 1.123776903884E-09f64) * Y + 1.231203269887E-08f64) * Y
-            - 3.99851421361031E-07f64) * Y + 1.45418822817771E-05f64) * Y
-            - 3.49912254976317E-04f64) * Y + 6.67768703938812E-03f64;
+            - 3.260875931644E-14f64)
+            * Y
+            - 1.186752035569E-13f64)
+            * Y
+            + 4.275180095653E-12f64)
+            * Y
+            + 3.357056136731E-11f64)
+            * Y
+            - 1.123776903884E-09f64)
+            * Y
+            + 1.231203269887E-08f64)
+            * Y
+            - 3.99851421361031E-07f64)
+            * Y
+            + 1.45418822817771E-05f64)
+            * Y
+            - 3.49912254976317E-04f64)
+            * Y
+            + 6.67768703938812E-03f64;
         RT2 = ((((((((((2.02778478673555E-15f64 * Y + 1.01640716785099E-14f64) * Y
-            - 3.385363492036E-13f64) * Y - 1.615655871159E-12f64) * Y
-            + 4.527419140333E-11f64) * Y + 3.853670706486E-10f64) * Y
-            - 1.184607130107E-08f64) * Y + 1.347873288827E-07f64) * Y
-            - 4.47788241748377E-06f64) * Y + 1.54942754358273E-04f64) * Y
-            - 3.55524254280266E-03f64) * Y + 6.44912219301603E-02f64;
+            - 3.385363492036E-13f64)
+            * Y
+            - 1.615655871159E-12f64)
+            * Y
+            + 4.527419140333E-11f64)
+            * Y
+            + 3.853670706486E-10f64)
+            * Y
+            - 1.184607130107E-08f64)
+            * Y
+            + 1.347873288827E-07f64)
+            * Y
+            - 4.47788241748377E-06f64)
+            * Y
+            + 1.54942754358273E-04f64)
+            * Y
+            - 3.55524254280266E-03f64)
+            * Y
+            + 6.44912219301603E-02f64;
         RT3 = ((((((((((7.79850771456444E-15f64 * Y + 6.00464406395001E-14f64) * Y
-            - 1.249779730869E-12f64) * Y - 1.020720636353E-11f64) * Y
-            + 1.814709816693E-10f64) * Y + 1.766397336977E-09f64) * Y
-            - 4.603559449010E-08f64) * Y + 5.863956443581E-07f64) * Y
-            - 2.03797212506691E-05f64) * Y + 6.31405161185185E-04f64) * Y
-            - 1.30102750145071E-02f64) * Y + 2.10244289044705E-01f64;
+            - 1.249779730869E-12f64)
+            * Y
+            - 1.020720636353E-11f64)
+            * Y
+            + 1.814709816693E-10f64)
+            * Y
+            + 1.766397336977E-09f64)
+            * Y
+            - 4.603559449010E-08f64)
+            * Y
+            + 5.863956443581E-07f64)
+            * Y
+            - 2.03797212506691E-05f64)
+            * Y
+            + 6.31405161185185E-04f64)
+            * Y
+            - 1.30102750145071E-02f64)
+            * Y
+            + 2.10244289044705E-01f64;
         RT4 = (((((((((((-2.92397030777912E-15f64 * Y + 1.94152129078465E-14f64) * Y
-            + 4.859447665850E-13f64) * Y - 3.217227223463E-12f64) * Y
-            - 7.484522135512E-11f64) * Y + 7.19101516047753E-10f64) * Y
-            + 6.88409355245582E-09f64) * Y - 1.44374545515769E-07f64) * Y
-            + 2.74941013315834E-06f64) * Y - 1.02790452049013E-04f64) * Y
-            + 2.59924221372643E-03f64) * Y - 4.35712368303551E-02f64) * Y
+            + 4.859447665850E-13f64)
+            * Y
+            - 3.217227223463E-12f64)
+            * Y
+            - 7.484522135512E-11f64)
+            * Y
+            + 7.19101516047753E-10f64)
+            * Y
+            + 6.88409355245582E-09f64)
+            * Y
+            - 1.44374545515769E-07f64)
+            * Y
+            + 2.74941013315834E-06f64)
+            * Y
+            - 1.02790452049013E-04f64)
+            * Y
+            + 2.59924221372643E-03f64)
+            * Y
+            - 4.35712368303551E-02f64)
+            * Y
             + 5.62170709585029E-01f64;
         RT5 = (((((((((((1.17976126840060E-14f64 * Y + 1.24156229350669E-13f64) * Y
-            - 3.892741622280E-12f64) * Y - 7.755793199043E-12f64) * Y
-            + 9.492190032313E-10f64) * Y - 4.98680128123353E-09f64) * Y
-            - 1.81502268782664E-07f64) * Y + 2.69463269394888E-06f64) * Y
-            + 2.50032154421640E-05f64) * Y - 1.33684303917681E-03f64) * Y
-            + 2.29121951862538E-02f64) * Y - 2.45653725061323E-01f64) * Y
+            - 3.892741622280E-12f64)
+            * Y
+            - 7.755793199043E-12f64)
+            * Y
+            + 9.492190032313E-10f64)
+            * Y
+            - 4.98680128123353E-09f64)
+            * Y
+            - 1.81502268782664E-07f64)
+            * Y
+            + 2.69463269394888E-06f64)
+            * Y
+            + 2.50032154421640E-05f64)
+            * Y
+            - 1.33684303917681E-03f64)
+            * Y
+            + 2.29121951862538E-02f64)
+            * Y
+            - 2.45653725061323E-01f64)
+            * Y
             + 1.89999883453047E+00f64;
         WW1 = ((((((((((1.74841995087592E-15f64 * Y - 6.95671892641256E-16f64) * Y
-            - 3.000659497257E-13f64) * Y + 2.021279817961E-13f64) * Y
-            + 3.853596935400E-11f64) * Y + 1.461418533652E-10f64) * Y
-            - 1.014517563435E-08f64) * Y + 1.132736008979E-07f64) * Y
-            - 2.86605475073259E-06f64) * Y + 1.21958354908768E-04f64) * Y
-            - 3.86293751153466E-03f64) * Y + 1.45298342081522E-01f64;
+            - 3.000659497257E-13f64)
+            * Y
+            + 2.021279817961E-13f64)
+            * Y
+            + 3.853596935400E-11f64)
+            * Y
+            + 1.461418533652E-10f64)
+            * Y
+            - 1.014517563435E-08f64)
+            * Y
+            + 1.132736008979E-07f64)
+            * Y
+            - 2.86605475073259E-06f64)
+            * Y
+            + 1.21958354908768E-04f64)
+            * Y
+            - 3.86293751153466E-03f64)
+            * Y
+            + 1.45298342081522E-01f64;
         WW2 = ((((((((((-1.11199320525573E-15f64 * Y + 1.85007587796671E-15f64) * Y
-            + 1.220613939709E-13f64) * Y + 1.275068098526E-12f64) * Y
-            - 5.341838883262E-11f64) * Y + 6.161037256669E-10f64) * Y
-            - 1.009147879750E-08f64) * Y + 2.907862965346E-07f64) * Y
-            - 6.12300038720919E-06f64) * Y + 1.00104454489518E-04f64) * Y
-            - 1.80677298502757E-03f64) * Y + 5.78009914536630E-02f64;
+            + 1.220613939709E-13f64)
+            * Y
+            + 1.275068098526E-12f64)
+            * Y
+            - 5.341838883262E-11f64)
+            * Y
+            + 6.161037256669E-10f64)
+            * Y
+            - 1.009147879750E-08f64)
+            * Y
+            + 2.907862965346E-07f64)
+            * Y
+            - 6.12300038720919E-06f64)
+            * Y
+            + 1.00104454489518E-04f64)
+            * Y
+            - 1.80677298502757E-03f64)
+            * Y
+            + 5.78009914536630E-02f64;
         WW3 = ((((((((((-9.49816486853687E-16f64 * Y + 6.67922080354234E-15f64) * Y
-            + 2.606163540537E-15f64) * Y + 1.983799950150E-12f64) * Y
-            - 5.400548574357E-11f64) * Y + 6.638043374114E-10f64) * Y
-            - 8.799518866802E-09f64) * Y + 1.791418482685E-07f64) * Y
-            - 2.96075397351101E-06f64) * Y + 3.38028206156144E-05f64) * Y
-            - 3.58426847857878E-04f64) * Y + 8.39213709428516E-03f64;
+            + 2.606163540537E-15f64)
+            * Y
+            + 1.983799950150E-12f64)
+            * Y
+            - 5.400548574357E-11f64)
+            * Y
+            + 6.638043374114E-10f64)
+            * Y
+            - 8.799518866802E-09f64)
+            * Y
+            + 1.791418482685E-07f64)
+            * Y
+            - 2.96075397351101E-06f64)
+            * Y
+            + 3.38028206156144E-05f64)
+            * Y
+            - 3.58426847857878E-04f64)
+            * Y
+            + 8.39213709428516E-03f64;
         WW4 = (((((((((((1.33829971060180E-17f64 * Y - 3.44841877844140E-16f64) * Y
-            + 4.745009557656E-15f64) * Y - 6.033814209875E-14f64) * Y
-            + 1.049256040808E-12f64) * Y - 1.70859789556117E-11f64) * Y
-            + 2.15219425727959E-10f64) * Y - 2.52746574206884E-09f64) * Y
-            + 3.27761714422960E-08f64) * Y - 3.90387662925193E-07f64) * Y
-            + 3.46340204593870E-06f64) * Y - 2.43236345136782E-05f64) * Y
+            + 4.745009557656E-15f64)
+            * Y
+            - 6.033814209875E-14f64)
+            * Y
+            + 1.049256040808E-12f64)
+            * Y
+            - 1.70859789556117E-11f64)
+            * Y
+            + 2.15219425727959E-10f64)
+            * Y
+            - 2.52746574206884E-09f64)
+            * Y
+            + 3.27761714422960E-08f64)
+            * Y
+            - 3.90387662925193E-07f64)
+            * Y
+            + 3.46340204593870E-06f64)
+            * Y
+            - 2.43236345136782E-05f64)
+            * Y
             + 3.54846978585226E-04f64;
         WW5 = (((((((((((((2.69412277020887E-20f64 * Y - 4.24837886165685E-19f64) * Y
-            + 6.030500065438E-18f64) * Y - 9.069722758289E-17f64) * Y
-            + 1.246599177672E-15f64) * Y - 1.56872999797549E-14f64) * Y
-            + 1.87305099552692E-13f64) * Y - 2.09498886675861E-12f64) * Y
-            + 2.11630022068394E-11f64) * Y - 1.92566242323525E-10f64) * Y
-            + 1.62012436344069E-09f64) * Y - 1.23621614171556E-08f64) * Y
-            + 7.72165684563049E-08f64) * Y - 3.59858901591047E-07f64) * Y
+            + 6.030500065438E-18f64)
+            * Y
+            - 9.069722758289E-17f64)
+            * Y
+            + 1.246599177672E-15f64)
+            * Y
+            - 1.56872999797549E-14f64)
+            * Y
+            + 1.87305099552692E-13f64)
+            * Y
+            - 2.09498886675861E-12f64)
+            * Y
+            + 2.11630022068394E-11f64)
+            * Y
+            - 1.92566242323525E-10f64)
+            * Y
+            + 1.62012436344069E-09f64)
+            * Y
+            - 1.23621614171556E-08f64)
+            * Y
+            + 7.72165684563049E-08f64)
+            * Y
+            - 3.59858901591047E-07f64)
+            * Y
             + 2.43682618601000E-06f64;
     } else if X < 25.0f64 {
         Y = X - 22.5E+00f64;
         RT1 = (((((((((-1.13927848238726E-15f64 * Y + 7.39404133595713E-15f64) * Y
-            + 1.445982921243E-13f64) * Y - 2.676703245252E-12f64) * Y
-            + 5.823521627177E-12f64) * Y + 2.17264723874381E-10f64) * Y
-            + 3.56242145897468E-09f64) * Y - 3.03763737404491E-07f64) * Y
-            + 9.46859114120901E-06f64) * Y - 2.30896753853196E-04f64) * Y
+            + 1.445982921243E-13f64)
+            * Y
+            - 2.676703245252E-12f64)
+            * Y
+            + 5.823521627177E-12f64)
+            * Y
+            + 2.17264723874381E-10f64)
+            * Y
+            + 3.56242145897468E-09f64)
+            * Y
+            - 3.03763737404491E-07f64)
+            * Y
+            + 9.46859114120901E-06f64)
+            * Y
+            - 2.30896753853196E-04f64)
+            * Y
             + 5.24663913001114E-03f64;
         RT2 = ((((((((((2.89872355524581E-16f64 * Y - 1.22296292045864E-14f64) * Y
-            + 6.184065097200E-14f64) * Y + 1.649846591230E-12f64) * Y
-            - 2.729713905266E-11f64) * Y + 3.709913790650E-11f64) * Y
-            + 2.216486288382E-09f64) * Y + 4.616160236414E-08f64) * Y
-            - 3.32380270861364E-06f64) * Y + 9.84635072633776E-05f64) * Y
-            - 2.30092118015697E-03f64) * Y + 5.00845183695073E-02f64;
+            + 6.184065097200E-14f64)
+            * Y
+            + 1.649846591230E-12f64)
+            * Y
+            - 2.729713905266E-11f64)
+            * Y
+            + 3.709913790650E-11f64)
+            * Y
+            + 2.216486288382E-09f64)
+            * Y
+            + 4.616160236414E-08f64)
+            * Y
+            - 3.32380270861364E-06f64)
+            * Y
+            + 9.84635072633776E-05f64)
+            * Y
+            - 2.30092118015697E-03f64)
+            * Y
+            + 5.00845183695073E-02f64;
         RT3 = ((((((((((1.97068646590923E-15f64 * Y - 4.89419270626800E-14f64) * Y
-            + 1.136466605916E-13f64) * Y + 7.546203883874E-12f64) * Y
-            - 9.635646767455E-11f64) * Y - 8.295965491209E-11f64) * Y
-            + 7.534109114453E-09f64) * Y + 2.699970652707E-07f64) * Y
-            - 1.42982334217081E-05f64) * Y + 3.78290946669264E-04f64) * Y
-            - 8.03133015084373E-03f64) * Y + 1.58689469640791E-01f64;
+            + 1.136466605916E-13f64)
+            * Y
+            + 7.546203883874E-12f64)
+            * Y
+            - 9.635646767455E-11f64)
+            * Y
+            - 8.295965491209E-11f64)
+            * Y
+            + 7.534109114453E-09f64)
+            * Y
+            + 2.699970652707E-07f64)
+            * Y
+            - 1.42982334217081E-05f64)
+            * Y
+            + 3.78290946669264E-04f64)
+            * Y
+            - 8.03133015084373E-03f64)
+            * Y
+            + 1.58689469640791E-01f64;
         RT4 = ((((((((((1.33642069941389E-14f64 * Y - 1.55850612605745E-13f64) * Y
-            - 7.522712577474E-13f64) * Y + 3.209520801187E-11f64) * Y
-            - 2.075594313618E-10f64) * Y - 2.070575894402E-09f64) * Y
-            + 7.323046997451E-09f64) * Y + 1.851491550417E-06f64) * Y
-            - 6.37524802411383E-05f64) * Y + 1.36795464918785E-03f64) * Y
-            - 2.42051126993146E-02f64) * Y + 3.97847167557815E-01f64;
+            - 7.522712577474E-13f64)
+            * Y
+            + 3.209520801187E-11f64)
+            * Y
+            - 2.075594313618E-10f64)
+            * Y
+            - 2.070575894402E-09f64)
+            * Y
+            + 7.323046997451E-09f64)
+            * Y
+            + 1.851491550417E-06f64)
+            * Y
+            - 6.37524802411383E-05f64)
+            * Y
+            + 1.36795464918785E-03f64)
+            * Y
+            - 2.42051126993146E-02f64)
+            * Y
+            + 3.97847167557815E-01f64;
         RT5 = ((((((((((-6.07053986130526E-14f64 * Y + 1.04447493138843E-12f64) * Y
-            - 4.286617818951E-13f64) * Y - 2.632066100073E-10f64) * Y
-            + 4.804518986559E-09f64) * Y - 1.835675889421E-08f64) * Y
-            - 1.068175391334E-06f64) * Y + 3.292234974141E-05f64) * Y
-            - 5.94805357558251E-04f64) * Y + 8.29382168612791E-03f64) * Y
-            - 9.93122509049447E-02f64) * Y + 1.09857804755042E+00f64;
+            - 4.286617818951E-13f64)
+            * Y
+            - 2.632066100073E-10f64)
+            * Y
+            + 4.804518986559E-09f64)
+            * Y
+            - 1.835675889421E-08f64)
+            * Y
+            - 1.068175391334E-06f64)
+            * Y
+            + 3.292234974141E-05f64)
+            * Y
+            - 5.94805357558251E-04f64)
+            * Y
+            + 8.29382168612791E-03f64)
+            * Y
+            - 9.93122509049447E-02f64)
+            * Y
+            + 1.09857804755042E+00f64;
         WW1 = (((((((((-9.10338640266542E-15f64 * Y + 1.00438927627833E-13f64) * Y
-            + 7.817349237071E-13f64) * Y - 2.547619474232E-11f64) * Y
-            + 1.479321506529E-10f64) * Y + 1.52314028857627E-09f64) * Y
-            + 9.20072040917242E-09f64) * Y - 2.19427111221848E-06f64) * Y
-            + 8.65797782880311E-05f64) * Y - 2.82718629312875E-03f64) * Y
+            + 7.817349237071E-13f64)
+            * Y
+            - 2.547619474232E-11f64)
+            * Y
+            + 1.479321506529E-10f64)
+            * Y
+            + 1.52314028857627E-09f64)
+            * Y
+            + 9.20072040917242E-09f64)
+            * Y
+            - 2.19427111221848E-06f64)
+            * Y
+            + 8.65797782880311E-05f64)
+            * Y
+            - 2.82718629312875E-03f64)
+            * Y
             + 1.28718310443295E-01f64;
         WW2 = (((((((((5.52380927618760E-15f64 * Y - 6.43424400204124E-14f64) * Y
-            - 2.358734508092E-13f64) * Y + 8.261326648131E-12f64) * Y
-            + 9.229645304956E-11f64) * Y - 5.68108973828949E-09f64) * Y
-            + 1.22477891136278E-07f64) * Y - 2.11919643127927E-06f64) * Y
-            + 4.23605032368922E-05f64) * Y - 1.14423444576221E-03f64) * Y
+            - 2.358734508092E-13f64)
+            * Y
+            + 8.261326648131E-12f64)
+            * Y
+            + 9.229645304956E-11f64)
+            * Y
+            - 5.68108973828949E-09f64)
+            * Y
+            + 1.22477891136278E-07f64)
+            * Y
+            - 2.11919643127927E-06f64)
+            * Y
+            + 4.23605032368922E-05f64)
+            * Y
+            - 1.14423444576221E-03f64)
+            * Y
             + 5.06607252890186E-02f64;
         WW3 = (((((((((3.99457454087556E-15f64 * Y - 5.11826702824182E-14f64) * Y
-            - 4.157593182747E-14f64) * Y + 4.214670817758E-12f64) * Y
-            + 6.705582751532E-11f64) * Y - 3.36086411698418E-09f64) * Y
-            + 6.07453633298986E-08f64) * Y - 7.40736211041247E-07f64) * Y
-            + 8.84176371665149E-06f64) * Y - 1.72559275066834E-04f64) * Y
+            - 4.157593182747E-14f64)
+            * Y
+            + 4.214670817758E-12f64)
+            * Y
+            + 6.705582751532E-11f64)
+            * Y
+            - 3.36086411698418E-09f64)
+            * Y
+            + 6.07453633298986E-08f64)
+            * Y
+            - 7.40736211041247E-07f64)
+            * Y
+            + 8.84176371665149E-06f64)
+            * Y
+            - 1.72559275066834E-04f64)
+            * Y
             + 7.16639814253567E-03f64;
         WW4 = (((((((((((-2.14649508112234E-18f64 * Y - 2.45525846412281E-18f64) * Y
-            + 6.126212599772E-16f64) * Y - 8.526651626939E-15f64) * Y
-            + 4.826636065733E-14f64) * Y - 3.39554163649740E-13f64) * Y
-            + 1.67070784862985E-11f64) * Y - 4.42671979311163E-10f64) * Y
-            + 6.77368055908400E-09f64) * Y - 7.03520999708859E-08f64) * Y
-            + 6.04993294708874E-07f64) * Y - 7.80555094280483E-06f64) * Y
+            + 6.126212599772E-16f64)
+            * Y
+            - 8.526651626939E-15f64)
+            * Y
+            + 4.826636065733E-14f64)
+            * Y
+            - 3.39554163649740E-13f64)
+            * Y
+            + 1.67070784862985E-11f64)
+            * Y
+            - 4.42671979311163E-10f64)
+            * Y
+            + 6.77368055908400E-09f64)
+            * Y
+            - 7.03520999708859E-08f64)
+            * Y
+            + 6.04993294708874E-07f64)
+            * Y
+            - 7.80555094280483E-06f64)
+            * Y
             + 2.85954806605017E-04f64;
         WW5 = ((((((((((((-5.63938733073804E-21f64 * Y + 6.92182516324628E-20f64) * Y
-            - 1.586937691507E-18f64) * Y + 3.357639744582E-17f64) * Y
-            - 4.810285046442E-16f64) * Y + 5.386312669975E-15f64) * Y
-            - 6.117895297439E-14f64) * Y + 8.441808227634E-13f64) * Y
-            - 1.18527596836592E-11f64) * Y + 1.36296870441445E-10f64) * Y
-            - 1.17842611094141E-09f64) * Y + 7.80430641995926E-09f64) * Y
-            - 5.97767417400540E-08f64) * Y + 1.65186146094969E-06f64;
+            - 1.586937691507E-18f64)
+            * Y
+            + 3.357639744582E-17f64)
+            * Y
+            - 4.810285046442E-16f64)
+            * Y
+            + 5.386312669975E-15f64)
+            * Y
+            - 6.117895297439E-14f64)
+            * Y
+            + 8.441808227634E-13f64)
+            * Y
+            - 1.18527596836592E-11f64)
+            * Y
+            + 1.36296870441445E-10f64)
+            * Y
+            - 1.17842611094141E-09f64)
+            * Y
+            + 7.80430641995926E-09f64)
+            * Y
+            - 5.97767417400540E-08f64)
+            * Y
+            + 1.65186146094969E-06f64;
     } else if X < 40 as f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         E = exp(-X);
         RT1 = ((((((((-1.73363958895356E-06f64 * X + 1.19921331441483E-04f64) * X
-            - 1.59437614121125E-02f64) * X + 1.13467897349442E+00f64) * X
-            - 4.47216460864586E+01f64) * X + 1.06251216612604E+03f64) * X
-            - 1.52073917378512E+04f64) * X + 1.20662887111273E+05f64) * X
-            - 4.07186366852475E+05f64) * E + R15 / (X - R15);
+            - 1.59437614121125E-02f64)
+            * X
+            + 1.13467897349442E+00f64)
+            * X
+            - 4.47216460864586E+01f64)
+            * X
+            + 1.06251216612604E+03f64)
+            * X
+            - 1.52073917378512E+04f64)
+            * X
+            + 1.20662887111273E+05f64)
+            * X
+            - 4.07186366852475E+05f64)
+            * E
+            + R15 / (X - R15);
         RT2 = ((((((((-1.60102542621710E-05f64 * X + 1.10331262112395E-03f64) * X
-            - 1.50043662589017E-01f64) * X + 1.05563640866077E+01f64) * X
-            - 4.10468817024806E+02f64) * X + 9.62604416506819E+03f64) * X
-            - 1.35888069838270E+05f64) * X + 1.06107577038340E+06f64) * X
-            - 3.51190792816119E+06f64) * E + R25 / (X - R25);
+            - 1.50043662589017E-01f64)
+            * X
+            + 1.05563640866077E+01f64)
+            * X
+            - 4.10468817024806E+02f64)
+            * X
+            + 9.62604416506819E+03f64)
+            * X
+            - 1.35888069838270E+05f64)
+            * X
+            + 1.06107577038340E+06f64)
+            * X
+            - 3.51190792816119E+06f64)
+            * E
+            + R25 / (X - R25);
         RT3 = ((((((((-4.48880032128422E-05f64 * X + 2.69025112122177E-03f64) * X
-            - 4.01048115525954E-01f64) * X + 2.78360021977405E+01f64) * X
-            - 1.04891729356965E+03f64) * X + 2.36985942687423E+04f64) * X
-            - 3.19504627257548E+05f64) * X + 2.34879693563358E+06f64) * X
-            - 7.16341568174085E+06f64) * E + R35 / (X - R35);
+            - 4.01048115525954E-01f64)
+            * X
+            + 2.78360021977405E+01f64)
+            * X
+            - 1.04891729356965E+03f64)
+            * X
+            + 2.36985942687423E+04f64)
+            * X
+            - 3.19504627257548E+05f64)
+            * X
+            + 2.34879693563358E+06f64)
+            * X
+            - 7.16341568174085E+06f64)
+            * E
+            + R35 / (X - R35);
         RT4 = ((((((((-6.38526371092582E-05f64 * X - 2.29263585792626E-03f64) * X
-            - 7.65735935499627E-02f64) * X + 9.12692349152792E+00f64) * X
-            - 2.32077034386717E+02f64) * X + 2.81839578728845E+02f64) * X
-            + 9.59529683876419E+04f64) * X - 1.77638956809518E+06f64) * X
-            + 1.02489759645410E+07f64) * E + R45 / (X - R45);
+            - 7.65735935499627E-02f64)
+            * X
+            + 9.12692349152792E+00f64)
+            * X
+            - 2.32077034386717E+02f64)
+            * X
+            + 2.81839578728845E+02f64)
+            * X
+            + 9.59529683876419E+04f64)
+            * X
+            - 1.77638956809518E+06f64)
+            * X
+            + 1.02489759645410E+07f64)
+            * E
+            + R45 / (X - R45);
         RT5 = ((((((((-3.59049364231569E-05f64 * X - 2.25963977930044E-02f64) * X
-            + 1.12594870794668E+00f64) * X - 4.56752462103909E+01f64) * X
-            + 1.05804526830637E+03f64) * X - 1.16003199605875E+04f64) * X
-            - 4.07297627297272E+04f64) * X + 2.22215528319857E+06f64) * X
-            - 1.61196455032613E+07f64) * E + R55 / (X - R55);
+            + 1.12594870794668E+00f64)
+            * X
+            - 4.56752462103909E+01f64)
+            * X
+            + 1.05804526830637E+03f64)
+            * X
+            - 1.16003199605875E+04f64)
+            * X
+            - 4.07297627297272E+04f64)
+            * X
+            + 2.22215528319857E+06f64)
+            * X
+            - 1.61196455032613E+07f64)
+            * E
+            + R55 / (X - R55);
         WW5 = (((((((((-4.61100906133970E-10f64 * X + 1.43069932644286E-07f64) * X
-            - 1.63960915431080E-05f64) * X + 1.15791154612838E-03f64) * X
-            - 5.30573476742071E-02f64) * X + 1.61156533367153E+00f64) * X
-            - 3.23248143316007E+01f64) * X + 4.12007318109157E+02f64) * X
-            - 3.02260070158372E+03f64) * X + 9.71575094154768E+03f64) * E + W55 * WW1;
+            - 1.63960915431080E-05f64)
+            * X
+            + 1.15791154612838E-03f64)
+            * X
+            - 5.30573476742071E-02f64)
+            * X
+            + 1.61156533367153E+00f64)
+            * X
+            - 3.23248143316007E+01f64)
+            * X
+            + 4.12007318109157E+02f64)
+            * X
+            - 3.02260070158372E+03f64)
+            * X
+            + 9.71575094154768E+03f64)
+            * E
+            + W55 * WW1;
         WW4 = (((((((((-2.40799435809950E-08f64 * X + 8.12621667601546E-06f64) * X
-            - 9.04491430884113E-04f64) * X + 6.37686375770059E-02f64) * X
-            - 2.96135703135647E+00f64) * X + 9.15142356996330E+01f64) * X
-            - 1.86971865249111E+03f64) * X + 2.42945528916947E+04f64) * X
-            - 1.81852473229081E+05f64) * X + 5.96854758661427E+05f64) * E + W45 * WW1;
+            - 9.04491430884113E-04f64)
+            * X
+            + 6.37686375770059E-02f64)
+            * X
+            - 2.96135703135647E+00f64)
+            * X
+            + 9.15142356996330E+01f64)
+            * X
+            - 1.86971865249111E+03f64)
+            * X
+            + 2.42945528916947E+04f64)
+            * X
+            - 1.81852473229081E+05f64)
+            * X
+            + 5.96854758661427E+05f64)
+            * E
+            + W45 * WW1;
         WW3 = ((((((((1.83574464457207E-05f64 * X - 1.54837969489927E-03f64) * X
-            + 1.18520453711586E-01f64) * X - 6.69649981309161E+00f64) * X
-            + 2.44789386487321E+02f64) * X - 5.68832664556359E+03f64) * X
-            + 8.14507604229357E+04f64) * X - 6.55181056671474E+05f64) * X
-            + 2.26410896607237E+06f64) * E + W35 * WW1;
+            + 1.18520453711586E-01f64)
+            * X
+            - 6.69649981309161E+00f64)
+            * X
+            + 2.44789386487321E+02f64)
+            * X
+            - 5.68832664556359E+03f64)
+            * X
+            + 8.14507604229357E+04f64)
+            * X
+            - 6.55181056671474E+05f64)
+            * X
+            + 2.26410896607237E+06f64)
+            * E
+            + W35 * WW1;
         WW2 = ((((((((2.77778345870650E-05f64 * X - 2.22835017655890E-03f64) * X
-            + 1.61077633475573E-01f64) * X - 8.96743743396132E+00f64) * X
-            + 3.28062687293374E+02f64) * X - 7.65722701219557E+03f64) * X
-            + 1.10255055017664E+05f64) * X - 8.92528122219324E+05f64) * X
-            + 3.10638627744347E+06f64) * E + W25 * WW1;
+            + 1.61077633475573E-01f64)
+            * X
+            - 8.96743743396132E+00f64)
+            * X
+            + 3.28062687293374E+02f64)
+            * X
+            - 7.65722701219557E+03f64)
+            * X
+            + 1.10255055017664E+05f64)
+            * X
+            - 8.92528122219324E+05f64)
+            * X
+            + 3.10638627744347E+06f64)
+            * E
+            + W25 * WW1;
         WW1 = WW1 - 0.01962E+00f64 * E - WW2 - WW3 - WW4 - WW5;
     } else if X < 59.0f64 {
         WW1 = sqrt(0.78539816339744827900f64 / X);
         XXX = X * X * X;
         E = XXX * exp(-X);
         RT1 = (((-2.43758528330205E-02f64 * X + 2.07301567989771E+00f64) * X
-            - 6.45964225381113E+01f64) * X + 7.14160088655470E+02f64) * E
+            - 6.45964225381113E+01f64)
+            * X
+            + 7.14160088655470E+02f64)
+            * E
             + R15 / (X - R15);
         RT2 = (((-2.28861955413636E-01f64 * X + 1.93190784733691E+01f64) * X
-            - 5.99774730340912E+02f64) * X + 6.61844165304871E+03f64) * E
+            - 5.99774730340912E+02f64)
+            * X
+            + 6.61844165304871E+03f64)
+            * E
             + R25 / (X - R25);
         RT3 = (((-6.95053039285586E-01f64 * X + 5.76874090316016E+01f64) * X
-            - 1.77704143225520E+03f64) * X + 1.95366082947811E+04f64) * E
+            - 1.77704143225520E+03f64)
+            * X
+            + 1.95366082947811E+04f64)
+            * E
             + R35 / (X - R35);
         RT4 = (((-1.58072809087018E+00f64 * X + 1.27050801091948E+02f64) * X
-            - 3.86687350914280E+03f64) * X + 4.23024828121420E+04f64) * E
+            - 3.86687350914280E+03f64)
+            * X
+            + 4.23024828121420E+04f64)
+            * E
             + R45 / (X - R45);
         RT5 = (((-3.33963830405396E+00f64 * X + 2.51830424600204E+02f64) * X
-            - 7.57728527654961E+03f64) * X + 8.21966816595690E+04f64) * E
+            - 7.57728527654961E+03f64)
+            * X
+            + 8.21966816595690E+04f64)
+            * E
             + R55 / (X - R55);
         E = XXX * E;
         WW5 = ((1.35482430510942E-08f64 * X - 3.27722199212781E-07f64) * X
-            + 2.41522703684296E-06f64) * E + W55 * WW1;
+            + 2.41522703684296E-06f64)
+            * E
+            + W55 * WW1;
         WW4 = ((1.23464092261605E-06f64 * X - 3.55224564275590E-05f64) * X
-            + 3.03274662192286E-04f64) * E + W45 * WW1;
+            + 3.03274662192286E-04f64)
+            * E
+            + W45 * WW1;
         WW3 = ((1.34547929260279E-05f64 * X - 4.19389884772726E-04f64) * X
-            + 3.87706687610809E-03f64) * E + W35 * WW1;
+            + 3.87706687610809E-03f64)
+            * E
+            + W35 * WW1;
         WW2 = ((2.09539509123135E-05f64 * X - 6.87646614786982E-04f64) * X
-            + 6.68743788585688E-03f64) * E + W25 * WW1;
+            + 6.68743788585688E-03f64)
+            * E
+            + W25 * WW1;
         WW1 = WW1 - WW2 - WW3 - WW4 - WW5;
     } else {
         WW1 = sqrt(0.78539816339744827900f64 / X);
@@ -5381,11 +7095,7 @@ unsafe extern "C" fn rys_root5(
     *weights.offset(4 as isize) = WW5;
     return 0 as i32;
 }
-unsafe extern "C" fn R_dsmit(
-    mut cs: *mut f64,
-    mut fmt_ints: *mut f64,
-    mut n: i32,
-) -> i32 {
+unsafe extern "C" fn R_dsmit(mut cs: *mut f64, mut fmt_ints: *mut f64, mut n: i32) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -5393,12 +7103,13 @@ unsafe extern "C" fn R_dsmit(
     let mut dot: f64 = 0.;
     let mut tmp: f64 = 0.;
     let mut v: [f64; 32] = [0.; 32];
-    fac = -*fmt_ints.offset(1 as isize)
-        / *fmt_ints.offset(0 as isize);
-    tmp = *fmt_ints.offset(2 as isize)
-        + fac * *fmt_ints.offset(1 as isize);
+    fac = -*fmt_ints.offset(1 as isize) / *fmt_ints.offset(0 as isize);
+    tmp = *fmt_ints.offset(2 as isize) + fac * *fmt_ints.offset(1 as isize);
     if tmp <= 0 as f64 {
-        eprintln!("libcint::rys_roots negative value in sqrt for roots {} (j=1)", n - 1);
+        eprintln!(
+            "libcint::rys_roots negative value in sqrt for roots {} (j=1)",
+            n - 1
+        );
         k = 1 as i32;
         while k < n {
             i = 0 as i32;
@@ -5413,11 +7124,7 @@ unsafe extern "C" fn R_dsmit(
         return 1 as i32;
     }
     tmp = 1 as f64 / sqrt(tmp);
-    *cs
-        .offset(
-            (0 as i32 + 0 as i32 * n) as isize,
-        ) = 1 as f64
-        / sqrt(*fmt_ints.offset(0 as isize));
+    *cs.offset((0 as i32 + 0 as i32 * n) as isize) = 1 as f64 / sqrt(*fmt_ints.offset(0 as isize));
     *cs.offset((0 as i32 + 1 as i32 * n) as isize) = fac * tmp;
     *cs.offset((1 as i32 + 1 as i32 * n) as isize) = tmp;
     j = 2 as i32;
@@ -5434,9 +7141,7 @@ unsafe extern "C" fn R_dsmit(
             dot = 0 as f64;
             i = 0 as i32;
             while i <= k {
-                dot
-                    += *cs.offset((i + k * n) as isize)
-                        * *fmt_ints.offset((i + j) as isize);
+                dot += *cs.offset((i + k * n) as isize) * *fmt_ints.offset((i + j) as isize);
                 i += 1;
                 i;
             }
@@ -5455,10 +7160,7 @@ unsafe extern "C" fn R_dsmit(
             while k < n {
                 i = 0 as i32;
                 while i < n {
-                    *cs
-                        .offset(
-                            (i + k * n) as isize,
-                        ) = 0 as f64;
+                    *cs.offset((i + k * n) as isize) = 0 as f64;
                     i += 1;
                     i;
                 }
@@ -5468,7 +7170,11 @@ unsafe extern "C" fn R_dsmit(
             if fac == 0 as f64 {
                 return 0 as i32;
             }
-            eprintln!("libcint::rys_roots negative value in sqrt for roots {} (j={})", n-1, j);
+            eprintln!(
+                "libcint::rys_roots negative value in sqrt for roots {} (j={})",
+                n - 1,
+                j
+            );
             return j;
         }
         fac = 1 as f64 / sqrt(fac);
@@ -5501,8 +7207,7 @@ unsafe extern "C" fn _rdk_rys_roots(
     let mut root: f64 = 0.;
     let mut poly: f64 = 0.;
     let mut dum: f64 = 0.;
-    if *fmt_ints.offset(0 as isize) == 0 as f64
-    {
+    if *fmt_ints.offset(0 as isize) == 0 as f64 {
         k = 0 as i32;
         while k < nroots {
             *roots.offset(k as isize) = 0 as f64;
@@ -5513,16 +7218,9 @@ unsafe extern "C" fn _rdk_rys_roots(
         return 0 as i32;
     }
     if nroots == 1 as i32 {
-        *roots
-            .offset(
-                0 as isize,
-            ) = *fmt_ints.offset(1 as isize)
-            / (*fmt_ints.offset(0 as isize)
-                - *fmt_ints.offset(1 as isize));
-        *weights
-            .offset(
-                0 as isize,
-            ) = *fmt_ints.offset(0 as isize);
+        *roots.offset(0 as isize) = *fmt_ints.offset(1 as isize)
+            / (*fmt_ints.offset(0 as isize) - *fmt_ints.offset(1 as isize));
+        *weights.offset(0 as isize) = *fmt_ints.offset(0 as isize);
         return 0 as i32;
     }
     let mut error: i32 = R_dsmit(cs, fmt_ints, nroots1);
@@ -5540,8 +7238,7 @@ unsafe extern "C" fn _rdk_rys_roots(
             *roots.offset(k as isize) = 0 as f64;
             *weights.offset(k as isize) = 0 as f64;
         } else {
-            dum = 1 as f64
-                / *fmt_ints.offset(0 as isize);
+            dum = 1 as f64 / *fmt_ints.offset(0 as isize);
             j = 1 as i32;
             while j < nroots {
                 order = j;
@@ -5557,8 +7254,7 @@ unsafe extern "C" fn _rdk_rys_roots(
                 j += 1;
                 j;
             }
-            *roots
-                .offset(k as isize) = root / (1 as f64 - root);
+            *roots.offset(k as isize) = root / (1 as f64 - root);
             *weights.offset(k as isize) = 1 as f64 / dum;
         }
         k += 1;
@@ -5582,11 +7278,7 @@ pub unsafe extern "C" fn CINTrys_schmidt(
     }
     return _rdk_rys_roots(nroots, fmt_ints.as_mut_ptr(), roots, weights);
 }
-unsafe extern "C" fn R_lsmit(
-    mut cs: *mut f64,
-    mut fmt_ints: *mut f64,
-    mut n: i32,
-) -> i32 {
+unsafe extern "C" fn R_lsmit(mut cs: *mut f64, mut fmt_ints: *mut f64, mut n: i32) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -5594,12 +7286,13 @@ unsafe extern "C" fn R_lsmit(
     let mut dot: f64 = 0.0f64;
     let mut tmp: f64 = 0.0f64;
     let mut v: [f64; 32] = [0.0f64; 32];
-    fac = -*fmt_ints.offset(1 as isize)
-        / *fmt_ints.offset(0 as isize);
-    tmp = *fmt_ints.offset(2 as isize)
-        + fac * *fmt_ints.offset(1 as isize);
+    fac = -*fmt_ints.offset(1 as isize) / *fmt_ints.offset(0 as isize);
+    tmp = *fmt_ints.offset(2 as isize) + fac * *fmt_ints.offset(1 as isize);
     if tmp <= 0.0f64 {
-        eprintln!("libcint::rys_roots negative value in sqrtl for roots {} (j=1)", n - 1);
+        eprintln!(
+            "libcint::rys_roots negative value in sqrtl for roots {} (j=1)",
+            n - 1
+        );
         k = 1 as i32;
         while k < n {
             i = 0 as i32;
@@ -5614,11 +7307,7 @@ unsafe extern "C" fn R_lsmit(
         return 1 as i32;
     }
     tmp = 1.0f64 / sqrtl(tmp);
-    *cs
-        .offset(
-            (0 as i32 + 0 as i32 * n) as isize,
-        ) = 1.0f64
-        / sqrtl(*fmt_ints.offset(0 as isize));
+    *cs.offset((0 as i32 + 0 as i32 * n) as isize) = 1.0f64 / sqrtl(*fmt_ints.offset(0 as isize));
     *cs.offset((0 as i32 + 1 as i32 * n) as isize) = fac * tmp;
     *cs.offset((1 as i32 + 1 as i32 * n) as isize) = tmp;
     j = 2 as i32;
@@ -5635,9 +7324,7 @@ unsafe extern "C" fn R_lsmit(
             dot = 0.0f64;
             i = 0 as i32;
             while i <= k {
-                dot
-                    += *cs.offset((i + k * n) as isize)
-                        * *fmt_ints.offset((i + j) as isize);
+                dot += *cs.offset((i + k * n) as isize) * *fmt_ints.offset((i + j) as isize);
                 i += 1;
                 i;
             }
@@ -5666,7 +7353,11 @@ unsafe extern "C" fn R_lsmit(
             if fac == 0.0f64 {
                 return 0 as i32;
             }
-            eprintln!("libcint::rys_roots negative value in sqrtl for roots {} (j={})", n - 1, j);
+            eprintln!(
+                "libcint::rys_roots negative value in sqrtl for roots {} (j={})",
+                n - 1,
+                j
+            );
             return j;
         }
         fac = 1.0f64 / sqrtl(fac);
@@ -5697,9 +7388,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
     let mut error: i32 = 0;
     let mut nroots1: i32 = nroots + 1 as i32;
     let mut fmt_ints: [f64; 1088] = [0.0f64; 1088];
-    let mut qcs: *mut f64 = fmt_ints
-        .as_mut_ptr()
-        .offset((nroots1 * 2 as i32) as isize);
+    let mut qcs: *mut f64 = fmt_ints.as_mut_ptr().offset((nroots1 * 2 as i32) as isize);
     let mut rt: [f64; 1056] = [0.; 1056];
     let mut cs: *mut f64 = rt.as_mut_ptr().offset(nroots as isize);
     let mut a: *mut f64 = 0 as *mut f64;
@@ -5708,16 +7397,12 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
     let mut dum: f64 = 0.;
     let mut dum0: f64 = 0.;
     if lower == 0 as f64 {
-        lgamma_inc_like(
-            fmt_ints.as_mut_ptr(),
-            x as f64,
-            nroots * 2 as i32,
-        );
+        lgamma_inc_like(fmt_ints.as_mut_ptr(), x as f64, nroots * 2 as i32);
     } else {
         fmt_lerfc_like(
             fmt_ints.as_mut_ptr(),
             x as f64,
-             lower as f64,
+            lower as f64,
             nroots * 2 as i32,
         );
     }
@@ -5732,9 +7417,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
         return 0 as i32;
     }
     if nroots == 1 as i32 {
-        rt[0 as i32
-            as usize] = (fmt_ints[1 as usize]
-            / fmt_ints[0 as usize]);
+        rt[0 as i32 as usize] = (fmt_ints[1 as usize] / fmt_ints[0 as usize]);
     } else {
         error = R_lsmit(qcs, fmt_ints.as_mut_ptr(), nroots1);
         if error != 0 {
@@ -5744,10 +7427,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
         while k < nroots1 {
             i = 0 as i32;
             while i <= k {
-                *cs
-                    .offset(
-                        (k * nroots1 + i) as isize,
-                    ) = (*qcs.offset((k * nroots1 + i) as isize));
+                *cs.offset((k * nroots1 + i) as isize) = (*qcs.offset((k * nroots1 + i) as isize));
                 i += 1;
                 i;
             }
@@ -5783,8 +7463,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
                 j += 1;
                 j;
             }
-            *roots
-                .offset(k as isize) = root / (1 as f64 - root);
+            *roots.offset(k as isize) = root / (1 as f64 - root);
             *weights.offset(k as isize) = 1 as f64 / dum;
         }
         k += 1;

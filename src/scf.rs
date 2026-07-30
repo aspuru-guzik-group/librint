@@ -1,44 +1,41 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
 
 use crate::cint::CINTOpt;
+use crate::cint1e::{cint1e_nuc_cart, cint1e_nuc_sph, cint1e_ovlp_cart, cint1e_ovlp_sph};
+use crate::cint2e::{cint2e_cart, cint2e_cart_optimizer, cint2e_sph};
 use crate::cint_bas::{CINTcgto_cart, CINTcgto_spheric};
-use crate::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart, cint1e_ovlp_sph, cint1e_nuc_sph};
 use crate::intor1::{cint1e_kin_cart, cint1e_kin_sph};
-use crate::cint2e::{cint2e_cart, cint2e_sph, cint2e_cart_optimizer};
 use crate::optimizer::CINTdel_optimizer;
 
-use crate::linalg::{matmult, dcopya, transpose, sort};
+use crate::linalg::{dcopya, matmult, sort, transpose};
 
-use faer::{mat, linalg::solvers::SelfAdjointEigendecomposition, Side};
+use faer::{linalg::solvers::SelfAdjointEigendecomposition, mat, Side};
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
 
-type inte = fn(buf: &mut [f64], shls: &mut [i32], 
-    atm: &mut [i32], natm: i32, 
-    bas: &mut [i32], nbas: i32, 
+type inte = fn(
+    buf: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    natm: i32,
+    bas: &mut [i32],
+    nbas: i32,
     env: &mut [f64],
     *mut CINTOpt,
 ) -> i32;
 
-type cgto = fn(bas_id: usize, bas: &[i32],) -> i32;
+type cgto = fn(bas_id: usize, bas: &[i32]) -> i32;
 
 #[no_mangle]
-pub fn nmol(
-    atm: &Vec<i32>,
-    bas: &Vec<i32>,
-) 
--> (usize, usize) {
+pub fn nmol(atm: &Vec<i32>, bas: &Vec<i32>) -> (usize, usize) {
     let natm: usize = atm.len() / ATM_SLOTS;
     let nbas: usize = bas.len() / BAS_SLOTS;
     return (natm, nbas);
 }
 
 #[no_mangle]
-pub fn angl(
-    bas: &Vec<i32>,
-    coord: i32,
-) -> usize {
+pub fn angl(bas: &Vec<i32>, coord: i32) -> usize {
     let mut nshells: usize = 0;
     for i in (0..bas.len()).step_by(BAS_SLOTS) {
         let l = bas[i + 1] as usize;
@@ -64,7 +61,7 @@ pub fn integral1e(
 ) -> Vec<f64> {
     let (natm, nbas) = nmol(atm, bas);
     let nshells = angl(bas, coord);
-    
+
     let mut R = vec![0.0; nshells * nshells];
 
     let mut buf: Vec<f64>;
@@ -119,7 +116,16 @@ pub fn integral1e(
 
             buf = vec![0.0; di * dj];
 
-            func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+            func(
+                &mut buf,
+                &mut shls,
+                atm,
+                natm as i32,
+                bas,
+                nbas as i32,
+                env,
+                std::ptr::null_mut(),
+            );
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -132,7 +138,7 @@ pub fn integral1e(
         }
         mu += di;
     }
-    
+
     return R;
 }
 
@@ -178,7 +184,14 @@ pub fn integral2e(
     // integral2e_sym for why it must not enter differentiated calls)
     let mut opt: *mut CINTOpt = std::ptr::null_mut();
     unsafe {
-        cint2e_cart_optimizer(&mut opt, atm.as_mut_ptr(), natm as i32, bas.as_mut_ptr(), nbas as i32, env.as_mut_ptr());
+        cint2e_cart_optimizer(
+            &mut opt,
+            atm.as_mut_ptr(),
+            natm as i32,
+            bas.as_mut_ptr(),
+            nbas as i32,
+            env.as_mut_ptr(),
+        );
     }
 
     mu = 0;
@@ -203,13 +216,25 @@ pub fn integral2e(
 
                     buf = vec![0.0; di * dj * dk * dl];
 
-                    func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, opt);
+                    func(
+                        &mut buf,
+                        &mut shls,
+                        atm,
+                        natm as i32,
+                        bas,
+                        nbas as i32,
+                        env,
+                        opt,
+                    );
                     let mut c: usize = 0;
                     for laml in lam..(lam + dl) {
                         for sigk in sig..(sig + dk) {
                             for nuj in nu..(nu + dj) {
                                 for mui in mu..(mu + di) {
-                                    R[mui*nshells.pow(3) + nuj*nshells.pow(2) + sigk*nshells + laml] = buf[c];
+                                    R[mui * nshells.pow(3)
+                                        + nuj * nshells.pow(2)
+                                        + sigk * nshells
+                                        + laml] = buf[c];
                                     c += 1;
                                 }
                             }
@@ -265,7 +290,14 @@ pub fn integral2e_fock(
 
     let mut opt: *mut CINTOpt = std::ptr::null_mut();
     unsafe {
-        cint2e_cart_optimizer(&mut opt, atm.as_mut_ptr(), natm as i32, bas.as_mut_ptr(), nbas as i32, env.as_mut_ptr());
+        cint2e_cart_optimizer(
+            &mut opt,
+            atm.as_mut_ptr(),
+            natm as i32,
+            bas.as_mut_ptr(),
+            nbas as i32,
+            env.as_mut_ptr(),
+        );
     }
 
     // Full nbas^4 quartet loop (no permutational symmetry): every ERI slot is
@@ -291,7 +323,16 @@ pub fn integral2e_fock(
                     let dl = intcgto(l, &bas) as usize;
 
                     buf = vec![0.0; di * dj * dk * dl];
-                    func(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, opt);
+                    func(
+                        &mut buf,
+                        &mut shls,
+                        atm,
+                        natm as i32,
+                        bas,
+                        nbas as i32,
+                        env,
+                        opt,
+                    );
 
                     let mut c: usize = 0;
                     for laml in lam..(lam + dl) {
@@ -357,7 +398,7 @@ fn integrals(
 
     mu = 0;
     for i in 0..nbas {
-        shls[0] = i as i32; 
+        shls[0] = i as i32;
         di = CINTcgto_cart(i, &bas) as usize;
 
         nu = 0;
@@ -369,7 +410,16 @@ fn integrals(
 
             buf = vec![0.0; di * dj];
 
-            cint1e_ovlp_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+            cint1e_ovlp_cart(
+                &mut buf,
+                &mut shls,
+                atm,
+                natm as i32,
+                bas,
+                nbas as i32,
+                env,
+                std::ptr::null_mut(),
+            );
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -378,7 +428,16 @@ fn integrals(
                 }
             }
 
-            cint1e_kin_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+            cint1e_kin_cart(
+                &mut buf,
+                &mut shls,
+                atm,
+                natm as i32,
+                bas,
+                nbas as i32,
+                env,
+                std::ptr::null_mut(),
+            );
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -387,7 +446,16 @@ fn integrals(
                 }
             }
 
-            cint1e_nuc_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+            cint1e_nuc_cart(
+                &mut buf,
+                &mut shls,
+                atm,
+                natm as i32,
+                bas,
+                nbas as i32,
+                env,
+                std::ptr::null_mut(),
+            );
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
@@ -410,16 +478,28 @@ fn integrals(
                 for l in 0..nbas {
                     shls[3] = l as i32;
                     dl = CINTcgto_cart(l, &bas) as usize;
-                    
+
                     buf = vec![0.0; di * dj * dk * dl];
-        
-                    cint2e_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+
+                    cint2e_cart(
+                        &mut buf,
+                        &mut shls,
+                        atm,
+                        natm as i32,
+                        bas,
+                        nbas as i32,
+                        env,
+                        std::ptr::null_mut(),
+                    );
                     let mut c: usize = 0;
                     for laml in lam..(lam + dl) {
                         for sigk in sig..(sig + dk) {
                             for nuj in nu..(nu + dj) {
                                 for mui in mu..(mu + di) {
-                                    two[mui*nshells.pow(3) + nuj*nshells.pow(2) + sigk*nshells + laml] = buf[c];
+                                    two[mui * nshells.pow(3)
+                                        + nuj * nshells.pow(2)
+                                        + sigk * nshells
+                                        + laml] = buf[c];
                                     c += 1;
                                 }
                             }
@@ -434,7 +514,7 @@ fn integrals(
         }
         mu += di;
     }
-    
+
     return (S, H, two);
 }
 
@@ -447,12 +527,7 @@ const P_TOL: f64 = 1e-6;
 // orthogonalizer loses C^dag S C = 1, the iteration can settle on a P that is
 // neither N-electron nor idempotent, and its energy is then not variational
 // (CH4/sto-3g returned tr(PS) = 10.69, E = -40.305 vs the true -39.727).
-fn check_density(
-    n: usize,
-    nelec: usize,
-    P: &[f64],
-    S: &[f64],
-) -> Result<(), String> {
+fn check_density(n: usize, nelec: usize, P: &[f64], S: &[f64]) -> Result<(), String> {
     let mut trace: f64 = 0.0;
     for mu in 0..n {
         for nu in 0..n {
@@ -487,10 +562,7 @@ fn check_density(
 // across a degenerate eigenvalue, which silently breaks C^dag S C = 1 further
 // down: CH4/sto-3g (Td, 4 degenerate pairs) converged to tr(PS) = 10.69 with
 // |PSP - 2P| = 1.95, and CH4/def2-svp (18 pairs) never converged at all.
-fn find_X(
-    n: usize,
-    S: &[f64],
-) -> Result<(Vec<f64>, Vec<f64>), String> {
+fn find_X(n: usize, S: &[f64]) -> Result<(Vec<f64>, Vec<f64>), String> {
     let s_mat = mat::from_column_major_slice::<f64>(&S, n, n);
     let eig_decomp = SelfAdjointEigendecomposition::<f64>::new(s_mat, Side::Lower);
     let eigenvalues = eig_decomp.s();
@@ -534,12 +606,7 @@ fn find_X(
     return Ok((X, Xdag));
 }
 
-pub fn calc_F(
-    n: usize,
-    P: &[f64],
-    two: &[f64],
-    H: &[f64],
-) -> Vec<f64> {
+pub fn calc_F(n: usize, P: &[f64], two: &[f64], H: &[f64]) -> Vec<f64> {
     let mut G = vec![0.0; n * n];
     let mut F = vec![0.0; n * n];
 
@@ -547,25 +614,20 @@ pub fn calc_F(
         for nu in 0..n {
             for la in 0..n {
                 for sig in 0..n {
-                    G[mu*n + nu] += P[la*n + sig]
-                        * (two[mu*n.pow(3) + nu*n.pow(2) + sig*n + la]
-                        - 0.5 * two[mu*n.pow(3) + la*n.pow(2) + sig*n + nu]);
+                    G[mu * n + nu] += P[la * n + sig]
+                        * (two[mu * n.pow(3) + nu * n.pow(2) + sig * n + la]
+                            - 0.5 * two[mu * n.pow(3) + la * n.pow(2) + sig * n + nu]);
                 }
             }
 
-            F[mu*n + nu] += G[mu*n + nu] + H[mu*n + nu];
+            F[mu * n + nu] += G[mu * n + nu] + H[mu * n + nu];
         }
     }
 
     return F;
 }
 
-fn calc_Fprime(
-    n: usize,
-    F: &[f64],
-    X: &[f64],
-    Xdag: &[f64],
-) -> Vec<f64> {
+fn calc_Fprime(n: usize, F: &[f64], X: &[f64], Xdag: &[f64]) -> Vec<f64> {
     let inter = matmult(n, &Xdag, &F);
     let Fprime = matmult(n, &inter, X);
     return Fprime;
@@ -574,11 +636,7 @@ fn calc_Fprime(
 // F' = X^dag F X is symmetric; same self-adjoint requirement as find_X. With
 // the general solver the occupied block of a degenerate Fock matrix comes back
 // non-orthonormal, so calc_P's C C^dag is no longer a projector.
-fn diag_F(
-    n: usize,
-    Fprime: &[f64],
-    X: &[f64],
-) -> Vec<f64> {
+fn diag_F(n: usize, Fprime: &[f64], X: &[f64]) -> Vec<f64> {
     let fprime_mat = mat::from_column_major_slice::<f64>(&Fprime, n, n);
     let eig_decomp = SelfAdjointEigendecomposition::<f64>::new(fprime_mat, Side::Lower);
     let eigenvalues = eig_decomp.s();
@@ -606,15 +664,11 @@ fn diag_F(
     return C;
 }
 
-fn calc_P(
-    n: usize,
-    nelec: usize,
-    C: &mut [f64],
-) -> Vec<f64> {
+fn calc_P(n: usize, nelec: usize, C: &mut [f64]) -> Vec<f64> {
     let mut P = vec![0.0; n * n];
     for mu in 0..n {
         for nu in 0..n {
-            for i in 0..(nelec/2) {
+            for i in 0..(nelec / 2) {
                 P[mu * n + nu] += 2.0 * C[mu * n + i] * C[nu * n + i];
             }
         }
@@ -622,11 +676,7 @@ fn calc_P(
     return P;
 }
 
-fn f_delta(
-    n: usize,
-    P: &mut [f64],
-    Pold: &mut [f64],
-) -> f64 {
+fn f_delta(n: usize, P: &mut [f64], Pold: &mut [f64]) -> f64 {
     let mut delta: f64 = 0.0;
     for mu in 0..n {
         for nu in 0..n {
@@ -637,20 +687,15 @@ fn f_delta(
     return delta;
 }
 
-pub fn norm(
-    atm: &mut [i32],
-    env: &mut [f64],
-    i: usize,
-    j: usize,
-) -> f64 {
-    let xi: f64 = env[(atm[i*6 + 1]) as usize];
-    let xj: f64 = env[(atm[j*6 + 1]) as usize];
+pub fn norm(atm: &mut [i32], env: &mut [f64], i: usize, j: usize) -> f64 {
+    let xi: f64 = env[(atm[i * 6 + 1]) as usize];
+    let xj: f64 = env[(atm[j * 6 + 1]) as usize];
 
-    let yi: f64 = env[(atm[i*6 + 1] + 1) as usize];
-    let yj: f64 = env[(atm[j*6 + 1] + 1) as usize];
+    let yi: f64 = env[(atm[i * 6 + 1] + 1) as usize];
+    let yj: f64 = env[(atm[j * 6 + 1] + 1) as usize];
 
-    let zi: f64 = env[(atm[i*6 + 1] + 2) as usize];
-    let zj: f64 = env[(atm[j*6 + 1] + 2) as usize];
+    let zi: f64 = env[(atm[i * 6 + 1] + 2) as usize];
+    let zj: f64 = env[(atm[j * 6 + 1] + 2) as usize];
 
     return ((xi - xj).powf(2.0) + (yi - yj).powf(2.0) + (zi - zj).powf(2.0)).powf(0.5);
 }
@@ -674,7 +719,7 @@ pub fn density(
     for i in 0..nshells {
         for j in 0..nshells {
             if i == j {
-                P[i*nshells + j] = 1.0;
+                P[i * nshells + j] = 1.0;
             }
         }
     }
@@ -684,7 +729,7 @@ pub fn density(
 
     let mut Pold;
     let mut F;
-    let mut Fprime; 
+    let mut Fprime;
     let mut C;
 
     while delta > conv && i < imax {
@@ -715,12 +760,7 @@ pub fn density(
 }
 
 #[no_mangle]
-pub fn energy(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &mut Vec<f64>,
-) -> f64 {
+pub fn energy(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &mut Vec<f64>) -> f64 {
     let (natm, nbas) = nmol(atm, bas);
     let nshells = angl(bas, 0);
 
@@ -730,7 +770,7 @@ pub fn energy(
     let mut E0: f64 = 0.0;
     for mu in 0..nshells {
         for nu in 0..nshells {
-            E0 += 0.5 * P[mu*nshells + nu] * (H[mu*nshells + nu]  + F[mu*nshells + nu]);
+            E0 += 0.5 * P[mu * nshells + nu] * (H[mu * nshells + nu] + F[mu * nshells + nu]);
         }
     }
 
@@ -738,7 +778,7 @@ pub fn energy(
     for i in 0..natm {
         for j in 0..natm {
             if i > j {
-                Enuc += (atm[i*6 + 0] * atm[j*6 + 0]) as f64 / (norm(atm, env, i, j));
+                Enuc += (atm[i * 6 + 0] * atm[j * 6 + 0]) as f64 / (norm(atm, env, i, j));
             }
         }
     }
@@ -768,27 +808,47 @@ pub fn energyfast(
 
     mu = 0;
     for i in 0..nbas {
-        shls[0] = i as i32; let di = CINTcgto_cart(i, &bas) as usize;
+        shls[0] = i as i32;
+        let di = CINTcgto_cart(i, &bas) as usize;
         nu = 0;
         for j in 0..nbas {
-            shls[1] = j as i32; let dj = CINTcgto_cart(j, &bas) as usize;
+            shls[1] = j as i32;
+            let dj = CINTcgto_cart(j, &bas) as usize;
 
             buf = vec![0.0; di * dj];
 
-            cint1e_kin_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+            cint1e_kin_cart(
+                &mut buf,
+                &mut shls,
+                atm,
+                natm as i32,
+                bas,
+                nbas as i32,
+                env,
+                std::ptr::null_mut(),
+            );
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
-                    E0 += P[mui*nshells + nuj] * buf[c];
+                    E0 += P[mui * nshells + nuj] * buf[c];
                     c += 1;
                 }
             }
 
-            cint1e_nuc_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+            cint1e_nuc_cart(
+                &mut buf,
+                &mut shls,
+                atm,
+                natm as i32,
+                bas,
+                nbas as i32,
+                env,
+                std::ptr::null_mut(),
+            );
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
                 for mui in mu..(mu + di) {
-                    E0 += P[mui*nshells + nuj] * buf[c];
+                    E0 += P[mui * nshells + nuj] * buf[c];
                     c += 1;
                 }
             }
@@ -799,26 +859,44 @@ pub fn energyfast(
 
     mu = 0;
     for i in 0..nbas {
-        shls[0] = i as i32; let di = CINTcgto_cart(i, &bas) as usize;
+        shls[0] = i as i32;
+        let di = CINTcgto_cart(i, &bas) as usize;
         nu = 0;
         for j in 0..nbas {
-            shls[1] = j as i32; let dj = CINTcgto_cart(j, &bas) as usize;
+            shls[1] = j as i32;
+            let dj = CINTcgto_cart(j, &bas) as usize;
             sig = 0;
             for k in 0..nbas {
-                shls[2] = k as i32; let dk = CINTcgto_cart(k, &bas) as usize;
+                shls[2] = k as i32;
+                let dk = CINTcgto_cart(k, &bas) as usize;
                 lam = 0;
                 for l in 0..nbas {
-                    shls[3] = l as i32; let dl = CINTcgto_cart(l, &bas) as usize;
+                    shls[3] = l as i32;
+                    let dl = CINTcgto_cart(l, &bas) as usize;
 
                     buf = vec![0.0; di * dj * dk * dl];
 
-                    cint2e_cart(&mut buf, &mut shls, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+                    cint2e_cart(
+                        &mut buf,
+                        &mut shls,
+                        atm,
+                        natm as i32,
+                        bas,
+                        nbas as i32,
+                        env,
+                        std::ptr::null_mut(),
+                    );
                     let mut c: usize = 0;
                     for laml in lam..(lam + dl) {
                         for sigk in sig..(sig + dk) {
                             for nuj in nu..(nu + dj) {
                                 for mui in mu..(mu + di) {
-                                    E0 += 0.5 * (P[mui*nshells + nuj] * P[sigk*nshells + laml] - 0.5 * P[mui*nshells + sigk] * P[nuj*nshells + laml]) * buf[c];
+                                    E0 += 0.5
+                                        * (P[mui * nshells + nuj] * P[sigk * nshells + laml]
+                                            - 0.5
+                                                * P[mui * nshells + sigk]
+                                                * P[nuj * nshells + laml])
+                                        * buf[c];
                                     c += 1;
                                 }
                             }
@@ -837,7 +915,7 @@ pub fn energyfast(
     for i in 0..natm {
         for j in 0..natm {
             if i > j {
-                Enuc += (atm[i*6 + 0] * atm[j*6 + 0]) as f64 / (norm(atm, env, i, j));
+                Enuc += (atm[i * 6 + 0] * atm[j * 6 + 0]) as f64 / (norm(atm, env, i, j));
             }
         }
     }

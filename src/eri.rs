@@ -10,11 +10,11 @@
 pub const LMAX: usize = 4;
 const NFMAX: usize = (LMAX + 1) * (LMAX + 2) / 2; // 15 (g)
 const NRMAX: usize = 2 * LMAX + 1; // 9 roots for an all-g quartet
-// Per-ROOT g-buffer: the VRR/HRR are run one rys root at a time (the root loop
-// wraps prim_g_root + the gout accumulation), so the buffer no longer carries
-// the nroots factor. That both shrinks it (l=3: 784 vs 5488) and keeps l=4
-// (25*81 = 2025) under the ~5k-double reverse-region alloca ceiling that makes
-// Enzyme's pass SIGSEGV -- the all-roots l=4 buffer would have been 18225.
+                                   // Per-ROOT g-buffer: the VRR/HRR are run one rys root at a time (the root loop
+                                   // wraps prim_g_root + the gout accumulation), so the buffer no longer carries
+                                   // the nroots factor. That both shrinks it (l=3: 784 vs 5488) and keeps l=4
+                                   // (25*81 = 2025) under the ~5k-double reverse-region alloca ceiling that makes
+                                   // Enzyme's pass SIGSEGV -- the all-roots l=4 buffer would have been 18225.
 pub const GSIZE_MAX: usize = (LMAX + 1) * (LMAX + 1) * (2 * LMAX + 1) * (2 * LMAX + 1);
 
 fn common_fac_sp(l: i32) -> f64 {
@@ -50,19 +50,49 @@ pub fn cart_comp(l: usize) -> ([usize; NFMAX], [usize; NFMAX], [usize; NFMAX]) {
 // Shell-quartet parameters read from shls/atm/bas/env, shared by both
 // contraction paths.
 struct QuartetCtx {
-    li: usize, lj: usize, lk: usize, ll: usize,
-    i_prim: usize, j_prim: usize, k_prim: usize, l_prim: usize,
-    nctri: usize, nctrj: usize, nctrk: usize, nctrl: usize,
-    pai: usize, paj: usize, pak: usize, pal: usize,
-    pci: usize, pcj: usize, pck: usize, pcl: usize,
-    ri: [f64; 3], rj: [f64; 3], rk: [f64; 3], rl: [f64; 3],
-    nfi: usize, nfj: usize, nfk: usize, nfl: usize,
-    nmax: usize, mmax: usize, nroots: usize,
-    di: usize, dk: usize, dl: usize, dj: usize,
-    common_factor: f64, expcutoff: f64,
-    rirj: [f64; 3], rkrl: [f64; 3],
-    rr_ij: f64, rr_kl: f64,
-    log_rr_ij: f64, log_rr_kl: f64,
+    li: usize,
+    lj: usize,
+    lk: usize,
+    ll: usize,
+    i_prim: usize,
+    j_prim: usize,
+    k_prim: usize,
+    l_prim: usize,
+    nctri: usize,
+    nctrj: usize,
+    nctrk: usize,
+    nctrl: usize,
+    pai: usize,
+    paj: usize,
+    pak: usize,
+    pal: usize,
+    pci: usize,
+    pcj: usize,
+    pck: usize,
+    pcl: usize,
+    ri: [f64; 3],
+    rj: [f64; 3],
+    rk: [f64; 3],
+    rl: [f64; 3],
+    nfi: usize,
+    nfj: usize,
+    nfk: usize,
+    nfl: usize,
+    nmax: usize,
+    mmax: usize,
+    nroots: usize,
+    di: usize,
+    dk: usize,
+    dl: usize,
+    dj: usize,
+    common_factor: f64,
+    expcutoff: f64,
+    rirj: [f64; 3],
+    rkrl: [f64; 3],
+    rr_ij: f64,
+    rr_kl: f64,
+    log_rr_ij: f64,
+    log_rr_kl: f64,
 }
 
 fn quartet_ctx(shls: &[i32], atm: &[i32], bas: &[i32], env: &[f64]) -> QuartetCtx {
@@ -119,10 +149,12 @@ fn quartet_ctx(shls: &[i32], atm: &[i32], bas: &[i32], env: &[f64]) -> QuartetCt
     let dj = dl * (mmax + 1);
     assert!(dj * (nmax + 1) <= GSIZE_MAX);
 
-    let common_factor = std::f64::consts::PI * std::f64::consts::PI * std::f64::consts::PI
-        * 2.0 / 1.7724538509055160272981674833411451
-        * common_fac_sp(li as i32) * common_fac_sp(lj as i32)
-        * common_fac_sp(lk as i32) * common_fac_sp(ll as i32);
+    let common_factor = std::f64::consts::PI * std::f64::consts::PI * std::f64::consts::PI * 2.0
+        / 1.7724538509055160272981674833411451
+        * common_fac_sp(li as i32)
+        * common_fac_sp(lj as i32)
+        * common_fac_sp(lk as i32)
+        * common_fac_sp(ll as i32);
     let expcutoff = if env[0] == 0.0 {
         60.0
     } else {
@@ -148,19 +180,49 @@ fn quartet_ctx(shls: &[i32], atm: &[i32], bas: &[i32], env: &[f64]) -> QuartetCt
     }
 
     QuartetCtx {
-        li, lj, lk, ll,
-        i_prim, j_prim, k_prim, l_prim,
+        li,
+        lj,
+        lk,
+        ll,
+        i_prim,
+        j_prim,
+        k_prim,
+        l_prim,
         nctri: bas[8 * i_sh + 3] as usize,
         nctrj: bas[8 * j_sh + 3] as usize,
         nctrk: bas[8 * k_sh + 3] as usize,
         nctrl: bas[8 * l_sh + 3] as usize,
-        pai, paj, pak, pal, pci, pcj, pck, pcl,
-        ri, rj, rk, rl,
-        nfi, nfj, nfk, nfl,
-        nmax, mmax, nroots,
-        di, dk, dl, dj,
-        common_factor, expcutoff,
-        rirj, rkrl, rr_ij, rr_kl, log_rr_ij, log_rr_kl,
+        pai,
+        paj,
+        pak,
+        pal,
+        pci,
+        pcj,
+        pck,
+        pcl,
+        ri,
+        rj,
+        rk,
+        rl,
+        nfi,
+        nfj,
+        nfk,
+        nfl,
+        nmax,
+        mmax,
+        nroots,
+        di,
+        dk,
+        dl,
+        dj,
+        common_factor,
+        expcutoff,
+        rirj,
+        rkrl,
+        rr_ij,
+        rr_kl,
+        log_rr_ij,
+        log_rr_kl,
     }
 }
 
@@ -278,8 +340,7 @@ fn prim_g_root(
                 let mut s1 = cm * s0 + b00 * gax[0];
                 gax[dj + dl] = s1;
                 for m in 1..mmax {
-                    let s2 = cm * s1 + (m as f64) * b01 * s0
-                        + b00 * gax[m * dl];
+                    let s2 = cm * s1 + (m as f64) * b01 * s0 + b00 * gax[m * dl];
                     gax[dj + (m + 1) * dl] = s2;
                     s0 = s1;
                     s1 = s2;
@@ -292,7 +353,8 @@ fn prim_g_root(
                 let mut s0 = gax[base];
                 let mut s1 = gax[base + dj];
                 for n in 1..nmax {
-                    let s2 = cn * s1 + (n as f64) * b10 * s0
+                    let s2 = cn * s1
+                        + (n as f64) * b10 * s0
                         + (m as f64) * b00 * gax[base + n * dj - dl];
                     gax[base + (n + 1) * dj] = s2;
                     s0 = s1;
@@ -398,8 +460,7 @@ fn eri_cart_seg(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
                     let ai = env[q.pai + ip];
                     let aij = ai + aj;
                     let eij_val = q.rr_ij * ai * aj / aij;
-                    let cceij =
-                        eij_val - q.log_rr_ij - env[q.pci + ip].abs().ln() - log_maxcj;
+                    let cceij = eij_val - q.log_rr_ij - env[q.pci + ip].abs().ln() - log_maxcj;
                     if cceij > eijcutoff {
                         continue;
                     }
@@ -413,15 +474,16 @@ fn eri_cart_seg(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
 
                     let mut u = [0.0f64; NRMAX];
                     let mut w = [0.0f64; NRMAX];
-                    let (a0, fac1, rijrkl) =
-                        prim_prep(q, aij, akl, fac, rij, rkl, &mut u, &mut w);
+                    let (a0, fac1, rijrkl) = prim_prep(q, aij, akl, fac, rij, rkl, &mut u, &mut w);
 
                     // one rys root at a time: fill the per-root g-buffers, then
                     // accumulate this root's gout product straight into out
                     // (summing over roots via the += is the CINTgout2e root sum)
                     for r in 0..nroots {
-                        prim_g_root(&mut gx, &mut gy, &mut gz, q, aij, akl, a0,
-                                    fac1, u[r], w[r], rij, rkl, rijrkl);
+                        prim_g_root(
+                            &mut gx, &mut gy, &mut gz, q, aij, akl, a0, fac1, u[r], w[r], rij, rkl,
+                            rijrkl,
+                        );
                         for jf in 0..nfj {
                             let oj = [j_nx[jf] * dj, j_ny[jf] * dj, j_nz[jf] * dj];
                             for lf in 0..nfl {
@@ -504,8 +566,7 @@ fn eri_cart_gc(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
             let ak = env[q.pak + kp];
             let akl = ak + al;
             let ekl_val = q.rr_kl * ak * al / akl;
-            let ccekl = ekl_val - q.log_rr_kl
-                - log_maxc(q.pck, q.k_prim, nctrk, kp) - log_maxcl;
+            let ccekl = ekl_val - q.log_rr_kl - log_maxc(q.pck, q.k_prim, nctrk, kp) - log_maxcl;
             if ccekl > q.expcutoff {
                 continue;
             }
@@ -525,8 +586,8 @@ fn eri_cart_gc(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
                     let ai = env[q.pai + ip];
                     let aij = ai + aj;
                     let eij_val = q.rr_ij * ai * aj / aij;
-                    let cceij = eij_val - q.log_rr_ij
-                        - log_maxc(q.pci, q.i_prim, nctri, ip) - log_maxcj;
+                    let cceij =
+                        eij_val - q.log_rr_ij - log_maxc(q.pci, q.i_prim, nctri, ip) - log_maxcj;
                     if cceij > eijcutoff {
                         continue;
                     }
@@ -540,14 +601,15 @@ fn eri_cart_gc(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
 
                     let mut u = [0.0f64; NRMAX];
                     let mut w = [0.0f64; NRMAX];
-                    let (a0, fac1, rijrkl) =
-                        prim_prep(q, aij, akl, fac, rij, rkl, &mut u, &mut w);
+                    let (a0, fac1, rijrkl) = prim_prep(q, aij, akl, fac, rij, rkl, &mut u, &mut w);
 
                     // one rys root at a time; gc1 accumulates over roots too,
                     // weighted by the i-shell contraction coefficients
                     for r in 0..nroots {
-                        prim_g_root(&mut gx, &mut gy, &mut gz, q, aij, akl, a0,
-                                    fac1, u[r], w[r], rij, rkl, rijrkl);
+                        prim_g_root(
+                            &mut gx, &mut gy, &mut gz, q, aij, akl, a0, fac1, u[r], w[r], rij, rkl,
+                            rijrkl,
+                        );
                         for jf in 0..nfj {
                             let oj = [j_nx[jf] * dj, j_ny[jf] * dj, j_nz[jf] * dj];
                             for lf in 0..nfl {
@@ -567,8 +629,7 @@ fn eri_cart_gc(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
                                         let iy = ok[1] + i_ny[if_] * di;
                                         let iz = ok[2] + i_nz[if_] * di;
                                         let s = gx[ix] * gy[iy] * gz[iz];
-                                        let idx =
-                                            if_ + nfi * (jf + nfj * (kf + nfk * lf));
+                                        let idx = if_ + nfi * (jf + nfj * (kf + nfk * lf));
                                         for ci in 0..nctri {
                                             gc1[ci * nf + idx] +=
                                                 env[q.pci + ci * q.i_prim + ip] * s;

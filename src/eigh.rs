@@ -1,4 +1,12 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![allow(
+    dead_code,
+    mutable_transmutes,
+    non_camel_case_types,
+    non_snake_case,
+    non_upper_case_globals,
+    unused_assignments,
+    unused_mut
+)]
 #![feature(extern_types)]
 extern "C" {
     // fn sqrt(_: f64) -> f64;
@@ -28,7 +36,11 @@ unsafe extern "C" fn _dlarrk(
     if n <= 0 as i32 {
         return 0 as i32;
     }
-    tnorm = if fabs(gl) > fabs(gu) { fabs(gl) } else { fabs(gu) };
+    tnorm = if fabs(gl) > fabs(gu) {
+        fabs(gl)
+    } else {
+        fabs(gu)
+    };
     info = -(1 as i32);
     left = gl - tnorm * 2.0f64 * 2.2204460492503131e-16f64 * n as f64;
     right = gu + tnorm * 2.0f64 * 2.2204460492503131e-16f64 * n as f64;
@@ -38,7 +50,11 @@ unsafe extern "C" fn _dlarrk(
         if tmp1 <= 0 as f64
             || tmp1
                 < reltol
-                    * (if fabs(right) > fabs(left) { fabs(right) } else { fabs(left) })
+                    * (if fabs(right) > fabs(left) {
+                        fabs(right)
+                    } else {
+                        fabs(left)
+                    })
         {
             info = 0 as i32;
             break;
@@ -52,8 +68,7 @@ unsafe extern "C" fn _dlarrk(
             }
             i = 1 as i32;
             while i < n {
-                tmp1 = *diag.offset(i as isize)
-                    - *e2.offset((i - 1 as i32) as isize) / tmp1 - mid;
+                tmp1 = *diag.offset(i as isize) - *e2.offset((i - 1 as i32) as isize) / tmp1 - mid;
                 if tmp1 <= 0.0f64 {
                     negcnt += 1;
                     negcnt;
@@ -138,22 +153,17 @@ unsafe extern "C" fn _dlasq4(
     let mut s: f64 = 0.0f64;
     let mut i: i32 = 0;
     if n0init == n0 {
-        if *dmin.offset(0 as isize)
-            == *dn.offset(0 as isize)
-        {
-            if *dmin.offset(1 as isize)
-                == *dn.offset(1 as isize)
-            {
+        if *dmin.offset(0 as isize) == *dn.offset(0 as isize) {
+            if *dmin.offset(1 as isize) == *dn.offset(1 as isize) {
                 b1 = (*qvecp.offset((n0 - 1 as i32) as isize)
-                        * *evecp.offset((n0 - 2 as i32) as isize)
-                ).sqrt();
+                    * *evecp.offset((n0 - 2 as i32) as isize))
+                .sqrt();
                 b2 = (*qvecp.offset((n0 - 2 as i32) as isize)
-                        * *evecp.offset((n0 - 3 as i32) as isize)
-                ).sqrt();
+                    * *evecp.offset((n0 - 3 as i32) as isize))
+                .sqrt();
                 a2 = *qvecp.offset((n0 - 2 as i32) as isize)
                     + *evecp.offset((n0 - 2 as i32) as isize);
-                gap2 = *dmin.offset(2 as isize) - a2
-                    - *dmin.offset(2 as isize) * 0.25f64;
+                gap2 = *dmin.offset(2 as isize) - a2 - *dmin.offset(2 as isize) * 0.25f64;
                 if gap2 > b2 {
                     gap1 = a2 - *dn.offset(0 as isize) - b2 / gap2 * b2;
                 } else {
@@ -173,7 +183,11 @@ unsafe extern "C" fn _dlasq4(
                         s = *dn.offset(0 as isize) - b1;
                     }
                     if a2 > b1 + b2 {
-                        s = if s < a2 - (b1 + b2) { s } else { a2 - (b1 + b2) };
+                        s = if s < a2 - (b1 + b2) {
+                            s
+                        } else {
+                            a2 - (b1 + b2)
+                        };
                     }
                     s = if s > *dmin.offset(0 as isize) * 0.333f64 {
                         s
@@ -182,8 +196,7 @@ unsafe extern "C" fn _dlasq4(
                     };
                 }
             } else {
-                if *evecp.offset((n0 - 2 as i32) as isize)
-                    > *qvecp.offset((n0 - 2 as i32) as isize)
+                if *evecp.offset((n0 - 2 as i32) as isize) > *qvecp.offset((n0 - 2 as i32) as isize)
                 {
                     return 0 as i32;
                 }
@@ -206,26 +219,20 @@ unsafe extern "C" fn _dlasq4(
                 }
                 a2 *= 1.05f64;
                 if a2 < 0.563f64 {
-                    s = *dn.offset(0 as isize) * (1.0f64 - (a2).sqrt())
-                        / (a2 + 1.0f64);
+                    s = *dn.offset(0 as isize) * (1.0f64 - (a2).sqrt()) / (a2 + 1.0f64);
                 } else {
                     s = *dmin.offset(0 as isize) * 0.25f64;
                 }
             }
-        } else if *dmin.offset(0 as isize)
-            == *dn.offset(1 as isize)
-        {
-            if *evec1p.offset((n0 - 2 as i32) as isize)
-                > *qvec1p.offset((n0 - 1 as i32) as isize)
-                || *evecp.offset((n0 - 3 as i32) as isize)
-                    > *qvecp.offset((n0 - 3 as i32) as isize)
+        } else if *dmin.offset(0 as isize) == *dn.offset(1 as isize) {
+            if *evec1p.offset((n0 - 2 as i32) as isize) > *qvec1p.offset((n0 - 1 as i32) as isize)
+                || *evecp.offset((n0 - 3 as i32) as isize) > *qvecp.offset((n0 - 3 as i32) as isize)
             {
                 return 0 as i32;
             }
-            a2 = *evec1p.offset((n0 - 2 as i32) as isize)
-                / *qvec1p.offset((n0 - 1 as i32) as isize);
-            b2 = *evecp.offset((n0 - 3 as i32) as isize)
-                / *qvecp.offset((n0 - 3 as i32) as isize);
+            a2 =
+                *evec1p.offset((n0 - 2 as i32) as isize) / *qvec1p.offset((n0 - 1 as i32) as isize);
+            b2 = *evecp.offset((n0 - 3 as i32) as isize) / *qvecp.offset((n0 - 3 as i32) as isize);
             a2 += b2;
             i = n0 - 4 as i32;
             while i >= i0 {
@@ -246,16 +253,12 @@ unsafe extern "C" fn _dlasq4(
             }
             a2 *= 1.05f64;
             if a2 < 0.563f64 {
-                s = *dn.offset(1 as isize) * (1.0f64 - (a2).sqrt())
-                    / (a2 + 1.0f64);
+                s = *dn.offset(1 as isize) * (1.0f64 - (a2).sqrt()) / (a2 + 1.0f64);
             } else {
                 s = *dmin.offset(0 as isize) * 0.25f64;
             }
-        } else if *dmin.offset(0 as isize)
-            == *dn.offset(2 as isize)
-        {
-            if *evec1p.offset((n0 - 3 as i32) as isize)
-                > *qvec1p.offset((n0 - 2 as i32) as isize)
+        } else if *dmin.offset(0 as isize) == *dn.offset(2 as isize) {
+            if *evec1p.offset((n0 - 3 as i32) as isize) > *qvec1p.offset((n0 - 2 as i32) as isize)
                 || *evec1p.offset((n0 - 2 as i32) as isize)
                     > *qvec1p.offset((n0 - 1 as i32) as isize)
             {
@@ -264,7 +267,8 @@ unsafe extern "C" fn _dlasq4(
             a2 = *evec1p.offset((n0 - 3 as i32) as isize)
                 / *qvec1p.offset((n0 - 2 as i32) as isize)
                 * (*evec1p.offset((n0 - 2 as i32) as isize)
-                    / *qvec1p.offset((n0 - 1 as i32) as isize) + 1.0f64);
+                    / *qvec1p.offset((n0 - 1 as i32) as isize)
+                    + 1.0f64);
             if n0 - i0 > 3 as i32 {
                 b2 = *evecp.offset((n0 - 4 as i32) as isize)
                     / *qvecp.offset((n0 - 4 as i32) as isize);
@@ -286,8 +290,7 @@ unsafe extern "C" fn _dlasq4(
                 a2 *= 1.05f64;
             }
             if a2 < 0.563f64 {
-                s = *dn.offset(2 as isize) * (1.0f64 - (a2).sqrt())
-                    / (a2 + 1.0f64);
+                s = *dn.offset(2 as isize) * (1.0f64 - (a2).sqrt()) / (a2 + 1.0f64);
             } else {
                 s = *dmin.offset(0 as isize) * 0.25f64;
             }
@@ -295,19 +298,14 @@ unsafe extern "C" fn _dlasq4(
             s = *dmin.offset(0 as isize) * 0.25f64;
         }
     } else if n0init == n0 + 1 as i32 {
-        if *dmin.offset(1 as isize)
-            == *dn.offset(1 as isize)
-            && *dmin.offset(2 as isize)
-                == *dn.offset(2 as isize)
+        if *dmin.offset(1 as isize) == *dn.offset(1 as isize)
+            && *dmin.offset(2 as isize) == *dn.offset(2 as isize)
         {
-            if *evecp.offset((n0 - 2 as i32) as isize)
-                > *qvecp.offset((n0 - 2 as i32) as isize)
-            {
+            if *evecp.offset((n0 - 2 as i32) as isize) > *qvecp.offset((n0 - 2 as i32) as isize) {
                 return 0 as i32;
             }
             s = *dmin.offset(1 as isize) * 0.333f64;
-            b1 = *evecp.offset((n0 - 2 as i32) as isize)
-                / *qvecp.offset((n0 - 2 as i32) as isize);
+            b1 = *evecp.offset((n0 - 2 as i32) as isize) / *qvecp.offset((n0 - 2 as i32) as isize);
             b2 = b1;
             if b2 != 0.0f64 {
                 i = n0 - 3 as i32;
@@ -341,26 +339,20 @@ unsafe extern "C" fn _dlasq4(
                     a2 * (1.0f64 - b2 * 1.01f64)
                 };
             }
-        } else if *dmin.offset(1 as isize)
-            == *dn.offset(1 as isize)
-        {
+        } else if *dmin.offset(1 as isize) == *dn.offset(1 as isize) {
             s = *dmin.offset(1 as isize) * 0.5f64;
         } else {
             s = *dmin.offset(1 as isize) * 0.25f64;
         }
     } else if n0init == n0 + 2 as i32 {
-        if *dmin.offset(2 as isize)
-            == *dn.offset(2 as isize)
+        if *dmin.offset(2 as isize) == *dn.offset(2 as isize)
             && *evecp.offset((n0 - 2 as i32) as isize) * 2.0f64
                 < *qvecp.offset((n0 - 2 as i32) as isize)
         {
-            if *evecp.offset((n0 - 2 as i32) as isize)
-                > *qvecp.offset((n0 - 2 as i32) as isize)
-            {
+            if *evecp.offset((n0 - 2 as i32) as isize) > *qvecp.offset((n0 - 2 as i32) as isize) {
                 return 0 as i32;
             }
-            b1 = *evecp.offset((n0 - 2 as i32) as isize)
-                / *qvecp.offset((n0 - 2 as i32) as isize);
+            b1 = *evecp.offset((n0 - 2 as i32) as isize) / *qvecp.offset((n0 - 2 as i32) as isize);
             b2 = b1;
             if b2 != 0.0f64 {
                 i = n0 - 2 as i32;
@@ -370,9 +362,8 @@ unsafe extern "C" fn _dlasq4(
                     {
                         return 0 as i32;
                     }
-                    b1
-                        *= *evecp.offset((i - 1 as i32) as isize)
-                            / *qvecp.offset((i - 1 as i32) as isize);
+                    b1 *= *evecp.offset((i - 1 as i32) as isize)
+                        / *qvecp.offset((i - 1 as i32) as isize);
                     b2 += b1;
                     if b1 * 100.0f64 < b2 {
                         break;
@@ -387,8 +378,9 @@ unsafe extern "C" fn _dlasq4(
             gap2 = *qvecp.offset((n0 - 2 as i32) as isize)
                 + *evecp.offset((n0 - 3 as i32) as isize)
                 - (*qvecp.offset((n0 - 3 as i32) as isize)
-                        * *evecp.offset((n0 - 3 as i32) as isize)
-                ).sqrt() - a2;
+                    * *evecp.offset((n0 - 3 as i32) as isize))
+                .sqrt()
+                - a2;
             if gap2 > 0.0f64 && gap2 > b2 * a2 {
                 s = if s > a2 * (1.0f64 - a2 * 1.01f64 * (b2 / gap2) * b2) {
                     s
@@ -430,8 +422,7 @@ unsafe extern "C" fn _dlasq5(
     j = i0;
     while j < n0 - 3 as i32 {
         *qvec1p.offset(j as isize) = diag + *evecp.offset(j as isize);
-        temp = *qvecp.offset((j + 1 as i32) as isize)
-            / *qvec1p.offset(j as isize);
+        temp = *qvecp.offset((j + 1 as i32) as isize) / *qvec1p.offset(j as isize);
         diag = diag * temp - tau;
         if diag < tol {
             diag = 0.0f64;
@@ -456,22 +447,12 @@ unsafe extern "C" fn _dlasq5(
     *dn.offset(0 as isize) = diag;
     *qvec1p.offset((n0 - 1 as i32) as isize) = diag;
     *dmin.offset(2 as isize) = diag_min;
-    *dmin
-        .offset(
-            1 as isize,
-        ) = if *dmin.offset(2 as isize)
-        < *dn.offset(1 as isize)
-    {
+    *dmin.offset(1 as isize) = if *dmin.offset(2 as isize) < *dn.offset(1 as isize) {
         *dmin.offset(2 as isize)
     } else {
         *dn.offset(1 as isize)
     };
-    *dmin
-        .offset(
-            0 as isize,
-        ) = if *dmin.offset(1 as isize)
-        < *dn.offset(0 as isize)
-    {
+    *dmin.offset(0 as isize) = if *dmin.offset(1 as isize) < *dn.offset(0 as isize) {
         *dmin.offset(1 as isize)
     } else {
         *dn.offset(0 as isize)
@@ -525,26 +506,19 @@ unsafe extern "C" fn _dlasq2(
         temp = fabs(*diag.offset(i as isize));
         *qvec1.offset(i as isize) = 0.0f64;
         *evec1.offset(i as isize) = 0.0f64;
-        *evec
-            .offset(
-                (j - 1 as i32) as isize,
-            ) = *diag_off.offset(i as isize) * *diag_off.offset(i as isize) * temp;
+        *evec.offset((j - 1 as i32) as isize) =
+            *diag_off.offset(i as isize) * *diag_off.offset(i as isize) * temp;
         *qvec.offset(j as isize) = temp;
         i += 1;
         i;
         j -= 1;
         j;
     }
-    *qvec
-        .offset(
-            0 as isize,
-        ) = fabs(*diag.offset((n - 1 as i32) as isize));
+    *qvec.offset(0 as isize) = fabs(*diag.offset((n - 1 as i32) as isize));
     *qvec1.offset((n - 1 as i32) as isize) = 0.0f64;
     *evec.offset((n - 1 as i32) as isize) = 0.0f64;
     *evec1.offset((n - 1 as i32) as isize) = 0.0f64;
-    if *qvec.offset(0 as isize)
-        < *qvec.offset((n - 1 as i32) as isize) * 1.5f64
-    {
+    if *qvec.offset(0 as isize) < *qvec.offset((n - 1 as i32) as isize) * 1.5f64 {
         i = 0 as i32;
         j = n - 1 as i32;
         while i < n / 2 as i32 {
@@ -565,11 +539,8 @@ unsafe extern "C" fn _dlasq2(
     while i < n - 1 as i32 {
         temp = diag_sum + *evec.offset(i as isize);
         *qvec1.offset(i as isize) = temp;
-        *evec1
-            .offset(
-                i as isize,
-            ) = *qvec.offset((i + 1 as i32) as isize)
-            * (*evec.offset(i as isize) / temp);
+        *evec1.offset(i as isize) =
+            *qvec.offset((i + 1 as i32) as isize) * (*evec.offset(i as isize) / temp);
         diag_sum = *qvec.offset((i + 1 as i32) as isize) * (diag_sum / temp);
         i += 1;
         i;
@@ -580,11 +551,8 @@ unsafe extern "C" fn _dlasq2(
     while i < n - 1 as i32 {
         temp = diag_sum + *evec1.offset(i as isize);
         *qvec.offset(i as isize) = temp;
-        *evec
-            .offset(
-                i as isize,
-            ) = *qvec1.offset((i + 1 as i32) as isize)
-            * (*evec1.offset(i as isize) / temp);
+        *evec.offset(i as isize) =
+            *qvec1.offset((i + 1 as i32) as isize) * (*evec1.offset(i as isize) / temp);
         diag_sum = *qvec1.offset((i + 1 as i32) as isize) * (diag_sum / temp);
         i += 1;
         i;
@@ -628,14 +596,11 @@ unsafe extern "C" fn _dlasq2(
         qvec1p = qvec1;
         evecp = evec;
         evec1p = evec1;
-        if qmin < 0 as f64
-            || emax < 0 as f64
-        {   
+        if qmin < 0 as f64 || emax < 0 as f64 {
             eprintln!("dlasq2: qmin < 0 or emax < 0");
             return 1 as i32;
         }
-        dmin[0 as i32
-            as usize] = -if 0.0f64 > qmin - 2.0f64 * (qmin * emax).sqrt() {
+        dmin[0 as i32 as usize] = -if 0.0f64 > qmin - 2.0f64 * (qmin * emax).sqrt() {
             0.0f64
         } else {
             qmin - 2.0f64 * (qmin * emax).sqrt()
@@ -650,8 +615,7 @@ unsafe extern "C" fn _dlasq2(
                 n1 = n0 - 1 as i32;
                 n2 = n0 - 2 as i32;
                 if n1 == i0
-                    || *evecp.offset(n2 as isize)
-                        < tol2 * (sigma + *qvecp.offset(n1 as isize))
+                    || *evecp.offset(n2 as isize) < tol2 * (sigma + *qvecp.offset(n1 as isize))
                     || *evec1p.offset(n2 as isize) < tol2 * *qvecp.offset(n2 as isize)
                 {
                     *qvec.offset(n1 as isize) = *qvecp.offset(n1 as isize) + sigma;
@@ -671,16 +635,14 @@ unsafe extern "C" fn _dlasq2(
                         *qvecp.offset(n2 as isize) = s;
                     }
                     t = (*qvecp.offset(n2 as isize) - *qvecp.offset(n1 as isize)
-                        + *evecp.offset(n2 as isize)) * 0.5f64;
-                    if *evecp.offset(n2 as isize) > *qvecp.offset(n1 as isize) * tol2
-                        && t != 0.0f64
+                        + *evecp.offset(n2 as isize))
+                        * 0.5f64;
+                    if *evecp.offset(n2 as isize) > *qvecp.offset(n1 as isize) * tol2 && t != 0.0f64
                     {
-                        s = *qvecp.offset(n1 as isize)
-                            * (*evecp.offset(n2 as isize) / t);
+                        s = *qvecp.offset(n1 as isize) * (*evecp.offset(n2 as isize) / t);
                         s = *qvecp.offset(n1 as isize)
                             * (*evecp.offset(n2 as isize) / (t + (t * (t + s)).sqrt()));
-                        t = *qvecp.offset(n2 as isize)
-                            + (s + *evecp.offset(n2 as isize));
+                        t = *qvecp.offset(n2 as isize) + (s + *evecp.offset(n2 as isize));
                         *qvecp.offset(n1 as isize) *= *qvecp.offset(n2 as isize) / t;
                         *qvecp.offset(n2 as isize) = t;
                     }
@@ -850,10 +812,7 @@ unsafe extern "C" fn _compute_eigenvalues(
     work = work.offset(n as isize);
     i = 0 as i32;
     while i < n - 1 as i32 {
-        *e2
-            .offset(
-                i as isize,
-            ) = *diag_off1.offset(i as isize) * *diag_off1.offset(i as isize);
+        *e2.offset(i as isize) = *diag_off1.offset(i as isize) * *diag_off1.offset(i as isize);
         i += 1;
         i;
     }
@@ -909,17 +868,17 @@ unsafe extern "C" fn _compute_eigenvalues(
         dmax = fabs(*work.offset(0 as isize));
         i = 0 as i32;
         while i < n - 1 as i32 {
-            *work
-                .offset(
-                    (n * 2 as i32 + i) as isize,
-                ) = 1.0f64 / *work.offset(i as isize);
-            tmp = *diag_off1.offset(i as isize)
-                * *work.offset((n * 2 as i32 + i) as isize);
+            *work.offset((n * 2 as i32 + i) as isize) = 1.0f64 / *work.offset(i as isize);
+            tmp = *diag_off1.offset(i as isize) * *work.offset((n * 2 as i32 + i) as isize);
             *work.offset((n + i) as isize) = tmp;
-            dpivot = *diag.offset((i + 1 as i32) as isize) - sigma
-                - tmp * *diag_off1.offset(i as isize);
+            dpivot =
+                *diag.offset((i + 1 as i32) as isize) - sigma - tmp * *diag_off1.offset(i as isize);
             *work.offset((i + 1 as i32) as isize) = dpivot;
-            dmax = if dmax > fabs(dpivot) { dmax } else { fabs(dpivot) };
+            dmax = if dmax > fabs(dpivot) {
+                dmax
+            } else {
+                fabs(dpivot)
+            };
             i += 1;
             i;
         }
@@ -947,7 +906,7 @@ unsafe extern "C" fn _compute_eigenvalues(
                 sigma = gu + spectral_diameter * 2.0f64 * eps * n as f64;
             }
         } else if idum == 6 as i32 {
-            return -(2 as i32)
+            return -(2 as i32);
         } else {
             sigma -= sgndef * tau;
             tau *= 2.0f64;
@@ -970,7 +929,7 @@ unsafe extern "C" fn _compute_eigenvalues(
     }
     iinfo = _dlasq2(n, work, diag, diag_off1);
     if iinfo != 0 as i32 {
-        return -(5 as i32)
+        return -(5 as i32);
     } else {
         i = 0 as i32;
         while i < n {
@@ -1005,10 +964,7 @@ unsafe extern "C" fn _compute_eigenvalues(
     }
     i = 0 as i32;
     while i < n - 1 as i32 {
-        *wgap
-            .offset(
-                i as isize,
-            ) = if 0.0f64
+        *wgap.offset(i as isize) = if 0.0f64
             > *w.offset((i + 1 as i32) as isize)
                 - *werr.offset((i + 1 as i32) as isize)
                 - (*w.offset(i as isize) + *werr.offset(i as isize))
@@ -1022,31 +978,18 @@ unsafe extern "C" fn _compute_eigenvalues(
         i += 1;
         i;
     }
-    *wgap
-        .offset(
-            -(1 as i32) as isize,
-        ) = if 0.0f64
-        > *w.offset(0 as isize) - *werr.offset(0 as isize)
-            - gl
+    *wgap.offset(-(1 as i32) as isize) =
+        if 0.0f64 > *w.offset(0 as isize) - *werr.offset(0 as isize) - gl {
+            0.0f64
+        } else {
+            *w.offset(0 as isize) - *werr.offset(0 as isize) - gl
+        };
+    *wgap.offset((n - 1 as i32) as isize) = if 0.0f64
+        > gu - sigma - (*w.offset((n - 1 as i32) as isize) + *werr.offset((n - 1 as i32) as isize))
     {
         0.0f64
     } else {
-        *w.offset(0 as isize) - *werr.offset(0 as isize)
-            - gl
-    };
-    *wgap
-        .offset(
-            (n - 1 as i32) as isize,
-        ) = if 0.0f64
-        > gu - sigma
-            - (*w.offset((n - 1 as i32) as isize)
-                + *werr.offset((n - 1 as i32) as isize))
-    {
-        0.0f64
-    } else {
-        gu - sigma
-            - (*w.offset((n - 1 as i32) as isize)
-                + *werr.offset((n - 1 as i32) as isize))
+        gu - sigma - (*w.offset((n - 1 as i32) as isize) + *werr.offset((n - 1 as i32) as isize))
     };
     return 0 as i32;
 }
@@ -1077,20 +1020,14 @@ unsafe extern "C" fn _dlarrf(
     ktry = 0 as i32;
     while ktry < 2 as i32 {
         s = -lsigma;
-        *dplus
-            .offset(
-                0 as isize,
-            ) = *diag.offset(0 as isize) + s;
+        *dplus.offset(0 as isize) = *diag.offset(0 as isize) + s;
         max1 = fabs(*dplus.offset(0 as isize));
         i = 0 as i32;
         while i < n - 1 as i32 {
             tmp = *ld.offset(i as isize) / *dplus.offset(i as isize);
             *lplus.offset(i as isize) = tmp;
             s = s * tmp * *diag_off1.offset(i as isize) - lsigma;
-            *dplus
-                .offset(
-                    (i + 1 as i32) as isize,
-                ) = *diag.offset((i + 1 as i32) as isize) + s;
+            *dplus.offset((i + 1 as i32) as isize) = *diag.offset((i + 1 as i32) as isize) + s;
             max1 = if max1 > fabs(*dplus.offset((i + 1 as i32) as isize)) {
                 max1
             } else {
@@ -1185,20 +1122,15 @@ unsafe extern "C" fn _dlarrb(
     let mut width: f64 = 0.;
     let mut cvrgd: f64 = if rtol1 * *wgap.offset(ifirst as isize)
         > rtol2
-            * (if fabs(*w.offset(ifirst as isize))
-                > fabs(*w.offset((ilast - 1 as i32) as isize))
-            {
+            * (if fabs(*w.offset(ifirst as isize)) > fabs(*w.offset((ilast - 1 as i32) as isize)) {
                 fabs(*w.offset(ifirst as isize))
             } else {
                 fabs(*w.offset((ilast - 1 as i32) as isize))
-            })
-    {
+            }) {
         rtol1 * *wgap.offset(ifirst as isize)
     } else {
         rtol2
-            * (if fabs(*w.offset(ifirst as isize))
-                > fabs(*w.offset((ilast - 1 as i32) as isize))
-            {
+            * (if fabs(*w.offset(ifirst as isize)) > fabs(*w.offset((ilast - 1 as i32) as isize)) {
                 fabs(*w.offset(ifirst as isize))
             } else {
                 fabs(*w.offset((ilast - 1 as i32) as isize))
@@ -1247,18 +1179,17 @@ unsafe extern "C" fn _dlarrb(
     }
     i = ifirst;
     while i < ilast - 1 as i32 {
-        *wgap
-            .offset(
-                i as isize,
-            ) = if 0.0f64
+        *wgap.offset(i as isize) = if 0.0f64
             > *w.offset((i + 1 as i32) as isize)
-                - *werr.offset((i + 1 as i32) as isize) - *w.offset(i as isize)
+                - *werr.offset((i + 1 as i32) as isize)
+                - *w.offset(i as isize)
                 - *werr.offset(i as isize)
         {
             0.0f64
         } else {
             *w.offset((i + 1 as i32) as isize)
-                - *werr.offset((i + 1 as i32) as isize) - *w.offset(i as isize)
+                - *werr.offset((i + 1 as i32) as isize)
+                - *w.offset(i as isize)
                 - *werr.offset(i as isize)
         };
         i += 1;
@@ -1358,8 +1289,7 @@ unsafe extern "C" fn _dlar1v(
     let mut ztz: f64 = 1.0f64;
     i = *twist_index - 1 as i32;
     while i >= 0 as i32 {
-        tmp = -(*lplus.offset(i as isize)
-            * *vec.offset((i + 1 as i32) as isize));
+        tmp = -(*lplus.offset(i as isize) * *vec.offset((i + 1 as i32) as isize));
         ztz += tmp * tmp;
         *vec.offset(i as isize) = tmp;
         i -= 1;
@@ -1490,8 +1420,7 @@ unsafe extern "C" fn _compute_eigenvectors(
         icls = 0 as i32;
         while icls < ncluster1 {
             oldfst = *old_cluster_range.offset((icls * 2 as i32) as isize);
-            oldlst = *old_cluster_range
-                .offset((icls * 2 as i32 + 1 as i32) as isize);
+            oldlst = *old_cluster_range.offset((icls * 2 as i32 + 1 as i32) as isize);
             if ndepth > 0 as i32 {
                 i = 0 as i32;
                 while i < n {
@@ -1501,17 +1430,12 @@ unsafe extern "C" fn _compute_eigenvectors(
                 }
                 i = 0 as i32;
                 while i < n - 1 as i32 {
-                    *diag_off1
-                        .offset(
-                            i as isize,
-                        ) = *vec.offset(((oldfst + 1 as i32) * n + i) as isize);
+                    *diag_off1.offset(i as isize) =
+                        *vec.offset(((oldfst + 1 as i32) * n + i) as isize);
                     i += 1;
                     i;
                 }
-                sigma = *vec
-                    .offset(
-                        ((oldfst + 2 as i32) * n - 1 as i32) as isize,
-                    );
+                sigma = *vec.offset(((oldfst + 2 as i32) * n - 1 as i32) as isize);
             }
             j = 0 as i32;
             while j < n - 1 as i32 {
@@ -1526,8 +1450,7 @@ unsafe extern "C" fn _compute_eigenvectors(
             while newlst <= oldlst {
                 if !(newlst < oldlst
                     && *wgap.offset((newlst - 1 as i32) as isize)
-                        < 0.001f64
-                            * fabs(*buf_w.offset((newlst - 1 as i32) as isize)))
+                        < 0.001f64 * fabs(*buf_w.offset((newlst - 1 as i32) as isize)))
                 {
                     if newlst - newfst > 1 as i32 {
                         _dlarrb(
@@ -1573,11 +1496,7 @@ unsafe extern "C" fn _compute_eigenvectors(
                         if iinfo != 0 as i32 {
                             return -(2 as i32);
                         }
-                        *vec
-                            .offset(
-                                ((newfst + 2 as i32) * n - 1 as i32)
-                                    as isize,
-                            ) = sigma + tau;
+                        *vec.offset(((newfst + 2 as i32) * n - 1 as i32) as isize) = sigma + tau;
                         k = newfst;
                         while k < newlst {
                             fudge = eps * 3.0f64 * fabs(*buf_w.offset(k as isize));
@@ -1587,12 +1506,9 @@ unsafe extern "C" fn _compute_eigenvectors(
                             k += 1;
                             k;
                         }
-                        *new_cluster_range
-                            .offset((ncluster * 2 as i32) as isize) = newfst;
-                        *new_cluster_range
-                            .offset(
-                                (ncluster * 2 as i32 + 1 as i32) as isize,
-                            ) = newlst;
+                        *new_cluster_range.offset((ncluster * 2 as i32) as isize) = newfst;
+                        *new_cluster_range.offset((ncluster * 2 as i32 + 1 as i32) as isize) =
+                            newlst;
                         ncluster += 1;
                         ncluster;
                     } else {
@@ -1716,35 +1632,34 @@ unsafe extern "C" fn _compute_eigenvectors(
                         }
                         *w.offset(newfst as isize) = lambda + sigma;
                         if newfst > 0 as i32 {
-                            *wgap
-                                .offset(
-                                    (newfst - 1 as i32) as isize,
-                                ) = if *wgap.offset((newfst - 1 as i32) as isize)
-                                > *w.offset(newfst as isize) - *werr.offset(newfst as isize)
+                            *wgap.offset((newfst - 1 as i32) as isize) = if *wgap
+                                .offset((newfst - 1 as i32) as isize)
+                                > *w.offset(newfst as isize)
+                                    - *werr.offset(newfst as isize)
                                     - *w.offset((newfst - 1 as i32) as isize)
                                     - *werr.offset((newfst - 1 as i32) as isize)
                             {
                                 *wgap.offset((newfst - 1 as i32) as isize)
                             } else {
-                                *w.offset(newfst as isize) - *werr.offset(newfst as isize)
+                                *w.offset(newfst as isize)
+                                    - *werr.offset(newfst as isize)
                                     - *w.offset((newfst - 1 as i32) as isize)
                                     - *werr.offset((newfst - 1 as i32) as isize)
                             };
                         }
                         if newfst < n - 1 as i32 {
-                            *wgap
-                                .offset(
-                                    newfst as isize,
-                                ) = if savgap
+                            *wgap.offset(newfst as isize) = if savgap
                                 > *w.offset((newfst + 1 as i32) as isize)
                                     - *werr.offset((newfst + 1 as i32) as isize)
-                                    - *w.offset(newfst as isize) - *werr.offset(newfst as isize)
+                                    - *w.offset(newfst as isize)
+                                    - *werr.offset(newfst as isize)
                             {
                                 savgap
                             } else {
                                 *w.offset((newfst + 1 as i32) as isize)
                                     - *werr.offset((newfst + 1 as i32) as isize)
-                                    - *w.offset(newfst as isize) - *werr.offset(newfst as isize)
+                                    - *w.offset(newfst as isize)
+                                    - *werr.offset(newfst as isize)
                             };
                         }
                         idone += 1;
@@ -1850,13 +1765,13 @@ pub unsafe extern "C" fn _CINTdiagonalize(
     mut vec: *mut f64,
 ) -> i32 {
     if n == 0 as i32 {
-        return 0 as i32
+        return 0 as i32;
     } else if n == 1 as i32 {
         *eig.offset(0 as isize) = *diag.offset(0 as isize);
         *vec.offset(0 as isize) = 1.0f64;
         return 0 as i32;
     } else if n == 2 as i32 {
-        return _dlaev2(eig, vec, diag, diag_off1)
+        return _dlaev2(eig, vec, diag, diag_off1);
     }
     let mut iwork: [i32; 160] = [0; 160];
     let mut work: [f64; 289] = [0.; 289];
