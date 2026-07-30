@@ -10,7 +10,6 @@ use crate::linalg::matmult;
 use crate::scf::{angl, integral1e, integral2e_fock, nmol};
 use crate::utils::{combine, split};
 
-#[no_mangle]
 #[autodiff_reverse(dovlp, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn ovlp(
     out: &mut [f64],
@@ -34,7 +33,6 @@ pub fn ovlp(
     );
 }
 
-#[no_mangle]
 #[autodiff_reverse(dkin, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn kin(
     out: &mut [f64],
@@ -58,7 +56,6 @@ pub fn kin(
     );
 }
 
-#[no_mangle]
 #[autodiff_reverse(dnuc, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn nuc(
     out: &mut [f64],
@@ -84,7 +81,6 @@ pub fn nuc(
 
 // 2e integral block on the AD-friendly rys kernel (src/eri.rs) -- the memory-
 // safe path for the Enzyme reverse (dtwo_ad): one shell quartet per reverse.
-#[no_mangle]
 #[autodiff_reverse(dtwo_ad, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn two_ad(
     out: &mut [f64],
@@ -98,7 +94,6 @@ pub fn two_ad(
     crate::eri::eri_cart(out, shls, atm, bas, &env);
 }
 
-#[no_mangle]
 pub fn dS_uncontracted(atm: &mut [i32], bas: &mut [i32], env: &mut [f64]) -> Vec<f64> {
     let (_, nbas) = nmol(&atm, &bas);
     let nshells = angl(&bas, 0);
@@ -156,7 +151,6 @@ pub fn dS_uncontracted(atm: &mut [i32], bas: &mut [i32], env: &mut [f64]) -> Vec
     dS
 }
 
-#[no_mangle]
 fn dSf(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -212,7 +206,6 @@ fn dSf(
     dS
 }
 
-#[no_mangle]
 fn dTf(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -270,7 +263,6 @@ fn dTf(
     dT
 }
 
-#[no_mangle]
 fn dVf(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -326,7 +318,6 @@ fn dVf(
     dV
 }
 
-#[no_mangle]
 pub fn dHcoreg(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -350,7 +341,6 @@ pub fn dHcoreg(
     dHcore
 }
 
-#[no_mangle]
 pub fn getF(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     // F = H + G, with G the 2e Fock part accumulated directly in O(n^2) by
     // integral2e_fock. The frozen-P gradient needs F only to form Q=PFP, and
@@ -367,7 +357,6 @@ pub fn getF(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec
     F
 }
 
-#[no_mangle]
 pub fn dSg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     let nshells = angl(&bas, 0);
 
@@ -386,7 +375,6 @@ pub fn dSg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<
     dS
 }
 
-#[no_mangle]
 pub fn dRf(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -534,7 +522,6 @@ pub fn dRf(
     dR
 }
 
-#[no_mangle]
 pub fn dRg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     let (s1, s2) = split(bas);
 
@@ -545,7 +532,6 @@ pub fn dRg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<
     dR
 }
 
-#[no_mangle]
 pub fn danalyticalg(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -572,7 +558,6 @@ pub fn danalyticalg(
 // now; `python -c "librint.dscf.denergyf"` is denergy_c -> denergyfast, an
 // assembled path, and shares nothing but a name with the old reverse.
 
-#[no_mangle]
 pub fn gradenergy(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -590,7 +575,6 @@ pub fn gradenergy(
     denv
 }
 
-#[no_mangle]
 pub fn denergyfast(
     atm: &mut [i32],
     bas: &mut [i32],

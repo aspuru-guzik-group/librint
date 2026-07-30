@@ -133,7 +133,6 @@ pub fn print_arr(n: usize, size: usize, a: &[f64]) {
     }
 }
 
-#[no_mangle]
 pub fn combine(env1: &[f64], env2: &[f64]) -> Vec<f64> {
     let mut env: Vec<f64> = vec![0.0; env1.len() + env2.len()];
 
@@ -150,7 +149,6 @@ pub fn combine(env1: &[f64], env2: &[f64]) -> Vec<f64> {
     env
 }
 
-#[no_mangle]
 pub fn split(bas: &[i32]) -> (usize, usize) {
     let mut min = -1;
     let mut max = -1;

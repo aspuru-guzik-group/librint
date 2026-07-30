@@ -27,14 +27,12 @@ type inte = fn(
 
 type cgto = fn(bas_id: usize, bas: &[i32]) -> i32;
 
-#[no_mangle]
 pub fn nmol(atm: &[i32], bas: &[i32]) -> (usize, usize) {
     let natm: usize = atm.len() / ATM_SLOTS;
     let nbas: usize = bas.len() / BAS_SLOTS;
     (natm, nbas)
 }
 
-#[no_mangle]
 pub fn angl(bas: &[i32], coord: i32) -> usize {
     let mut nshells: usize = 0;
     for i in (0..bas.len()).step_by(BAS_SLOTS) {
@@ -51,7 +49,6 @@ pub fn angl(bas: &[i32], coord: i32) -> usize {
     nshells
 }
 
-#[no_mangle]
 pub fn integral1e(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -142,7 +139,6 @@ pub fn integral1e(
     R
 }
 
-#[no_mangle]
 pub fn integral2e(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -700,7 +696,6 @@ pub fn norm(atm: &mut [i32], env: &mut [f64], i: usize, j: usize) -> f64 {
     ((xi - xj).powf(2.0) + (yi - yj).powf(2.0) + (zi - zj).powf(2.0)).powf(0.5)
 }
 
-#[no_mangle]
 pub fn density(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -759,7 +754,6 @@ pub fn density(
     Ok(P)
 }
 
-#[no_mangle]
 pub fn energy(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> f64 {
     let (natm, nbas) = nmol(atm, bas);
     let nshells = angl(bas, 0);
@@ -786,7 +780,6 @@ pub fn energy(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> f
     E0 + Enuc
 }
 
-#[no_mangle]
 pub fn energyfast(
     atm: &mut [i32],
     bas: &mut [i32],
@@ -923,7 +916,6 @@ pub fn energyfast(
     E0 + Enuc
 }
 
-#[no_mangle]
 pub fn scf(
     atm: &mut [i32],
     bas: &mut [i32],

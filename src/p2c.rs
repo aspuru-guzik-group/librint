@@ -6,7 +6,6 @@
 use crate::dscf::{dHcoreg, dRg, dS_uncontracted, dSg, danalyticalg, denergyfast, gradenergy};
 use crate::scf::{density, energyfast, integral1e, integral2e, scf};
 
-#[no_mangle]
 fn c2r_arr(
     atm_p: *mut i32,
     atm_l: usize,
