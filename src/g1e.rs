@@ -228,7 +228,7 @@ pub unsafe extern "C" fn CINTg1e_ovlp(mut g: *mut f64, mut envs: *mut CINTEnvVar
         j += 1;
         j;
     }
-    return 1 as i32;
+    1 as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTnuc_mod(
@@ -246,10 +246,10 @@ pub unsafe extern "C" fn CINTnuc_mod(
         zeta = 0 as f64;
     }
     if zeta > 0 as f64 {
-        return (zeta / (aij + zeta)).sqrt();
+        (zeta / (aij + zeta)).sqrt()
     } else {
-        return 1 as f64;
-    };
+        1 as f64
+    }
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTg1e_nuc(
@@ -408,7 +408,7 @@ pub unsafe extern "C" fn CINTg1e_nuc(
         j += 1;
         j;
     }
-    return 1 as i32;
+    1 as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTnabla1i_1e(
@@ -753,8 +753,8 @@ pub unsafe extern "C" fn CINTprim_to_ctr_0(
     mut nf: u64,
     mut nprim: i32,
     mut nctr: i32,
-    mut non0ctr: i32,
-    mut sortedidx: *mut i32,
+    _non0ctr: i32,
+    _sortedidx: *mut i32,
 ) {
     let mut i: i32 = 0;
     let mut n: u64 = 0;
@@ -780,7 +780,7 @@ pub unsafe extern "C" fn CINTprim_to_ctr_1(
     mut coeff: *mut f64,
     mut nf: u64,
     mut nprim: i32,
-    mut nctr: i32,
+    _nctr: i32,
     mut non0ctr: i32,
     mut sortedidx: *mut i32,
 ) {
@@ -806,8 +806,8 @@ pub unsafe extern "C" fn CINTprim_to_ctr_1(
 #[no_mangle]
 pub unsafe extern "C" fn CINTcommon_fac_sp(mut l: i32) -> f64 {
     match l {
-        0 => return 0.282094791773878143f64,
-        1 => return 0.488602511902919921f64,
-        _ => return 1 as f64,
-    };
+        0 => 0.282094791773878143f64,
+        1 => 0.488602511902919921f64,
+        _ => 1 as f64,
+    }
 }

@@ -110,7 +110,7 @@ unsafe extern "C" fn R_dnode(mut a: *mut f64, mut roots: *mut f64, mut order: i3
         m += 1;
         m;
     }
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn _qr_step(
     mut A: *mut f64,
@@ -271,7 +271,7 @@ unsafe extern "C" fn _hessenberg_qr(mut A: *mut f64, mut nroots: i32) -> i32 {
         ic;
     }
     eprintln!("hessenberg_qr failed");
-    return 1 as i32;
+    1 as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn _CINT_polynomial_roots(
@@ -361,5 +361,5 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
             k;
         }
     }
-    return err;
+    err
 }

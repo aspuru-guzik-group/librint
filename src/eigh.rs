@@ -87,7 +87,7 @@ unsafe extern "C" fn _dlarrk(
     }
     *w = (left + right) * 0.5f64;
     *werr = fabs(right - left) * 0.5f64;
-    return info;
+    info
 }
 unsafe extern "C" fn _dlarrc(
     mut n: i32,
@@ -401,7 +401,7 @@ unsafe extern "C" fn _dlasq4(
         s = 0.0f64;
     }
     *tau = s;
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn _dlasq5(
     mut i0: i32,
@@ -728,7 +728,7 @@ unsafe extern "C" fn _dlasq2(
         itry += 1;
         itry;
     }
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn _compute_eigenvalues(
     mut n: i32,
@@ -991,7 +991,7 @@ unsafe extern "C" fn _compute_eigenvalues(
     } else {
         gu - sigma - (*w.offset((n - 1 as i32) as isize) + *werr.offset((n - 1 as i32) as isize))
     };
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn _dlarrf(
     mut n: i32,
@@ -1053,7 +1053,7 @@ unsafe extern "C" fn _dlarrf(
         eprintln!("dlarrf max1 = {}", max1);
         return 1 as i32;
     }
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn _dlaneg(
     mut n: i32,
@@ -1097,7 +1097,7 @@ unsafe extern "C" fn _dlaneg(
         negcnt += 1;
         negcnt;
     }
-    return negcnt;
+    negcnt
 }
 unsafe extern "C" fn _dlarrb(
     mut n: i32,
@@ -1195,7 +1195,7 @@ unsafe extern "C" fn _dlarrb(
         i += 1;
         i;
     }
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn _dlar1v(
     mut n: i32,
@@ -1204,7 +1204,7 @@ unsafe extern "C" fn _dlar1v(
     mut diag_off1: *mut f64,
     mut ld: *mut f64,
     mut lld: *mut f64,
-    mut gaptol: f64,
+    _gaptol: f64,
     mut vec: *mut f64,
     mut negcnt: *mut i32,
     mut twist_index: *mut i32,
@@ -1682,7 +1682,7 @@ unsafe extern "C" fn _compute_eigenvectors(
     if idone < n {
         return -(2 as i32);
     }
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn _dlaev2(
     mut eig: *mut f64,
@@ -1754,7 +1754,7 @@ unsafe extern "C" fn _dlaev2(
     *vec.offset(1 as isize) = cs1;
     *vec.offset(2 as isize) = cs1;
     *vec.offset(3 as isize) = sn1;
-    return 0 as i32;
+    0 as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn _CINTdiagonalize(
@@ -1799,5 +1799,5 @@ pub unsafe extern "C" fn _CINTdiagonalize(
             iwork.as_mut_ptr(),
         );
     }
-    return info;
+    info
 }

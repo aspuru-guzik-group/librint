@@ -3032,7 +3032,7 @@ unsafe extern "C" fn segment_solve(
     if error != 0 {
         error = CINTlrys_schmidt(n, x, lower, u, w);
     }
-    return error;
+    error
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTrys_roots(
@@ -3228,7 +3228,7 @@ unsafe extern "C" fn segment_solve1(
     if error != 0 {
         error = CINTlrys_schmidt(n, x, lower, u, w);
     }
-    return error;
+    error
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTsr_rys_roots(
@@ -3743,7 +3743,7 @@ unsafe extern "C" fn rys_root1(mut X: f64, mut roots: *mut f64, mut weights: *mu
     let mut WW1: f64 = 2.0f64 * X * F1 + E;
     *weights.offset(0 as isize) = WW1;
     *roots.offset(0 as isize) = F1 / (WW1 - F1);
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn rys_root2(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
     let mut R12: f64 = 0.;
@@ -4077,7 +4077,7 @@ unsafe extern "C" fn rys_root2(mut X: f64, mut roots: *mut f64, mut weights: *mu
     *roots.offset(1 as isize) = RT2;
     *weights.offset(0 as isize) = WW1;
     *weights.offset(1 as isize) = WW2;
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn rys_root3(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
     let mut R13: f64 = 0.;
@@ -4637,7 +4637,7 @@ unsafe extern "C" fn rys_root3(mut X: f64, mut roots: *mut f64, mut weights: *mu
     *weights.offset(0 as isize) = WW1;
     *weights.offset(1 as isize) = WW2;
     *weights.offset(2 as isize) = WW3;
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn rys_root4(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
     let mut R14: f64 = 0.;
@@ -5634,7 +5634,7 @@ unsafe extern "C" fn rys_root4(mut X: f64, mut roots: *mut f64, mut weights: *mu
     *weights.offset(1 as isize) = WW2;
     *weights.offset(2 as isize) = WW3;
     *weights.offset(3 as isize) = WW4;
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn rys_root5(mut X: f64, mut roots: *mut f64, mut weights: *mut f64) -> i32 {
     let mut R15: f64 = 0.;
@@ -7093,7 +7093,7 @@ unsafe extern "C" fn rys_root5(mut X: f64, mut roots: *mut f64, mut weights: *mu
     *weights.offset(2 as isize) = WW3;
     *weights.offset(3 as isize) = WW4;
     *weights.offset(4 as isize) = WW5;
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn R_dsmit(mut cs: *mut f64, mut fmt_ints: *mut f64, mut n: i32) -> i32 {
     let mut i: i32 = 0;
@@ -7188,7 +7188,7 @@ unsafe extern "C" fn R_dsmit(mut cs: *mut f64, mut fmt_ints: *mut f64, mut n: i3
         j += 1;
         j;
     }
-    return 0 as i32;
+    0 as i32
 }
 unsafe extern "C" fn _rdk_rys_roots(
     mut nroots: i32,
@@ -7260,7 +7260,7 @@ unsafe extern "C" fn _rdk_rys_roots(
         k += 1;
         k;
     }
-    return 0 as i32;
+    0 as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTrys_schmidt(
@@ -7276,7 +7276,7 @@ pub unsafe extern "C" fn CINTrys_schmidt(
     } else {
         fmt_erfc_like(fmt_ints.as_mut_ptr(), x, lower, nroots * 2 as i32);
     }
-    return _rdk_rys_roots(nroots, fmt_ints.as_mut_ptr(), roots, weights);
+    _rdk_rys_roots(nroots, fmt_ints.as_mut_ptr(), roots, weights)
 }
 unsafe extern "C" fn R_lsmit(mut cs: *mut f64, mut fmt_ints: *mut f64, mut n: i32) -> i32 {
     let mut i: i32 = 0;
@@ -7371,7 +7371,7 @@ unsafe extern "C" fn R_lsmit(mut cs: *mut f64, mut fmt_ints: *mut f64, mut n: i3
         j += 1;
         j;
     }
-    return 0 as i32;
+    0 as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTlrys_schmidt(
@@ -7417,7 +7417,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
         return 0 as i32;
     }
     if nroots == 1 as i32 {
-        rt[0 as i32 as usize] = (fmt_ints[1 as usize] / fmt_ints[0 as usize]);
+        rt[0 as i32 as usize] = fmt_ints[1 as usize] / fmt_ints[0 as usize];
     } else {
         error = R_lsmit(qcs, fmt_ints.as_mut_ptr(), nroots1);
         if error != 0 {
@@ -7427,7 +7427,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
         while k < nroots1 {
             i = 0 as i32;
             while i <= k {
-                *cs.offset((k * nroots1 + i) as isize) = (*qcs.offset((k * nroots1 + i) as isize));
+                *cs.offset((k * nroots1 + i) as isize) = *qcs.offset((k * nroots1 + i) as isize);
                 i += 1;
                 i;
             }
@@ -7439,7 +7439,7 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
             return error;
         }
     }
-    dum0 = (1.0f64 / fmt_ints[0 as usize]);
+    dum0 = 1.0f64 / fmt_ints[0 as usize];
     k = 0 as i32;
     while k < nroots {
         root = rt[k as usize];
@@ -7469,5 +7469,5 @@ pub unsafe extern "C" fn CINTlrys_schmidt(
         k += 1;
         k;
     }
-    return 0 as i32;
+    0 as i32
 }

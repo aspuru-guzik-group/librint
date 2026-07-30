@@ -11,7 +11,7 @@ pub fn matmult(n: usize, A: &[f64], B: &[f64]) -> Vec<f64> {
             }
         }
     }
-    return C;
+    C
 }
 
 #[no_mangle]
@@ -22,7 +22,7 @@ pub fn transpose(n: usize, C: &[f64]) -> Vec<f64> {
             Ct[i * n + j] = C[j * n + i]
         }
     }
-    return Ct;
+    Ct
 }
 
 #[no_mangle]
@@ -33,7 +33,7 @@ pub fn dcopya(n: usize, A: &[f64]) -> Vec<f64> {
             Ac[i * n + j] = A[i * n + j];
         }
     }
-    return Ac;
+    Ac
 }
 
 #[no_mangle]

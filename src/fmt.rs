@@ -163,7 +163,7 @@ unsafe extern "C" fn _pow(mut base: f64, mut exponent: i32) -> f64 {
         base *= base;
         i <<= 1 as i32;
     }
-    return result;
+    result
 }
 #[inline]
 unsafe extern "C" fn _powl(mut base: f64, mut exponent: i32) -> f64 {
@@ -177,7 +177,7 @@ unsafe extern "C" fn _powl(mut base: f64, mut exponent: i32) -> f64 {
         base *= base;
         i <<= 1 as i32;
     }
-    return result;
+    result
 }
 #[no_mangle]
 pub unsafe extern "C" fn fmt1_erfc_like(mut f: *mut f64, mut t: f64, mut lower: f64, mut m: i32) {

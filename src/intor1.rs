@@ -127,7 +127,7 @@ pub unsafe extern "C" fn int1e_kin_cart(
     mut bas: *mut i32,
     mut nbas: i32,
     mut env: *mut f64,
-    mut opt: *mut CINTOpt,
+    _opt: *mut CINTOpt,
     mut cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
@@ -143,7 +143,7 @@ pub unsafe extern "C" fn int1e_kin_cart(
             as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
     ));
     envs.common_factor *= 0.5f64;
-    return CINT1e_drv(
+    CINT1e_drv(
         out,
         dims,
         &mut envs,
@@ -170,7 +170,7 @@ pub unsafe extern "C" fn int1e_kin_cart(
                 ) -> (),
         )),
         0 as i32,
-    );
+    )
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_sph(
@@ -182,7 +182,7 @@ pub unsafe extern "C" fn int1e_kin_sph(
     mut bas: *mut i32,
     mut nbas: i32,
     mut env: *mut f64,
-    mut opt: *mut CINTOpt,
+    _opt: *mut CINTOpt,
     mut cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
@@ -198,7 +198,7 @@ pub unsafe extern "C" fn int1e_kin_sph(
             as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
     ));
     envs.common_factor *= 0.5f64;
-    return CINT1e_drv(
+    CINT1e_drv(
         out,
         dims,
         &mut envs,
@@ -225,20 +225,20 @@ pub unsafe extern "C" fn int1e_kin_sph(
                 ) -> (),
         )),
         0 as i32,
-    );
+    )
 }
 #[no_mangle]
 pub unsafe extern "C" fn int1e_kin_spinor(
-    mut out: *mut f64,
-    mut dims: *mut i32,
+    _out: *mut f64,
+    _dims: *mut i32,
     mut shls: *mut i32,
     mut atm: *mut i32,
     mut natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
     mut env: *mut f64,
-    mut opt: *mut CINTOpt,
-    mut cache: *mut f64,
+    _opt: *mut CINTOpt,
+    _cache: *mut f64,
 ) -> i32 {
     let mut ng: [i32; 8] = [
         0 as i32, 2 as i32, 0 as i32, 0 as i32, 2 as i32, 1 as i32, 1 as i32, 1 as i32,
@@ -268,7 +268,7 @@ pub fn cint1e_kin_cart(
     opt: *mut CINTOpt,
 ) -> i32 {
     unsafe {
-        return int1e_kin_cart(
+        int1e_kin_cart(
             out.as_mut_ptr(),
             0 as *mut i32,
             shls.as_mut_ptr(),
@@ -279,7 +279,7 @@ pub fn cint1e_kin_cart(
             env.as_mut_ptr(),
             opt,
             0 as *mut f64,
-        );
+        )
     }
 }
 
@@ -295,7 +295,7 @@ pub fn cint1e_kin_sph(
     opt: *mut CINTOpt,
 ) -> i32 {
     unsafe {
-        return int1e_kin_sph(
+        int1e_kin_sph(
             out.as_mut_ptr(),
             0 as *mut i32,
             shls.as_mut_ptr(),
@@ -306,6 +306,6 @@ pub fn cint1e_kin_sph(
             env.as_mut_ptr(),
             opt,
             0 as *mut f64,
-        );
+        )
     }
 }

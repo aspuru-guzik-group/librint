@@ -153,7 +153,7 @@ pub fn dS_uncontracted(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64
         mu += di;
     }
 
-    return dS;
+    dS
 }
 
 #[no_mangle]
@@ -209,7 +209,7 @@ fn dSf(
         mu += di;
     }
 
-    return dS;
+    dS
 }
 
 #[no_mangle]
@@ -267,7 +267,7 @@ fn dTf(
         mu += di;
     }
 
-    return dT;
+    dT
 }
 
 #[no_mangle]
@@ -323,7 +323,7 @@ fn dVf(
         mu += di;
     }
 
-    return dV;
+    dV
 }
 
 #[no_mangle]
@@ -347,7 +347,7 @@ pub fn dHcoreg(
         dHcore[i] = dT[i] + dV[i];
     }
 
-    return dHcore;
+    dHcore
 }
 
 #[no_mangle]
@@ -364,7 +364,7 @@ pub fn getF(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &Vec<
         F[i] = T[i] + V[i] + G[i];
     }
 
-    return F;
+    F
 }
 
 #[no_mangle]
@@ -383,7 +383,7 @@ pub fn dSg(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &Vec<f
 
     let dS = dSf(atm, bas, &mut env1, &mut env2, &Q);
 
-    return dS;
+    dS
 }
 
 #[no_mangle]
@@ -531,7 +531,7 @@ pub fn dRf(
         }
     }
 
-    return dR;
+    dR
 }
 
 #[no_mangle]
@@ -542,7 +542,7 @@ pub fn dRg(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &Vec<f
     let mut env2: Vec<f64> = env[s1..s2].to_vec();
 
     let dR = dRf(atm, bas, &mut env1, &mut env2, P);
-    return dR;
+    dR
 }
 
 #[no_mangle]
@@ -561,7 +561,7 @@ pub fn danalyticalg(
         dtotal[i] = dH[i] + dR[i] - 0.5 * dS[i];
     }
 
-    return dtotal;
+    dtotal
 }
 
 // The fused whole-energy Enzyme reverses (of `energywrap` and `energyf`) used
@@ -587,7 +587,7 @@ pub fn gradenergy(
     for i in 0..denv.len() {
         denv[i] = dH[i] + dR[i];
     }
-    return denv;
+    denv
 }
 
 #[no_mangle]
@@ -601,5 +601,5 @@ pub fn denergyfast(
     // had inlined the same dH + dR - 0.5 dS expression as danalyticalg, in the
     // same order, so the two returned bitwise-identical values. Delegate rather
     // than maintain the duplicate.
-    return danalyticalg(atm, bas, env, P);
+    danalyticalg(atm, bas, env, P)
 }

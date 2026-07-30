@@ -106,7 +106,7 @@ pub fn load_expected(path: &str) -> Vec<f64> {
         }
     }
 
-    return vector;
+    vector
 }
 
 pub fn save_arr(path: &str, a: &mut [f64]) -> io::Result<()> {
@@ -147,7 +147,7 @@ pub fn combine(env1: &Vec<f64>, env2: &Vec<f64>) -> Vec<f64> {
         c += 1;
     }
 
-    return env;
+    env
 }
 
 #[no_mangle]
@@ -173,5 +173,5 @@ pub fn split(bas: &mut Vec<i32>) -> (usize, usize) {
         }
     }
 
-    return (min as usize, max as usize);
+    (min as usize, max as usize)
 }

@@ -42,7 +42,7 @@ pub unsafe extern "C" fn CINTdmat_transpose(
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
-    let mut k: i32 = 0;
+    let _k: i32 = 0;
     j = 0 as i32;
     while j < n - 3 as i32 {
         i = 0 as i32;
@@ -105,7 +105,7 @@ pub unsafe extern "C" fn CINTdplus_transpose(
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
-    let mut k: i32 = 0;
+    let _k: i32 = 0;
     j = 0 as i32;
     while j < n - 3 as i32 {
         i = 0 as i32;

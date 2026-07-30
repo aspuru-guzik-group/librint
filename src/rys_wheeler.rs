@@ -3436,7 +3436,7 @@ unsafe extern "C" fn rys_wheeler_partial(
         i += 1;
         i;
     }
-    return error;
+    error
 }
 unsafe extern "C" fn llaguerre_moments(
     mut n: i32,
@@ -3645,11 +3645,11 @@ unsafe extern "C" fn lrys_wheeler_partial(
     let mut da: [f64; 1088] = [0.; 1088];
     let mut db: *mut f64 = da.as_mut_ptr().offset(n as isize);
     let mut c0: *mut f64 = db.offset(n as isize);
-    let mut mu0: f64 = (*moments.offset(0 as isize));
+    let mut mu0: f64 = *moments.offset(0 as isize);
     let mut first_seen: i32 = 1 as i32;
     let mut i: i32 = 0;
     lwheeler_recursion(n, alpha, beta, moments, a.as_mut_ptr(), b);
-    da[0 as usize] = (a[0 as usize]);
+    da[0 as usize] = a[0 as usize];
     i = 1 as i32;
     while i < n {
         if *b.offset(i as isize) < 1e-19f64 {
@@ -3671,8 +3671,8 @@ unsafe extern "C" fn lrys_wheeler_partial(
             }
             first_seen = 0 as i32;
         }
-        da[i as usize] = (a[i as usize]);
-        *db.offset(i as isize) = (sqrtl(*b.offset(i as isize)));
+        da[i as usize] = a[i as usize];
+        *db.offset(i as isize) = sqrtl(*b.offset(i as isize));
         i += 1;
         i;
     }
@@ -3686,7 +3686,7 @@ unsafe extern "C" fn lrys_wheeler_partial(
         i += 1;
         i;
     }
-    return error;
+    error
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTrys_laguerre(
@@ -3700,7 +3700,7 @@ pub unsafe extern "C" fn CINTrys_laguerre(
     let mut alpha: *mut f64 = moments.as_mut_ptr().offset((n * 2 as i32) as isize);
     let mut beta: *mut f64 = alpha.offset((n * 2 as i32) as isize);
     laguerre_moments(n * 2 as i32, x, lower, alpha, beta, moments.as_mut_ptr());
-    return rys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights);
+    rys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights)
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTrys_jacobi(
@@ -3718,7 +3718,7 @@ pub unsafe extern "C" fn CINTrys_jacobi(
     } else {
         naive_jacobi_moments(n * 2 as i32, x, lower, moments.as_mut_ptr());
     }
-    return rys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights);
+    rys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights)
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTlrys_laguerre(
@@ -3732,7 +3732,7 @@ pub unsafe extern "C" fn CINTlrys_laguerre(
     let mut alpha: *mut f64 = moments.as_mut_ptr().offset((n * 2 as i32) as isize);
     let mut beta: *mut f64 = alpha.offset((n * 2 as i32) as isize);
     llaguerre_moments(n * 2 as i32, x, lower, alpha, beta, moments.as_mut_ptr());
-    return lrys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights);
+    lrys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights)
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTlrys_jacobi(
@@ -3750,5 +3750,5 @@ pub unsafe extern "C" fn CINTlrys_jacobi(
     } else {
         lnaive_jacobi_moments(n * 2 as i32, x, lower, moments.as_mut_ptr());
     }
-    return lrys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights);
+    lrys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights)
 }

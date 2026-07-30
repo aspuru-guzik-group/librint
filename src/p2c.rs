@@ -1,13 +1,10 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
 #![feature(autodiff)]
 
-use std::autodiff::*;
 
-use crate::cint1e::cint1e_ovlp_cart;
-use crate::utils::combine;
 
 use crate::dscf::{dHcoreg, dRg, dS_uncontracted, dSg, danalyticalg, denergyfast, gradenergy};
-use crate::scf::{density, energyfast, integral1e, integral2e, nmol, scf};
+use crate::scf::{density, energyfast, integral1e, integral2e, scf};
 
 #[no_mangle]
 fn c2r_arr(
@@ -27,7 +24,7 @@ fn c2r_arr(
     let env_slice: &mut [f64] = unsafe { std::slice::from_raw_parts_mut(env_p, env_l) };
     let env: Vec<f64> = env_slice.to_vec();
 
-    return (atm, bas, env);
+    (atm, bas, env)
 }
 
 // Hand a Vec to the caller as a bare pointer. The allocation stays alive until
@@ -38,7 +35,7 @@ fn leak_vec(v: Vec<f64>) -> *mut f64 {
     let mut b = v.into_boxed_slice();
     let ptr = b.as_mut_ptr();
     std::mem::forget(b);
-    return ptr;
+    ptr
 }
 
 /// Release a buffer returned by any of the `*_c` entry points. `len` must be
@@ -67,7 +64,7 @@ pub extern "C" fn int1e_c(
     let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
     let R: Vec<f64> = integral1e(&mut atm, &mut bas, &mut env, coord, typec);
 
-    return leak_vec(R);
+    leak_vec(R)
 }
 
 #[no_mangle]
@@ -84,7 +81,7 @@ pub extern "C" fn int2e_c(
 
     let R: Vec<f64> = integral2e(&mut atm, &mut bas, &mut env, coord);
 
-    return leak_vec(R);
+    leak_vec(R)
 }
 
 #[no_mangle]
@@ -100,7 +97,7 @@ pub extern "C" fn dS_u(
 
     let dS = dS_uncontracted(&mut atm, &mut bas, &mut env);
 
-    return leak_vec(dS);
+    leak_vec(dS)
 }
 
 #[no_mangle]
@@ -127,7 +124,7 @@ pub extern "C" fn density_c(
         }
     };
 
-    return leak_vec(P);
+    leak_vec(P)
 }
 
 #[no_mangle]
@@ -147,7 +144,7 @@ pub extern "C" fn energy_c(
     let mut P: Vec<f64> = P_slice.to_vec();
 
     let E: f64 = energyfast(&mut atm, &mut bas, &mut env, &mut P);
-    return E;
+    E
 }
 
 #[no_mangle]
@@ -164,13 +161,13 @@ pub extern "C" fn scf_c(
 ) -> f64 {
     let (mut atm, mut bas, mut env) = c2r_arr(atm_p, atm_l, bas_p, bas_l, env_p, env_l);
     // NaN on failure (see density_c); python turns it into an exception.
-    return match scf(&mut atm, &mut bas, &mut env, nelec, imax, conv) {
+    match scf(&mut atm, &mut bas, &mut env, nelec, imax, conv) {
         Ok(E) => E,
         Err(msg) => {
             eprintln!("librint: {}", msg);
             f64::NAN
         }
-    };
+    }
 }
 
 #[no_mangle]
@@ -191,7 +188,7 @@ pub extern "C" fn grad_c(
 
     let denv: Vec<f64> = gradenergy(&mut atm, &mut bas, &mut env, &mut P);
 
-    return leak_vec(denv);
+    leak_vec(denv)
 }
 
 #[no_mangle]
@@ -212,7 +209,7 @@ pub extern "C" fn dS_c(
 
     let dS = dSg(&mut atm, &mut bas, &mut env, &mut P);
 
-    return leak_vec(dS);
+    leak_vec(dS)
 }
 
 #[no_mangle]
@@ -233,7 +230,7 @@ pub extern "C" fn dHcore_c(
 
     let dH = dHcoreg(&mut atm, &mut bas, &mut env, &mut P);
 
-    return leak_vec(dH);
+    leak_vec(dH)
 }
 
 #[no_mangle]
@@ -254,7 +251,7 @@ pub extern "C" fn dR_c(
 
     let dR = dRg(&mut atm, &mut bas, &mut env, &mut P);
 
-    return leak_vec(dR);
+    leak_vec(dR)
 }
 
 #[no_mangle]
@@ -275,7 +272,7 @@ pub extern "C" fn danalytical_c(
 
     let dR = danalyticalg(&mut atm, &mut bas, &mut env, &mut P);
 
-    return leak_vec(dR);
+    leak_vec(dR)
 }
 
 #[no_mangle]
@@ -296,5 +293,5 @@ pub extern "C" fn denergy_c(
 
     let dR = denergyfast(&mut atm, &mut bas, &mut env, &mut P);
 
-    return leak_vec(dR);
+    leak_vec(dR)
 }

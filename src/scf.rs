@@ -31,7 +31,7 @@ type cgto = fn(bas_id: usize, bas: &[i32]) -> i32;
 pub fn nmol(atm: &Vec<i32>, bas: &Vec<i32>) -> (usize, usize) {
     let natm: usize = atm.len() / ATM_SLOTS;
     let nbas: usize = bas.len() / BAS_SLOTS;
-    return (natm, nbas);
+    (natm, nbas)
 }
 
 #[no_mangle]
@@ -48,7 +48,7 @@ pub fn angl(bas: &Vec<i32>, coord: i32) -> usize {
             nshells += (2 * l + 1) * nctr;
         }
     }
-    return nshells;
+    nshells
 }
 
 #[no_mangle]
@@ -139,7 +139,7 @@ pub fn integral1e(
         mu += di;
     }
 
-    return R;
+    R
 }
 
 #[no_mangle]
@@ -254,7 +254,7 @@ pub fn integral2e(
         CINTdel_optimizer(&mut opt);
     }
 
-    return R;
+    R
 }
 
 // G = two-electron Fock matrix, built directly in O(n^2) memory -- the full
@@ -364,7 +364,7 @@ pub fn integral2e_fock(
         CINTdel_optimizer(&mut opt);
     }
 
-    return G;
+    G
 }
 
 fn integrals(
@@ -515,7 +515,7 @@ fn integrals(
         mu += di;
     }
 
-    return (S, H, two);
+    (S, H, two)
 }
 
 // Smallest overlap eigenvalue still considered a usable basis in find_X.
@@ -554,7 +554,7 @@ fn check_density(n: usize, nelec: usize, P: &[f64], S: &[f64]) -> Result<(), Str
         ));
     }
 
-    return Ok(());
+    Ok(())
 }
 
 // S is symmetric, so the eigendecomposition MUST use the self-adjoint solver.
@@ -603,7 +603,7 @@ fn find_X(n: usize, S: &[f64]) -> Result<(Vec<f64>, Vec<f64>), String> {
     let X = matmult(n, &U, &lamb);
     let Xdag = transpose(n, &X);
 
-    return Ok((X, Xdag));
+    Ok((X, Xdag))
 }
 
 pub fn calc_F(n: usize, P: &[f64], two: &[f64], H: &[f64]) -> Vec<f64> {
@@ -624,13 +624,13 @@ pub fn calc_F(n: usize, P: &[f64], two: &[f64], H: &[f64]) -> Vec<f64> {
         }
     }
 
-    return F;
+    F
 }
 
 fn calc_Fprime(n: usize, F: &[f64], X: &[f64], Xdag: &[f64]) -> Vec<f64> {
     let inter = matmult(n, &Xdag, &F);
     let Fprime = matmult(n, &inter, X);
-    return Fprime;
+    Fprime
 }
 
 // F' = X^dag F X is symmetric; same self-adjoint requirement as find_X. With
@@ -661,7 +661,7 @@ fn diag_F(n: usize, Fprime: &[f64], X: &[f64]) -> Vec<f64> {
 
     let C = matmult(n, X, &U);
 
-    return C;
+    C
 }
 
 fn calc_P(n: usize, nelec: usize, C: &mut [f64]) -> Vec<f64> {
@@ -673,7 +673,7 @@ fn calc_P(n: usize, nelec: usize, C: &mut [f64]) -> Vec<f64> {
             }
         }
     }
-    return P;
+    P
 }
 
 fn f_delta(n: usize, P: &mut [f64], Pold: &mut [f64]) -> f64 {
@@ -684,7 +684,7 @@ fn f_delta(n: usize, P: &mut [f64], Pold: &mut [f64]) -> f64 {
         }
     }
     delta = delta.powf(0.5) / 2.0;
-    return delta;
+    delta
 }
 
 pub fn norm(atm: &mut [i32], env: &mut [f64], i: usize, j: usize) -> f64 {
@@ -697,7 +697,7 @@ pub fn norm(atm: &mut [i32], env: &mut [f64], i: usize, j: usize) -> f64 {
     let zi: f64 = env[(atm[i * 6 + 1] + 2) as usize];
     let zj: f64 = env[(atm[j * 6 + 1] + 2) as usize];
 
-    return ((xi - xj).powf(2.0) + (yi - yj).powf(2.0) + (zi - zj).powf(2.0)).powf(0.5);
+    ((xi - xj).powf(2.0) + (yi - yj).powf(2.0) + (zi - zj).powf(2.0)).powf(0.5)
 }
 
 #[no_mangle]
@@ -756,7 +756,7 @@ pub fn density(
 
     check_density(nshells, nelec, &P, &S)?;
 
-    return Ok(P);
+    Ok(P)
 }
 
 #[no_mangle]
@@ -783,7 +783,7 @@ pub fn energy(atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>, P: &mu
         }
     }
 
-    return E0 + Enuc;
+    E0 + Enuc
 }
 
 #[no_mangle]
@@ -920,7 +920,7 @@ pub fn energyfast(
         }
     }
 
-    return E0 + Enuc;
+    E0 + Enuc
 }
 
 #[no_mangle]
@@ -934,5 +934,5 @@ pub fn scf(
 ) -> Result<f64, String> {
     let mut P = density(atm, bas, env, nelec, imax, conv)?;
     let Etot = energyfast(atm, bas, env, &mut P);
-    return Ok(Etot);
+    Ok(Etot)
 }

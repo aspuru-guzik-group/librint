@@ -464,7 +464,7 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
             CINTdplus_transpose(gctr, gctrl, nf.wrapping_mul(nc as u64) as i32, n_comp);
         }
     }
-    return (*empty == 0) as i32;
+    (*empty == 0) as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_1111_loop(
@@ -489,10 +489,10 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
     {
         return 0 as i32;
     }
-    let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
+    let _i_ctr: i32 = (*envs).x_ctr[0 as usize];
+    let _j_ctr: i32 = (*envs).x_ctr[1 as usize];
+    let _k_ctr: i32 = (*envs).x_ctr[2 as usize];
+    let _l_ctr: i32 = (*envs).x_ctr[3 as usize];
     let mut i_prim: i32 = *bas.offset((8 as i32 * i_sh + 2 as i32) as isize);
     let mut j_prim: i32 = *bas.offset((8 as i32 * j_sh + 2 as i32) as isize);
     let mut k_prim: i32 = *bas.offset((8 as i32 * k_sh + 2 as i32) as isize);
@@ -578,19 +578,19 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
     let mut kp: i32 = 0;
     let mut lp: i32 = 0;
     let mut _empty: [i32; 5] = [1 as i32, 1 as i32, 1 as i32, 1 as i32, 1 as i32];
-    let mut iempty: *mut i32 = _empty.as_mut_ptr().offset(0 as isize);
-    let mut jempty: *mut i32 = _empty.as_mut_ptr().offset(1 as isize);
-    let mut kempty: *mut i32 = _empty.as_mut_ptr().offset(2 as isize);
-    let mut lempty: *mut i32 = _empty.as_mut_ptr().offset(3 as isize);
+    let _iempty: *mut i32 = _empty.as_mut_ptr().offset(0 as isize);
+    let _jempty: *mut i32 = _empty.as_mut_ptr().offset(1 as isize);
+    let _kempty: *mut i32 = _empty.as_mut_ptr().offset(2 as isize);
+    let _lempty: *mut i32 = _empty.as_mut_ptr().offset(3 as isize);
     let mut gempty: *mut i32 = _empty.as_mut_ptr().offset(4 as isize);
-    let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
-    let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
-    let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
-    let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
-    let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
-    let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
-    let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
-    let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
+    let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
+    let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
+    let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
+    let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
+    let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
+    let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
+    let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
+    let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
     let mut eijcutoff: f64 = 0.;
@@ -715,7 +715,7 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
             CINTdplus_transpose(gctr, gout, nf.wrapping_mul(nc as u64) as i32, n_comp);
         }
     }
-    return (*empty == 0) as i32;
+    (*empty == 0) as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_n111_loop(
@@ -741,9 +741,9 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
         return 0 as i32;
     }
     let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
+    let _j_ctr: i32 = (*envs).x_ctr[1 as usize];
+    let _k_ctr: i32 = (*envs).x_ctr[2 as usize];
+    let _l_ctr: i32 = (*envs).x_ctr[3 as usize];
     let mut i_prim: i32 = *bas.offset((8 as i32 * i_sh + 2 as i32) as isize);
     let mut j_prim: i32 = *bas.offset((8 as i32 * j_sh + 2 as i32) as isize);
     let mut k_prim: i32 = *bas.offset((8 as i32 * k_sh + 2 as i32) as isize);
@@ -830,18 +830,18 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
     let mut lp: i32 = 0;
     let mut _empty: [i32; 5] = [1 as i32, 1 as i32, 1 as i32, 1 as i32, 1 as i32];
     let mut iempty: *mut i32 = _empty.as_mut_ptr().offset(0 as isize);
-    let mut jempty: *mut i32 = _empty.as_mut_ptr().offset(1 as isize);
-    let mut kempty: *mut i32 = _empty.as_mut_ptr().offset(2 as isize);
-    let mut lempty: *mut i32 = _empty.as_mut_ptr().offset(3 as isize);
-    let mut gempty: *mut i32 = _empty.as_mut_ptr().offset(4 as isize);
+    let _jempty: *mut i32 = _empty.as_mut_ptr().offset(1 as isize);
+    let _kempty: *mut i32 = _empty.as_mut_ptr().offset(2 as isize);
+    let _lempty: *mut i32 = _empty.as_mut_ptr().offset(3 as isize);
+    let _gempty: *mut i32 = _empty.as_mut_ptr().offset(4 as isize);
     let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
-    let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
-    let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
-    let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
+    let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
+    let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
+    let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
     let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
-    let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
-    let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
-    let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
+    let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
+    let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
+    let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
     let mut eijcutoff: f64 = 0.;
@@ -1002,7 +1002,7 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
             CINTdplus_transpose(gctr, gctri, nf.wrapping_mul(nc as u64) as i32, n_comp);
         }
     }
-    return (*empty == 0) as i32;
+    (*empty == 0) as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_1n11_loop(
@@ -1027,10 +1027,10 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
     {
         return 0 as i32;
     }
-    let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
+    let _i_ctr: i32 = (*envs).x_ctr[0 as usize];
     let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
+    let _k_ctr: i32 = (*envs).x_ctr[2 as usize];
+    let _l_ctr: i32 = (*envs).x_ctr[3 as usize];
     let mut i_prim: i32 = *bas.offset((8 as i32 * i_sh + 2 as i32) as isize);
     let mut j_prim: i32 = *bas.offset((8 as i32 * j_sh + 2 as i32) as isize);
     let mut k_prim: i32 = *bas.offset((8 as i32 * k_sh + 2 as i32) as isize);
@@ -1118,17 +1118,17 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
     let mut _empty: [i32; 5] = [1 as i32, 1 as i32, 1 as i32, 1 as i32, 1 as i32];
     let mut iempty: *mut i32 = _empty.as_mut_ptr().offset(0 as isize);
     let mut jempty: *mut i32 = _empty.as_mut_ptr().offset(1 as isize);
-    let mut kempty: *mut i32 = _empty.as_mut_ptr().offset(2 as isize);
-    let mut lempty: *mut i32 = _empty.as_mut_ptr().offset(3 as isize);
-    let mut gempty: *mut i32 = _empty.as_mut_ptr().offset(4 as isize);
-    let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
+    let _kempty: *mut i32 = _empty.as_mut_ptr().offset(2 as isize);
+    let _lempty: *mut i32 = _empty.as_mut_ptr().offset(3 as isize);
+    let _gempty: *mut i32 = _empty.as_mut_ptr().offset(4 as isize);
+    let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
     let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
-    let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
-    let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
-    let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
+    let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
+    let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
+    let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
     let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
-    let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
-    let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
+    let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
+    let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
     let mut eijcutoff: f64 = 0.;
@@ -1287,7 +1287,7 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
             CINTdplus_transpose(gctr, gctrj, nf.wrapping_mul(nc as u64) as i32, n_comp);
         }
     }
-    return (*empty == 0) as i32;
+    (*empty == 0) as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_11n1_loop(
@@ -1312,10 +1312,10 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
     {
         return 0 as i32;
     }
-    let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
+    let _i_ctr: i32 = (*envs).x_ctr[0 as usize];
+    let _j_ctr: i32 = (*envs).x_ctr[1 as usize];
     let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
-    let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
+    let _l_ctr: i32 = (*envs).x_ctr[3 as usize];
     let mut i_prim: i32 = *bas.offset((8 as i32 * i_sh + 2 as i32) as isize);
     let mut j_prim: i32 = *bas.offset((8 as i32 * j_sh + 2 as i32) as isize);
     let mut k_prim: i32 = *bas.offset((8 as i32 * k_sh + 2 as i32) as isize);
@@ -1401,19 +1401,19 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
     let mut kp: i32 = 0;
     let mut lp: i32 = 0;
     let mut _empty: [i32; 5] = [1 as i32, 1 as i32, 1 as i32, 1 as i32, 1 as i32];
-    let mut iempty: *mut i32 = _empty.as_mut_ptr().offset(0 as isize);
+    let _iempty: *mut i32 = _empty.as_mut_ptr().offset(0 as isize);
     let mut jempty: *mut i32 = _empty.as_mut_ptr().offset(1 as isize);
     let mut kempty: *mut i32 = _empty.as_mut_ptr().offset(2 as isize);
-    let mut lempty: *mut i32 = _empty.as_mut_ptr().offset(3 as isize);
-    let mut gempty: *mut i32 = _empty.as_mut_ptr().offset(4 as isize);
-    let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
-    let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
+    let _lempty: *mut i32 = _empty.as_mut_ptr().offset(3 as isize);
+    let _gempty: *mut i32 = _empty.as_mut_ptr().offset(4 as isize);
+    let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
+    let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
     let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
-    let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
-    let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
-    let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
+    let _non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
+    let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
+    let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
     let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
-    let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
+    let _non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
     let mut eijcutoff: f64 = 0.;
@@ -1572,7 +1572,7 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
             CINTdplus_transpose(gctr, gctrk, nf.wrapping_mul(nc as u64) as i32, n_comp);
         }
     }
-    return (*empty == 0) as i32;
+    (*empty == 0) as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_111n_loop(
@@ -1597,9 +1597,9 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
     {
         return 0 as i32;
     }
-    let mut i_ctr: i32 = (*envs).x_ctr[0 as usize];
-    let mut j_ctr: i32 = (*envs).x_ctr[1 as usize];
-    let mut k_ctr: i32 = (*envs).x_ctr[2 as usize];
+    let _i_ctr: i32 = (*envs).x_ctr[0 as usize];
+    let _j_ctr: i32 = (*envs).x_ctr[1 as usize];
+    let _k_ctr: i32 = (*envs).x_ctr[2 as usize];
     let mut l_ctr: i32 = (*envs).x_ctr[3 as usize];
     let mut i_prim: i32 = *bas.offset((8 as i32 * i_sh + 2 as i32) as isize);
     let mut j_prim: i32 = *bas.offset((8 as i32 * j_sh + 2 as i32) as isize);
@@ -1686,18 +1686,18 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
     let mut kp: i32 = 0;
     let mut lp: i32 = 0;
     let mut _empty: [i32; 5] = [1 as i32, 1 as i32, 1 as i32, 1 as i32, 1 as i32];
-    let mut iempty: *mut i32 = _empty.as_mut_ptr().offset(0 as isize);
-    let mut jempty: *mut i32 = _empty.as_mut_ptr().offset(1 as isize);
+    let _iempty: *mut i32 = _empty.as_mut_ptr().offset(0 as isize);
+    let _jempty: *mut i32 = _empty.as_mut_ptr().offset(1 as isize);
     let mut kempty: *mut i32 = _empty.as_mut_ptr().offset(2 as isize);
     let mut lempty: *mut i32 = _empty.as_mut_ptr().offset(3 as isize);
-    let mut gempty: *mut i32 = _empty.as_mut_ptr().offset(4 as isize);
-    let mut non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
-    let mut non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
-    let mut non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
+    let _gempty: *mut i32 = _empty.as_mut_ptr().offset(4 as isize);
+    let _non0ctri: *mut i32 = *((*opt).non0ctr).offset(i_sh as isize);
+    let _non0ctrj: *mut i32 = *((*opt).non0ctr).offset(j_sh as isize);
+    let _non0ctrk: *mut i32 = *((*opt).non0ctr).offset(k_sh as isize);
     let mut non0ctrl: *mut i32 = *((*opt).non0ctr).offset(l_sh as isize);
-    let mut non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
-    let mut non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
-    let mut non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
+    let _non0idxi: *mut i32 = *((*opt).sortedidx).offset(i_sh as isize);
+    let _non0idxj: *mut i32 = *((*opt).sortedidx).offset(j_sh as isize);
+    let _non0idxk: *mut i32 = *((*opt).sortedidx).offset(k_sh as isize);
     let mut non0idxl: *mut i32 = *((*opt).sortedidx).offset(l_sh as isize);
     let mut expij: f64 = 0.;
     let mut expkl: f64 = 0.;
@@ -1857,7 +1857,7 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
             CINTdplus_transpose(gctr, gctrl, nf.wrapping_mul(nc as u64) as i32, n_comp);
         }
     }
-    return (*empty == 0) as i32;
+    (*empty == 0) as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINT2e_loop(
@@ -2286,7 +2286,7 @@ pub unsafe extern "C" fn CINT2e_loop(
             CINTdplus_transpose(gctr, gctrl, nf.wrapping_mul(nc as u64) as i32, n_comp);
         }
     }
-    return (*empty == 0) as i32;
+    (*empty == 0) as i32
 }
 static mut CINTf_2e_loop: [Option<
     unsafe extern "C" fn(*mut f64, *mut CINTEnvVars, *mut f64, *mut i32) -> i32,
@@ -2548,7 +2548,7 @@ pub unsafe extern "C" fn CINT2e_drv(
     if !stack.is_null() {
         free(stack as *mut libc::c_void);
     }
-    return (empty == 0) as i32;
+    (empty == 0) as i32
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTgout2e(
@@ -3016,7 +3016,7 @@ pub unsafe extern "C" fn int2e_sph(
         CINTgout2e
             as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
     ));
-    return CINT2e_drv(
+    CINT2e_drv(
         out,
         dims,
         &mut envs,
@@ -3043,7 +3043,7 @@ pub unsafe extern "C" fn int2e_sph(
                     *mut f64,
                 ) -> (),
         )),
-    );
+    )
 }
 #[no_mangle]
 pub unsafe extern "C" fn int2e_optimizer(
@@ -3084,7 +3084,7 @@ pub unsafe extern "C" fn int2e_cart(
         CINTgout2e
             as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
     ));
-    return CINT2e_drv(
+    CINT2e_drv(
         out,
         dims,
         &mut envs,
@@ -3111,7 +3111,7 @@ pub unsafe extern "C" fn int2e_cart(
                     *mut f64,
                 ) -> (),
         )),
-    );
+    )
 }
 // #[no_mangle]
 // pub unsafe extern "C" fn cint2e_sph(
@@ -3206,7 +3206,7 @@ pub unsafe extern "C" fn cint2e_sph_(
     mut optptr_as_integer8: u64,
 ) -> i32 {
     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    return int2e_sph(
+    int2e_sph(
         out,
         0 as *mut i32,
         shls,
@@ -3217,7 +3217,7 @@ pub unsafe extern "C" fn cint2e_sph_(
         env,
         *opt,
         0 as *mut f64,
-    );
+    )
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_sph_optimizer_(
@@ -3243,7 +3243,7 @@ pub unsafe extern "C" fn cint2e_cart_(
     mut optptr_as_integer8: u64,
 ) -> i32 {
     let mut opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
-    return int2e_cart(
+    int2e_cart(
         out,
         0 as *mut i32,
         shls,
@@ -3254,7 +3254,7 @@ pub unsafe extern "C" fn cint2e_cart_(
         env,
         *opt,
         0 as *mut f64,
-    );
+    )
 }
 #[no_mangle]
 pub unsafe extern "C" fn cint2e_cart_optimizer_(
@@ -3292,7 +3292,7 @@ pub fn cint2e_cart(
     opt: *mut CINTOpt,
 ) -> i32 {
     unsafe {
-        return int2e_cart(
+        int2e_cart(
             out.as_mut_ptr(),
             0 as *mut i32,
             shls.as_mut_ptr(),
@@ -3303,7 +3303,7 @@ pub fn cint2e_cart(
             env.as_mut_ptr(),
             opt,
             0 as *mut f64,
-        );
+        )
     }
 }
 
@@ -3319,7 +3319,7 @@ pub fn cint2e_sph(
     opt: *mut CINTOpt,
 ) -> i32 {
     unsafe {
-        return int2e_sph(
+        int2e_sph(
             out.as_mut_ptr(),
             0 as *mut i32,
             shls.as_mut_ptr(),
@@ -3330,6 +3330,6 @@ pub fn cint2e_sph(
             env.as_mut_ptr(),
             opt,
             0 as *mut f64,
-        );
+        )
     }
 }

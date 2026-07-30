@@ -31,11 +31,11 @@ extern "C" {
 #[no_mangle]
 pub unsafe extern "C" fn CINTinit_2e_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
+    _atm: *mut i32,
+    _natm: i32,
+    _bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut f64,
+    _env: *mut f64,
 ) {
     let mut opt0: *mut CINTOpt =
         malloc(::core::mem::size_of::<CINTOpt>() as libc::c_ulong) as *mut CINTOpt;
@@ -89,11 +89,11 @@ pub unsafe extern "C" fn CINTdel_optimizer(mut opt: *mut *mut CINTOpt) {
 #[no_mangle]
 pub unsafe extern "C" fn CINTno_optimizer(
     mut opt: *mut *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
-    mut bas: *mut i32,
-    mut nbas: i32,
-    mut env: *mut f64,
+    _atm: *mut i32,
+    _natm: i32,
+    _bas: *mut i32,
+    _nbas: i32,
+    _env: *mut f64,
 ) {
     *opt = 0 as *mut CINTOpt;
 }
@@ -101,7 +101,7 @@ unsafe extern "C" fn _make_fakebas(
     mut fakebas: *mut i32,
     mut bas: *mut i32,
     mut nbas: i32,
-    mut env: *mut f64,
+    _env: *mut f64,
 ) -> i32 {
     let mut i: i32 = 0;
     let mut max_l: i32 = 0 as i32;
@@ -128,7 +128,7 @@ unsafe extern "C" fn _make_fakebas(
         i += 1;
         i;
     }
-    return max_l;
+    max_l
 }
 unsafe extern "C" fn _allocate_index_xyz(
     mut opt: *mut CINTOpt,
@@ -166,7 +166,7 @@ unsafe extern "C" fn _allocate_index_xyz(
         i;
     }
     (*opt).index_xyz_array = ppbuf;
-    return buf;
+    buf
 }
 unsafe extern "C" fn gen_idx(
     mut opt: *mut CINTOpt,
@@ -717,8 +717,8 @@ pub unsafe extern "C" fn CINTOpt_log_max_pgto_coeff(
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_set_log_maxc(
     mut opt: *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
+    _atm: *mut i32,
+    _natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
     mut env: *mut f64,
@@ -836,7 +836,7 @@ pub unsafe extern "C" fn CINTset_pairdata(
         jp += 1;
         jp;
     }
-    return empty;
+    empty
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_setij(
@@ -1054,8 +1054,8 @@ pub unsafe extern "C" fn CINTOpt_non0coeff_byshell(
 #[no_mangle]
 pub unsafe extern "C" fn CINTOpt_set_non0coeff(
     mut opt: *mut CINTOpt,
-    mut atm: *mut i32,
-    mut natm: i32,
+    _atm: *mut i32,
+    _natm: i32,
     mut bas: *mut i32,
     mut nbas: i32,
     mut env: *mut f64,
