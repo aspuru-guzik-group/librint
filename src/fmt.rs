@@ -60,7 +60,7 @@ static mut TURNOVER_POINT: [f64; 40] = [
     14.56467047710f64,
     14.93687515212f64,
 ];
-unsafe extern "C" fn fmt1_gamma_inc_like(f: *mut f64, t: f64, m: i32) {
+unsafe fn fmt1_gamma_inc_like(f: *mut f64, t: f64, m: i32) {
     let mut i: i32 = 0;
     let mut b: f64 = m as f64 + 0.5f64;
     let mut bi: f64 = 0.;
@@ -84,7 +84,7 @@ unsafe extern "C" fn fmt1_gamma_inc_like(f: *mut f64, t: f64, m: i32) {
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn gamma_inc_like(f: *mut f64, t: f64, m: i32) {
+pub unsafe fn gamma_inc_like(f: *mut f64, t: f64, m: i32) {
     if t < TURNOVER_POINT[m as usize] {
         fmt1_gamma_inc_like(f, t, m);
     } else {
@@ -104,7 +104,7 @@ pub unsafe extern "C" fn gamma_inc_like(f: *mut f64, t: f64, m: i32) {
         }
     };
 }
-unsafe extern "C" fn fmt1_lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
+unsafe fn fmt1_lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
     let mut b: f64 = m as f64 + 0.5f64;
     let mut bi: f64 = 0.0f64;
     let e: f64 = 0.5f64 * expl(-t);
@@ -128,7 +128,7 @@ unsafe extern "C" fn fmt1_lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
+pub unsafe fn lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
     if t < TURNOVER_POINT[m as usize] {
         fmt1_lgamma_inc_like(f, t, m);
     } else {
@@ -149,7 +149,7 @@ pub unsafe extern "C" fn lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
     };
 }
 #[inline]
-unsafe extern "C" fn _pow(mut base: f64, exponent: i32) -> f64 {
+unsafe fn _pow(mut base: f64, exponent: i32) -> f64 {
     let mut i: i32 = 0;
     let mut result: f64 = 1_f64;
     i = 1_i32;
@@ -163,7 +163,7 @@ unsafe extern "C" fn _pow(mut base: f64, exponent: i32) -> f64 {
     result
 }
 #[inline]
-unsafe extern "C" fn _powl(mut base: f64, exponent: i32) -> f64 {
+unsafe fn _powl(mut base: f64, exponent: i32) -> f64 {
     let mut i: i32 = 0;
     let mut result: f64 = 1.0f64;
     i = 1_i32;
@@ -177,7 +177,7 @@ unsafe extern "C" fn _powl(mut base: f64, exponent: i32) -> f64 {
     result
 }
 #[no_mangle]
-pub unsafe extern "C" fn fmt1_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
+pub unsafe fn fmt1_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     let mut i: i32 = 0;
     let lower2: f64 = lower * lower;
     let mut b: f64 = m as f64 + 0.5f64;
@@ -212,7 +212,7 @@ pub unsafe extern "C" fn fmt1_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32)
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn fmt_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
+pub unsafe fn fmt_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     if lower == 0 as f64 {
         return gamma_inc_like(f, t, m);
     }
@@ -249,7 +249,7 @@ pub unsafe extern "C" fn fmt_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) 
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fmt_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
+pub unsafe fn fmt_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     if lower == 0.0f64 {
         return lgamma_inc_like(f, t, m);
     }
@@ -286,7 +286,7 @@ pub unsafe extern "C" fn fmt_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32)
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fmt1_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
+pub unsafe fn fmt1_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     let mut i: i32 = 0;
     let lower2: f64 = lower * lower;
     let mut b: f64 = m as f64 + 0.5f64;

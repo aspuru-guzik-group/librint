@@ -140,7 +140,7 @@ pub struct CINTEnvVars {
     pub rj: *mut f64,
     pub rk: *mut f64,
     pub c2rust_unnamed_1: C2RustUnnamed,
-    pub f_g0_2e: Option<unsafe extern "C" fn() -> i32>,
+    pub f_g0_2e: Option<unsafe fn() -> i32>,
     /// Which 2D-to-4D g-buffer transform this quartet uses. libcint chooses one
     /// of six at setup time from `(rys_order, ibase, kbase)`; c2rust stored the
     /// choice as a function pointer with its signature erased to `fn() -> ()`,

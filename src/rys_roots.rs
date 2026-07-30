@@ -23,7 +23,7 @@ extern "C" {
     fn sqrt(_: f64) -> f64;
 }
 
-pub type QuadratureFunction = unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32;
+pub type QuadratureFunction = unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32;
 static mut POLY_SMALLX_R0: [f64; 496] = [
     5e-1_f64,
     1.306_936_062_370_847e-1_f64,
@@ -3012,7 +3012,7 @@ static mut POLY_LARGEX_WW: [f64; 496] = [
     7.252_608_539_161_956e-42_f64,
     2.802_570_929_318_941e-47_f64,
 ];
-unsafe extern "C" fn segment_solve(
+unsafe fn segment_solve(
     n: i32,
     x: f64,
     lower: f64,
@@ -3034,7 +3034,7 @@ unsafe extern "C" fn segment_solve(
     error
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut f64) {
+pub unsafe fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut f64) {
     if x <= 3e-7f64 {
         let off: i32 = nroots * (nroots - 1_i32) / 2_i32;
         let mut i: i32 = 0;
@@ -3088,14 +3088,8 @@ pub unsafe extern "C" fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut
                 u,
                 w,
                 11_f64,
-                Some(
-                    CINTrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTrys_schmidt
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTrys_schmidt as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         8 => {
@@ -3106,14 +3100,8 @@ pub unsafe extern "C" fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut
                 u,
                 w,
                 11_f64,
-                Some(
-                    CINTrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_schmidt
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_schmidt as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         9 => {
@@ -3124,14 +3112,8 @@ pub unsafe extern "C" fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut
                 u,
                 w,
                 10_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         10 | 11 => {
@@ -3142,14 +3124,8 @@ pub unsafe extern "C" fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut
                 u,
                 w,
                 18_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         12 => {
@@ -3160,14 +3136,8 @@ pub unsafe extern "C" fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut
                 u,
                 w,
                 22_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         _ => {
@@ -3178,14 +3148,8 @@ pub unsafe extern "C" fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut
                 u,
                 w,
                 50_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
     }
@@ -3194,7 +3158,7 @@ pub unsafe extern "C" fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut
         std::process::exit(err);
     }
 }
-unsafe extern "C" fn segment_solve1(
+unsafe fn segment_solve1(
     n: i32,
     x: f64,
     lower: f64,
@@ -3225,13 +3189,7 @@ unsafe extern "C" fn segment_solve1(
     error
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTsr_rys_roots(
-    nroots: i32,
-    x: f64,
-    lower: f64,
-    u: *mut f64,
-    w: *mut f64,
-) {
+pub unsafe fn CINTsr_rys_roots(nroots: i32, x: f64, lower: f64, u: *mut f64, w: *mut f64) {
     let mut err: i32 = 1_i32;
     match nroots {
         1 => {
@@ -3255,14 +3213,8 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     u,
                     w,
                     10_f64,
-                    Some(
-                        CINTlrys_jacobi
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
-                    Some(
-                        CINTlrys_laguerre
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
+                    Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                    Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
                 );
             } else {
                 err = CINTlrys_jacobi(nroots, x, lower, u, w);
@@ -3279,14 +3231,8 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     u,
                     w,
                     10_f64,
-                    Some(
-                        CINTlrys_jacobi
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
-                    Some(
-                        CINTlrys_laguerre
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
+                    Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                    Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
                 );
             } else {
                 err = CINTlrys_jacobi(nroots, x, lower, u, w);
@@ -3301,14 +3247,8 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     u,
                     w,
                     50_f64,
-                    Some(
-                        CINTrys_schmidt
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
-                    Some(
-                        CINTlrys_laguerre
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
+                    Some(CINTrys_schmidt as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                    Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
                 );
             } else if lower < 0.8f64 {
                 err = segment_solve(
@@ -3318,14 +3258,8 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     u,
                     w,
                     10_f64,
-                    Some(
-                        CINTlrys_jacobi
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
-                    Some(
-                        CINTlrys_laguerre
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
+                    Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                    Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
                 );
             } else {
                 err = CINTlrys_jacobi(nroots, x, lower, u, w);
@@ -3340,14 +3274,8 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     u,
                     w,
                     60_f64,
-                    Some(
-                        CINTrys_schmidt
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
-                    Some(
-                        CINTlrys_laguerre
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
+                    Some(CINTrys_schmidt as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                    Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
                 );
             } else if lower < 0.8f64 {
                 err = segment_solve(
@@ -3357,14 +3285,8 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                     u,
                     w,
                     10_f64,
-                    Some(
-                        CINTlrys_jacobi
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
-                    Some(
-                        CINTlrys_laguerre
-                            as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                    ),
+                    Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                    Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
                 );
             } else {
                 err = CINTlrys_jacobi(nroots, x, lower, u, w);
@@ -3380,18 +3302,9 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 0.5f64,
                 1.0f64,
                 60_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         8 | 9 | 10 => {
@@ -3404,18 +3317,9 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 0.15f64,
                 1.0f64,
                 60_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         11 | 12 => {
@@ -3428,18 +3332,9 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 0.15f64,
                 1.0f64,
                 60_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         13 | 14 => {
@@ -3452,18 +3347,9 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 0.25f64,
                 1.0f64,
                 60_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         15 | 16 => {
@@ -3476,18 +3362,9 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 0.25f64,
                 0.75f64,
                 60_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         17 => {
@@ -3500,18 +3377,9 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 0.25f64,
                 0.65f64,
                 60_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         18 => {
@@ -3524,18 +3392,9 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 0.15f64,
                 0.65f64,
                 60_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         19 => {
@@ -3548,18 +3407,9 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 0.15f64,
                 0.55f64,
                 60_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         20 | 21 => {
@@ -3572,18 +3422,9 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 0.25f64,
                 0.45f64,
                 60_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         22 | 23 | 24 => {
@@ -3596,18 +3437,9 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
                 0.25f64,
                 0.35f64,
                 60_f64,
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_laguerre
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
-                Some(
-                    CINTlrys_jacobi
-                        as unsafe extern "C" fn(i32, f64, f64, *mut f64, *mut f64) -> i32,
-                ),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_laguerre as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
+                Some(CINTlrys_jacobi as unsafe fn(i32, f64, f64, *mut f64, *mut f64) -> i32),
             );
         }
         _ => {
@@ -3623,7 +3455,7 @@ pub unsafe extern "C" fn CINTsr_rys_roots(
         std::process::exit(err);
     }
 }
-unsafe extern "C" fn rys_root1(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
+unsafe fn rys_root1(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
     let mut Y: f64 = 0.;
     let mut F1: f64 = 0.;
     if X > 33.0f64 {
@@ -3739,7 +3571,7 @@ unsafe extern "C" fn rys_root1(X: f64, roots: *mut f64, weights: *mut f64) -> i3
     *roots.offset(0_isize) = F1 / (WW1 - F1);
     0_i32
 }
-unsafe extern "C" fn rys_root2(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
+unsafe fn rys_root2(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
     let mut R12: f64 = 0.;
     let mut R22: f64 = 0.;
     let mut W22: f64 = 0.;
@@ -4073,7 +3905,7 @@ unsafe extern "C" fn rys_root2(X: f64, roots: *mut f64, weights: *mut f64) -> i3
     *weights.offset(1_isize) = WW2;
     0_i32
 }
-unsafe extern "C" fn rys_root3(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
+unsafe fn rys_root3(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
     let mut R13: f64 = 0.;
     let mut R23: f64 = 0.;
     let mut W23: f64 = 0.;
@@ -4633,7 +4465,7 @@ unsafe extern "C" fn rys_root3(X: f64, roots: *mut f64, weights: *mut f64) -> i3
     *weights.offset(2_isize) = WW3;
     0_i32
 }
-unsafe extern "C" fn rys_root4(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
+unsafe fn rys_root4(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
     let mut R14: f64 = 0.;
     let mut R24: f64 = 0.;
     let mut W24: f64 = 0.;
@@ -5630,7 +5462,7 @@ unsafe extern "C" fn rys_root4(X: f64, roots: *mut f64, weights: *mut f64) -> i3
     *weights.offset(3_isize) = WW4;
     0_i32
 }
-unsafe extern "C" fn rys_root5(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
+unsafe fn rys_root5(X: f64, roots: *mut f64, weights: *mut f64) -> i32 {
     let mut R15: f64 = 0.;
     let mut R25: f64 = 0.;
     let mut W25: f64 = 0.;
@@ -7089,7 +6921,7 @@ unsafe extern "C" fn rys_root5(X: f64, roots: *mut f64, weights: *mut f64) -> i3
     *weights.offset(4_isize) = WW5;
     0_i32
 }
-unsafe extern "C" fn R_dsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
+unsafe fn R_dsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -7184,7 +7016,7 @@ unsafe extern "C" fn R_dsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
     }
     0_i32
 }
-unsafe extern "C" fn _rdk_rys_roots(
+unsafe fn _rdk_rys_roots(
     nroots: i32,
     fmt_ints: *mut f64,
     roots: *mut f64,
@@ -7257,7 +7089,7 @@ unsafe extern "C" fn _rdk_rys_roots(
     0_i32
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTrys_schmidt(
+pub unsafe fn CINTrys_schmidt(
     nroots: i32,
     x: f64,
     lower: f64,
@@ -7272,7 +7104,7 @@ pub unsafe extern "C" fn CINTrys_schmidt(
     }
     _rdk_rys_roots(nroots, fmt_ints.as_mut_ptr(), roots, weights)
 }
-unsafe extern "C" fn R_lsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
+unsafe fn R_lsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -7368,7 +7200,7 @@ unsafe extern "C" fn R_lsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
     0_i32
 }
 #[no_mangle]
-pub unsafe extern "C" fn CINTlrys_schmidt(
+pub unsafe fn CINTlrys_schmidt(
     nroots: i32,
     x: f64,
     lower: f64,
