@@ -16,6 +16,7 @@ use crate::optimizer::CINTall_1e_optimizer;
 
 use crate::cint::CINTEnvVars;
 use crate::cint::CINTOpt;
+use crate::cint::Gout;
 
 #[no_mangle]
 pub unsafe extern "C" fn CINTgout1e_int1e_kin(
@@ -98,13 +99,7 @@ pub unsafe extern "C" fn int1e_kin_cart(
     let ng: [i32; 8] = [0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
-    envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> ()>,
-        Option<unsafe extern "C" fn() -> ()>,
-    >(Some(
-        CINTgout1e_int1e_kin
-            as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
-    ));
+    envs.f_gout = Some(Gout::E1Kin);
     envs.common_factor *= 0.5f64;
     CINT1e_drv(
         out,
@@ -151,13 +146,7 @@ pub unsafe extern "C" fn int1e_kin_sph(
     let ng: [i32; 8] = [0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
-    envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> ()>,
-        Option<unsafe extern "C" fn() -> ()>,
-    >(Some(
-        CINTgout1e_int1e_kin
-            as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
-    ));
+    envs.f_gout = Some(Gout::E1Kin);
     envs.common_factor *= 0.5f64;
     CINT1e_drv(
         out,
@@ -204,13 +193,7 @@ pub unsafe extern "C" fn int1e_kin_spinor(
     let ng: [i32; 8] = [0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
-    envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> ()>,
-        Option<unsafe extern "C" fn() -> ()>,
-    >(Some(
-        CINTgout1e_int1e_kin
-            as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
-    ));
+    envs.f_gout = Some(Gout::E1Kin);
     envs.common_factor *= 0.5f64;
     panic!("Reached end of non-void function without returning");
 }

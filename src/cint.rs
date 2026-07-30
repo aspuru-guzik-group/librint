@@ -7,6 +7,74 @@
     unused_assignments
 )]
 
+/// Which `gout` contraction kernel this integral uses -- the step that reduces
+/// the g-buffer to the output block for one primitive shell pair/quartet.
+///
+/// This replaces a c2rust function pointer whose parameter list was erased to
+/// `fn() -> ()`. It matters more than the other two: `f_gout` is called in the
+/// *innermost* primitive loop (once per primitive quartet in `CINT2e_loop`), and
+/// as a transmuted `unsafe extern "C"` pointer it was an opaque C-ABI call that
+/// LLVM could neither inline nor vectorise across. Each enum arm is a direct
+/// call, so fat LTO can inline the contraction into the loop body.
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum Gout {
+    /// `CINTgout2e` -- the two-electron contraction.
+    E2,
+    /// `CINTgout1e` -- plain one-electron (overlap).
+    E1,
+    /// `CINTgout1e_nuc` -- nuclear attraction, accumulated over atoms.
+    E1Nuc,
+    /// `CINTgout1e_int1e_kin` -- kinetic energy.
+    E1Kin,
+}
+
+impl Gout {
+    /// Dispatch to the contraction kernel this integral was configured with.
+    ///
+    /// # Safety
+    ///
+    /// Same requirements as the function pointer this replaces: `gout`, `g` and
+    /// `idx` must be valid for the block sizes implied by `envs`, and `envs` must
+    /// be the fully initialised `CINTEnvVars` for this shell pair/quartet.
+    #[inline]
+    pub unsafe fn call(
+        self,
+        gout: *mut f64,
+        g: *mut f64,
+        idx: *mut i32,
+        envs: *mut CINTEnvVars,
+        gempty: i32,
+    ) {
+        match self {
+            Gout::E2 => crate::cint2e::CINTgout2e(gout, g, idx, envs, gempty),
+            Gout::E1 => crate::cint1e::CINTgout1e(gout, g, idx, envs, gempty),
+            Gout::E1Nuc => crate::cint1e::CINTgout1e_nuc(gout, g, idx, envs, gempty),
+            Gout::E1Kin => crate::intor1::CINTgout1e_int1e_kin(gout, g, idx, envs, gempty),
+        }
+    }
+}
+
+/// The six 2D-to-4D g-buffer transforms `CINTg0_2e` can dispatch to. Replaces a
+/// c2rust function pointer whose parameter list was erased; the variants map
+/// one-to-one onto the `CINT*2d4d` functions in `g2e.rs`, which is where the
+/// dispatch lives.
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum G0_2d4d {
+    /// `CINTg0_2e_2d4d_unrolled` — `rys_order <= 2`.
+    Unrolled,
+    /// `CINTsrg0_2e_2d4d_unrolled` — as above but range-separated
+    /// (`rys_order != nrys_roots`).
+    SrUnrolled,
+    /// `CINTg0_2e_ik2d4d` — `kbase` and `ibase`.
+    Ik,
+    /// `CINTg0_2e_kj2d4d` — `kbase`, no `ibase`.
+    Kj,
+    /// `CINTg0_2e_il2d4d` — no `kbase`, `ibase`.
+    Il,
+    /// `CINTg0_2e_lj2d4d` — neither; the general fallback.
+    Lj,
+}
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct PairData {
@@ -73,8 +141,16 @@ pub struct CINTEnvVars {
     pub rk: *mut f64,
     pub c2rust_unnamed_1: C2RustUnnamed,
     pub f_g0_2e: Option<unsafe extern "C" fn() -> i32>,
-    pub f_g0_2d4d: Option<unsafe extern "C" fn() -> ()>,
-    pub f_gout: Option<unsafe extern "C" fn() -> ()>,
+    /// Which 2D-to-4D g-buffer transform this quartet uses. libcint chooses one
+    /// of six at setup time from `(rys_order, ibase, kbase)`; c2rust stored the
+    /// choice as a function pointer with its signature erased to `fn() -> ()`,
+    /// so the single call site in `g2e.rs` had to `transmute` the real signature
+    /// back before calling. `None` means not yet configured by
+    /// `CINTinit_int2e_EnvVars`. See `impl G0_2d4d` in `g2e.rs`.
+    pub f_g0_2d4d: Option<G0_2d4d>,
+    /// Which `gout` contraction kernel to call in the innermost primitive loop.
+    /// `None` means not yet configured by the `cint1e_*`/`cint2e_*` entry point.
+    pub f_gout: Option<Gout>,
     pub opt: *mut CINTOpt,
     pub idx: *mut i32,
     pub ai: [f64; 1],

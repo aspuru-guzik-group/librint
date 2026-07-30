@@ -12,7 +12,7 @@ use crate::g1e::CINTcommon_fac_sp;
 use crate::rys_roots::CINTrys_roots;
 use crate::rys_roots::CINTsr_rys_roots;
 
-use crate::cint::CINTEnvVars;
+use crate::cint::{CINTEnvVars, G0_2d4d};
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -171,54 +171,20 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
             *((*envs).rj).offset(2_isize) - *((*envs).ri).offset(2_isize);
     }
     if rys_order <= 2_i32 {
-        (*envs).f_g0_2d4d = ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> ()>,
-            Option<unsafe extern "C" fn() -> ()>,
-        >(Some(
-            CINTg0_2e_2d4d_unrolled
-                as unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> (),
-        ));
+        (*envs).f_g0_2d4d = Some(G0_2d4d::Unrolled);
         if rys_order != nrys_roots {
-            (*envs).f_g0_2d4d = ::core::mem::transmute::<
-                Option<unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> ()>,
-                Option<unsafe extern "C" fn() -> ()>,
-            >(Some(
-                CINTsrg0_2e_2d4d_unrolled
-                    as unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> (),
-            ));
+            (*envs).f_g0_2d4d = Some(G0_2d4d::SrUnrolled);
         }
     } else if kbase != 0 {
         if ibase != 0 {
-            (*envs).f_g0_2d4d = ::core::mem::transmute::<
-                Option<unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> ()>,
-                Option<unsafe extern "C" fn() -> ()>,
-            >(Some(
-                CINTg0_2e_ik2d4d
-                    as unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> (),
-            ));
+            (*envs).f_g0_2d4d = Some(G0_2d4d::Ik);
         } else {
-            (*envs).f_g0_2d4d = ::core::mem::transmute::<
-                Option<unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> ()>,
-                Option<unsafe extern "C" fn() -> ()>,
-            >(Some(
-                CINTg0_2e_kj2d4d
-                    as unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> (),
-            ));
+            (*envs).f_g0_2d4d = Some(G0_2d4d::Kj);
         }
     } else if ibase != 0 {
-        (*envs).f_g0_2d4d = ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> ()>,
-            Option<unsafe extern "C" fn() -> ()>,
-        >(Some(
-            CINTg0_2e_il2d4d as unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> (),
-        ));
+        (*envs).f_g0_2d4d = Some(G0_2d4d::Il);
     } else {
-        (*envs).f_g0_2d4d = ::core::mem::transmute::<
-            Option<unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> ()>,
-            Option<unsafe extern "C" fn() -> ()>,
-        >(Some(
-            CINTg0_2e_lj2d4d as unsafe extern "C" fn(*mut f64, *mut Rys2eT, *mut CINTEnvVars) -> (),
-        ));
+        (*envs).f_g0_2d4d = Some(G0_2d4d::Lj);
     }
     (*envs).f_g0_2e = ::core::mem::transmute::<
         Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut f64, f64, *mut CINTEnvVars) -> i32>,
@@ -5729,10 +5695,31 @@ pub unsafe extern "C" fn CINTg0_2e(
         irys += 1;
         irys;
     }
-    ::core::mem::transmute::<_, fn(_, _, _)>(
-        ((*envs).f_g0_2d4d).expect("non-null function pointer"),
-    )(g, &mut bc, envs);
+    (*envs)
+        .f_g0_2d4d
+        .expect("f_g0_2d4d not set by CINTinit_int2e_EnvVars")
+        .call(g, &mut bc, envs);
     1_i32
+}
+
+impl G0_2d4d {
+    /// Dispatch to the transform this quartet was configured with.
+    ///
+    /// # Safety
+    ///
+    /// `g` must point at a g-buffer of at least `envs.g_size` doubles and `envs`
+    /// must be the fully initialised `CINTEnvVars` for this quartet, exactly as
+    /// the previous transmuted function pointer required.
+    unsafe fn call(self, g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
+        match self {
+            G0_2d4d::Unrolled => CINTg0_2e_2d4d_unrolled(g, bc, envs),
+            G0_2d4d::SrUnrolled => CINTsrg0_2e_2d4d_unrolled(g, bc, envs),
+            G0_2d4d::Ik => CINTg0_2e_ik2d4d(g, bc, envs),
+            G0_2d4d::Kj => CINTg0_2e_kj2d4d(g, bc, envs),
+            G0_2d4d::Il => CINTg0_2e_il2d4d(g, bc, envs),
+            G0_2d4d::Lj => CINTg0_2e_lj2d4d(g, bc, envs),
+        }
+    }
 }
 #[no_mangle]
 pub unsafe extern "C" fn CINTnabla1i_2e(

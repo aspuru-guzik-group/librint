@@ -24,6 +24,7 @@ use crate::optimizer::CINTset_pairdata;
 
 use crate::cint::CINTEnvVars;
 use crate::cint::CINTOpt;
+use crate::cint::Gout;
 use crate::cint::PairData;
 
 pub type uintptr_t = u64;
@@ -398,23 +399,29 @@ unsafe extern "C" fn make_g1e_gout(
     match int1e_type {
         0 => {
             CINTg1e_ovlp(g, envs);
-            ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                ((*envs).f_gout).expect("non-null function pointer"),
-            )(gout, g, idx, envs, empty);
+            (*envs)
+                .f_gout
+                .expect("f_gout not set")
+                .call(gout, g, idx, envs, empty);
         }
         1 => {
             CINTg1e_nuc(g, envs, -1_i32);
-            ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                ((*envs).f_gout).expect("non-null function pointer"),
-            )(gout, g, idx, envs, empty);
+            (*envs)
+                .f_gout
+                .expect("f_gout not set")
+                .call(gout, g, idx, envs, empty);
         }
         2 => {
             ia = 0_i32;
             while ia < (*envs).natm {
                 CINTg1e_nuc(g, envs, ia);
-                ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                    ((*envs).f_gout).expect("non-null function pointer"),
-                )(gout, g, idx, envs, (empty != 0 && ia == 0_i32) as i32);
+                (*envs).f_gout.expect("f_gout not set").call(
+                    gout,
+                    g,
+                    idx,
+                    envs,
+                    (empty != 0 && ia == 0_i32) as i32,
+                );
                 ia += 1;
                 ia;
             }
@@ -527,13 +534,7 @@ pub unsafe extern "C" fn int1e_ovlp_sph(
     let ng: [i32; 8] = [0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
-    envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> ()>,
-        Option<unsafe extern "C" fn() -> ()>,
-    >(Some(
-        CINTgout1e
-            as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
-    ));
+    envs.f_gout = Some(Gout::E1);
     CINT1e_drv(
         out,
         dims,
@@ -579,13 +580,7 @@ pub unsafe extern "C" fn int1e_ovlp_cart(
     let ng: [i32; 8] = [0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
-    envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> ()>,
-        Option<unsafe extern "C" fn() -> ()>,
-    >(Some(
-        CINTgout1e
-            as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
-    ));
+    envs.f_gout = Some(Gout::E1);
     CINT1e_drv(
         out,
         dims,
@@ -642,13 +637,7 @@ pub unsafe extern "C" fn int1e_nuc_sph(
     let ng: [i32; 8] = [0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 0_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
-    envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> ()>,
-        Option<unsafe extern "C" fn() -> ()>,
-    >(Some(
-        CINTgout1e_nuc
-            as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
-    ));
+    envs.f_gout = Some(Gout::E1Nuc);
     CINT1e_drv(
         out,
         dims,
@@ -694,13 +683,7 @@ pub unsafe extern "C" fn int1e_nuc_cart(
     let ng: [i32; 8] = [0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 0_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int1e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
-    envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> ()>,
-        Option<unsafe extern "C" fn() -> ()>,
-    >(Some(
-        CINTgout1e_nuc
-            as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
-    ));
+    envs.f_gout = Some(Gout::E1Nuc);
     CINT1e_drv(
         out,
         dims,

@@ -23,6 +23,7 @@ use crate::optimizer::CINTset_pairdata;
 
 use crate::cint::CINTEnvVars;
 use crate::cint::CINTOpt;
+use crate::cint::Gout;
 use crate::cint::PairData;
 
 pub type uintptr_t = u64;
@@ -322,9 +323,10 @@ pub unsafe extern "C" fn CINT2e_loop_nopt(
                             )(g, rij, rkl.as_mut_ptr(), cutoff, envs)
                                 != 0
                             {
-                                ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    ((*envs).f_gout).expect("non-null function pointer"),
-                                )(gout, g, idx, envs, *gempty);
+                                (*envs)
+                                    .f_gout
+                                    .expect("f_gout not set")
+                                    .call(gout, g, idx, envs, *gempty);
                                 if i_ctr > 1_i32 {
                                     if *iempty != 0 {
                                         CINTprim_to_ctr_0(
@@ -677,9 +679,10 @@ pub unsafe extern "C" fn CINT2e_1111_loop(
                             )(g, rij, rkl, cutoff, envs)
                                 != 0
                             {
-                                ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    ((*envs).f_gout).expect("non-null function pointer"),
-                                )(gout, g, idx, envs, *gempty);
+                                (*envs)
+                                    .f_gout
+                                    .expect("f_gout not set")
+                                    .call(gout, g, idx, envs, *gempty);
                                 *gempty = 0_i32;
                             }
                         }
@@ -931,9 +934,10 @@ pub unsafe extern "C" fn CINT2e_n111_loop(
                                 )(g, rij, rkl, cutoff, envs)
                                     != 0
                                 {
-                                    ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                        ((*envs).f_gout).expect("non-null function pointer"),
-                                    )(gout, g, idx, envs, 1_i32);
+                                    (*envs)
+                                        .f_gout
+                                        .expect("f_gout not set")
+                                        .call(gout, g, idx, envs, 1_i32);
                                     if i_ctr > 1_i32 {
                                         if *iempty != 0 {
                                             CINTprim_to_ctr_0(
@@ -1211,9 +1215,10 @@ pub unsafe extern "C" fn CINT2e_1n11_loop(
                             )(g, rij, rkl, cutoff, envs)
                                 != 0
                             {
-                                ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    ((*envs).f_gout).expect("non-null function pointer"),
-                                )(gout, g, idx, envs, *iempty);
+                                (*envs)
+                                    .f_gout
+                                    .expect("f_gout not set")
+                                    .call(gout, g, idx, envs, *iempty);
                                 *iempty = 0_i32;
                             }
                         }
@@ -1493,9 +1498,10 @@ pub unsafe extern "C" fn CINT2e_11n1_loop(
                             )(g, rij, rkl, cutoff, envs)
                                 != 0
                             {
-                                ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    ((*envs).f_gout).expect("non-null function pointer"),
-                                )(gout, g, idx, envs, *jempty);
+                                (*envs)
+                                    .f_gout
+                                    .expect("f_gout not set")
+                                    .call(gout, g, idx, envs, *jempty);
                                 *jempty = 0_i32;
                             }
                         }
@@ -1775,9 +1781,10 @@ pub unsafe extern "C" fn CINT2e_111n_loop(
                             )(g, rij, rkl, cutoff, envs)
                                 != 0
                             {
-                                ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    ((*envs).f_gout).expect("non-null function pointer"),
-                                )(gout, g, idx, envs, *kempty);
+                                (*envs)
+                                    .f_gout
+                                    .expect("f_gout not set")
+                                    .call(gout, g, idx, envs, *kempty);
                                 *kempty = 0_i32;
                             }
                         }
@@ -2120,9 +2127,10 @@ pub unsafe extern "C" fn CINT2e_loop(
                             )(g, rij, rkl, cutoff, envs)
                                 != 0
                             {
-                                ::core::mem::transmute::<_, fn(_, _, _, _, _)>(
-                                    ((*envs).f_gout).expect("non-null function pointer"),
-                                )(gout, g, idx, envs, *gempty);
+                                (*envs)
+                                    .f_gout
+                                    .expect("f_gout not set")
+                                    .call(gout, g, idx, envs, *gempty);
                                 if i_ctr > 1_i32 {
                                     if *iempty != 0 {
                                         CINTprim_to_ctr_0(
@@ -2969,13 +2977,7 @@ pub unsafe extern "C" fn int2e_sph(
     let ng: [i32; 8] = [0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int2e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
-    envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> ()>,
-        Option<unsafe extern "C" fn() -> ()>,
-    >(Some(
-        CINTgout2e
-            as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
-    ));
+    envs.f_gout = Some(Gout::E2);
     CINT2e_drv(
         out,
         dims,
@@ -3033,13 +3035,7 @@ pub unsafe extern "C" fn int2e_cart(
     let ng: [i32; 8] = [0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32];
     let mut envs: CINTEnvVars = CINTEnvVars::new();
     CINTinit_int2e_EnvVars(&mut envs, &ng, shls, atm, natm, bas, nbas, env);
-    envs.f_gout = ::core::mem::transmute::<
-        Option<unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> ()>,
-        Option<unsafe extern "C" fn() -> ()>,
-    >(Some(
-        CINTgout2e
-            as unsafe extern "C" fn(*mut f64, *mut f64, *mut i32, *mut CINTEnvVars, i32) -> (),
-    ));
+    envs.f_gout = Some(Gout::E2);
     CINT2e_drv(
         out,
         dims,
