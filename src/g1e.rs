@@ -60,11 +60,11 @@ pub unsafe extern "C" fn CINTinit_int1e_EnvVars(
     (*envs).lj_ceil = (*envs).j_l + ng[1];
     (*envs).ri =
         env.offset(*atm.offset(
-            (6_i32 * *bas.offset((8_i32 * i_sh + 0_i32) as isize) + 1_i32) as isize,
+            (6_i32 * *bas.offset((8_i32 * i_sh) as isize) + 1_i32) as isize,
         ) as isize);
     (*envs).rj =
         env.offset(*atm.offset(
-            (6_i32 * *bas.offset((8_i32 * j_sh + 0_i32) as isize) + 1_i32) as isize,
+            (6_i32 * *bas.offset((8_i32 * j_sh) as isize) + 1_i32) as isize,
         ) as isize);
     (*envs).gbits = ng[4];
     (*envs).ncomp_e1 = ng[5];
@@ -138,7 +138,7 @@ pub unsafe extern "C" fn CINTg1e_index_xyz(idx: *mut i32, envs: *mut CINTEnvVars
         ofjz = ofz + dj * j_nz[j as usize];
         i = 0_i32;
         while i < nfi {
-            *idx.offset((n + 0_i32) as isize) = ofjx + di * i_nx[i as usize];
+            *idx.offset(n as isize) = ofjx + di * i_nx[i as usize];
             *idx.offset((n + 1_i32) as isize) = ofjy + di * i_ny[i as usize];
             *idx.offset((n + 2_i32) as isize) = ofjz + di * i_nz[i as usize];
             n += 3_i32;
@@ -288,7 +288,7 @@ pub unsafe extern "C" fn CINTg1e_nuc(
     } else {
         fac1 = 2_f64
             * 3.141_592_653_589_793_f64
-            * -(*atm.offset((0_i32 + nuc_id * 6_i32) as isize)).abs() as f64
+            * -(*atm.offset((nuc_id * 6_i32) as isize)).abs() as f64
             * (*envs).fac[0_usize]
             * tau
             / aij;

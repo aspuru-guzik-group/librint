@@ -38,15 +38,15 @@ pub unsafe extern "C" fn CINTgout1e_int1e_kin(
     CINTnabla1j_1e(
         g1,
         g0,
-        (*envs).i_l + 0_i32,
-        (*envs).j_l + 0_i32,
+        (*envs).i_l,
+        (*envs).j_l,
         0_i32,
         envs,
     );
     CINTnabla1j_1e(
         g2,
         g0,
-        (*envs).i_l + 0_i32,
+        (*envs).i_l,
         (*envs).j_l + 1_i32,
         0_i32,
         envs,
@@ -54,48 +54,48 @@ pub unsafe extern "C" fn CINTgout1e_int1e_kin(
     CINTnabla1j_1e(
         g3,
         g2,
-        (*envs).i_l + 0_i32,
-        (*envs).j_l + 0_i32,
+        (*envs).i_l,
+        (*envs).j_l,
         0_i32,
         envs,
     );
     n = 0_i32;
     while n < nf {
-        ix = *idx.offset((0_i32 + n * 3_i32) as isize);
+        ix = *idx.offset((n * 3_i32) as isize);
         iy = *idx.offset((1_i32 + n * 3_i32) as isize);
         iz = *idx.offset((2_i32 + n * 3_i32) as isize);
-        s[0_i32 as usize] = *g3.offset((ix + 0_i32) as isize)
-            * *g0.offset((iy + 0_i32) as isize)
-            * *g0.offset((iz + 0_i32) as isize);
-        s[1_i32 as usize] = *g2.offset((ix + 0_i32) as isize)
-            * *g1.offset((iy + 0_i32) as isize)
-            * *g0.offset((iz + 0_i32) as isize);
-        s[2_i32 as usize] = *g2.offset((ix + 0_i32) as isize)
-            * *g0.offset((iy + 0_i32) as isize)
-            * *g1.offset((iz + 0_i32) as isize);
-        s[3_i32 as usize] = *g1.offset((ix + 0_i32) as isize)
-            * *g2.offset((iy + 0_i32) as isize)
-            * *g0.offset((iz + 0_i32) as isize);
-        s[4_i32 as usize] = *g0.offset((ix + 0_i32) as isize)
-            * *g3.offset((iy + 0_i32) as isize)
-            * *g0.offset((iz + 0_i32) as isize);
-        s[5_i32 as usize] = *g0.offset((ix + 0_i32) as isize)
-            * *g2.offset((iy + 0_i32) as isize)
-            * *g1.offset((iz + 0_i32) as isize);
-        s[6_i32 as usize] = *g1.offset((ix + 0_i32) as isize)
-            * *g0.offset((iy + 0_i32) as isize)
-            * *g2.offset((iz + 0_i32) as isize);
-        s[7_i32 as usize] = *g0.offset((ix + 0_i32) as isize)
-            * *g1.offset((iy + 0_i32) as isize)
-            * *g2.offset((iz + 0_i32) as isize);
-        s[8_i32 as usize] = *g0.offset((ix + 0_i32) as isize)
-            * *g0.offset((iy + 0_i32) as isize)
-            * *g3.offset((iz + 0_i32) as isize);
+        s[0_i32 as usize] = *g3.offset(ix as isize)
+            * *g0.offset(iy as isize)
+            * *g0.offset(iz as isize);
+        s[1_i32 as usize] = *g2.offset(ix as isize)
+            * *g1.offset(iy as isize)
+            * *g0.offset(iz as isize);
+        s[2_i32 as usize] = *g2.offset(ix as isize)
+            * *g0.offset(iy as isize)
+            * *g1.offset(iz as isize);
+        s[3_i32 as usize] = *g1.offset(ix as isize)
+            * *g2.offset(iy as isize)
+            * *g0.offset(iz as isize);
+        s[4_i32 as usize] = *g0.offset(ix as isize)
+            * *g3.offset(iy as isize)
+            * *g0.offset(iz as isize);
+        s[5_i32 as usize] = *g0.offset(ix as isize)
+            * *g2.offset(iy as isize)
+            * *g1.offset(iz as isize);
+        s[6_i32 as usize] = *g1.offset(ix as isize)
+            * *g0.offset(iy as isize)
+            * *g2.offset(iz as isize);
+        s[7_i32 as usize] = *g0.offset(ix as isize)
+            * *g1.offset(iy as isize)
+            * *g2.offset(iz as isize);
+        s[8_i32 as usize] = *g0.offset(ix as isize)
+            * *g0.offset(iy as isize)
+            * *g3.offset(iz as isize);
         if gout_empty != 0 {
-            *gout.offset((n * 1_i32 + 0_i32) as isize) =
+            *gout.offset(n as isize) =
                 -s[0_usize] - s[4_usize] - s[8_usize];
         } else {
-            *gout.offset((n * 1_i32 + 0_i32) as isize) +=
+            *gout.offset(n as isize) +=
                 -s[0_usize] - s[4_usize] - s[8_usize];
         }
         n += 1;

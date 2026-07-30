@@ -64,19 +64,19 @@ pub unsafe extern "C" fn CINTinit_int2e_EnvVars(
         (*envs).nfi * (*envs).c2rust_unnamed.nfk * (*envs).c2rust_unnamed_0.nfl * (*envs).nfj;
     (*envs).ri =
         env.offset(*atm.offset(
-            (6_i32 * *bas.offset((8_i32 * i_sh + 0_i32) as isize) + 1_i32) as isize,
+            (6_i32 * *bas.offset((8_i32 * i_sh) as isize) + 1_i32) as isize,
         ) as isize);
     (*envs).rj =
         env.offset(*atm.offset(
-            (6_i32 * *bas.offset((8_i32 * j_sh + 0_i32) as isize) + 1_i32) as isize,
+            (6_i32 * *bas.offset((8_i32 * j_sh) as isize) + 1_i32) as isize,
         ) as isize);
     (*envs).rk =
         env.offset(*atm.offset(
-            (6_i32 * *bas.offset((8_i32 * k_sh + 0_i32) as isize) + 1_i32) as isize,
+            (6_i32 * *bas.offset((8_i32 * k_sh) as isize) + 1_i32) as isize,
         ) as isize);
     (*envs).c2rust_unnamed_1.rl =
         env.offset(*atm.offset(
-            (6_i32 * *bas.offset((8_i32 * l_sh + 0_i32) as isize) + 1_i32) as isize,
+            (6_i32 * *bas.offset((8_i32 * l_sh) as isize) + 1_i32) as isize,
         ) as isize);
     (*envs).common_factor = 3.141_592_653_589_793_f64
         * 3.141_592_653_589_793_f64
@@ -297,13 +297,13 @@ pub unsafe extern "C" fn CINTg2e_index_xyz(idx: *mut i32, envs: *const CINTEnvVa
                 ofkz = oflz + dk * k_nz[k as usize];
                 match i_l {
                     0 => {
-                        *idx.offset((n + 0_i32) as isize) = ofkx;
+                        *idx.offset(n as isize) = ofkx;
                         *idx.offset((n + 1_i32) as isize) = ofky;
                         *idx.offset((n + 2_i32) as isize) = ofkz;
                         n += 3_i32;
                     }
                     1 => {
-                        *idx.offset((n + 0_i32) as isize) = ofkx + di;
+                        *idx.offset(n as isize) = ofkx + di;
                         *idx.offset((n + 1_i32) as isize) = ofky;
                         *idx.offset((n + 2_i32) as isize) = ofkz;
                         *idx.offset((n + 3_i32) as isize) = ofkx;
@@ -315,7 +315,7 @@ pub unsafe extern "C" fn CINTg2e_index_xyz(idx: *mut i32, envs: *const CINTEnvVa
                         n += 9_i32;
                     }
                     2 => {
-                        *idx.offset((n + 0_i32) as isize) = ofkx + di * 2_i32;
+                        *idx.offset(n as isize) = ofkx + di * 2_i32;
                         *idx.offset((n + 1_i32) as isize) = ofky;
                         *idx.offset((n + 2_i32) as isize) = ofkz;
                         *idx.offset((n + 3_i32) as isize) = ofkx + di;
@@ -338,7 +338,7 @@ pub unsafe extern "C" fn CINTg2e_index_xyz(idx: *mut i32, envs: *const CINTEnvVa
                     _ => {
                         i = 0_i32;
                         while i < nfi {
-                            *idx.offset((n + 0_i32) as isize) = ofkx + di * i_nx[i as usize];
+                            *idx.offset(n as isize) = ofkx + di * i_nx[i as usize];
                             *idx.offset((n + 1_i32) as isize) = ofky + di * i_ny[i as usize];
                             *idx.offset((n + 2_i32) as isize) = ofkz + di * i_nz[i as usize];
                             n += 3_i32;

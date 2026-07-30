@@ -772,7 +772,7 @@ pub fn energy(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> f
     for i in 0..natm {
         for j in 0..natm {
             if i > j {
-                Enuc += (atm[i * 6 + 0] * atm[j * 6 + 0]) as f64 / (norm(atm, env, i, j));
+                Enuc += (atm[i * 6] * atm[j * 6]) as f64 / (norm(atm, env, i, j));
             }
         }
     }
@@ -908,7 +908,7 @@ pub fn energyfast(
     for i in 0..natm {
         for j in 0..natm {
             if i > j {
-                Enuc += (atm[i * 6 + 0] * atm[j * 6 + 0]) as f64 / (norm(atm, env, i, j));
+                Enuc += (atm[i * 6] * atm[j * 6]) as f64 / (norm(atm, env, i, j));
             }
         }
     }

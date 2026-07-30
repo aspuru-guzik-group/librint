@@ -438,7 +438,7 @@ pub unsafe extern "C" fn CINTgout1e(
     if empty != 0 {
         n = 0_i32;
         while n < nf {
-            ix = *idx.offset((n * 3_i32 + 0_i32) as isize);
+            ix = *idx.offset((n * 3_i32) as isize);
             iy = *idx.offset((n * 3_i32 + 1_i32) as isize);
             iz = *idx.offset((n * 3_i32 + 2_i32) as isize);
             *gout.offset(n as isize) =
@@ -449,7 +449,7 @@ pub unsafe extern "C" fn CINTgout1e(
     } else {
         n = 0_i32;
         while n < nf {
-            ix = *idx.offset((n * 3_i32 + 0_i32) as isize);
+            ix = *idx.offset((n * 3_i32) as isize);
             iy = *idx.offset((n * 3_i32 + 1_i32) as isize);
             iz = *idx.offset((n * 3_i32 + 2_i32) as isize);
             *gout.offset(n as isize) +=
@@ -478,7 +478,7 @@ pub unsafe extern "C" fn CINTgout1e_nuc(
     if empty != 0 {
         n = 0_i32;
         while n < nf {
-            gx = g.offset(*idx.offset((n * 3_i32 + 0_i32) as isize) as isize);
+            gx = g.offset(*idx.offset((n * 3_i32) as isize) as isize);
             gy = g.offset(*idx.offset((n * 3_i32 + 1_i32) as isize) as isize);
             gz = g.offset(*idx.offset((n * 3_i32 + 2_i32) as isize) as isize);
             s = 0 as f64;
@@ -495,7 +495,7 @@ pub unsafe extern "C" fn CINTgout1e_nuc(
     } else {
         n = 0_i32;
         while n < nf {
-            gx = g.offset(*idx.offset((n * 3_i32 + 0_i32) as isize) as isize);
+            gx = g.offset(*idx.offset((n * 3_i32) as isize) as isize);
             gy = g.offset(*idx.offset((n * 3_i32 + 1_i32) as isize) as isize);
             gz = g.offset(*idx.offset((n * 3_i32 + 2_i32) as isize) as isize);
             s = 0 as f64;

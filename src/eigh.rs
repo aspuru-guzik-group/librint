@@ -495,7 +495,7 @@ unsafe extern "C" fn _dlasq2(
     let mut evec1p: *mut f64 = std::ptr::null_mut::<f64>();
     let mut swap: *mut f64 = std::ptr::null_mut::<f64>();
     qvec = work;
-    qvec1 = work.offset((n * 1_i32) as isize);
+    qvec1 = work.offset(n as isize);
     evec = work.offset((n * 2_i32) as isize);
     evec1 = work.offset((n * 3_i32) as isize);
     i = 0_i32;
@@ -1038,12 +1038,11 @@ unsafe extern "C" fn _dlarrf(
         if max1 <= growthbound {
             return 0_i32;
         }
-        lsigma = lsigma
-            - (if clgapl * 0.25f64 < *wgap.offset(clstrt as isize) {
+        lsigma -= if clgapl * 0.25f64 < *wgap.offset(clstrt as isize) {
                 clgapl * 0.25f64
             } else {
                 *wgap.offset(clstrt as isize)
-            });
+            };
         ktry += 1;
         ktry;
     }
@@ -1275,7 +1274,7 @@ unsafe extern "C" fn _dlar1v(
         *lplus.offset(i as isize) = *ld.offset(i as isize) / dplus;
         tmp = s * *lplus.offset(i as isize) * *diag_off1.offset(i as isize);
         s = tmp - lambda;
-        tmp = tmp + *work_p.offset((i + 1_i32) as isize);
+        tmp += *work_p.offset((i + 1_i32) as isize);
         if fabs(tmp) <= fabs(mingma) {
             mingma = tmp;
             *twist_index = i + 1_i32;

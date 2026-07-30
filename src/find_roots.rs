@@ -285,7 +285,7 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
         let dum: f64 = (*cs.offset((2_i32 * 3_i32 + 1_i32) as isize)
             * *cs.offset((2_i32 * 3_i32 + 1_i32) as isize)
             - 4_f64
-                * *cs.offset((2_i32 * 3_i32 + 0_i32) as isize)
+                * *cs.offset((2_i32 * 3_i32) as isize)
                 * *cs.offset((2_i32 * 3_i32 + 2_i32) as isize))
         .sqrt();
         *roots.offset(0_isize) = (-*cs.offset((2_i32 * 3_i32 + 1_i32) as isize) - dum)
@@ -333,7 +333,7 @@ pub unsafe extern "C" fn _CINT_polynomial_roots(
         let dum_0: f64 = (*cs.offset((2_i32 * nroots1 + 1_i32) as isize)
             * *cs.offset((2_i32 * nroots1 + 1_i32) as isize)
             - 4_f64
-                * *cs.offset((2_i32 * nroots1 + 0_i32) as isize)
+                * *cs.offset((2_i32 * nroots1) as isize)
                 * *cs.offset((2_i32 * nroots1 + 2_i32) as isize))
         .sqrt();
         *roots.offset(0_isize) = 0.5f64

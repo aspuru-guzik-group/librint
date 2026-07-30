@@ -3810,7 +3810,7 @@ unsafe extern "C" fn rys_root2(X: f64, roots: *mut f64, weights: *mut f64) -> i3
             * X
             + 2.86930639376289E+00f64;
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
-        WW1 = WW1 - WW2;
+        WW1 -= WW2;
     } else if X < 3.0f64 {
         Y = X - 2.0E+00f64;
         F1 = ((((((((((-1.61702782425558E-10f64 * Y + 1.96215250865776E-09f64) * Y
@@ -3871,7 +3871,7 @@ unsafe extern "C" fn rys_root2(X: f64, roots: *mut f64, weights: *mut f64) -> i3
             * Y
             + 1.80400974537950E+00f64;
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
-        WW1 = WW1 - WW2;
+        WW1 -= WW2;
     } else if X < 5.0f64 {
         Y = X - 4.0E+00f64;
         F1 = ((((((((((-2.62453564772299E-11f64 * Y + 3.24031041623823E-10f64) * Y
@@ -3930,7 +3930,7 @@ unsafe extern "C" fn rys_root2(X: f64, roots: *mut f64, weights: *mut f64) -> i3
             * Y
             + 1.12155283108289E+00f64;
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
-        WW1 = WW1 - WW2;
+        WW1 -= WW2;
     } else if X < 10_f64 {
         E = exp(-X);
         WW1 = ((((((4.6897511375022E-01f64 / X - 6.9955602298985E-01f64) / X
@@ -3998,7 +3998,7 @@ unsafe extern "C" fn rys_root2(X: f64, roots: *mut f64, weights: *mut f64) -> i3
             * Y
             + 5.44765245686790E-01f64;
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
-        WW1 = WW1 - WW2;
+        WW1 -= WW2;
     } else if X < 15_f64 {
         E = exp(-X);
         WW1 = (((-1.8784686463512E-01f64 / X + 2.2991849164985E-01f64) / X
@@ -4033,7 +4033,7 @@ unsafe extern "C" fn rys_root2(X: f64, roots: *mut f64, weights: *mut f64) -> i3
             * E
             + R22 / (X - R22);
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
-        WW1 = WW1 - WW2;
+        WW1 -= WW2;
     } else if X < 33_f64 {
         E = exp(-X);
         WW1 = ((1.9623264149430E-01f64 / X - 4.9695241464490E-01f64) / X - 6.0156581186481E-05f64)
@@ -4057,20 +4057,20 @@ unsafe extern "C" fn rys_root2(X: f64, roots: *mut f64, weights: *mut f64) -> i3
             * E
             + R22 / (X - R22);
         WW2 = ((F1 - WW1) * RT1 + F1) * (1.0E+00f64 + RT2) / (RT2 - RT1);
-        WW1 = WW1 - WW2;
+        WW1 -= WW2;
     } else if X < 40_f64 {
         WW1 = sqrt(0.785_398_163_397_448_3_f64 / X);
         E = exp(-X);
         RT1 = (-8.78947307498880E-01f64 * X + 1.09243702330261E+01f64) * E + R12 / (X - R12);
         RT2 = (-9.28903924275977E+00f64 * X + 8.10642367843811E+01f64) * E + R22 / (X - R22);
         WW2 = (4.46857389308400E+00f64 * X - 7.79250653461045E+01f64) * E + W22 * WW1;
-        WW1 = WW1 - WW2;
+        WW1 -= WW2;
     } else {
         WW1 = sqrt(0.785_398_163_397_448_3_f64 / X);
         RT1 = R12 / (X - R12);
         RT2 = R22 / (X - R22);
         WW2 = W22 * WW1;
-        WW1 = WW1 - WW2;
+        WW1 -= WW2;
     }
     *roots.offset(0_isize) = RT1;
     *roots.offset(1_isize) = RT2;
@@ -7051,7 +7051,7 @@ unsafe extern "C" fn rys_root5(X: f64, roots: *mut f64, weights: *mut f64) -> i3
             + 8.21966816595690E+04f64)
             * E
             + R55 / (X - R55);
-        E = XXX * E;
+        E *= XXX;
         WW5 = ((1.35482430510942E-08f64 * X - 3.27722199212781E-07f64) * X
             + 2.41522703684296E-06f64)
             * E
@@ -7123,9 +7123,9 @@ unsafe extern "C" fn R_dsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
         return 1_i32;
     }
     tmp = 1_f64 / sqrt(tmp);
-    *cs.offset((0_i32 + 0_i32 * n) as isize) = 1_f64 / sqrt(*fmt_ints.offset(0_isize));
-    *cs.offset((0_i32 + 1_i32 * n) as isize) = fac * tmp;
-    *cs.offset((1_i32 + 1_i32 * n) as isize) = tmp;
+    *cs.offset((0_i32 * n) as isize) = 1_f64 / sqrt(*fmt_ints.offset(0_isize));
+    *cs.offset(n as isize) = fac * tmp;
+    *cs.offset((1_i32 + n) as isize) = tmp;
     j = 2_i32;
     while j < n {
         k = 0_i32;
@@ -7306,9 +7306,9 @@ unsafe extern "C" fn R_lsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
         return 1_i32;
     }
     tmp = 1.0f64 / sqrtl(tmp);
-    *cs.offset((0_i32 + 0_i32 * n) as isize) = 1.0f64 / sqrtl(*fmt_ints.offset(0_isize));
-    *cs.offset((0_i32 + 1_i32 * n) as isize) = fac * tmp;
-    *cs.offset((1_i32 + 1_i32 * n) as isize) = tmp;
+    *cs.offset((0_i32 * n) as isize) = 1.0f64 / sqrtl(*fmt_ints.offset(0_isize));
+    *cs.offset(n as isize) = fac * tmp;
+    *cs.offset((1_i32 + n) as isize) = tmp;
     j = 2_i32;
     while j < n {
         k = 0_i32;
