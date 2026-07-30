@@ -3033,7 +3033,6 @@ unsafe fn segment_solve(
     }
     error
 }
-#[no_mangle]
 pub unsafe fn CINTrys_roots(nroots: i32, x: f64, u: *mut f64, w: *mut f64) {
     if x <= 3e-7f64 {
         let off: i32 = nroots * (nroots - 1_i32) / 2_i32;
@@ -3188,7 +3187,6 @@ unsafe fn segment_solve1(
     }
     error
 }
-#[no_mangle]
 pub unsafe fn CINTsr_rys_roots(nroots: i32, x: f64, lower: f64, u: *mut f64, w: *mut f64) {
     let mut err: i32 = 1_i32;
     match nroots {
@@ -7088,7 +7086,6 @@ unsafe fn _rdk_rys_roots(
     }
     0_i32
 }
-#[no_mangle]
 pub unsafe fn CINTrys_schmidt(
     nroots: i32,
     x: f64,
@@ -7199,7 +7196,6 @@ unsafe fn R_lsmit(cs: *mut f64, fmt_ints: *mut f64, n: i32) -> i32 {
     }
     0_i32
 }
-#[no_mangle]
 pub unsafe fn CINTlrys_schmidt(
     nroots: i32,
     x: f64,

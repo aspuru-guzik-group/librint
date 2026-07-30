@@ -3585,7 +3585,6 @@ unsafe fn lrys_wheeler_partial(
     }
     error
 }
-#[no_mangle]
 pub unsafe fn CINTrys_laguerre(
     n: i32,
     x: f64,
@@ -3599,7 +3598,6 @@ pub unsafe fn CINTrys_laguerre(
     laguerre_moments(n * 2_i32, x, lower, alpha, beta, moments.as_mut_ptr());
     rys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights)
 }
-#[no_mangle]
 pub unsafe fn CINTrys_jacobi(
     n: i32,
     x: f64,
@@ -3617,7 +3615,6 @@ pub unsafe fn CINTrys_jacobi(
     }
     rys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights)
 }
-#[no_mangle]
 pub unsafe fn CINTlrys_laguerre(
     n: i32,
     x: f64,
@@ -3631,7 +3628,6 @@ pub unsafe fn CINTlrys_laguerre(
     llaguerre_moments(n * 2_i32, x, lower, alpha, beta, moments.as_mut_ptr());
     lrys_wheeler_partial(n, alpha, beta, moments.as_mut_ptr(), roots, weights)
 }
-#[no_mangle]
 pub unsafe fn CINTlrys_jacobi(
     n: i32,
     x: f64,

@@ -27,7 +27,6 @@ pub struct Rys2eT {
     pub b00: [f64; 32],
     pub b10: [f64; 32],
 }
-#[no_mangle]
 pub unsafe fn CINTinit_int2e_EnvVars(
     envs: *mut CINTEnvVars,
     ng: &[i32; 8],
@@ -193,7 +192,6 @@ pub unsafe fn CINTinit_int2e_EnvVars(
         CINTg0_2e as unsafe fn(*mut f64, *mut f64, *mut f64, f64, *mut CINTEnvVars) -> i32,
     ));
 }
-#[no_mangle]
 pub unsafe fn CINTg2e_index_xyz(idx: *mut i32, envs: *const CINTEnvVars) {
     let i_l: i32 = (*envs).i_l;
     let j_l: i32 = (*envs).j_l;
@@ -315,7 +313,6 @@ pub unsafe fn CINTg2e_index_xyz(idx: *mut i32, envs: *const CINTEnvVars) {
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTg0_2e_2d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     let nroots: i32 = (*envs).nrys_roots;
     let nmax: i32 = (*envs).li_ceil + (*envs).lj_ceil;
@@ -507,7 +504,6 @@ pub unsafe fn CINTg0_2e_2d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars)
         i;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTg0_lj2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
     let li: i32 = (*envs).li_ceil;
     let lk: i32 = (*envs).lk_ceil;
@@ -609,7 +605,6 @@ pub unsafe fn CINTg0_lj2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTg0_kj2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
     let li: i32 = (*envs).li_ceil;
     let ll: i32 = (*envs).ll_ceil;
@@ -711,7 +706,6 @@ pub unsafe fn CINTg0_kj2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTg0_il2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
     let lk: i32 = (*envs).lk_ceil;
     let lj: i32 = (*envs).lj_ceil;
@@ -813,7 +807,6 @@ pub unsafe fn CINTg0_il2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTg0_ik2d_4d(g: *mut f64, envs: *mut CINTEnvVars) {
     let lj: i32 = (*envs).lj_ceil;
     let ll: i32 = (*envs).ll_ceil;
@@ -2452,7 +2445,6 @@ unsafe fn _g0_2d4d_3000(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars) {
     *g.offset(23_isize) = *c0z.offset(1_isize) * *g.offset(21_isize)
         + 2_f64 * *b10.offset(1_isize) * *g.offset(19_isize);
 }
-#[no_mangle]
 pub unsafe fn CINTg0_2e_2d4d_unrolled(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     let type_ijkl: i32 = (*envs).li_ceil << 6_i32
         | (*envs).lj_ceil << 4_i32
@@ -5372,7 +5364,6 @@ unsafe fn _srg0_2d4d_3000(g: *mut f64, bc: *mut Rys2eT, _envs: *mut CINTEnvVars)
     *g.offset(47_isize) = *c0z.offset(3_isize) * *g.offset(43_isize)
         + 2_f64 * *b10.offset(3_isize) * *g.offset(39_isize);
 }
-#[no_mangle]
 pub unsafe fn CINTsrg0_2e_2d4d_unrolled(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     let type_ijkl: i32 = (*envs).li_ceil << 6_i32
         | (*envs).lj_ceil << 4_i32
@@ -5529,27 +5520,22 @@ pub unsafe fn CINTsrg0_2e_2d4d_unrolled(g: *mut f64, bc: *mut Rys2eT, envs: *mut
         (*envs).lj_ceil
     );
 }
-#[no_mangle]
 pub unsafe fn CINTg0_2e_lj2d4d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     CINTg0_2e_2d(g, bc, envs);
     CINTg0_lj2d_4d(g, envs);
 }
-#[no_mangle]
 pub unsafe fn CINTg0_2e_kj2d4d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     CINTg0_2e_2d(g, bc, envs);
     CINTg0_kj2d_4d(g, envs);
 }
-#[no_mangle]
 pub unsafe fn CINTg0_2e_ik2d4d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     CINTg0_2e_2d(g, bc, envs);
     CINTg0_ik2d_4d(g, envs);
 }
-#[no_mangle]
 pub unsafe fn CINTg0_2e_il2d4d(g: *mut f64, bc: *mut Rys2eT, envs: *mut CINTEnvVars) {
     CINTg0_2e_2d(g, bc, envs);
     CINTg0_il2d_4d(g, envs);
 }
-#[no_mangle]
 pub unsafe fn CINTg0_2e(
     g: *mut f64,
     rij: *mut f64,
@@ -5712,7 +5698,6 @@ impl G0_2d4d {
         }
     }
 }
-#[no_mangle]
 pub unsafe fn CINTnabla1i_2e(
     f: *mut f64,
     g: *const f64,
@@ -5789,7 +5774,6 @@ pub unsafe fn CINTnabla1i_2e(
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTnabla1j_2e(
     f: *mut f64,
     g: *const f64,
@@ -5882,7 +5866,6 @@ pub unsafe fn CINTnabla1j_2e(
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTnabla1k_2e(
     f: *mut f64,
     g: *const f64,
@@ -5965,7 +5948,6 @@ pub unsafe fn CINTnabla1k_2e(
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTnabla1l_2e(
     f: *mut f64,
     g: *const f64,
@@ -6053,7 +6035,6 @@ pub unsafe fn CINTnabla1l_2e(
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTx1i_2e(
     f: *mut f64,
     g: *const f64,
@@ -6118,7 +6099,6 @@ pub unsafe fn CINTx1i_2e(
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTx1j_2e(
     f: *mut f64,
     g: *const f64,
@@ -6183,7 +6163,6 @@ pub unsafe fn CINTx1j_2e(
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTx1k_2e(
     f: *mut f64,
     g: *const f64,
@@ -6248,7 +6227,6 @@ pub unsafe fn CINTx1k_2e(
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTx1l_2e(
     f: *mut f64,
     g: *const f64,

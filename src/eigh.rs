@@ -1717,7 +1717,6 @@ unsafe fn _dlaev2(eig: *mut f64, vec: *mut f64, diag: *mut f64, diag_off1: *mut 
     *vec.offset(3_isize) = sn1;
     0_i32
 }
-#[no_mangle]
 pub unsafe fn _CINTdiagonalize(
     n: i32,
     diag: *mut f64,

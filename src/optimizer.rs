@@ -27,7 +27,6 @@ extern "C" {
     fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
 }
 
-#[no_mangle]
 pub unsafe fn CINTinit_2e_optimizer(
     opt: *mut *mut CINTOpt,
     _atm: *mut i32,
@@ -46,7 +45,6 @@ pub unsafe fn CINTinit_2e_optimizer(
     (*opt0).pairdata = std::ptr::null_mut::<*mut PairData>();
     *opt = opt0;
 }
-#[no_mangle]
 pub unsafe fn CINTinit_optimizer(
     opt: *mut *mut CINTOpt,
     atm: *mut i32,
@@ -57,7 +55,6 @@ pub unsafe fn CINTinit_optimizer(
 ) {
     CINTinit_2e_optimizer(opt, atm, natm, bas, nbas, env);
 }
-#[no_mangle]
 pub unsafe fn CINTdel_2e_optimizer(opt: *mut *mut CINTOpt) {
     let opt0: *mut CINTOpt = *opt;
     if opt0.is_null() {
@@ -81,11 +78,9 @@ pub unsafe fn CINTdel_2e_optimizer(opt: *mut *mut CINTOpt) {
     free(opt0 as *mut libc::c_void);
     *opt = std::ptr::null_mut::<CINTOpt>();
 }
-#[no_mangle]
 pub unsafe fn CINTdel_optimizer(opt: *mut *mut CINTOpt) {
     CINTdel_2e_optimizer(opt);
 }
-#[no_mangle]
 pub unsafe fn CINTno_optimizer(
     opt: *mut *mut CINTOpt,
     _atm: *mut i32,
@@ -297,7 +292,6 @@ unsafe fn gen_idx(
         }
     };
 }
-#[no_mangle]
 pub unsafe fn CINTall_1e_optimizer(
     opt: *mut *mut CINTOpt,
     ng: &[i32; 8],
@@ -355,7 +349,6 @@ pub unsafe fn CINTall_1e_optimizer(
         env,
     );
 }
-#[no_mangle]
 pub unsafe fn CINTall_2e_optimizer(
     opt: *mut *mut CINTOpt,
     ng: &[i32; 8],
@@ -665,7 +658,6 @@ pub unsafe fn CINTall_2e_optimizer(
 //         env,
 //     );
 // }
-#[no_mangle]
 pub unsafe fn CINTOpt_log_max_pgto_coeff(
     log_maxc: *mut f64,
     coeff: *mut f64,
@@ -693,7 +685,6 @@ pub unsafe fn CINTOpt_log_max_pgto_coeff(
         ip;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTOpt_set_log_maxc(
     opt: *mut CINTOpt,
     _atm: *mut i32,
@@ -738,7 +729,6 @@ pub unsafe fn CINTOpt_set_log_maxc(
         i;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTset_pairdata(
     pairdata: *mut PairData,
     ai: *mut f64,
@@ -816,7 +806,6 @@ pub unsafe fn CINTset_pairdata(
     }
     empty
 }
-#[no_mangle]
 pub unsafe fn CINTOpt_setij(
     opt: *mut CINTOpt,
     ng: &[i32; 8],
@@ -976,7 +965,6 @@ pub unsafe fn CINTOpt_setij(
         i;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTdel_pairdata_optimizer(cintopt: *mut CINTOpt) {
     if !cintopt.is_null() && !((*cintopt).pairdata).is_null() {
         free(*((*cintopt).pairdata).offset(0_isize) as *mut libc::c_void);
@@ -984,7 +972,6 @@ pub unsafe fn CINTdel_pairdata_optimizer(cintopt: *mut CINTOpt) {
         (*cintopt).pairdata = std::ptr::null_mut::<*mut PairData>();
     }
 }
-#[no_mangle]
 pub unsafe fn CINTOpt_non0coeff_byshell(
     mut sortedidx: *mut i32,
     non0ctr: *mut i32,
@@ -1028,7 +1015,6 @@ pub unsafe fn CINTOpt_non0coeff_byshell(
         ip;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTOpt_set_non0coeff(
     opt: *mut CINTOpt,
     _atm: *mut i32,

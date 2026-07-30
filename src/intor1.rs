@@ -71,7 +71,6 @@ pub unsafe fn CINTgout1e_int1e_kin(
         n;
     }
 }
-#[no_mangle]
 pub unsafe fn int1e_kin_optimizer(
     opt: *mut *mut CINTOpt,
     atm: *mut i32,
@@ -83,7 +82,6 @@ pub unsafe fn int1e_kin_optimizer(
     let ng: [i32; 8] = [0_i32, 2_i32, 0_i32, 0_i32, 2_i32, 1_i32, 1_i32, 1_i32];
     CINTall_1e_optimizer(opt, &ng, atm, natm, bas, nbas, env);
 }
-#[no_mangle]
 pub unsafe fn int1e_kin_cart(
     out: *mut f64,
     dims: *mut i32,
@@ -116,7 +114,6 @@ pub unsafe fn int1e_kin_cart(
         0_i32,
     )
 }
-#[no_mangle]
 pub unsafe fn int1e_kin_sph(
     out: *mut f64,
     dims: *mut i32,
@@ -148,7 +145,6 @@ pub unsafe fn int1e_kin_sph(
         0_i32,
     )
 }
-#[no_mangle]
 pub unsafe fn int1e_kin_spinor(
     _out: *mut f64,
     _dims: *mut i32,
@@ -169,7 +165,6 @@ pub unsafe fn int1e_kin_spinor(
     panic!("Reached end of non-void function without returning");
 }
 
-#[no_mangle]
 pub fn cint1e_kin_cart(
     out: &mut [f64],
     shls: &mut [i32],
@@ -196,7 +191,6 @@ pub fn cint1e_kin_cart(
     }
 }
 
-#[no_mangle]
 pub fn cint1e_kin_sph(
     out: &mut [f64],
     shls: &mut [i32],

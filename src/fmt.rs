@@ -83,7 +83,6 @@ unsafe fn fmt1_gamma_inc_like(f: *mut f64, t: f64, m: i32) {
         i;
     }
 }
-#[no_mangle]
 pub unsafe fn gamma_inc_like(f: *mut f64, t: f64, m: i32) {
     if t < TURNOVER_POINT[m as usize] {
         fmt1_gamma_inc_like(f, t, m);
@@ -127,7 +126,6 @@ unsafe fn fmt1_lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
         i;
     }
 }
-#[no_mangle]
 pub unsafe fn lgamma_inc_like(f: *mut f64, t: f64, m: i32) {
     if t < TURNOVER_POINT[m as usize] {
         fmt1_lgamma_inc_like(f, t, m);
@@ -176,7 +174,6 @@ unsafe fn _powl(mut base: f64, exponent: i32) -> f64 {
     }
     result
 }
-#[no_mangle]
 pub unsafe fn fmt1_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     let mut i: i32 = 0;
     let lower2: f64 = lower * lower;
@@ -211,7 +208,6 @@ pub unsafe fn fmt1_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
         i;
     }
 }
-#[no_mangle]
 pub unsafe fn fmt_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     if lower == 0 as f64 {
         return gamma_inc_like(f, t, m);
@@ -248,7 +244,6 @@ pub unsafe fn fmt_erfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
         }
     };
 }
-#[no_mangle]
 pub unsafe fn fmt_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     if lower == 0.0f64 {
         return lgamma_inc_like(f, t, m);
@@ -285,7 +280,6 @@ pub unsafe fn fmt_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
         }
     };
 }
-#[no_mangle]
 pub unsafe fn fmt1_lerfc_like(f: *mut f64, t: f64, lower: f64, m: i32) {
     let mut i: i32 = 0;
     let lower2: f64 = lower * lower;

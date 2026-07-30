@@ -24,7 +24,6 @@ fn SQUARE(r: *mut f64) -> f64 {
     unsafe { (*r.add(0) * *r.add(0)) + (*r.add(1) * *r.add(1)) + (*r.add(2) * *r.add(2)) }
 }
 
-#[no_mangle]
 pub unsafe fn CINTinit_int1e_EnvVars(
     envs: *mut CINTEnvVars,
     ng: &[i32; 8],
@@ -100,7 +99,6 @@ pub unsafe fn CINTinit_int1e_EnvVars(
     (*envs).g_stride_k = (*envs).g_size;
     (*envs).g_stride_l = (*envs).g_size;
 }
-#[no_mangle]
 pub unsafe fn CINTg1e_index_xyz(idx: *mut i32, envs: *mut CINTEnvVars) {
     let i_l: i32 = (*envs).i_l;
     let j_l: i32 = (*envs).j_l;
@@ -147,7 +145,6 @@ pub unsafe fn CINTg1e_index_xyz(idx: *mut i32, envs: *mut CINTEnvVars) {
         j;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTg1e_ovlp(g: *mut f64, envs: *mut CINTEnvVars) -> i32 {
     let gx: *mut f64 = g;
     let gy: *mut f64 = g.offset((*envs).g_size as isize);
@@ -226,7 +223,6 @@ pub unsafe fn CINTg1e_ovlp(g: *mut f64, envs: *mut CINTEnvVars) -> i32 {
     }
     1_i32
 }
-#[no_mangle]
 pub unsafe fn CINTnuc_mod(aij: f64, nuc_id: i32, atm: *mut i32, env: *mut f64) -> f64 {
     let mut zeta: f64 = 0.;
     if nuc_id < 0_i32 {
@@ -242,7 +238,6 @@ pub unsafe fn CINTnuc_mod(aij: f64, nuc_id: i32, atm: *mut i32, env: *mut f64) -
         1_f64
     }
 }
-#[no_mangle]
 pub unsafe fn CINTg1e_nuc(g: *mut f64, envs: *mut CINTEnvVars, nuc_id: i32) -> i32 {
     let nrys_roots: i32 = (*envs).nrys_roots;
     let atm: *mut i32 = (*envs).atm;
@@ -397,7 +392,6 @@ pub unsafe fn CINTg1e_nuc(g: *mut f64, envs: *mut CINTEnvVars, nuc_id: i32) -> i
     }
     1_i32
 }
-#[no_mangle]
 pub unsafe fn CINTnabla1i_1e(
     f: *mut f64,
     g: *mut f64,
@@ -445,7 +439,6 @@ pub unsafe fn CINTnabla1i_1e(
         k;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTnabla1j_1e(
     f: *mut f64,
     g: *mut f64,
@@ -499,7 +492,6 @@ pub unsafe fn CINTnabla1j_1e(
         k;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTnabla1k_1e(
     f: *mut f64,
     g: *mut f64,
@@ -558,7 +550,6 @@ pub unsafe fn CINTnabla1k_1e(
         k;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTx1i_1e(
     f: *mut f64,
     g: *mut f64,
@@ -603,7 +594,6 @@ pub unsafe fn CINTx1i_1e(
         k;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTx1j_1e(
     f: *mut f64,
     g: *mut f64,
@@ -648,7 +638,6 @@ pub unsafe fn CINTx1j_1e(
         k;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTx1k_1e(
     f: *mut f64,
     g: *mut f64,
@@ -693,7 +682,6 @@ pub unsafe fn CINTx1k_1e(
         k;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTprim_to_ctr(
     gc: *mut f64,
     nf: i32,
@@ -729,7 +717,6 @@ pub unsafe fn CINTprim_to_ctr(
         i;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTprim_to_ctr_0(
     gc: *mut f64,
     gp: *mut f64,
@@ -757,7 +744,6 @@ pub unsafe fn CINTprim_to_ctr_0(
         i;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTprim_to_ctr_1(
     gc: *mut f64,
     gp: *mut f64,
@@ -787,7 +773,6 @@ pub unsafe fn CINTprim_to_ctr_1(
         i;
     }
 }
-#[no_mangle]
 pub unsafe fn CINTcommon_fac_sp(l: i32) -> f64 {
     match l {
         0 => 0.282_094_791_773_878_14_f64,

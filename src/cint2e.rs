@@ -33,7 +33,6 @@ extern "C" {
     fn free(__ptr: *mut libc::c_void);
 }
 
-#[no_mangle]
 pub unsafe fn CINT2e_loop_nopt(
     gctr: *mut f64,
     envs: *mut CINTEnvVars,
@@ -464,7 +463,6 @@ pub unsafe fn CINT2e_loop_nopt(
     }
     (*empty == 0) as i32
 }
-#[no_mangle]
 pub unsafe fn CINT2e_1111_loop(
     gctr: *mut f64,
     envs: *mut CINTEnvVars,
@@ -713,7 +711,6 @@ pub unsafe fn CINT2e_1111_loop(
     }
     (*empty == 0) as i32
 }
-#[no_mangle]
 pub unsafe fn CINT2e_n111_loop(
     gctr: *mut f64,
     envs: *mut CINTEnvVars,
@@ -994,7 +991,6 @@ pub unsafe fn CINT2e_n111_loop(
     }
     (*empty == 0) as i32
 }
-#[no_mangle]
 pub unsafe fn CINT2e_1n11_loop(
     gctr: *mut f64,
     envs: *mut CINTEnvVars,
@@ -1277,7 +1273,6 @@ pub unsafe fn CINT2e_1n11_loop(
     }
     (*empty == 0) as i32
 }
-#[no_mangle]
 pub unsafe fn CINT2e_11n1_loop(
     gctr: *mut f64,
     envs: *mut CINTEnvVars,
@@ -1560,7 +1555,6 @@ pub unsafe fn CINT2e_11n1_loop(
     }
     (*empty == 0) as i32
 }
-#[no_mangle]
 pub unsafe fn CINT2e_111n_loop(
     gctr: *mut f64,
     envs: *mut CINTEnvVars,
@@ -1843,7 +1837,6 @@ pub unsafe fn CINT2e_111n_loop(
     }
     (*empty == 0) as i32
 }
-#[no_mangle]
 pub unsafe fn CINT2e_loop(
     gctr: *mut f64,
     envs: *mut CINTEnvVars,
@@ -2292,7 +2285,6 @@ static mut CINTf_2e_loop: [Option<
         Some(CINT2e_1111_loop as unsafe fn(*mut f64, *mut CINTEnvVars, *mut f64, *mut i32) -> i32),
     ]
 };
-#[no_mangle]
 pub unsafe fn CINT2e_drv(
     out: *mut f64,
     mut dims: *mut i32,
@@ -2901,7 +2893,6 @@ pub unsafe fn CINTgout2e(
         }
     };
 }
-#[no_mangle]
 pub unsafe fn int2e_sph(
     out: *mut f64,
     dims: *mut i32,
@@ -2933,7 +2924,6 @@ pub unsafe fn int2e_sph(
         )),
     )
 }
-#[no_mangle]
 pub unsafe fn int2e_optimizer(
     opt: *mut *mut CINTOpt,
     atm: *mut i32,
@@ -2945,7 +2935,6 @@ pub unsafe fn int2e_optimizer(
     let ng: [i32; 8] = [0_i32, 0_i32, 0_i32, 0_i32, 0_i32, 1_i32, 1_i32, 1_i32];
     CINTall_2e_optimizer(opt, &ng, atm, natm, bas, nbas, env);
 }
-#[no_mangle]
 pub unsafe fn int2e_cart(
     out: *mut f64,
     dims: *mut i32,
@@ -3001,7 +2990,6 @@ pub unsafe fn int2e_cart(
 //         0 as *mut f64,
 //     );
 // }
-#[no_mangle]
 pub unsafe fn cint2e_optimizer(
     opt: *mut *mut CINTOpt,
     atm: *mut i32,
@@ -3012,7 +3000,6 @@ pub unsafe fn cint2e_optimizer(
 ) {
     int2e_optimizer(opt, atm, natm, bas, nbas, env);
 }
-#[no_mangle]
 pub unsafe fn cint2e_sph_optimizer(
     opt: *mut *mut CINTOpt,
     atm: *mut i32,
@@ -3023,7 +3010,6 @@ pub unsafe fn cint2e_sph_optimizer(
 ) {
     int2e_optimizer(opt, atm, natm, bas, nbas, env);
 }
-#[no_mangle]
 pub unsafe fn cint2e_cart_optimizer(
     opt: *mut *mut CINTOpt,
     atm: *mut i32,
@@ -3058,7 +3044,6 @@ pub unsafe fn cint2e_cart_optimizer(
 //         0 as *mut f64,
 //     );
 // }
-#[no_mangle]
 pub unsafe fn cint2e_sph_(
     out: *mut f64,
     shls: *mut i32,
@@ -3083,7 +3068,6 @@ pub unsafe fn cint2e_sph_(
         std::ptr::null_mut::<f64>(),
     )
 }
-#[no_mangle]
 pub unsafe fn cint2e_sph_optimizer_(
     optptr_as_integer8: u64,
     atm: *mut i32,
@@ -3095,7 +3079,6 @@ pub unsafe fn cint2e_sph_optimizer_(
     let opt: *mut *mut CINTOpt = optptr_as_integer8 as *mut *mut CINTOpt;
     int2e_optimizer(opt, atm, *natm, bas, *nbas, env);
 }
-#[no_mangle]
 pub unsafe fn cint2e_cart_(
     out: *mut f64,
     shls: *mut i32,
@@ -3120,7 +3103,6 @@ pub unsafe fn cint2e_cart_(
         std::ptr::null_mut::<f64>(),
     )
 }
-#[no_mangle]
 pub unsafe fn cint2e_cart_optimizer_(
     opt: *mut *mut CINTOpt,
     atm: *mut i32,
@@ -3131,7 +3113,6 @@ pub unsafe fn cint2e_cart_optimizer_(
 ) {
     int2e_optimizer(opt, atm, *natm, bas, *nbas, env);
 }
-#[no_mangle]
 pub unsafe fn cint2e_optimizer_(
     optptr_as_integer8: u64,
     atm: *mut i32,
@@ -3144,7 +3125,6 @@ pub unsafe fn cint2e_optimizer_(
     int2e_optimizer(opt, atm, *natm, bas, *nbas, env);
 }
 
-#[no_mangle]
 pub fn cint2e_cart(
     out: &mut [f64],
     shls: &mut [i32],
@@ -3171,7 +3151,6 @@ pub fn cint2e_cart(
     }
 }
 
-#[no_mangle]
 pub fn cint2e_sph(
     out: &mut [f64],
     shls: &mut [i32],

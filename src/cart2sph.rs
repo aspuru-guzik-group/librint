@@ -88780,7 +88780,6 @@ unsafe fn g_ket_cart2spheric(
     }
     pgsph
 }
-#[no_mangle]
 pub static mut c2s_bra_sph: [Option<unsafe fn() -> *mut f64>; 16] = unsafe {
     [
         ::core::mem::transmute::<
@@ -88881,7 +88880,6 @@ pub static mut c2s_bra_sph: [Option<unsafe fn() -> *mut f64>; 16] = unsafe {
         )),
     ]
 };
-#[no_mangle]
 pub static mut c2s_ket_sph: [Option<unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64>; 16] = unsafe {
     [
         Some(s_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
@@ -88902,7 +88900,6 @@ pub static mut c2s_ket_sph: [Option<unsafe fn(*mut f64, *mut f64, i32, i32, i32)
         Some(a_ket_cart2spheric as unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64),
     ]
 };
-#[no_mangle]
 pub static mut c2s_ket_sph1: [Option<unsafe fn(*mut f64, *mut f64, i32, i32, i32) -> *mut f64>;
     16] = unsafe {
     [
@@ -89890,7 +89887,6 @@ unsafe fn dcopy_iklj(
         }
     };
 }
-#[no_mangle]
 pub unsafe fn c2s_dset0(mut out: *mut f64, dims: *mut i32, counts: *mut i32) {
     let ni: i32 = *dims.offset(0_isize);
     let nj: i32 = *dims.offset(1_isize);
@@ -89939,7 +89935,6 @@ pub unsafe fn c2s_dset0(mut out: *mut f64, dims: *mut i32, counts: *mut i32) {
         l;
     }
 }
-#[no_mangle]
 pub unsafe fn c2s_grids_dset0(out: *mut f64, dims: *mut i32, counts: *mut i32) {
     let mut counts1: [i32; 4] = [
         *counts.offset(2_isize),
@@ -90026,7 +90021,6 @@ unsafe fn sph2e_inner(
     }
     gsph
 }
-#[no_mangle]
 pub unsafe fn c2s_sph_1e(
     opij: *mut f64,
     mut gctr: *mut f64,
@@ -90202,7 +90196,6 @@ pub unsafe fn c2s_sph_1e(
 //         grids_offset += 104 as i32;
 //     }
 // }
-#[no_mangle]
 pub unsafe fn c2s_sph_2e1(
     out: *mut f64,
     mut gctr: *mut f64,
@@ -90546,7 +90539,6 @@ pub unsafe fn c2s_sph_2e1(
 //         i;
 //     }
 // }
-#[no_mangle]
 pub unsafe fn c2s_cart_1e(
     opij: *mut f64,
     mut gctr: *mut f64,
@@ -90579,7 +90571,6 @@ pub unsafe fn c2s_cart_1e(
         jc;
     }
 }
-#[no_mangle]
 pub unsafe fn c2s_cart_2e1(
     fijkl: *mut f64,
     mut gctr: *mut f64,

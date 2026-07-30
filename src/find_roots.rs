@@ -262,7 +262,6 @@ unsafe fn _hessenberg_qr(A: *mut f64, nroots: i32) -> i32 {
     eprintln!("hessenberg_qr failed");
     1_i32
 }
-#[no_mangle]
 pub unsafe fn _CINT_polynomial_roots(roots: *mut f64, cs: *mut f64, nroots: i32) -> i32 {
     if nroots == 1_i32 {
         *roots.offset(0_isize) = -*cs.offset(2_isize) / *cs.offset(3_isize);
