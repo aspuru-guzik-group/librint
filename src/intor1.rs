@@ -23,22 +23,22 @@ pub unsafe fn CINTgout1e_int1e_kin(
     gout: *mut f64,
     g: *mut f64,
     idx: *mut i32,
-    envs: &mut CINTEnvVars,
+    envs: *mut CINTEnvVars,
     gout_empty: i32,
 ) {
-    let nf: i32 = envs.nf;
+    let nf: i32 = (*envs).nf;
     let mut ix: i32 = 0;
     let mut iy: i32 = 0;
     let mut iz: i32 = 0;
     let mut n: i32 = 0;
     let g0: *mut f64 = g;
-    let g1: *mut f64 = g0.offset((envs.g_size * 3_i32) as isize);
-    let g2: *mut f64 = g1.offset((envs.g_size * 3_i32) as isize);
-    let g3: *mut f64 = g2.offset((envs.g_size * 3_i32) as isize);
+    let g1: *mut f64 = g0.offset(((*envs).g_size * 3_i32) as isize);
+    let g2: *mut f64 = g1.offset(((*envs).g_size * 3_i32) as isize);
+    let g3: *mut f64 = g2.offset(((*envs).g_size * 3_i32) as isize);
     let mut s: [f64; 9] = [0.; 9];
-    CINTnabla1j_1e(g1, g0, envs.i_l, envs.j_l, 0_i32, envs);
-    CINTnabla1j_1e(g2, g0, envs.i_l, envs.j_l + 1_i32, 0_i32, envs);
-    CINTnabla1j_1e(g3, g2, envs.i_l, envs.j_l, 0_i32, envs);
+    CINTnabla1j_1e(g1, g0, (*envs).i_l, (*envs).j_l, 0_i32, envs);
+    CINTnabla1j_1e(g2, g0, (*envs).i_l, (*envs).j_l + 1_i32, 0_i32, envs);
+    CINTnabla1j_1e(g3, g2, (*envs).i_l, (*envs).j_l, 0_i32, envs);
     n = 0_i32;
     while n < nf {
         ix = *idx.offset((n * 3_i32) as isize);
@@ -112,7 +112,7 @@ pub unsafe extern "C" fn int1e_kin_cart(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    &mut CINTEnvVars,
+                    *mut CINTEnvVars,
                     *mut f64,
                 ) -> (),
             >,
@@ -123,7 +123,7 @@ pub unsafe extern "C" fn int1e_kin_cart(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    &mut CINTEnvVars,
+                    *mut CINTEnvVars,
                     *mut f64,
                 ) -> (),
         )),
@@ -159,7 +159,7 @@ pub unsafe extern "C" fn int1e_kin_sph(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    &mut CINTEnvVars,
+                    *mut CINTEnvVars,
                     *mut f64,
                 ) -> (),
             >,
@@ -170,7 +170,7 @@ pub unsafe extern "C" fn int1e_kin_sph(
                     *mut f64,
                     *mut f64,
                     *mut i32,
-                    &mut CINTEnvVars,
+                    *mut CINTEnvVars,
                     *mut f64,
                 ) -> (),
         )),

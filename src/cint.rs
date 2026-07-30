@@ -34,17 +34,15 @@ impl Gout {
     /// # Safety
     ///
     /// Same requirements as the function pointer this replaces: `gout`, `g` and
-    /// `idx` must be valid for the block sizes implied by `envs`. `envs` itself
-    /// is a reference, so only its *initialisation* is still a caller
-    /// obligation -- it must be the `CINTEnvVars` already filled in for this
-    /// shell pair/quartet, since the block sizes above are read out of it.
+    /// `idx` must be valid for the block sizes implied by `envs`, and `envs` must
+    /// be the fully initialised `CINTEnvVars` for this shell pair/quartet.
     #[inline]
     pub unsafe fn call(
         self,
         gout: *mut f64,
         g: *mut f64,
         idx: *mut i32,
-        envs: &mut CINTEnvVars,
+        envs: *mut CINTEnvVars,
         gempty: i32,
     ) {
         match self {
