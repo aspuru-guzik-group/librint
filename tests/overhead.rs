@@ -1,18 +1,23 @@
-#![allow(non_snake_case, non_upper_case_globals,unused_variables,improper_ctypes_definitions,static_mut_refs)]
+#![allow(
+    non_snake_case,
+    non_upper_case_globals,
+    unused_variables,
+    improper_ctypes_definitions,
+    static_mut_refs
+)]
 #![feature(autodiff)]
 
 use std::env;
 
 use std::time::Instant;
 
+use librint::scf::{angl, nmol};
+use librint::utils::{combine, read_basis, split};
 use std::autodiff::*;
-use librint::utils::{read_basis, split, combine};
-use librint::scf::{nmol, angl};
 
-use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
+use librint::cint_bas::CINTcgto_cart;
 // use librint::cint2e::cint2e_cart;
-
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -21,21 +26,21 @@ pub const BAS_SLOTS: usize = 8;
 #[autodiff_reverse(dovlpp, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
 #[autodiff_forward(dovlppfor, Dual, Const, Const, Const, Const, Const, Dual)]
 fn ovlpp(
-    out: &mut [f64], 
-    shls: &mut [i32], 
+    out: &mut [f64],
+    shls: &mut [i32],
     atm: &mut [i32],
-    natm: usize, 
-    bas: &mut [i32], 
-    nbas: usize, 
-    env: &mut [f64]
+    natm: usize,
+    bas: &mut [i32],
+    nbas: usize,
+    env: &mut [f64],
 ) {
     cint1e_ovlp_cart(
-        out, 
-        shls, 
-        atm, 
-        natm as i32, 
-        bas, 
-        nbas as i32, 
+        out,
+        shls,
+        atm,
+        natm as i32,
+        bas,
+        nbas as i32,
         env,
         std::ptr::null_mut(),
     );
@@ -44,21 +49,21 @@ fn ovlpp(
 // #[no_mangle]
 // #[autodiff(dovlppfor, Forward, Dual, Const, Const, Const, Const, Const, Dual)]
 // fn ovlpp(
-//     out: &mut [f64], 
-//     shls: &mut [i32], 
+//     out: &mut [f64],
+//     shls: &mut [i32],
 //     atm: &mut [i32],
-//     natm: usize, 
-//     bas: &mut [i32], 
-//     nbas: usize, 
+//     natm: usize,
+//     bas: &mut [i32],
+//     nbas: usize,
 //     env: &mut [f64]
 // ) {
 //     cint1e_ovlp_cart(
-//         out, 
-//         shls, 
-//         atm, 
-//         natm as i32, 
-//         bas, 
-//         nbas as i32, 
+//         out,
+//         shls,
+//         atm,
+//         natm as i32,
+//         bas,
+//         nbas as i32,
 //         env,
 //         std::ptr::null_mut(),
 //     );
@@ -67,26 +72,25 @@ fn ovlpp(
 // #[no_mangle]
 // #[autodiff(drepp, Reverse, Duplicated, Const, Const, Const, Const, Const, Duplicated)]
 // fn repp(
-//     out: &mut [f64], 
-//     shls: &mut [i32], 
+//     out: &mut [f64],
+//     shls: &mut [i32],
 //     atm: &mut [i32],
-//     natm: usize, 
-//     bas: &mut [i32], 
-//     nbas: usize, 
+//     natm: usize,
+//     bas: &mut [i32],
+//     nbas: usize,
 //     env: &mut [f64]
 // ) {
 //     cint2e_cart(
-//         out, 
-//         shls, 
-//         atm, 
-//         natm as i32, 
-//         bas, 
-//         nbas as i32, 
+//         out,
+//         shls,
+//         atm,
+//         natm as i32,
+//         bas,
+//         nbas as i32,
 //         env,
 //         std::ptr::null_mut(),
 //     );
 // }
-
 
 fn time_reverse_mode(
     atm: &mut [i32],
@@ -118,36 +122,20 @@ fn time_reverse_mode(
             let dj = CINTcgto_cart(j, bas);
 
             let size = (di * dj) as usize;
-            
+
             buf[..size].fill(0.0);
             dbuf[..size].fill(0.0);
             dbuf[0] = 1.0;
 
             let start_ovlp = std::time::Instant::now();
-            ovlpp(
-                &mut buf,
-                &mut shls,
-                atm,
-                natm,
-                bas,
-                nbas,
-                env,
-            );
+            ovlpp(&mut buf, &mut shls, atm, natm, bas, nbas, env);
             let duration_ovlp = start_ovlp.elapsed().as_secs_f64();
             total_ovlp_time += duration_ovlp;
 
             denv.fill(0.0);
             let start_dovlp = std::time::Instant::now();
             dovlpp(
-                &mut buf,
-                &mut dbuf,
-                &mut shls,
-                atm,
-                natm,
-                bas,
-                nbas,
-                env,
-                &mut denv,
+                &mut buf, &mut dbuf, &mut shls, atm, natm, bas, nbas, env, &mut denv,
             );
             let duration_dovlp = start_dovlp.elapsed().as_secs_f64();
             total_dovlp_time += duration_dovlp;
@@ -156,14 +144,23 @@ fn time_reverse_mode(
             }
             count += 1;
         }
-    }    
+    }
 
     println!("count {}", count);
     println!("total ovlp time:    {:.6} sec", total_ovlp_time);
     println!("total dovlp time:   {:.6} sec", total_dovlp_time);
-    println!("average ovlp time:  {:.6} sec", total_ovlp_time / count as f64);
-    println!("average dovlp time: {:.6} sec", total_dovlp_time / count as f64);
-    println!("avg overhead:       {:.6}", total_dovlp_time / total_ovlp_time);
+    println!(
+        "average ovlp time:  {:.6} sec",
+        total_ovlp_time / count as f64
+    );
+    println!(
+        "average dovlp time: {:.6} sec",
+        total_dovlp_time / count as f64
+    );
+    println!(
+        "avg overhead:       {:.6}",
+        total_dovlp_time / total_ovlp_time
+    );
 }
 
 fn time_forward_mode(
@@ -196,41 +193,25 @@ fn time_forward_mode(
             let dj = CINTcgto_cart(j, bas);
 
             let size = (di * dj) as usize;
-            
+
             buf[..size].fill(0.0);
             dbuf[..size].fill(0.0);
 
             let start_ovlp = std::time::Instant::now();
-            ovlpp(
-                &mut buf,
-                &mut shls,
-                atm,
-                natm,
-                bas,
-                nbas,
-                env,
-            );
+            ovlpp(&mut buf, &mut shls, atm, natm, bas, nbas, env);
             let duration_ovlp = start_ovlp.elapsed().as_secs_f64();
             total_ovlp_time_for += duration_ovlp;
 
             for l in 0..env2_len {
                 buf[..size].fill(0.0);
                 dbuf[..size].fill(0.0);
-                
+
                 denv.fill(0.0);
                 denv[l] = 1.0;
 
                 let start_dovlp = std::time::Instant::now();
                 dovlppfor(
-                    &mut buf,
-                    &mut dbuf,
-                    &mut shls,
-                    atm,
-                    natm,
-                    bas,
-                    nbas,
-                    env,
-                    &mut denv,
+                    &mut buf, &mut dbuf, &mut shls, atm, natm, bas, nbas, env, &mut denv,
                 );
                 let duration_dovlp = start_dovlp.elapsed().as_secs_f64();
                 total_dovlp_time_for += duration_dovlp;
@@ -240,14 +221,23 @@ fn time_forward_mode(
 
             count += 1;
         }
-    }    
+    }
 
     println!("count {}", count);
     println!("total ovlp time:    {:.6} sec", total_ovlp_time_for);
     println!("total dovlp time:   {:.6} sec", total_dovlp_time_for);
-    println!("average ovlp time:  {:.6} sec", total_ovlp_time_for / count as f64);
-    println!("average dovlp time: {:.6} sec", total_dovlp_time_for / count as f64);
-    println!("avg overhead:       {:.6}", total_dovlp_time_for / total_ovlp_time_for);
+    println!(
+        "average ovlp time:  {:.6} sec",
+        total_ovlp_time_for / count as f64
+    );
+    println!(
+        "average dovlp time: {:.6} sec",
+        total_dovlp_time_for / count as f64
+    );
+    println!(
+        "avg overhead:       {:.6}",
+        total_dovlp_time_for / total_ovlp_time_for
+    );
 }
 
 fn main() {
@@ -277,10 +267,24 @@ fn main() {
     let mut dS = vec![0.0; nbas * nbas * env2.len()];
     let mut dS_for = vec![0.0; nbas * nbas * env2.len()];
 
-
-    time_reverse_mode(&mut atm, natm, &mut bas, nbas, &mut env, env2.len(), &mut dS);
-    time_forward_mode(&mut atm, natm, &mut bas, nbas, &mut env, env2.len(), &mut dS_for);
-
+    time_reverse_mode(
+        &mut atm,
+        natm,
+        &mut bas,
+        nbas,
+        &mut env,
+        env2.len(),
+        &mut dS,
+    );
+    time_forward_mode(
+        &mut atm,
+        natm,
+        &mut bas,
+        nbas,
+        &mut env,
+        env2.len(),
+        &mut dS_for,
+    );
 
     // now compare dS and dS_for
     let mut mismatches = 0;
@@ -289,7 +293,10 @@ fn main() {
             break;
         }
         if (dS[i] - dS_for[i]).abs() > 1e-10 {
-            println!("Mismatch at index {}: dS = {}, dS_for = {}", i, dS[i], dS_for[i]);
+            println!(
+                "Mismatch at index {}: dS = {}, dS_for = {}",
+                i, dS[i], dS_for[i]
+            );
             mismatches += 1;
         }
     }

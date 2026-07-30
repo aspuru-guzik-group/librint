@@ -3,14 +3,14 @@ use std::io;
 
 use std::autodiff::autodiff_reverse;
 
-use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_ovlp_cart;
+use librint::cint_bas::CINTcgto_cart;
 use librint::scf::nmol;
+use librint::utils::combine;
 use librint::utils::read_basis;
+use librint::utils::split;
 use std::env;
 use std::time::Instant;
-use librint::utils::combine;
-use librint::utils::split;
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -18,16 +18,25 @@ pub const BAS_SLOTS: usize = 8;
 #[no_mangle]
 #[autodiff_reverse(dovlpp_, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn ovlp_(
-    out: &mut Vec<f64>, 
-    shls: &mut Vec<i32>, 
+    out: &mut Vec<f64>,
+    shls: &mut Vec<i32>,
     atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>, 
+    bas: &mut Vec<i32>,
     env1: &mut Vec<f64>,
     env2: &mut Vec<f64>,
 ) {
     let (natm, nbas) = nmol(atm, bas);
     let mut env: Vec<f64> = combine(&env1, &env2);
-    cint1e_ovlp_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
+    cint1e_ovlp_cart(
+        out,
+        shls,
+        atm,
+        natm as i32,
+        bas,
+        nbas as i32,
+        &mut env,
+        std::ptr::null_mut(),
+    );
 }
 
 // #[no_mangle]
@@ -93,14 +102,18 @@ fn main() {
     let i = 0;
     let j = 1;
 
-    shls[0] = i as i32; let di = CINTcgto_cart(i as usize, &bas) as usize;
-    shls[1] = j as i32; let dj = CINTcgto_cart(j as usize, &bas) as usize;
+    shls[0] = i as i32;
+    let di = CINTcgto_cart(i as usize, &bas) as usize;
+    shls[1] = j as i32;
+    let dj = CINTcgto_cart(j as usize, &bas) as usize;
 
     let mut buf = vec![0.0; di * dj];
     let mut dbuf = vec![0.0; di * dj];
 
     dbuf[0] = 1.0;
-    dovlpp_(&mut buf, &mut dbuf, &mut shls, &mut atm, &mut bas, &mut env1, &mut env2, &mut denv);
+    dovlpp_(
+        &mut buf, &mut dbuf, &mut shls, &mut atm, &mut bas, &mut env1, &mut env2, &mut denv,
+    );
 
     dbg!(&denv);
 }

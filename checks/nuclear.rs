@@ -1,12 +1,18 @@
-#![allow(non_snake_case, non_upper_case_globals,unused_variables,improper_ctypes_definitions,static_mut_refs)]
+#![allow(
+    non_snake_case,
+    non_upper_case_globals,
+    unused_variables,
+    improper_ctypes_definitions,
+    static_mut_refs
+)]
 #![feature(autodiff)]
 
+use librint::scf::{angl, nmol};
+use librint::utils::{load_expected, read_basis, write_expected};
 use std::autodiff::*;
-use librint::utils::{read_basis, load_expected, write_expected};
-use librint::scf::{nmol, angl};
 
-use librint::cint_bas::CINTcgto_cart;
 use librint::cint1e::cint1e_nuc_cart;
+use librint::cint_bas::CINTcgto_cart;
 
 pub const ATM_SLOTS: usize = 6;
 pub const BAS_SLOTS: usize = 8;
@@ -16,12 +22,7 @@ pub const epsilon: f64 = 1e-12;
 #[no_mangle]
 #[autodiff_reverse(dV_rev, Duplicated, Const, Const, Duplicated)]
 #[autodiff_forward(dV_for, Dual, Const, Const, Dual)]
-pub fn matrix(
-    out: &mut Vec<f64>,
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-) {
+pub fn matrix(out: &mut Vec<f64>, atm: &mut Vec<i32>, bas: &mut Vec<i32>, env: &mut Vec<f64>) {
     let (natm, nbas) = nmol(atm, bas);
     let nshells = angl(bas, 0);
 
@@ -37,7 +38,16 @@ pub fn matrix(
             let dj = CINTcgto_cart(j, &bas) as usize;
 
             let mut buf = vec![0.0; di * dj];
-            cint1e_nuc_cart(&mut buf, &mut shls_buf, atm, natm as i32, bas, nbas as i32, env, std::ptr::null_mut());
+            cint1e_nuc_cart(
+                &mut buf,
+                &mut shls_buf,
+                atm,
+                natm as i32,
+                bas,
+                nbas as i32,
+                env,
+                std::ptr::null_mut(),
+            );
 
             let mut c: usize = 0;
             for nuj in nu..(nu + dj) {
@@ -52,9 +62,7 @@ pub fn matrix(
     }
 }
 
-fn set_molecule(
-    path: &str,
-) -> (usize, Vec<i32>, Vec<i32>, Vec<f64>) {
+fn set_molecule(path: &str) -> (usize, Vec<i32>, Vec<i32>, Vec<f64>) {
     let mut atm: Vec<i32> = Vec::new();
     let mut bas: Vec<i32> = Vec::new();
     let mut env: Vec<f64> = Vec::new();
@@ -66,10 +74,7 @@ fn set_molecule(
     return (nshells, atm, bas, env);
 }
 
-pub fn test_path(
-    path: &str,
-    exp: &str,
-) {
+pub fn test_path(path: &str, exp: &str) {
     let (nshells, mut atm, mut bas, mut env) = set_molecule(path);
 
     let mut M = vec![0.0; nshells * nshells];
@@ -89,10 +94,7 @@ pub fn test_path(
     }
 }
 
-pub fn test_path_rev(
-    path: &str,
-    exp: &str,
-) {
+pub fn test_path_rev(path: &str, exp: &str) {
     let (nshells, mut atm, mut bas, mut env) = set_molecule(path);
 
     let n = nshells * nshells;
@@ -131,10 +133,7 @@ pub fn test_path_rev(
     }
 }
 
-pub fn test_path_for(
-    path: &str,
-    exp: &str,
-) {
+pub fn test_path_for(path: &str, exp: &str) {
     let (nshells, mut atm, mut bas, mut env) = set_molecule(path);
     let n = nshells * nshells;
     let m = env.len();
@@ -169,7 +168,6 @@ pub fn test_path_for(
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {

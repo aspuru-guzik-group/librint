@@ -1,85 +1,101 @@
 #![allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
-#![feature(autodiff)]
 
-use std::autodiff::*;
+use crate::cint1e::{cint1e_nuc_cart, cint1e_ovlp_cart};
 use crate::cint_bas::CINTcgto_cart;
-use crate::cint1e::{cint1e_ovlp_cart, cint1e_nuc_cart};
 use crate::intor1::cint1e_kin_cart;
+use std::autodiff::*;
 
-use crate::scf::{nmol, angl, integral1e, integral2e_fock};
-use crate::utils::{split, combine};
 use crate::linalg::matmult;
+use crate::scf::{angl, integral1e, integral2e_fock, nmol};
+use crate::utils::{combine, split};
 
-#[no_mangle]
 #[autodiff_reverse(dovlp, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn ovlp(
-    out: &mut Vec<f64>, 
-    shls: &mut Vec<i32>, 
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>, 
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
 ) {
     let (natm, nbas) = nmol(atm, bas);
-    let mut env: Vec<f64> = combine(&env1, &env2);
-    cint1e_ovlp_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
+    let mut env: Vec<f64> = combine(env1, env2);
+    cint1e_ovlp_cart(
+        out,
+        shls,
+        atm,
+        natm as i32,
+        bas,
+        nbas as i32,
+        &mut env,
+        std::ptr::null_mut(),
+    );
 }
 
-
-#[no_mangle]
 #[autodiff_reverse(dkin, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn kin(
-    out: &mut Vec<f64>, 
-    shls: &mut Vec<i32>, 
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>, 
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
 ) {
     let (natm, nbas) = nmol(atm, bas);
-    let mut env: Vec<f64> = combine(&env1, &env2);
-    cint1e_kin_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
+    let mut env: Vec<f64> = combine(env1, env2);
+    cint1e_kin_cart(
+        out,
+        shls,
+        atm,
+        natm as i32,
+        bas,
+        nbas as i32,
+        &mut env,
+        std::ptr::null_mut(),
+    );
 }
 
-#[no_mangle]
 #[autodiff_reverse(dnuc, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn nuc(
-    out: &mut Vec<f64>, 
-    shls: &mut Vec<i32>, 
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>, 
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
 ) {
     let (natm, nbas) = nmol(atm, bas);
-    let mut env: Vec<f64> = combine(&env1, &env2);
-    cint1e_nuc_cart(out, shls, atm, natm as i32, bas, nbas as i32, &mut env, std::ptr::null_mut());
+    let mut env: Vec<f64> = combine(env1, env2);
+    cint1e_nuc_cart(
+        out,
+        shls,
+        atm,
+        natm as i32,
+        bas,
+        nbas as i32,
+        &mut env,
+        std::ptr::null_mut(),
+    );
 }
 
 // 2e integral block on the AD-friendly rys kernel (src/eri.rs) -- the memory-
 // safe path for the Enzyme reverse (dtwo_ad): one shell quartet per reverse.
-#[no_mangle]
 #[autodiff_reverse(dtwo_ad, Duplicated, Const, Const, Const, Const, Duplicated)]
 pub fn two_ad(
-    out: &mut Vec<f64>,
-    shls: &mut Vec<i32>,
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
+    out: &mut [f64],
+    shls: &mut [i32],
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
 ) {
-    let env: Vec<f64> = combine(&env1, &env2);
+    let env: Vec<f64> = combine(env1, env2);
     crate::eri::eri_cart(out, shls, atm, bas, &env);
 }
 
-#[no_mangle]
-pub fn dS_uncontracted(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-) -> Vec<f64> {
-    let (_, nbas) = nmol(&atm, &bas);
-    let nshells = angl(&bas, 0);
+pub fn dS_uncontracted(atm: &mut [i32], bas: &mut [i32], env: &mut [f64]) -> Vec<f64> {
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let (s1, s2) = split(bas);
 
@@ -98,10 +114,12 @@ pub fn dS_uncontracted(
 
     mu = 0;
     for i in 0..nbas {
-        shls[0] = i as i32; let di = CINTcgto_cart(i, &bas) as usize;
+        shls[0] = i as i32;
+        let di = CINTcgto_cart(i, bas) as usize;
         nu = 0;
         for j in 0..nbas {
-            shls[1] = j as i32; let dj = CINTcgto_cart(j, &bas) as usize;
+            shls[1] = j as i32;
+            let dj = CINTcgto_cart(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
@@ -112,12 +130,14 @@ pub fn dS_uncontracted(
                     dbuf[c] = 1.0;
 
                     denv = vec![0.0; env2.len()];
-                    dovlp(&mut buf, &mut dbuf, &mut shls, atm, bas, &mut env1, &mut env2, &mut denv);
+                    dovlp(
+                        &mut buf, &mut dbuf, &mut shls, atm, bas, &mut env1, &mut env2, &mut denv,
+                    );
                     for l in 0..env2.len() {
                         dS[(nuj * nshells + mui) * env2.len() + l] = denv[l];
                         // dS[l * nshells * nshells + nuj * nshells + mui] = denv[l];
                     }
-                    
+
                     dbuf[c] = 0.0;
                     c += 1;
                 }
@@ -126,20 +146,19 @@ pub fn dS_uncontracted(
         }
         mu += di;
     }
-    
-    return dS;
+
+    dS
 }
 
-#[no_mangle]
 fn dSf(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    Q: &Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
+    Q: &[f64],
 ) -> Vec<f64> {
-    let (_, nbas) = nmol(&atm, &bas);
-    let nshells = angl(&bas, 0);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dS = vec![0.0; env2.len()];
 
@@ -153,10 +172,12 @@ fn dSf(
 
     mu = 0;
     for i in 0..nbas {
-        shls[0] = i as i32; let di = CINTcgto_cart(i, &bas) as usize;
+        shls[0] = i as i32;
+        let di = CINTcgto_cart(i, bas) as usize;
         nu = 0;
         for j in 0..nbas {
-            shls[1] = j as i32; let dj = CINTcgto_cart(j, &bas) as usize;
+            shls[1] = j as i32;
+            let dj = CINTcgto_cart(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
@@ -170,7 +191,9 @@ fn dSf(
                 }
             }
             denv = vec![0.0; env2.len()];
-            dovlp(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
+            dovlp(
+                &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
+            );
             for l in 0..env2.len() {
                 dS[l] += denv[l];
             }
@@ -178,21 +201,19 @@ fn dSf(
         }
         mu += di;
     }
-    
-    return dS;
+
+    dS
 }
 
-
-#[no_mangle]
 fn dTf(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    P: &Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
+    P: &[f64],
 ) -> Vec<f64> {
-    let (_, nbas) = nmol(&atm, &bas);
-    let nshells = angl(&bas, 0);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dT = vec![0.0; env2.len()];
 
@@ -206,10 +227,12 @@ fn dTf(
 
     mu = 0;
     for i in 0..nbas {
-        shls[0] = i as i32; let di = CINTcgto_cart(i, &bas) as usize;
+        shls[0] = i as i32;
+        let di = CINTcgto_cart(i, bas) as usize;
         nu = 0;
         for j in 0..nbas {
-            shls[1] = j as i32; let dj = CINTcgto_cart(j, &bas) as usize;
+            shls[1] = j as i32;
+            let dj = CINTcgto_cart(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
@@ -225,7 +248,9 @@ fn dTf(
                 }
             }
             denv = vec![0.0; env2.len()];
-            dkin(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
+            dkin(
+                &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
+            );
             for l in 0..env2.len() {
                 dT[l] += denv[l];
             }
@@ -233,20 +258,19 @@ fn dTf(
         }
         mu += di;
     }
-    
-    return dT;
+
+    dT
 }
 
-#[no_mangle]
 fn dVf(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    P: &Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
+    P: &[f64],
 ) -> Vec<f64> {
-    let (_, nbas) = nmol(&atm, &bas);
-    let nshells = angl(&bas, 0);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dV = vec![0.0; env2.len()];
 
@@ -260,10 +284,12 @@ fn dVf(
 
     mu = 0;
     for i in 0..nbas {
-        shls[0] = i as i32; let di = CINTcgto_cart(i, &bas) as usize;
+        shls[0] = i as i32;
+        let di = CINTcgto_cart(i, bas) as usize;
         nu = 0;
         for j in 0..nbas {
-            shls[1] = j as i32; let dj = CINTcgto_cart(j, &bas) as usize;
+            shls[1] = j as i32;
+            let dj = CINTcgto_cart(j, bas) as usize;
 
             buf = vec![0.0; di * dj];
             dbuf = vec![0.0; di * dj];
@@ -277,7 +303,9 @@ fn dVf(
                 }
             }
             denv = vec![0.0; env2.len()];
-            dnuc(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
+            dnuc(
+                &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
+            );
             for l in 0..env2.len() {
                 dV[l] += denv[l];
             }
@@ -285,17 +313,11 @@ fn dVf(
         }
         mu += di;
     }
-    
-    return dV;
+
+    dV
 }
 
-#[no_mangle]
-pub fn dHcoreg(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &Vec<f64>,
-) -> Vec<f64> {
+pub fn dHcoreg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     let (s1, s2) = split(bas);
 
     let mut env1: Vec<f64> = env[0..s1].to_vec();
@@ -303,23 +325,17 @@ pub fn dHcoreg(
 
     let mut dHcore = vec![0.0; env2.len()];
 
-    let dT = dTf(atm, bas, &mut env1, &mut env2, &P);
-    let dV = dVf(atm, bas, &mut env1, &mut env2, &P);
+    let dT = dTf(atm, bas, &mut env1, &mut env2, P);
+    let dV = dVf(atm, bas, &mut env1, &mut env2, P);
 
     for i in 0..env2.len() {
         dHcore[i] = dT[i] + dV[i];
     }
 
-    return dHcore;
+    dHcore
 }
 
-#[no_mangle]
-pub fn getF(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &Vec<f64>,
-) -> Vec<f64> {
+pub fn getF(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     // F = H + G, with G the 2e Fock part accumulated directly in O(n^2) by
     // integral2e_fock. The frozen-P gradient needs F only to form Q=PFP, and
     // building the full n^4 ERI tensor for that was the old memory wall.
@@ -332,17 +348,11 @@ pub fn getF(
         F[i] = T[i] + V[i] + G[i];
     }
 
-    return F;
+    F
 }
 
-#[no_mangle]
-pub fn dSg(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &Vec<f64>,
-) -> Vec<f64> {
-    let nshells = angl(&bas, 0);
+pub fn dSg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
+    let nshells = angl(bas, 0);
 
     let F = getF(atm, bas, env, P);
 
@@ -354,18 +364,15 @@ pub fn dSg(
     let mut env1: Vec<f64> = env[0..s1].to_vec();
     let mut env2: Vec<f64> = env[s1..s2].to_vec();
 
-    let dS = dSf(atm, bas, &mut env1, &mut env2, &Q);
-
-    return dS;
+    dSf(atm, bas, &mut env1, &mut env2, &Q)
 }
 
-#[no_mangle]
 pub fn dRf(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env1: &mut Vec<f64>,
-    env2: &mut Vec<f64>,
-    P: &Vec<f64>,
+    atm: &mut [i32],
+    bas: &mut [i32],
+    env1: &mut [f64],
+    env2: &mut [f64],
+    P: &[f64],
 ) -> Vec<f64> {
     // 8-fold permutational symmetry: only canonical quartets (i>=j, k>=l,
     // (i,j)>=(k,l)) are differentiated; each element seed sums the energy-
@@ -373,14 +380,14 @@ pub fn dRf(
     // linearity this equals the full nbas^4 loop with ~8x fewer reverse passes.
     // Seeds stay OUTSIDE the reverse -- one cint call per reverse is the only
     // shape Enzyme compiles correctly.
-    let (_, nbas) = nmol(&atm, &bas);
-    let nshells = angl(&bas, 0);
+    let (_, nbas) = nmol(atm, bas);
+    let nshells = angl(bas, 0);
 
     let mut dR = vec![0.0; env2.len()];
 
     let mut offs = vec![0usize; nbas + 1];
     for s in 0..nbas {
-        offs[s + 1] = offs[s] + CINTcgto_cart(s, &bas) as usize;
+        offs[s + 1] = offs[s] + CINTcgto_cart(s, bas) as usize;
     }
 
     let w = |a: usize, b: usize, c: usize, d: usize| -> f64 {
@@ -416,8 +423,14 @@ pub fn dRf(
                     // degenerate quartets (i==j, k==l, ij==kl) are not
                     // double-counted
                     let imgs = [
-                        (i, j, k, l), (j, i, k, l), (i, j, l, k), (j, i, l, k),
-                        (k, l, i, j), (l, k, i, j), (k, l, j, i), (l, k, j, i),
+                        (i, j, k, l),
+                        (j, i, k, l),
+                        (i, j, l, k),
+                        (j, i, l, k),
+                        (k, l, i, j),
+                        (l, k, i, j),
+                        (k, l, j, i),
+                        (l, k, j, i),
                     ];
                     let mut keep = [true; 8];
                     for a in 1..8 {
@@ -438,14 +451,30 @@ pub fn dRf(
                             for nuj in nu..(nu + dj) {
                                 for mui in mu..(mu + di) {
                                     let mut ws = 0.0;
-                                    if keep[0] { ws += w(mui, nuj, sigk, laml); }
-                                    if keep[1] { ws += w(nuj, mui, sigk, laml); }
-                                    if keep[2] { ws += w(mui, nuj, laml, sigk); }
-                                    if keep[3] { ws += w(nuj, mui, laml, sigk); }
-                                    if keep[4] { ws += w(sigk, laml, mui, nuj); }
-                                    if keep[5] { ws += w(laml, sigk, mui, nuj); }
-                                    if keep[6] { ws += w(sigk, laml, nuj, mui); }
-                                    if keep[7] { ws += w(laml, sigk, nuj, mui); }
+                                    if keep[0] {
+                                        ws += w(mui, nuj, sigk, laml);
+                                    }
+                                    if keep[1] {
+                                        ws += w(nuj, mui, sigk, laml);
+                                    }
+                                    if keep[2] {
+                                        ws += w(mui, nuj, laml, sigk);
+                                    }
+                                    if keep[3] {
+                                        ws += w(nuj, mui, laml, sigk);
+                                    }
+                                    if keep[4] {
+                                        ws += w(sigk, laml, mui, nuj);
+                                    }
+                                    if keep[5] {
+                                        ws += w(laml, sigk, mui, nuj);
+                                    }
+                                    if keep[6] {
+                                        ws += w(sigk, laml, nuj, mui);
+                                    }
+                                    if keep[7] {
+                                        ws += w(laml, sigk, nuj, mui);
+                                    }
                                     dbuf[c] = ws;
                                     c += 1;
                                 }
@@ -458,16 +487,22 @@ pub fn dRf(
                     // domain the c2rust reverse corrupts memory, so fail loud
                     // rather than smash the heap (primal keeps the full domain).
                     let lmax_sh = (bas[8 * i + 1])
-                        .max(bas[8 * j + 1]).max(bas[8 * k + 1]).max(bas[8 * l + 1]);
+                        .max(bas[8 * j + 1])
+                        .max(bas[8 * k + 1])
+                        .max(bas[8 * l + 1]);
                     if lmax_sh as usize > crate::eri::LMAX || env1[8] != 0.0 {
                         panic!(
                             "2e gradient unsupported for this quartet (max l = {}, \
                              omega = {}): the memory-safe reverse (eri.rs) covers \
                              only cartesian l <= {}, no range separation.",
-                            lmax_sh, env1[8], crate::eri::LMAX,
+                            lmax_sh,
+                            env1[8],
+                            crate::eri::LMAX,
                         );
                     }
-                    dtwo_ad(&mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv);
+                    dtwo_ad(
+                        &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
+                    );
                     for t in 0..env2.len() {
                         dR[t] += denv[t];
                     }
@@ -476,34 +511,21 @@ pub fn dRf(
         }
     }
 
-    return dR;
+    dR
 }
 
-#[no_mangle]
-pub fn dRg(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &Vec<f64>,
-) -> Vec<f64> {
+pub fn dRg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     let (s1, s2) = split(bas);
 
     let mut env1: Vec<f64> = env[0..s1].to_vec();
     let mut env2: Vec<f64> = env[s1..s2].to_vec();
 
-    let dR = dRf(atm, bas, &mut env1, &mut env2, P);
-    return dR;
+    dRf(atm, bas, &mut env1, &mut env2, P)
 }
 
-#[no_mangle]
-pub fn danalyticalg(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &Vec<f64>,
-) -> Vec<f64> {
+pub fn danalyticalg(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     let dH = dHcoreg(atm, bas, env, P);
-    let dR = dRg(atm, bas, env, P); 
+    let dR = dRg(atm, bas, env, P);
     let dS = dSg(atm, bas, env, P);
 
     let mut dtotal = vec![0.0; dH.len()];
@@ -511,7 +533,7 @@ pub fn danalyticalg(
         dtotal[i] = dH[i] + dR[i] - 0.5 * dS[i];
     }
 
-    return dtotal;
+    dtotal
 }
 
 // The fused whole-energy Enzyme reverses (of `energywrap` and `energyf`) used
@@ -522,13 +544,7 @@ pub fn danalyticalg(
 // now; `python -c "librint.dscf.denergyf"` is denergy_c -> denergyfast, an
 // assembled path, and shares nothing but a name with the old reverse.
 
-#[no_mangle]
-pub fn gradenergy(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &mut Vec<f64>,
-) -> Vec<f64> {
+pub fn gradenergy(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     // 1/2 tr(P(H+F)) = tr(PH) + 1/2 tr(PGP), assembled from the batched
     // part-wise adjoints (each of which IS an Enzyme reverse).
     let dH = dHcoreg(atm, bas, env, P);
@@ -537,19 +553,13 @@ pub fn gradenergy(
     for i in 0..denv.len() {
         denv[i] = dH[i] + dR[i];
     }
-    return denv;
+    denv
 }
 
-#[no_mangle]
-pub fn denergyfast(
-    atm: &mut Vec<i32>,
-    bas: &mut Vec<i32>,
-    env: &mut Vec<f64>,
-    P: &mut Vec<f64>,
-) -> Vec<f64> {
+pub fn denergyfast(atm: &mut [i32], bas: &mut [i32], env: &mut [f64], P: &[f64]) -> Vec<f64> {
     // Kept as a separate C entry point (denergy_c) for compatibility only: it
     // had inlined the same dH + dR - 0.5 dS expression as danalyticalg, in the
     // same order, so the two returned bitwise-identical values. Delegate rather
     // than maintain the duplicate.
-    return danalyticalg(atm, bas, env, P);
+    danalyticalg(atm, bas, env, P)
 }
