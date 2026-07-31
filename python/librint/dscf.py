@@ -1,6 +1,7 @@
 import ctypes
 import numpy as np
 
+from librint import _bindings
 from librint import library
 from librint import utils
 
@@ -104,6 +105,59 @@ def danalyticalf(mol, P: np.ndarray) -> np.ndarray:
 
     dR_c = library.danalytical_c(atm_ctypes, len(atm.flatten()), bas_ctypes, len(bas.flatten()), env_ctypes, len(env.flatten()), P_ctypes, len(P.flatten()))
     return utils.take(dR_c, (s2 - s1,))
+
+# ---------------------------------------------------------------------------
+# Threaded entry points (src/par.rs).
+#
+# These are separate callables, not a flag on the serial ones: danalyticalf
+# stays the finite-difference-validated reference path, byte-for-byte, so
+# "parallel == serial" remains a statement about two independent things.
+# ---------------------------------------------------------------------------
+
+def _par(fn, mol, W: np.ndarray, nthreads: int) -> np.ndarray:
+    if not _bindings.HAS_PAR:
+        raise RuntimeError(
+            "this librint.so has no threaded entry points -- it predates "
+            "src/par.rs. Rebuild (cargo build --release) and point LIBRINT_SO "
+            "at target/release/librint.so, or use the serial danalyticalf."
+        )
+    atm, bas, env, nelec = utils.prep(mol)
+    W = np.ascontiguousarray(W, dtype=np.float64)
+    s1, s2 = utils.split(bas)
+
+    ptr = fn(
+        atm.ctypes.data_as(ctypes.POINTER(ctypes.c_int)), atm.size,
+        bas.ctypes.data_as(ctypes.POINTER(ctypes.c_int)), bas.size,
+        env.ctypes.data_as(ctypes.POINTER(ctypes.c_double)), env.size,
+        W.ctypes.data_as(ctypes.POINTER(ctypes.c_double)), W.size,
+        int(nthreads),
+    )
+    return utils.take(ptr, (s2 - s1,))
+
+
+def dS_par(mol, Q: np.ndarray, nthreads: int = 0) -> np.ndarray:
+    """Overlap term seeded with the energy-weighted density Q = P F P.
+
+    Unlike dSf this does NOT build F -- pass Q, not P.
+    """
+    return _par(library.dS_par_c, mol, Q, nthreads)
+
+
+def dHcore_par(mol, P: np.ndarray, nthreads: int = 0) -> np.ndarray:
+    return _par(library.dHcore_par_c, mol, P, nthreads)
+
+
+def dR_par(mol, P: np.ndarray, nthreads: int = 0) -> np.ndarray:
+    _require_grad_domain(mol)
+    return _par(library.dR_par_c, mol, P, nthreads)
+
+
+def danalytical_par(mol, P: np.ndarray, nthreads: int = 0) -> np.ndarray:
+    """Threaded danalyticalf. nthreads=0 uses rayon's global pool, which reads
+    RAYON_NUM_THREADS; any other value builds a pool of exactly that size."""
+    _require_grad_domain(mol)
+    return _par(library.danalytical_par_c, mol, P, nthreads)
+
 
 def denergyf(mol, P: np.ndarray) -> np.ndarray:
     _require_grad_domain(mol)
