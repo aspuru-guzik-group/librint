@@ -9,7 +9,7 @@ use crate::linalg::matmult;
 use crate::scf::{angl, integral1e, integral2e_fock, nmol};
 use crate::utils::{combine, split};
 
-#[autodiff_reverse(dovlp, Duplicated, Const, Const, Const, Const, Duplicated)]
+#[autodiff_reverse(dovlp, DuplicatedOnly, Const, Const, Const, Const, Duplicated)]
 pub fn ovlp(
     out: &mut [f64],
     shls: &mut [i32],
@@ -32,7 +32,7 @@ pub fn ovlp(
     );
 }
 
-#[autodiff_reverse(dkin, Duplicated, Const, Const, Const, Const, Duplicated)]
+#[autodiff_reverse(dkin, DuplicatedOnly, Const, Const, Const, Const, Duplicated)]
 pub fn kin(
     out: &mut [f64],
     shls: &mut [i32],
@@ -55,7 +55,7 @@ pub fn kin(
     );
 }
 
-#[autodiff_reverse(dnuc, Duplicated, Const, Const, Const, Const, Duplicated)]
+#[autodiff_reverse(dnuc, DuplicatedOnly, Const, Const, Const, Const, Duplicated)]
 pub fn nuc(
     out: &mut [f64],
     shls: &mut [i32],
@@ -80,7 +80,7 @@ pub fn nuc(
 
 // 2e integral block on the AD-friendly rys kernel (src/eri.rs) -- the memory-
 // safe path for the Enzyme reverse (dtwo_ad): one shell quartet per reverse.
-#[autodiff_reverse(dtwo_ad, Duplicated, Const, Const, Const, Const, Duplicated)]
+#[autodiff_reverse(dtwo_ad, DuplicatedOnly, Const, Const, Const, Const, Duplicated)]
 pub fn two_ad(
     out: &mut [f64],
     shls: &mut [i32],
@@ -130,9 +130,15 @@ pub fn dS_uncontracted(atm: &mut [i32], bas: &mut [i32], env: &mut [f64]) -> Vec
                     dbuf[c] = 1.0;
 
                     denv = vec![0.0; env2.len()];
-                    dovlp(
-                        &mut buf, &mut dbuf, &mut shls, atm, bas, &mut env1, &mut env2, &mut denv,
-                    );
+                    // SAFETY: `DuplicatedOnly` on `out` means the reverse never
+                    // writes the primal block; `buf` stays at its initial 0.0
+                    // and no caller reads it.
+                    unsafe {
+                        dovlp(
+                            &mut buf, &mut dbuf, &mut shls, atm, bas, &mut env1, &mut env2,
+                            &mut denv,
+                        )
+                    };
                     for l in 0..env2.len() {
                         dS[(nuj * nshells + mui) * env2.len() + l] = denv[l];
                         // dS[l * nshells * nshells + nuj * nshells + mui] = denv[l];
@@ -191,9 +197,12 @@ fn dSf(
                 }
             }
             denv = vec![0.0; env2.len()];
-            dovlp(
-                &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
-            );
+            // SAFETY: see `dS_uncontracted` -- `buf` is write-only and unread.
+            unsafe {
+                dovlp(
+                    &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
+                )
+            };
             for l in 0..env2.len() {
                 dS[l] += denv[l];
             }
@@ -248,9 +257,12 @@ fn dTf(
                 }
             }
             denv = vec![0.0; env2.len()];
-            dkin(
-                &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
-            );
+            // SAFETY: see `dS_uncontracted` -- `buf` is write-only and unread.
+            unsafe {
+                dkin(
+                    &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
+                )
+            };
             for l in 0..env2.len() {
                 dT[l] += denv[l];
             }
@@ -303,9 +315,12 @@ fn dVf(
                 }
             }
             denv = vec![0.0; env2.len()];
-            dnuc(
-                &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
-            );
+            // SAFETY: see `dS_uncontracted` -- `buf` is write-only and unread.
+            unsafe {
+                dnuc(
+                    &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
+                )
+            };
             for l in 0..env2.len() {
                 dV[l] += denv[l];
             }
@@ -500,9 +515,12 @@ pub fn dRf(
                             crate::eri::LMAX,
                         );
                     }
-                    dtwo_ad(
-                        &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
-                    );
+                    // SAFETY: see `dS_uncontracted` -- `buf` is write-only and unread.
+                    unsafe {
+                        dtwo_ad(
+                            &mut buf, &mut dbuf, &mut shls, atm, bas, env1, env2, &mut denv,
+                        )
+                    };
                     for t in 0..env2.len() {
                         dR[t] += denv[t];
                     }
