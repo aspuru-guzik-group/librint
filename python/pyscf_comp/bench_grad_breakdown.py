@@ -21,7 +21,12 @@ both of which run the same dS pair loop; only dSf additionally builds F and
 forms P F P.
 
 Usage: LIBRINT_SO=/path/to/librint.so python bench_grad_breakdown.py
+       ... python bench_grad_breakdown.py --only C2H6/def2-tzvp --out shard.json
+
+--only/--out put one system on one node so the four can be measured at once;
+the per-system JSONs merge cleanly because each is keyed by "GEO/BASIS".
 """
+import argparse
 import ctypes
 import json
 import os
@@ -93,12 +98,31 @@ def timed(label, fn):
     return dt, out
 
 
+def select(only):
+    """SYSTEMS, or the subset named as GEO/BASIS on the command line."""
+    if not only:
+        return SYSTEMS
+    wanted = [s.strip() for arg in only for s in arg.split(",") if s.strip()]
+    chosen = [(g, b) for g, b in SYSTEMS if f"{g}/{b}" in wanted]
+    missing = set(wanted) - {f"{g}/{b}" for g, b in chosen}
+    if missing:
+        raise SystemExit(f"unknown system(s): {', '.join(sorted(missing))}")
+    return chosen
+
+
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--only", action="append", metavar="GEO/BASIS",
+                    help="measure only these systems (repeatable, or comma-"
+                         "separated)")
+    ap.add_argument("--out", default=OUT_JSON, help="results file")
+    args = ap.parse_args()
+
     results = {"_meta": {"node": platform.node(),
                          "ncores": len(os.sched_getaffinity(0)),
                          "mem_limit_kb": _mem_limit_kb(),
                          "cpu_model": _cpu_model()}}
-    for geo, basis in SYSTEMS:
+    for geo, basis in select(args.only):
         mol = build(geo, basis)
         mf = pyscf.scf.RHF(mol)
         mf.verbose = 0
@@ -155,10 +179,10 @@ def main():
             "old_serial_frac": was_serial / acct,
             "old_ceiling": acct / was_serial,
         }
-        with open(OUT_JSON, "w") as f:
+        with open(args.out, "w") as f:
             json.dump(results, f, indent=1)
 
-    print(f"\nresults -> {OUT_JSON}")
+    print(f"\nresults -> {args.out}")
 
 
 if __name__ == "__main__":

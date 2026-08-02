@@ -15,8 +15,15 @@ threaded path adds. The gap between them is itself the interesting number.
 Writes bench_scaling_results.json so the figure is drawn from measurements
 rather than from a log scrape, with a _meta block recording the machine.
 
+Every system needs a quiet exclusive node -- a co-tenant reads as poor thread
+scaling -- so --only/--out exist to put one system on one node and merge the
+per-system JSONs afterwards. Nodes must then be the same CPU model, since the
+figure plots systems against each other.
+
 Usage: LIBRINT_SO=/path/to/librint.so python bench_par_scaling.py
+       ... python bench_par_scaling.py --only C2H6/def2-tzvp --out shard.json
 """
+import argparse
 import json
 import os
 import platform
@@ -62,7 +69,27 @@ def median_time(fn, n):
     return float(np.median(ts)), out
 
 
+def select(only):
+    """SYSTEMS, or the subset named as GEO/BASIS on the command line."""
+    if not only:
+        return SYSTEMS
+    wanted = [s.strip() for arg in only for s in arg.split(",") if s.strip()]
+    chosen = [(g, b) for g, b in SYSTEMS if f"{g}/{b}" in wanted]
+    missing = set(wanted) - {f"{g}/{b}" for g, b in chosen}
+    if missing:
+        raise SystemExit(f"unknown system(s): {', '.join(sorted(missing))}")
+    return chosen
+
+
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--only", action="append", metavar="GEO/BASIS",
+                    help="measure only these systems (repeatable, or comma-"
+                         "separated); one shard per exclusive node")
+    ap.add_argument("--out", default=OUT_JSON, help="results file")
+    args = ap.parse_args()
+    systems = select(args.only)
+
     ncores = len(os.sched_getaffinity(0))
     threads = [t for t in THREADS if t <= ncores]
     print(f"usable cores: {ncores}   thread counts: {threads}   "
@@ -72,7 +99,7 @@ def main():
                          "mem_limit_kb": _mem_limit_kb(),
                          "cpu_model": _cpu_model(), "repeats": REPEATS}}
     failures = 0
-    for geo, basis in SYSTEMS:
+    for geo, basis in systems:
         mol = build(geo, basis)
         mf = pyscf.scf.RHF(mol)
         mf.verbose = 0
@@ -106,10 +133,10 @@ def main():
                   f"rel|par-ser|={err:.2e}"
                   f"{'' if err < 1e-9 else '   <-- MISMATCH'}", flush=True)
         results[tag] = row
-        with open(OUT_JSON, "w") as f:   # write-as-you-go, survive a timeout
+        with open(args.out, "w") as f:   # write-as-you-go, survive a timeout
             json.dump(results, f, indent=1)
 
-    print(f"\nresults -> {OUT_JSON}")
+    print(f"\nresults -> {args.out}")
     if failures:
         raise SystemExit(f"{failures} timed result(s) disagreed with serial")
 

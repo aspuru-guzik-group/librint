@@ -553,6 +553,13 @@ def main():
     ap.add_argument("--suite", choices=["default", "alkanes"], default="default")
     ap.add_argument("--timeout", type=int, default=900,
                     help="per-worker wall limit (s)")
+    # one molecule per exclusive node: the ladder is embarrassingly parallel
+    # ACROSS molecules but must be quiet WITHIN one, and the big end of the
+    # ladder is minutes per point on a single core
+    ap.add_argument("--only", action="append", metavar="GEO/BASIS",
+                    help="run only these molecules (repeatable, or comma-"
+                         "separated)")
+    ap.add_argument("--out", help="results file (default: per-suite name)")
     args = ap.parse_args()
     if args.worker:
         run_worker(args.worker)
@@ -566,6 +573,13 @@ def main():
         mols = [m for m in MOLECULES if not args.quick or m[0] == "sto-3g"]
         tiers = ("t1", "t2")
         out_json = "bench_fair_results.json"
+    if args.only:
+        wanted = [s.strip() for a in args.only for s in a.split(",") if s.strip()]
+        mols = [m for m in mols if f"{m[1]}/{m[0]}" in wanted]
+        missing = set(wanted) - {f"{m[1]}/{m[0]}" for m in mols}
+        if missing:
+            raise SystemExit(f"unknown molecule(s): {', '.join(sorted(missing))}")
+    out_json = args.out or out_json
     # provenance of THIS run, so plots read the node's real core count and
     # memory ceiling out of the results instead of assuming them
     results = {"_meta": {"node": platform.node(),
