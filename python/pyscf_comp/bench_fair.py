@@ -58,6 +58,13 @@ ALKANES = [
     ("def2-tzvp", "C4H10"),
     ("def2-tzvp", "C6H6"),  # jax OOMs; librint gradient measured with P isolated
 ]
+# Benzene is a demonstration, not a data point. jax cannot run it at all -- it
+# has OOM_ALLOC'd on every attempt, on a 181 GB node -- so it contributes no
+# comparison, only a librint-only bar and a ~7 minute serial baseline that
+# doubles the wall time of whichever suite it is in. Excluded from both suites
+# by default; naming it explicitly with --only still runs it, which is how the
+# demo figure gets made.
+DEMO_ONLY = {"C6H6/def2-tzvp"}
 SCF_CONV = 1e-8
 SCF_MAXITER = 4000
 
@@ -579,6 +586,8 @@ def main():
         missing = set(wanted) - {f"{m[1]}/{m[0]}" for m in mols}
         if missing:
             raise SystemExit(f"unknown molecule(s): {', '.join(sorted(missing))}")
+    else:
+        mols = [m for m in mols if f"{m[1]}/{m[0]}" not in DEMO_ONLY]
     out_json = args.out or out_json
     # provenance of THIS run, so plots read the node's real core count and
     # memory ceiling out of the results instead of assuming them
