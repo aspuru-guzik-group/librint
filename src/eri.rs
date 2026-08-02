@@ -348,7 +348,7 @@ fn prim_g_root(
             }
         }
         if nmax > 1 {
-            for m in 1..=mmax {
+            for m in 1..mmax + 1 {
                 let base = m * dl;
                 let mut s0 = gax[base];
                 let mut s1 = gax[base + dj];
@@ -375,18 +375,18 @@ fn prim_g_root(
             // HRR shift coefficients are B-A and D-C (momentum moves from j
             // to i, from l to k).
             let rx = -q.rirj[ax];
-            for i in 1..=q.li {
-                for j in 0..=(nmax - i) {
-                    for l in 0..=mmax {
+            for i in 1..q.li + 1 {
+                for j in 0..nmax - i + 1 {
+                    for l in 0..mmax + 1 {
                         let p = j * dj + l * dl + i * di;
                         gax[p] = rx * gax[p - di] + gax[p - di + dj];
                     }
                 }
             }
             let rx = -q.rkrl[ax];
-            for j in 0..=q.lj {
-                for k in 1..=q.lk {
-                    for l in 0..=(mmax - k) {
+            for j in 0..q.lj + 1 {
+                for k in 1..q.lk + 1 {
+                    for l in 0..mmax - k + 1 {
                         let p = j * dj + l * dl + k * dk;
                         for n in p..p + dk {
                             gax[n] = rx * gax[n - dk] + gax[n - dk + dl];
