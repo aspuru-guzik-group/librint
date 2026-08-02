@@ -232,7 +232,7 @@ fn quartet_ctx(shls: &[i32], atm: &[i32], bas: &[i32], env: &[f64]) -> QuartetCt
 #[inline(always)]
 #[allow(clippy::too_many_arguments)]
 fn prim_prep(
-    q: &QuartetCtx,
+    nroots: usize,
     aij: f64,
     akl: f64,
     fac: f64,
@@ -250,8 +250,169 @@ fn prim_prep(
     // nroots <= 5 and extreme x: c2rust closed-form branches; nroots 6-9
     // mid-range: Chebyshev tables (the c2rust eigensolve there is not Enzyme-
     // safe, and for 8-9 fails outright even in forward mode).
-    crate::rys_tab::rys_roots_ad(q.nroots, x, u, w);
+    crate::rys_tab::rys_roots_ad(nroots, x, u, w);
     (a0, fac1, rijrkl)
+}
+
+// 2D VRR for ONE cartesian axis (CINTg0_2e_2d with dn=dj, dm=dl), single root
+// at buffer base 0. Split out of prim_g_root so the three axes are three
+// straight-line inlined bodies instead of one loop over a phi of the three
+// buffer pointers.
+#[inline(always)]
+#[allow(clippy::too_many_arguments)]
+fn vrr_axis(
+    gax: &mut [f64],
+    cn: f64,
+    cm: f64,
+    b00: f64,
+    b10: f64,
+    b01: f64,
+    nmax: usize,
+    mmax: usize,
+    dl: usize,
+    dj: usize,
+) {
+    if nmax > 0 {
+        let mut s0 = gax[0];
+        let mut s1 = cn * s0;
+        gax[dj] = s1;
+        for n in 1..nmax {
+            let s2 = cn * s1 + (n as f64) * b10 * s0;
+            gax[(n + 1) * dj] = s2;
+            s0 = s1;
+            s1 = s2;
+        }
+    }
+    if mmax > 0 {
+        let mut s0 = gax[0];
+        let mut s1 = cm * s0;
+        gax[dl] = s1;
+        for m in 1..mmax {
+            let s2 = cm * s1 + (m as f64) * b01 * s0;
+            gax[(m + 1) * dl] = s2;
+            s0 = s1;
+            s1 = s2;
+        }
+        if nmax > 0 {
+            let mut s0 = gax[dj];
+            let mut s1 = cm * s0 + b00 * gax[0];
+            gax[dj + dl] = s1;
+            for m in 1..mmax {
+                let s2 = cm * s1 + (m as f64) * b01 * s0 + b00 * gax[m * dl];
+                gax[dj + (m + 1) * dl] = s2;
+                s0 = s1;
+                s1 = s2;
+            }
+        }
+    }
+    if nmax > 1 {
+        for m in 1..mmax + 1 {
+            let base = m * dl;
+            let mut s0 = gax[base];
+            let mut s1 = gax[base + dj];
+            for n in 1..nmax {
+                let s2 =
+                    cn * s1 + (n as f64) * b10 * s0 + (m as f64) * b00 * gax[base + n * dj - dl];
+                gax[base + (n + 1) * dj] = s2;
+                s0 = s1;
+                s1 = s2;
+            }
+        }
+    }
+}
+
+// HRR (CINTg0_lj2d_4d) for ONE cartesian axis: j -> i, then l -> k.
+#[inline(always)]
+#[allow(clippy::too_many_arguments)]
+fn hrr_axis(
+    gax: &mut [f64],
+    rij_x: f64,
+    rkl_x: f64,
+    li: usize,
+    lj: usize,
+    lk: usize,
+    nmax: usize,
+    mmax: usize,
+    di: usize,
+    dk: usize,
+    dl: usize,
+    dj: usize,
+) {
+    // HRR shift coefficients are B-A and D-C (momentum moves from j to i,
+    // from l to k).
+    let rx = -rij_x;
+    for i in 1..li + 1 {
+        for j in 0..nmax - i + 1 {
+            for l in 0..mmax + 1 {
+                let p = j * dj + l * dl + i * di;
+                gax[p] = rx * gax[p - di] + gax[p - di + dj];
+            }
+        }
+    }
+    let rx = -rkl_x;
+    for j in 0..lj + 1 {
+        for k in 1..lk + 1 {
+            for l in 0..mmax - k + 1 {
+                let p = j * dj + l * dl + k * dk;
+                for n in p..p + dk {
+                    gax[n] = rx * gax[n - dk] + gax[n - dk + dl];
+                }
+            }
+        }
+    }
+}
+
+// The loop-invariant *shape* of a quartet: the angular momenta and the g-buffer
+// strides derived from them. Split out of QuartetCtx (which also carries the
+// active f64 geometry) so it can be built from compile-time-constant l values
+// in the specialized dispatch below -- every loop bound, every branch and every
+// `j*dj + l*dl` index in the VRR/HRR then folds at compile time.
+#[derive(Clone, Copy)]
+struct Shape {
+    li: usize,
+    lj: usize,
+    lk: usize,
+    nfi: usize,
+    nfj: usize,
+    nfk: usize,
+    nfl: usize,
+    nmax: usize,
+    mmax: usize,
+    nroots: usize,
+    di: usize,
+    dk: usize,
+    dl: usize,
+    dj: usize,
+}
+
+impl Shape {
+    #[inline(always)]
+    fn new(li: usize, lj: usize, lk: usize, ll: usize) -> Shape {
+        let nmax = li + lj;
+        let mmax = lk + ll;
+        // lj2d4d strides: di=1 (single root; the root loop is in the caller),
+        // dk=li+1, dl=dk*(lk+1), dj=dl*(mmax+1).
+        let di = 1;
+        let dk = di * (li + 1);
+        let dl = dk * (lk + 1);
+        let dj = dl * (mmax + 1);
+        Shape {
+            li,
+            lj,
+            lk,
+            nfi: (li + 1) * (li + 2) / 2,
+            nfj: (lj + 1) * (lj + 2) / 2,
+            nfk: (lk + 1) * (lk + 2) / 2,
+            nfl: (ll + 1) * (ll + 2) / 2,
+            nmax,
+            mmax,
+            nroots: (nmax + mmax) / 2 + 1,
+            di,
+            dk,
+            dl,
+            dj,
+        }
+    }
 }
 
 // One rys root of one primitive quartet: 2D VRR + HRR into the per-axis,
@@ -265,6 +426,7 @@ fn prim_g_root(
     gy: &mut [f64; GSIZE_MAX],
     gz: &mut [f64; GSIZE_MAX],
     q: &QuartetCtx,
+    s: Shape,
     aij: f64,
     akl: f64,
     a0: f64,
@@ -275,8 +437,8 @@ fn prim_g_root(
     rkl: [f64; 3],
     rijrkl: [f64; 3],
 ) {
-    let (nmax, mmax) = (q.nmax, q.mmax);
-    let (di, dk, dl, dj) = (q.di, q.dk, q.dl, q.dj);
+    let (nmax, mmax) = (s.nmax, s.mmax);
+    let (di, dk, dl, dj) = (s.di, s.dk, s.dl, s.dj);
     let a1 = aij * akl;
 
     let u2 = a0 * u_r;
@@ -306,95 +468,17 @@ fn prim_g_root(
     gz[0] = w_r * fac1;
 
     // 2D VRR (CINTg0_2e_2d with dn=dj, dm=dl), single root at buffer base 0
-    for ax in 0..3 {
-        let gax: &mut [f64] = match ax {
-            0 => gx,
-            1 => gy,
-            _ => gz,
-        };
-        let cn = c00[ax];
-        let cm = c0p[ax];
-        if nmax > 0 {
-            let mut s0 = gax[0];
-            let mut s1 = cn * s0;
-            gax[dj] = s1;
-            for n in 1..nmax {
-                let s2 = cn * s1 + (n as f64) * b10 * s0;
-                gax[(n + 1) * dj] = s2;
-                s0 = s1;
-                s1 = s2;
-            }
-        }
-        if mmax > 0 {
-            let mut s0 = gax[0];
-            let mut s1 = cm * s0;
-            gax[dl] = s1;
-            for m in 1..mmax {
-                let s2 = cm * s1 + (m as f64) * b01 * s0;
-                gax[(m + 1) * dl] = s2;
-                s0 = s1;
-                s1 = s2;
-            }
-            if nmax > 0 {
-                let mut s0 = gax[dj];
-                let mut s1 = cm * s0 + b00 * gax[0];
-                gax[dj + dl] = s1;
-                for m in 1..mmax {
-                    let s2 = cm * s1 + (m as f64) * b01 * s0 + b00 * gax[m * dl];
-                    gax[dj + (m + 1) * dl] = s2;
-                    s0 = s1;
-                    s1 = s2;
-                }
-            }
-        }
-        if nmax > 1 {
-            for m in 1..mmax + 1 {
-                let base = m * dl;
-                let mut s0 = gax[base];
-                let mut s1 = gax[base + dj];
-                for n in 1..nmax {
-                    let s2 = cn * s1
-                        + (n as f64) * b10 * s0
-                        + (m as f64) * b00 * gax[base + n * dj - dl];
-                    gax[base + (n + 1) * dj] = s2;
-                    s0 = s1;
-                    s1 = s2;
-                }
-            }
-        }
-    }
+    vrr_axis(gx, c00[0], c0p[0], b00, b10, b01, nmax, mmax, dl, dj);
+    vrr_axis(gy, c00[1], c0p[1], b00, b10, b01, nmax, mmax, dl, dj);
+    vrr_axis(gz, c00[2], c0p[2], b00, b10, b01, nmax, mmax, dl, dj);
 
     // --- HRR (CINTg0_lj2d_4d): j -> i, then l -> k --- (di == 1, one root)
-    if q.li > 0 || q.lk > 0 {
-        for ax in 0..3 {
-            let gax: &mut [f64] = match ax {
-                0 => gx,
-                1 => gy,
-                _ => gz,
-            };
-            // HRR shift coefficients are B-A and D-C (momentum moves from j
-            // to i, from l to k).
-            let rx = -q.rirj[ax];
-            for i in 1..q.li + 1 {
-                for j in 0..nmax - i + 1 {
-                    for l in 0..mmax + 1 {
-                        let p = j * dj + l * dl + i * di;
-                        gax[p] = rx * gax[p - di] + gax[p - di + dj];
-                    }
-                }
-            }
-            let rx = -q.rkrl[ax];
-            for j in 0..q.lj + 1 {
-                for k in 1..q.lk + 1 {
-                    for l in 0..mmax - k + 1 {
-                        let p = j * dj + l * dl + k * dk;
-                        for n in p..p + dk {
-                            gax[n] = rx * gax[n - dk] + gax[n - dk + dl];
-                        }
-                    }
-                }
-            }
-        }
+    let (li, lj, lk) = (s.li, s.lj, s.lk);
+    if li > 0 || lk > 0 {
+        let (rirj, rkrl) = (q.rirj, q.rkrl);
+        hrr_axis(gx, rirj[0], rkrl[0], li, lj, lk, nmax, mmax, di, dk, dl, dj);
+        hrr_axis(gy, rirj[1], rkrl[1], li, lj, lk, nmax, mmax, di, dk, dl, dj);
+        hrr_axis(gz, rirj[2], rkrl[2], li, lj, lk, nmax, mmax, di, dk, dl, dj);
     }
 }
 
@@ -415,22 +499,75 @@ pub fn eri_cart(out: &mut [f64], shls: &[i32], atm: &[i32], bas: &[i32], env: &[
     }
 }
 
-// Segmented path (all nctr == 1): the single coefficient per primitive is
-// folded into the prefactor and the gout contraction accumulates straight
-// into `out`.
+// Segmented path (all nctr == 1). Dispatch on the four angular momenta so the
+// body is instantiated with *constant* l values for the s/p quartets that make
+// up essentially all of a minimal/split-valence basis. Everything the hot loops
+// branch on or index with -- nmax, mmax, di/dk/dl/dj, nfi..nfl, nroots -- is
+// then a compile-time constant in those instances, so the VRR/HRR loop bounds,
+// the `if nmax > 0` style guards and the `j*dj + l*dl` address arithmetic all
+// fold away instead of being recomputed (and, in the Enzyme reverse, taped).
+// The `_` arm keeps the fully dynamic body for d/f/g shells.
+//
+// HARD LIMIT ON THE ARM COUNT: at **8** specialized arms the Enzyme reverse
+// SIGSEGVs at runtime (garbage `gx` base pointer in the primal called from
+// `dtwo_ad`; the primal binary alone is fine, so it is Enzyme, not this code).
+// 7 arms still work, so 6 is deliberately two below the cliff. Measured on
+// c6h6/STO-3G: 0 arms 66.5e9 insns, 1 arm 64.3e9, 2 arms 63.9e9, 4 arms 60.8e9,
+// 6 arms 58.7e9, 7 arms 58.1e9, 8 arms CRASH. Do not add arms without
+// re-running `gradtime fd`.
 fn eri_cart_seg(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
-    let (nfi, nfj, nfk, nfl) = (q.nfi, q.nfj, q.nfk, q.nfl);
-    let (di, dk, dl, dj) = (q.di, q.dk, q.dl, q.dj);
-    let nroots = q.nroots;
-
+    // ONE set of g-buffers for every instantiation below. They must be
+    // allocated here, not in `seg_body`: `seg_body` is inlined once per
+    // specialization, and a per-copy `[f64; GSIZE_MAX]` (plus its Enzyme
+    // shadow) multiplies the stack frame by the number of arms -- which the
+    // frame's page-probe loop then walks on *every* call. Measured: 12.7x
+    // slower with per-copy buffers.
     let mut gx = [0.0f64; GSIZE_MAX];
     let mut gy = [0.0f64; GSIZE_MAX];
     let mut gz = [0.0f64; GSIZE_MAX];
 
-    let (i_nx, i_ny, i_nz) = cart_comp(q.li);
-    let (j_nx, j_ny, j_nz) = cart_comp(q.lj);
-    let (k_nx, k_ny, k_nz) = cart_comp(q.lk);
-    let (l_nx, l_ny, l_nz) = cart_comp(q.ll);
+    macro_rules! spec {
+        ($(($li:literal, $lj:literal, $lk:literal, $ll:literal)),* $(,)?) => {
+            match (q.li, q.lj, q.lk, q.ll) {
+                $(($li, $lj, $lk, $ll) =>
+                    seg_body(out, q, env, &mut gx, &mut gy, &mut gz, $li, $lj, $lk, $ll),)*
+                _ => seg_body(out, q, env, &mut gx, &mut gy, &mut gz, q.li, q.lj, q.lk, q.ll),
+            }
+        };
+    }
+    spec![
+        (0, 0, 0, 0),
+        (1, 1, 1, 1),
+        (1, 1, 0, 0),
+        (0, 0, 1, 1),
+        (1, 0, 1, 0),
+        (0, 1, 0, 1),
+    ]
+}
+
+#[inline(always)]
+#[allow(clippy::too_many_arguments)]
+fn seg_body(
+    out: &mut [f64],
+    q: &QuartetCtx,
+    env: &[f64],
+    gx: &mut [f64; GSIZE_MAX],
+    gy: &mut [f64; GSIZE_MAX],
+    gz: &mut [f64; GSIZE_MAX],
+    li: usize,
+    lj: usize,
+    lk: usize,
+    ll: usize,
+) {
+    let s = Shape::new(li, lj, lk, ll);
+    let (nfi, nfj, nfk, nfl) = (s.nfi, s.nfj, s.nfk, s.nfl);
+    let (di, dk, dl, dj) = (s.di, s.dk, s.dl, s.dj);
+    let nroots = s.nroots;
+
+    let (i_nx, i_ny, i_nz) = cart_comp(li);
+    let (j_nx, j_ny, j_nz) = cart_comp(lj);
+    let (k_nx, k_ny, k_nz) = cart_comp(lk);
+    let (l_nx, l_ny, l_nz) = cart_comp(ll);
 
     for lp in 0..q.l_prim {
         let al = env[q.pal + lp];
@@ -474,15 +611,15 @@ fn eri_cart_seg(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
 
                     let mut u = [0.0f64; NRMAX];
                     let mut w = [0.0f64; NRMAX];
-                    let (a0, fac1, rijrkl) = prim_prep(q, aij, akl, fac, rij, rkl, &mut u, &mut w);
+                    let (a0, fac1, rijrkl) =
+                        prim_prep(nroots, aij, akl, fac, rij, rkl, &mut u, &mut w);
 
                     // one rys root at a time: fill the per-root g-buffers, then
                     // accumulate this root's gout product straight into out
                     // (summing over roots via the += is the CINTgout2e root sum)
                     for r in 0..nroots {
                         prim_g_root(
-                            &mut gx, &mut gy, &mut gz, q, aij, akl, a0, fac1, u[r], w[r], rij, rkl,
-                            rijrkl,
+                            gx, gy, gz, q, s, aij, akl, a0, fac1, u[r], w[r], rij, rkl, rijrkl,
                         );
                         for jf in 0..nfj {
                             let oj = [j_nx[jf] * dj, j_ny[jf] * dj, j_nz[jf] * dj];
@@ -523,6 +660,7 @@ fn eri_cart_seg(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
 // re-zeroing a live accumulator risks the shadow-memset bug, so buffers are
 // re-created per loop iteration instead).
 fn eri_cart_gc(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
+    let s = Shape::new(q.li, q.lj, q.lk, q.ll);
     let (nfi, nfj, nfk, nfl) = (q.nfi, q.nfj, q.nfk, q.nfl);
     let (nctri, nctrj, nctrk, nctrl) = (q.nctri, q.nctrj, q.nctrk, q.nctrl);
     let (di, dk, dl, dj) = (q.di, q.dk, q.dl, q.dj);
@@ -601,14 +739,15 @@ fn eri_cart_gc(out: &mut [f64], q: &QuartetCtx, env: &[f64]) {
 
                     let mut u = [0.0f64; NRMAX];
                     let mut w = [0.0f64; NRMAX];
-                    let (a0, fac1, rijrkl) = prim_prep(q, aij, akl, fac, rij, rkl, &mut u, &mut w);
+                    let (a0, fac1, rijrkl) =
+                        prim_prep(nroots, aij, akl, fac, rij, rkl, &mut u, &mut w);
 
                     // one rys root at a time; gc1 accumulates over roots too,
                     // weighted by the i-shell contraction coefficients
                     for r in 0..nroots {
                         prim_g_root(
-                            &mut gx, &mut gy, &mut gz, q, aij, akl, a0, fac1, u[r], w[r], rij, rkl,
-                            rijrkl,
+                            &mut gx, &mut gy, &mut gz, q, s, aij, akl, a0, fac1, u[r], w[r], rij,
+                            rkl, rijrkl,
                         );
                         for jf in 0..nfj {
                             let oj = [j_nx[jf] * dj, j_ny[jf] * dj, j_nz[jf] * dj];
