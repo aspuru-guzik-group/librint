@@ -17,6 +17,11 @@ python/pyscf_comp/*.json
 python/pyscf_comp/*.pdf
 python/pyscf_comp/*.png
 python/pyscf_comp/*_run1/
+# converged density matrices cached between benchmark processes
+python/pyscf_comp/*.npy
 
 # Stale binary backups
 *.pre-*-bak
+
+# core dumps (a crashed jax worker dumps its whole address space -- 14G each)
+core.*
