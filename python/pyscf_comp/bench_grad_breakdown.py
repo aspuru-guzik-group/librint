@@ -41,7 +41,7 @@ import librint.dscf
 import librint.utils
 from librint import library
 
-from bench_fair import _cpu_model, _mem_limit_kb
+from bench_fair import _cpu_model, _mem_limit_kb, _nphys
 from geometries import geometries
 
 # same list, same order as bench_par_scaling.py, so the two JSONs can be shown
@@ -119,7 +119,9 @@ def main():
     args = ap.parse_args()
 
     results = {"_meta": {"node": platform.node(),
-                         "ncores": len(os.sched_getaffinity(0)),
+                         # physical cores, not the 2x that SMT reports
+                         "ncores": _nphys(os.sched_getaffinity(0)),
+                         "ncpus": len(os.sched_getaffinity(0)),
                          "mem_limit_kb": _mem_limit_kb(),
                          "cpu_model": _cpu_model()}}
     for geo, basis in select(args.only):

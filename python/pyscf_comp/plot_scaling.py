@@ -145,7 +145,11 @@ def main():
             ["1", "2", "4", "8", "16", "32", "64"]))
         ax.xaxis.set_minor_locator(NullLocator())
 
-    sub = (f"{meta.get('ncores', '?')} cores, {meta.get('cpu_model', '')}"
+    # "cores" must mean physical cores: these nodes are 48 with 2-way SMT, so
+    # the thread counts past 48 are oversubscribing a core, not using a new one
+    smt = (f" ({meta['ncpus']} hw threads)"
+           if meta.get("ncpus") and meta.get("ncores") else "")
+    sub = (f"{meta.get('ncores', '?')} cores{smt}, {meta.get('cpu_model', '')}"
            f"  |  median of {meta.get('repeats', '?')}")
     fig.suptitle("Basis-parameter gradient of frozen-P HF energy: thread "
                  f"scaling\n{sub}", fontsize=10)
@@ -157,7 +161,7 @@ def main():
     # ── text summary ────────────────────────────────────────────────────────
     if meta:
         print(f"\nrun: {meta.get('node', '?')}  {meta.get('ncores', '?')} cores"
-              f"  {meta.get('cpu_model', '')}")
+              f"{smt}  {meta.get('cpu_model', '')}")
     print(f"\n{'system':18s} {'nao':>4s} {'serial':>9s} {'best':>9s} "
           f"{'threads':>7s} {'speedup':>8s} {'eff':>5s} {'old cap':>8s}")
     for tag in syss:

@@ -36,7 +36,7 @@ import librint
 import librint.dscf
 import librint.utils
 
-from bench_fair import _cpu_model, _mem_limit_kb
+from bench_fair import _cpu_model, _mem_limit_kb, _nphys
 from geometries import geometries
 
 SYSTEMS = [
@@ -90,13 +90,20 @@ def main():
     args = ap.parse_args()
     systems = select(args.only)
 
-    ncores = len(os.sched_getaffinity(0))
-    threads = [t for t in THREADS if t <= ncores]
-    print(f"usable cores: {ncores}   thread counts: {threads}   "
-          f"median of {REPEATS}", flush=True)
+    # These nodes are 48 physical cores with 2-way SMT, so sched_getaffinity
+    # returns 96 and calling that "cores" overstates the machine by 2x -- the
+    # same mislabel _nphys already fixes in bench_fair. The sweep still runs
+    # past the core count (T=64 is the fastest point on some systems), it is
+    # just reported as threads, which is what it is.
+    mask = os.sched_getaffinity(0)
+    ncpus = len(mask)
+    ncores = _nphys(mask)
+    threads = [t for t in THREADS if t <= ncpus]
+    print(f"physical cores: {ncores}   hw threads: {ncpus}   "
+          f"thread counts: {threads}   median of {REPEATS}", flush=True)
 
     results = {"_meta": {"node": platform.node(), "ncores": ncores,
-                         "mem_limit_kb": _mem_limit_kb(),
+                         "ncpus": ncpus, "mem_limit_kb": _mem_limit_kb(),
                          "cpu_model": _cpu_model(), "repeats": REPEATS}}
     failures = 0
     for geo, basis in systems:
