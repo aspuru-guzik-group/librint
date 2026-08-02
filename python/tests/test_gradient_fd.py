@@ -68,3 +68,31 @@ def test_gradient_consistency(basis, geo):
 
     # Validate against jax benchmark
     np.testing.assert_allclose(grad_analytical_sorted, grad_fd_sorted, atol=1e-5, rtol=1e-4)
+
+
+@pytest.mark.skipif(
+    not librint._bindings.HAS_PAR,
+    reason="librint.so has no threaded entry points; rebuild and set LIBRINT_SO",
+)
+@pytest.mark.parametrize("basis, geo", MOLECULES)
+def test_gradient_consistency_threaded(basis, geo):
+    """The same finite-difference check, through the threaded path.
+
+    test_par_equiv.py already ties danalytical_par to danalyticalf, and the
+    test above ties danalyticalf to finite differences, so this is transitively
+    covered. It is here anyway because the transitive argument breaks silently
+    if either link is ever weakened, and this one is direct.
+    """
+    molecule = geometries[geo]
+    atom = '\n'.join([f"{a[0]} {0.529*a[2][0]} {0.529*a[2][1]} {0.529*a[2][2]}" for a in molecule])
+
+    mol_rpyscf = pyscf.gto.M(atom=atom, basis=basis)
+    P = librint.scf.density(mol_rpyscf, imax=MAX_ITER)
+
+    grad_fd = calc_fd(mol_rpyscf)
+    # 0 = rayon's global pool, sized by RAYON_NUM_THREADS; whatever the machine
+    # running the suite happens to have is a fine width for a correctness check
+    grad_par = librint.dscf.danalytical_par(mol_rpyscf, P, 0)
+
+    np.testing.assert_allclose(np.sort(grad_par), np.sort(grad_fd),
+                               atol=1e-5, rtol=1e-4)

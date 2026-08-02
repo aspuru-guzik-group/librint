@@ -35,3 +35,10 @@ librint = ["*.so", "*.dylib", "test_sanity.py"]
 
 [tool.pytest.ini_options]
 testpaths = ["python/tests"]
+markers = [
+    # Basis sets big enough to cost minutes (def2-tzvp and up). They exist to
+    # reach code paths the small systems never touch -- f/g shells, general
+    # contraction -- so skip them for a quick loop, not because they are
+    # redundant. Deselect with: pytest -m "not slow"
+    "slow: minutes per case; exercises high-l and general-contraction paths",
+]
