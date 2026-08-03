@@ -170,6 +170,35 @@ library.denergy_c.argtypes =(
 )
 library.denergy_c.restype = ctypes.POINTER(ctypes.c_double)
 
+# Threaded counterparts (src/par.rs). Same arguments as above plus a trailing
+# thread count; 0 means rayon's global pool, sized by RAYON_NUM_THREADS.
+_PAR_ARGS = (
+    ctypes.POINTER(ctypes.c_int),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_int),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_double),
+    ctypes.c_size_t,
+    ctypes.POINTER(ctypes.c_double),
+    ctypes.c_size_t,
+    ctypes.c_size_t,
+)
+
+# Bound defensively: any .so built before src/par.rs existed -- including the
+# one committed in this directory -- has none of these symbols, and reaching
+# for them eagerly would make `import librint` fail for everyone rather than
+# just for the caller who wants a threaded gradient. HAS_PAR lets dscf.py raise
+# something a human can act on, and lets the test suite skip instead of error.
+HAS_PAR = True
+for _name in ("dS_par_c", "dR_par_c", "dHcore_par_c", "danalytical_par_c"):
+    try:
+        _fn = getattr(library, _name)
+    except AttributeError:
+        HAS_PAR = False
+        break
+    _fn.argtypes = _PAR_ARGS
+    _fn.restype = ctypes.POINTER(ctypes.c_double)
+
 # Releases any buffer returned by the entry points above; len is the element
 # count that call produced. utils.take() copies then calls this.
 library.free_c.argtypes = (

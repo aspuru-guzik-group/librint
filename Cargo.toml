@@ -8,6 +8,9 @@ edition = "2021"
 [dependencies]
 libc = "0.2.155"
 faer = "0.19.0"
+# already in the tree as a faer dependency; used directly by src/par.rs for
+# work-stealing over shell pairs
+rayon = "1.11"
 
 [profile.dev]
 #debug = true

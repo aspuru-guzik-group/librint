@@ -3,6 +3,7 @@
 pub mod scf;
 
 pub mod dscf;
+pub mod par;
 pub mod p2c;
 
 pub mod linalg;
